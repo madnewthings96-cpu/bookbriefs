@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookBriefs AI - User Engagement Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .animate-bounce {
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0,-30px,0);
+            }
+            70% {
+                transform: translate3d(0,-15px,0);
+            }
+            90% {
+                transform: translate3d(0,-4px,0);
+            }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-slate-800 shadow-md sticky top-0 z-50" style="background-color: #2F4F4F;">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="text-2xl font-bold text-white">BookBriefs</div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-white hover:text-orange-400 transition-colors duration-300 font-medium text-sm">Log In</a>
+                    <a href="#" class="text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity duration-300 text-sm" style="background-color: #FF7F50;">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <section class="text-white py-20 px-4 rounded-lg shadow-xl mb-8" style="background-color: #2F4F4F;">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+                    Unlock Big Ideas, Faster.
+                </h1>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
+                    BookBriefs uses AI to provide you with concise summaries and key takeaways from the world's best books. Spend less time reading and more time learning.
+                </p>
+                <button class="bg-orange-500 text-white font-bold py-3 px-8 rounded-full hover:bg-orange-600 transition-all duration-300 transform hover:scale-105" style="background-color: #FF7F50;">
+                    Explore Summaries
+                </button>
+            </div>
+        </section>
+
+        <!-- User Engagement Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6" style="color: #2F4F4F;">
+                Your Reading Journey
+            </h2>
+            
+            <!-- Reading Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg">
+                    <div class="text-4xl font-bold text-orange-600" id="streak-count">0</div>
+                    <div class="text-2xl mb-2" id="streak-emoji">📖</div>
+                    <div class="text-sm text-gray-600">Day Streak</div>
+                </div>
+                
+                <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg">
+                    <div class="text-4xl font-bold text-blue-600" id="books-count">0</div>
+                    <div class="text-2xl mb-2">📚</div>
+                    <div class="text-sm text-gray-600">Books Read</div>
+                </div>
+                
+                <div class="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg">
+                    <div class="text-4xl font-bold text-green-600" id="points-count">0</div>
+                    <div class="text-2xl mb-2">⭐</div>
+                    <div class="text-sm text-gray-600">Points</div>
+                </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-3" style="color: #2F4F4F;">
+                    Achievements (<span id="badge-progress">0/6</span>)
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="badges-container">
+                    <!-- Badges will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Demo Button -->
+            <div class="text-center">
+                <button id="read-book-btn" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-full hover:bg-orange-600 transition-all duration-300 transform hover:scale-105" style="background-color: #FF7F50;">
+                    📖 Read a Book (Demo)
+                </button>
+                <p class="text-xs text-gray-500 mt-2">Click to simulate reading a book and see your progress!</p>
+            </div>
+        </div>
+
+        <!-- Personalized Recommendations -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold" style="color: #2F4F4F;">
+                    📚 For You
+                </h2>
+                <button id="refresh-btn" class="text-sm bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-300">
+                    🔄 Refresh
+                </button>
+            </div>
+            
+            <p class="text-gray-600 mb-6" id="recommendations-subtitle">
+                Popular books to get you started
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="recommendations-container">
+                <!-- Recommendations will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Surprise Me Section -->
+        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg shadow-lg p-6 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold mb-4" style="color: #2F4F4F;">
+                    🎲 Surprise Me!
+                </h2>
+                <p class="text-gray-600 mb-6">
+                    Can't decide what to read? Let us pick a random book brief for you!
+                </p>
+                
+                <button id="surprise-btn" class="bg-purple-500 text-white font-bold py-3 px-8 rounded-full hover:bg-purple-600 transition-all duration-300 transform hover:scale-105">
+                    🎯 Surprise Me!
+                </button>
+
+                <div id="surprise-result" class="mt-8 max-w-sm mx-auto hidden">
+                    <!-- Surprise book will be shown here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Badge Popup -->
+    <div id="badge-popup" class="fixed top-4 right-4 bg-white border-4 border-yellow-400 rounded-lg p-4 shadow-2xl z-50 animate-bounce hidden">
+        <div class="text-center">
+            <div class="text-4xl mb-2" id="popup-icon"></div>
+            <div class="font-bold text-yellow-800">New Badge Earned!</div>
+            <div class="text-sm font-semibold" id="popup-name"></div>
+            <div class="text-xs text-gray-600" id="popup-description"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const books = [
+            { id: 1, title: "Atomic Habits", author: "James Clear", cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop" },
+            { id: 2, title: "The 7 Habits", author: "Stephen Covey", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop" },
+            { id: 3, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", cover: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop" },
+            { id: 4, title: "The Lean Startup", author: "Eric Ries", cover: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=300&h=400&fit=crop" },
+            { id: 5, title: "Good to Great", author: "Jim Collins", cover: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=300&h=400&fit=crop" },
+            { id: 6, title: "The Power of Now", author: "Eckhart Tolle", cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop" }
+        ];
+
+        const badges = [
+            { id: 'first-read', name: 'First Steps', description: 'Read your first book brief', icon: '🌟', requirement: 1, category: 'milestone' },
+            { id: 'week-warrior', name: 'Week Warrior', description: 'Read for 7 days straight', icon: '⚡', requirement: 7, category: 'streak' },
+            { id: 'bookworm', name: 'Bookworm', description: 'Read 10 book briefs', icon: '🐛', requirement: 10, category: 'milestone' },
+            { id: 'scholar', name: 'Scholar', description: 'Read 25 book briefs', icon: '🎓', requirement: 25, category: 'milestone' },
+            { id: 'fire-reader', name: 'Fire Reader', description: 'Maintain a 30-day streak', icon: '🔥', requirement: 30, category: 'streak' },
+            { id: 'century-club', name: 'Century Club', description: 'Read 100 book briefs', icon: '💯', requirement: 100, category: 'milestone' }
+        ];
+
+        // User stats
+        let userStats = {
+            readingStreak: 0,
+            totalBooksRead: 0,
+            badges: [],
+            lastReadDate: '',
+            points: 0,
+            readBooks: []
+        };
+
+        // Load from localStorage
+        const savedStats = localStorage.getItem('bookbriefs-demo-stats');
+        if (savedStats) {
+            userStats = JSON.parse(savedStats);
+        }
+
+        function saveStats() {
+            localStorage.setItem('bookbriefs-demo-stats', JSON.stringify(userStats));
+        }
+
+        function updateDisplay() {
+            document.getElementById('streak-count').textContent = userStats.readingStreak;
+            document.getElementById('books-count').textContent = userStats.totalBooksRead;
+            document.getElementById('points-count').textContent = userStats.points;
+            
+            // Update streak emoji and color
+            const streakElement = document.getElementById('streak-count');
+            const emojiElement = document.getElementById('streak-emoji');
+            
+            if (userStats.readingStreak >= 30) {
+                streakElement.className = 'text-4xl font-bold text-purple-600';
+                emojiElement.textContent = '🔥🔥🔥';
+            } else if (userStats.readingStreak >= 14) {
+                streakElement.className = 'text-4xl font-bold text-red-600';
+                emojiElement.textContent = '🔥🔥';
+            } else if (userStats.readingStreak >= 7) {
+                streakElement.className = 'text-4xl font-bold text-orange-600';
+                emojiElement.textContent = '🔥';
+            } else if (userStats.readingStreak >= 3) {
+                streakElement.className = 'text-4xl font-bold text-yellow-600';
+                emojiElement.textContent = '⭐';
+            } else {
+                streakElement.className = 'text-4xl font-bold text-gray-600';
+                emojiElement.textContent = '📖';
+            }
+
+            // Update badges
+            const badgesContainer = document.getElementById('badges-container');
+            badgesContainer.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const isEarned = userStats.badges.includes(badge.id);
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = `text-center p-3 rounded-lg transition-all duration-300 ${
+                    isEarned 
+                        ? 'bg-yellow-50 border-2 border-yellow-300 shadow-md' 
+                        : 'bg-gray-50 border-2 border-gray-200 opacity-50'
+                }`;
+                badgeDiv.title = badge.description;
+                badgeDiv.innerHTML = `
+                    <div class="text-2xl mb-1">${badge.icon}</div>
+                    <div class="text-xs font-medium ${isEarned ? 'text-yellow-800' : 'text-gray-500'}">
+                        ${badge.name}
+                    </div>
+                `;
+                badgesContainer.appendChild(badgeDiv);
+            });
+
+            document.getElementById('badge-progress').textContent = `${userStats.badges.length}/${badges.length}`;
+            
+            // Update recommendations
+            updateRecommendations();
+        }
+
+        function updateRecommendations() {
+            const container = document.getElementById('recommendations-container');
+            const subtitle = document.getElementById('recommendations-subtitle');
+            
+            const unreadBooks = books.filter(book => !userStats.readBooks.includes(book.id));
+            const recommendations = unreadBooks.slice(0, 4);
+            
+            if (userStats.totalBooksRead > 0) {
+                subtitle.textContent = `Based on your reading history (${userStats.totalBooksRead} books read)`;
+            } else {
+                subtitle.textContent = 'Popular books to get you started';
+            }
+            
+            container.innerHTML = '';
+            recommendations.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300';
+                bookDiv.innerHTML = `
+                    <img class="h-32 w-full object-cover" src="${book.cover}" alt="Cover of ${book.title}">
+                    <div class="p-4">
+                        <h3 class="text-sm font-bold mb-1 truncate" style="color: #2F4F4F;">${book.title}</h3>
+                        <p class="text-gray-600 text-xs mb-3">${book.author}</p>
+                        <div class="flex gap-2">
+                            <button class="flex-1 text-center bg-orange-500 text-white font-bold py-2 px-3 rounded-full hover:bg-orange-600 transition-colors duration-300 text-xs" style="background-color: #FF7F50;">
+                                Read
+                            </button>
+                            <button onclick="markAsRead(${book.id})" class="bg-gray-200 text-gray-700 px-3 py-2 rounded-full hover:bg-gray-300 transition-colors duration-300 text-xs" title="Mark as read (demo)">
+                                ✓
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(bookDiv);
+            });
+        }
+
+        function showBadgePopup(badge) {
+            const popup = document.getElementById('badge-popup');
+            document.getElementById('popup-icon').textContent = badge.icon;
+            document.getElementById('popup-name').textContent = badge.name;
+            document.getElementById('popup-description').textContent = badge.description;
+            
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 3000);
+        }
+
+        function simulateReadingBook() {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            let newStreak = userStats.readingStreak;
+            
+            if (userStats.lastReadDate === today) {
+                return; // Already read today
+            } else if (userStats.lastReadDate === yesterday || userStats.readingStreak === 0) {
+                newStreak = userStats.readingStreak + 1;
+            } else {
+                newStreak = 1;
+            }
+
+            userStats.readingStreak = newStreak;
+            userStats.totalBooksRead += 1;
+            userStats.lastReadDate = today;
+            userStats.points += 10;
+
+            // Check for new badges
+            badges.forEach(badge => {
+                if (!userStats.badges.includes(badge.id)) {
+                    let earned = false;
+                    if (badge.category === 'milestone' && userStats.totalBooksRead >= badge.requirement) {
+                        earned = true;
+                    } else if (badge.category === 'streak' && userStats.readingStreak >= badge.requirement) {
+                        earned = true;
+                    }
+                    
+                    if (earned) {
+                        userStats.badges.push(badge.id);
+                        showBadgePopup(badge);
+                    }
+                }
+            });
+
+            saveStats();
+            updateDisplay();
+        }
+
+        function markAsRead(bookId) {
+            if (!userStats.readBooks.includes(bookId)) {
+                userStats.readBooks.push(bookId);
+                saveStats();
+                updateRecommendations();
+            }
+        }
+
+        function surpriseMe() {
+            const btn = document.getElementById('surprise-btn');
+            const result = document.getElementById('surprise-result');
+            
+            btn.innerHTML = `
+                <span class="flex items-center">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Finding your book...
+                </span>
+            `;
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const randomBook = books[Math.floor(Math.random() * books.length)];
+                result.innerHTML = `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-500 hover:shadow-lg">
+                        <img class="h-48 w-full object-cover" src="${randomBook.cover}" alt="Cover of ${randomBook.title}">
+                        <div class="p-4">
+                            <h3 class="text-lg font-bold mb-1" style="color: #2F4F4F;">${randomBook.title}</h3>
+                            <p class="text-gray-600 text-sm mb-3">${randomBook.author}</p>
+                            <button class="inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded-full hover:bg-orange-600 transition-colors duration-300 text-sm" style="background-color: #FF7F50;">
+                                Read This Brief
+                            </button>
+                        </div>
+                    </div>
+                `;
+                result.classList.remove('hidden');
+                
+                btn.innerHTML = '🎯 Surprise Me!';
+                btn.disabled = false;
+            }, 1000);
+        }
+
+        // Event listeners
+        document.getElementById('read-book-btn').addEventListener('click', simulateReadingBook);
+        document.getElementById('surprise-btn').addEventListener('click', surpriseMe);
+        document.getElementById('refresh-btn').addEventListener('click', updateRecommendations);
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>

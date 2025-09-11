@@ -1,0 +1,5 @@
+{
+  "name": "BookBriefs AI",
+  "description": "An AI-powered web application that generates concise summaries and key takeaways for popular books, helping you unlock big ideas faster.",
+  "requestFramePermissions": []
+}
