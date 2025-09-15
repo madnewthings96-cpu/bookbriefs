@@ -29,22 +29,6 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Newsletter Subscription Section */}
-      <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4" style={{ color: '#2F4F4F' }}>
-            Stay Updated with the Latest Book Summaries
-          </h2>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Get notified when we add new book summaries and receive exclusive insights delivered straight to your inbox.
-          </p>
-          <Newsletter 
-            buttonText="Subscribe to Our Newsletter" 
-            className="text-lg py-3 px-8"
-          />
-        </div>
-      </section>
-
       {/* Personalized Recommendations */}
       <section className="py-8">
         <div className="container mx-auto">

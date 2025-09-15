@@ -126,17 +126,17 @@ export const BROKERS: Broker[] = [
 
 export const TESTIMONIALS: Testimonial[] = [
   {
-    name: 'Darcy Menard',
+    name: 'Hassna B',
     quote: 'I appreciate your careful approach to your content—one that aims for a high quality hand-crafted result instead of a mediocre one that scales. Please keep up the good work and the high bar of quality.',
     avatarUrl: 'https://i.pravatar.cc/150?img=1',
   },
   {
-    name: 'Kannika Khannabha',
+    name: 'Youness A',
     quote: 'BookBriefs has transformed my commute. I can get through two book summaries in the time it used to take me to read a single chapter. The AI summaries are surprisingly insightful!',
     avatarUrl: 'https://i.pravatar.cc/150?img=2',
   },
   {
-    name: 'Tom Lipscomb',
+    name: 'Sanae Ben',
     quote: 'As a lifelong learner, this is the tool I\'ve been waiting for. It helps me decide which books are worth a deeper dive. The audio feature is a game-changer.',
     avatarUrl: 'https://i.pravatar.cc/150?img=3',
   },

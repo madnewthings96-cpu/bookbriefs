@@ -5,9 +5,12 @@ import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import { useLanguage } from '../contexts/LanguageContext';
+import { getBookSummaryTranslation } from '../translations/bookSummaries';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
+  const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -21,25 +24,39 @@ const SummaryDetailPage: React.FC = () => {
     setLoading(true);
     setError(null);
     
-    // Look for pre-written summary first
-    const bookSummary = BOOK_SUMMARIES.find(summary => summary.title === currentBook.title);
+    // First try to get translated summary
+    const translatedSummary = getBookSummaryTranslation(currentBook.id, currentLanguage);
     
-    if (bookSummary) {
-      // Use pre-written summary
+    if (translatedSummary) {
+      // Use translated summary
       setSummaryData({
-        summary: bookSummary.summary,
-        keyTakeaways: bookSummary.keyTakeaways
+        summary: translatedSummary.summary,
+        keyTakeaways: translatedSummary.keyTakeaways
       });
       setLoading(false);
     } else {
-      // Fallback: show placeholder for books without summaries
-      setSummaryData({
-        summary: "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
-        keyTakeaways: ["Summary in development", "Check back soon for detailed content"]
-      });
-      setLoading(false);
+      // Fallback to original English summary
+      const bookSummary = BOOK_SUMMARIES.find(summary => summary.title === currentBook.title);
+      
+      if (bookSummary) {
+        setSummaryData({
+          summary: bookSummary.summary,
+          keyTakeaways: bookSummary.keyTakeaways
+        });
+        setLoading(false);
+      } else {
+        // Final fallback: show placeholder
+        setSummaryData({
+          summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
+          keyTakeaways: [
+            t('summaryInDevelopment') || "Summary in development", 
+            t('checkBackSoon') || "Check back soon for detailed content"
+          ]
+        });
+        setLoading(false);
+      }
     }
-  }, []);
+  }, [currentLanguage, t]);
 
   useEffect(() => {
     const currentBook = BOOKS.find((b) => b.id === bookId);
@@ -47,7 +64,7 @@ const SummaryDetailPage: React.FC = () => {
     if (currentBook) {
       fetchSummary(currentBook);
     } else {
-      setError("Book not found.");
+      setError(t('bookNotFound') || "Book not found.");
       setLoading(false);
     }
     
@@ -58,7 +75,7 @@ const SummaryDetailPage: React.FC = () => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId]);
+  }, [bookId, fetchSummary]);
 
   const handleToggleSpeech = () => {
     if (!summaryData) return;
@@ -67,7 +84,8 @@ const SummaryDetailPage: React.FC = () => {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
     } else {
-      const textToSpeak = `Summary for ${book?.title}. ${summaryData.summary}`;
+      const translatedTitle = book ? getBookTitle(book.id) : book?.title;
+      const textToSpeak = `Summary for ${translatedTitle}. ${summaryData.summary}`;
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
       utterance.onend = () => setIsSpeaking(false);
       utterance.onerror = () => {
@@ -83,10 +101,10 @@ const SummaryDetailPage: React.FC = () => {
   if (!book && !loading) {
     return (
         <div className="text-center">
-            <h1 className="text-2xl font-bold" style={{color: '#2F4F4F'}}>Book Not Found</h1>
-            <p className="text-gray-600 mt-2">We couldn't find the book you were looking for.</p>
+            <h1 className="text-2xl font-bold" style={{color: '#2F4F4F'}}>{t('bookNotFound') || 'Book Not Found'}</h1>
+            <p className="text-gray-600 mt-2">{t('bookNotFoundMessage') || "We couldn't find the book you were looking for."}</p>
             <Link to="/summaries" className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{backgroundColor: '#FF7F50'}}>
-                Back to Summaries
+                {t('backToSummaries') || 'Back to Summaries'}
             </Link>
         </div>
     );
@@ -96,8 +114,8 @@ const SummaryDetailPage: React.FC = () => {
     <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-6xl mx-auto">
       {book && (
         <header className="mb-10 text-center border-b border-gray-200 pb-6">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ color: '#2F4F4F' }}>{book.title}</h1>
-          <p className="text-xl text-gray-600">by {book.author}</p>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ color: '#2F4F4F' }}>{getBookTitle(book.id)}</h1>
+          <p className="text-xl text-gray-600">by {getBookAuthor(book.id)}</p>
         </header>
       )}
 
@@ -110,7 +128,7 @@ const SummaryDetailPage: React.FC = () => {
             <div className="lg:col-span-1">
               {book && (
                 <div className="sticky top-6">
-                  <img src={book.coverImageUrl} alt={`Cover of ${book.title}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
+                  <img src={book.coverImageUrl} alt={`Cover of ${getBookTitle(book.id)}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
                 </div>
               )}
             </div>
@@ -120,7 +138,7 @@ const SummaryDetailPage: React.FC = () => {
                   <svg className="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
-                  Key Takeaways
+                  {t('keyTakeaways') || 'Key Takeaways'}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {summaryData.keyTakeaways.map((takeaway, index) => (
@@ -139,7 +157,7 @@ const SummaryDetailPage: React.FC = () => {
                 <svg className="w-8 h-8 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
-                Detailed Summary
+{t('detailedSummary') || 'Detailed Summary'}
               </h2>
               {typeof window.speechSynthesis !== 'undefined' && (
                 <button
@@ -157,7 +175,7 @@ const SummaryDetailPage: React.FC = () => {
                         <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
                       </svg>
                   )}
-                  <span>{isSpeaking ? 'Stop' : 'Listen'}</span>
+                  <span>{isSpeaking ? (t('stop') || 'Stop') : (t('listen') || 'Listen')}</span>
                 </button>
               )}
             </div>

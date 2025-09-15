@@ -15,23 +15,6 @@ const CalculatorsPage: React.FC = () => {
 
   return (
     <div className="space-y-16">
-      {/* Hero Section */}
-      <section>
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="text-center md:text-left">
-                  <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4" style={{ color: '#2F4F4F' }}>Stay up to date!</h1>
-                  <p className="text-lg text-gray-600 mb-6">Add Calculator to your browser</p>
-                  <a href="#" className="inline-flex items-center space-x-2 bg-white border border-gray-300 px-6 py-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Chrome_icon_%28September_2014%29.svg" alt="Chrome Logo" className="h-6 w-6"/>
-                      <span className="font-semibold text-gray-700">Add To Chrome</span>
-                  </a>
-              </div>
-              <div>
-                  <img src="https://assets-global.website-files.com/6036982905cd287ad4a26d70/61793734139e802772589574_economic-calendar-hero-p-1080.png" alt="Forex Trading Platform on Laptop" className="rounded-lg shadow-xl" />
-              </div>
-          </div>
-      </section>
-
       {/* Calculators Section */}
       <section className="max-w-3xl mx-auto">
         <div className="text-center mb-10">

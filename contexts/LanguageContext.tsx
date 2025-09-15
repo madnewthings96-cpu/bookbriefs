@@ -6,6 +6,8 @@ interface LanguageContextType {
   currentLanguage: Language;
   setLanguage: (language: Language) => void;
   t: (key: string) => string;
+  getBookTitle: (bookId: string) => string;
+  getBookAuthor: (bookId: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -63,7 +65,51 @@ const translations = {
     alreadyHaveAccount: 'Already have an account?',
     signupHere: 'Sign up here',
     loginHere: 'Log in here',
-    demoText: 'Demo: Use any email and password to log in'
+    demoText: 'Demo: Use any email and password to log in',
+    
+    // Summary page content
+    keyTakeaways: 'Key Takeaways',
+    detailedSummary: 'Detailed Summary',
+    listen: 'Listen',
+    stop: 'Stop',
+    bookNotFound: 'Book Not Found',
+    bookNotFoundMessage: "We couldn't find the book you were looking for.",
+    backToSummaries: 'Back to Summaries',
+    summaryComingSoon: "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
+    summaryInDevelopment: 'Summary in development',
+    checkBackSoon: 'Check back soon for detailed content',
+    
+    // Book content
+    bookTitles: {
+      'atomic-habits': 'Atomic Habits',
+      'trading-in-the-zone': 'Trading in the Zone',
+      'the-subtle-art-of-not-giving-a-f': 'The Subtle Art of Not Giving a F*ck',
+      'the-power-of-now': 'The Power of Now',
+      'sapiens': 'Sapiens: A Brief History of Humankind',
+      'thinking-fast-and-slow': 'Thinking, Fast and Slow',
+      'the-alchemist': 'The Alchemist',
+      'educated': 'Educated',
+      'becoming': 'Becoming',
+      'the-four-agreements': 'The Four Agreements',
+      'dune': 'Dune',
+      'project-hail-mary': 'Project Hail Mary',
+      'rich-dad-poor-dad': 'Rich Dad Poor Dad'
+    },
+    bookAuthors: {
+      'atomic-habits': 'James Clear',
+      'trading-in-the-zone': 'Mark Douglas',
+      'the-subtle-art-of-not-giving-a-f': 'Mark Manson',
+      'the-power-of-now': 'Eckhart Tolle',
+      'sapiens': 'Yuval Noah Harari',
+      'thinking-fast-and-slow': 'Daniel Kahneman',
+      'the-alchemist': 'Paulo Coelho',
+      'educated': 'Tara Westover',
+      'becoming': 'Michelle Obama',
+      'the-four-agreements': 'Don Miguel Ruiz',
+      'dune': 'Frank Herbert',
+      'project-hail-mary': 'Andy Weir',
+      'rich-dad-poor-dad': 'Robert T. Kiyosaki'
+    }
   },
   ar: {
     // Header
@@ -108,7 +154,51 @@ const translations = {
     alreadyHaveAccount: 'لديك حساب بالفعل؟',
     signupHere: 'اشترك هنا',
     loginHere: 'سجل الدخول هنا',
-    demoText: 'تجريبي: استخدم أي بريد إلكتروني وكلمة مرور لتسجيل الدخول'
+    demoText: 'تجريبي: استخدم أي بريد إلكتروني وكلمة مرور لتسجيل الدخول',
+    
+    // Summary page content
+    keyTakeaways: 'النقاط الرئيسية',
+    detailedSummary: 'الملخص المفصل',
+    listen: 'استمع',
+    stop: 'توقف',
+    bookNotFound: 'الكتاب غير موجود',
+    bookNotFoundMessage: 'لم نتمكن من العثور على الكتاب الذي تبحث عنه.',
+    backToSummaries: 'العودة إلى الملخصات',
+    summaryComingSoon: 'ملخص هذا الكتاب قادم قريباً. نحن نعمل على توفير ملخصات مفصلة لجميع الكتب في مجموعتنا.',
+    summaryInDevelopment: 'الملخص قيد التطوير',
+    checkBackSoon: 'تحقق مرة أخرى قريباً للحصول على المحتوى المفصل',
+    
+    // Book content
+    bookTitles: {
+      'atomic-habits': 'العادات الذرية',
+      'trading-in-the-zone': 'التداول في المنطقة',
+      'the-subtle-art-of-not-giving-a-f': 'الفن الخفي لعدم الاكتراث',
+      'the-power-of-now': 'قوة الآن',
+      'sapiens': 'العاقل: تاريخ مختصر للجنس البشري',
+      'thinking-fast-and-slow': 'التفكير السريع والبطيء',
+      'the-alchemist': 'الخيميائي',
+      'educated': 'متعلمة',
+      'becoming': 'صيرورة',
+      'the-four-agreements': 'الاتفاقيات الأربعة',
+      'dune': 'الكثيب',
+      'project-hail-mary': 'مشروع السلام عليك يا مريم',
+      'rich-dad-poor-dad': 'الأب الغني والأب الفقير'
+    },
+    bookAuthors: {
+      'atomic-habits': 'جيمس كلير',
+      'trading-in-the-zone': 'مارك دوغلاس',
+      'the-subtle-art-of-not-giving-a-f': 'مارك مانسون',
+      'the-power-of-now': 'إيكهارت تول',
+      'sapiens': 'يوفال نوح هراري',
+      'thinking-fast-and-slow': 'دانيال كانيمان',
+      'the-alchemist': 'باولو كويلو',
+      'educated': 'تارا ويستوفر',
+      'becoming': 'ميشيل أوباما',
+      'the-four-agreements': 'دون ميغيل رويز',
+      'dune': 'فرانك هربرت',
+      'project-hail-mary': 'آندي وير',
+      'rich-dad-poor-dad': 'روبرت تي كيوساكي'
+    }
   },
   fr: {
     // Header
@@ -153,7 +243,51 @@ const translations = {
     alreadyHaveAccount: 'Vous avez déjà un compte ?',
     signupHere: 'Inscrivez-vous ici',
     loginHere: 'Connectez-vous ici',
-    demoText: 'Démo : Utilisez n\'importe quel email et mot de passe pour vous connecter'
+    demoText: 'Démo : Utilisez n\'importe quel email et mot de passe pour vous connecter',
+    
+    // Summary page content
+    keyTakeaways: 'Points clés',
+    detailedSummary: 'Résumé détaillé',
+    listen: 'Écouter',
+    stop: 'Arrêter',
+    bookNotFound: 'Livre non trouvé',
+    bookNotFoundMessage: 'Nous n\'avons pas pu trouver le livre que vous recherchiez.',
+    backToSummaries: 'Retour aux résumés',
+    summaryComingSoon: 'Le résumé de ce livre arrive bientôt. Nous travaillons à fournir des résumés détaillés pour tous les livres de notre collection.',
+    summaryInDevelopment: 'Résumé en développement',
+    checkBackSoon: 'Revenez bientôt pour du contenu détaillé',
+    
+    // Book content
+    bookTitles: {
+      'atomic-habits': 'Un rien peut tout changer',
+      'trading-in-the-zone': 'Trader dans la zone',
+      'the-subtle-art-of-not-giving-a-f': 'L\'art subtil de s\'en foutre',
+      'the-power-of-now': 'Le pouvoir du moment présent',
+      'sapiens': 'Sapiens : Une brève histoire de l\'humanité',
+      'thinking-fast-and-slow': 'Système 1 / Système 2',
+      'the-alchemist': 'L\'Alchimiste',
+      'educated': 'Une éducation',
+      'becoming': 'Devenir',
+      'the-four-agreements': 'Les quatre accords toltèques',
+      'dune': 'Dune',
+      'project-hail-mary': 'Projet Hail Mary',
+      'rich-dad-poor-dad': 'Père riche, père pauvre'
+    },
+    bookAuthors: {
+      'atomic-habits': 'James Clear',
+      'trading-in-the-zone': 'Mark Douglas',
+      'the-subtle-art-of-not-giving-a-f': 'Mark Manson',
+      'the-power-of-now': 'Eckhart Tolle',
+      'sapiens': 'Yuval Noah Harari',
+      'thinking-fast-and-slow': 'Daniel Kahneman',
+      'the-alchemist': 'Paulo Coelho',
+      'educated': 'Tara Westover',
+      'becoming': 'Michelle Obama',
+      'the-four-agreements': 'Don Miguel Ruiz',
+      'dune': 'Frank Herbert',
+      'project-hail-mary': 'Andy Weir',
+      'rich-dad-poor-dad': 'Robert T. Kiyosaki'
+    }
   },
   es: {
     // Header
@@ -198,7 +332,51 @@ const translations = {
     alreadyHaveAccount: '¿Ya tienes una cuenta?',
     signupHere: 'Regístrate aquí',
     loginHere: 'Inicia sesión aquí',
-    demoText: 'Demo: Usa cualquier email y contraseña para iniciar sesión'
+    demoText: 'Demo: Usa cualquier email y contraseña para iniciar sesión',
+    
+    // Summary page content
+    keyTakeaways: 'Puntos clave',
+    detailedSummary: 'Resumen detallado',
+    listen: 'Escuchar',
+    stop: 'Detener',
+    bookNotFound: 'Libro no encontrado',
+    bookNotFoundMessage: 'No pudimos encontrar el libro que estabas buscando.',
+    backToSummaries: 'Volver a resúmenes',
+    summaryComingSoon: 'El resumen de este libro llegará pronto. Estamos trabajando en proporcionar resúmenes detallados para todos los libros de nuestra colección.',
+    summaryInDevelopment: 'Resumen en desarrollo',
+    checkBackSoon: 'Vuelve pronto para contenido detallado',
+    
+    // Book content
+    bookTitles: {
+      'atomic-habits': 'Hábitos Atómicos',
+      'trading-in-the-zone': 'Operar en la Zona',
+      'the-subtle-art-of-not-giving-a-f': 'El sutil arte de que te importe un carajo',
+      'the-power-of-now': 'El Poder del Ahora',
+      'sapiens': 'Sapiens: De animales a dioses',
+      'thinking-fast-and-slow': 'Pensar rápido, pensar despacio',
+      'the-alchemist': 'El Alquimista',
+      'educated': 'Una educación',
+      'becoming': 'Mi historia',
+      'the-four-agreements': 'Los cuatro acuerdos',
+      'dune': 'Dune',
+      'project-hail-mary': 'Proyecto Hail Mary',
+      'rich-dad-poor-dad': 'Padre Rico, Padre Pobre'
+    },
+    bookAuthors: {
+      'atomic-habits': 'James Clear',
+      'trading-in-the-zone': 'Mark Douglas',
+      'the-subtle-art-of-not-giving-a-f': 'Mark Manson',
+      'the-power-of-now': 'Eckhart Tolle',
+      'sapiens': 'Yuval Noah Harari',
+      'thinking-fast-and-slow': 'Daniel Kahneman',
+      'the-alchemist': 'Paulo Coelho',
+      'educated': 'Tara Westover',
+      'becoming': 'Michelle Obama',
+      'the-four-agreements': 'Don Miguel Ruiz',
+      'dune': 'Frank Herbert',
+      'project-hail-mary': 'Andy Weir',
+      'rich-dad-poor-dad': 'Robert T. Kiyosaki'
+    }
   }
 };
 
@@ -225,10 +403,22 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return translations[currentLanguage][key as keyof typeof translations['en']] || key;
   };
 
+  const getBookTitle = (bookId: string): string => {
+    const bookTitles = translations[currentLanguage].bookTitles as any;
+    return bookTitles?.[bookId] || bookId;
+  };
+
+  const getBookAuthor = (bookId: string): string => {
+    const bookAuthors = translations[currentLanguage].bookAuthors as any;
+    return bookAuthors?.[bookId] || bookId;
+  };
+
   const value: LanguageContextType = {
     currentLanguage,
     setLanguage,
-    t
+    t,
+    getBookTitle,
+    getBookAuthor
   };
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
