@@ -77,7 +77,7 @@ export const BOOKS: Book[] = [
     id: 'trading-in-the-zone',
     title: 'Trading in the Zone',
     author: 'Mark Douglas',
-    coverImageUrl: 'https://picsum.photos/seed/tradingzone/400/600',
+    coverImageUrl: '/images/trading-in-the-zone.jpeg',
   },
 ];
 

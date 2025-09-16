@@ -179,8 +179,12 @@ const SummaryDetailPage: React.FC = () => {
                 </button>
               )}
             </div>
-            <div className="p-8 bg-gradient-to-br from-gray-50 to-white">
-              <MarkdownRenderer content={summaryData.summary} />
+            <div className="p-6 md:p-8 bg-gradient-to-br from-gray-50 to-white rounded-lg">
+              <div className="prose prose-lg max-w-none">
+                <div className="space-y-6 text-gray-700 leading-relaxed">
+                  <MarkdownRenderer content={summaryData.summary} />
+                </div>
+              </div>
             </div>
           </div>
         </article>
