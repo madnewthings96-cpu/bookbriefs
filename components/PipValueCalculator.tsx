@@ -15,8 +15,15 @@ const PipValueCalculator: React.FC = () => {
       return;
     }
 
-    // Simplified calculation: assumes pip value is 10 units of account currency per standard lot.
-    const calculatedValue = size * 10;
+    // Calculate pip value based on currency pair
+    let calculatedValue;
+    if (currencyPair === 'XAU/USD') {
+      // For gold, 1 pip = $1 per oz, and standard lot is 100 oz
+      calculatedValue = size * 100;
+    } else {
+      // For regular currency pairs, 1 pip = $10 per standard lot
+      calculatedValue = size * 10;
+    }
     
     let symbol = '';
     if (accountCurrency.toUpperCase() === 'USD') symbol = '$';
@@ -38,7 +45,11 @@ const PipValueCalculator: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="currencyPair" className={formLabelStyle}>Currency Pair</label>
-          <input type="text" id="currencyPair" value={currencyPair} onChange={e => setCurrencyPair(e.target.value)} className={formInputStyle} placeholder="e.g., EUR/USD" />
+          <select id="currencyPair" value={currencyPair} onChange={e => setCurrencyPair(e.target.value)} className={formInputStyle}>
+            {['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CAD', 'AUD/USD', 'NZD/USD', 'XAU/USD'].map(pair => (
+              <option key={pair} value={pair}>{pair}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="positionSize" className={formLabelStyle}>Position Size (in lots)</label>

@@ -45,15 +45,17 @@ const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
               className={`flex flex-col items-center space-y-2 transition-opacity duration-300 ${activeIndex === index ? 'opacity-100' : 'opacity-50 hover:opacity-100'}`}
               aria-label={`View testimonial from ${testimonial.name}`}
             >
-              <img
-                src={testimonial.avatarUrl}
-                alt={testimonial.name}
-                className={`w-12 h-12 rounded-full object-cover border-2 transition-all duration-300 ${activeIndex === index ? 'border-orange-500 scale-110' : 'border-transparent'}`}
-                style={{borderColor: activeIndex === index ? '#FF7F50' : 'transparent'}}
-              />
-              <span className={`font-semibold text-sm text-center ${activeIndex === index ? 'text-slate-800' : 'text-gray-500'}`} style={{color: activeIndex === index ? '#2F4F4F' : ''}}>
-                {testimonial.name}
-              </span>
+              <div className="flex flex-col items-center space-y-2">
+                <img
+                  src={testimonial.avatarUrl}
+                  alt={testimonial.name}
+                  className={`w-12 h-12 rounded-full object-cover border-2 transition-all duration-300 ${activeIndex === index ? 'border-orange-500 scale-110' : 'border-transparent'}`}
+                  style={{borderColor: activeIndex === index ? '#FF7F50' : 'transparent'}}
+                />
+                <span className={`font-semibold text-sm text-center ${activeIndex === index ? 'text-slate-800' : 'text-gray-500'}`} style={{color: activeIndex === index ? '#2F4F4F' : ''}}>
+                  {testimonial.name}
+                </span>
+              </div>
             </button>
           ))}
         </div>

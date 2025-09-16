@@ -33,9 +33,16 @@ const PositionSizeCalculator: React.FC = () => {
         const riskAmount = balance * (risk / 100);
 
         let pipValue = 0;
-        const pipSize = currencyPair.includes('JPY') ? 0.01 : 0.0001;
         const [baseCurrency, quoteCurrency] = currencyPair.split('/');
-        const lotSize = 100000; // Standard Lot
+        let pipSize, lotSize;
+        
+        if (currencyPair === 'XAU/USD') {
+            pipSize = 0.01; // For gold, 1 pip = 0.01
+            lotSize = 100; // Gold standard lot is 100 oz
+        } else {
+            pipSize = currencyPair.includes('JPY') ? 0.01 : 0.0001;
+            lotSize = 100000; // Standard currency lot
+        }
 
         if (quoteCurrency === accountCurrency) {
             pipValue = pipSize * lotSize / 1; // Simplified for direct pairs
@@ -69,7 +76,7 @@ const PositionSizeCalculator: React.FC = () => {
     const formInputStyle = "w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow shadow-sm";
     const formLabelStyle = "block text-sm font-medium text-gray-700 mb-1";
     
-    const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CAD', 'AUD/USD', 'NZD/USD'];
+    const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CAD', 'AUD/USD', 'NZD/USD', 'XAU/USD'];
     const accountCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF'];
 
     return (

@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 import LanguageSelector from './LanguageSelector';
-import ThemeToggle from './ThemeToggle';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,7 +45,7 @@ const Header: React.FC = () => {
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isReaderMode 
-          ? 'bg-white dark:bg-gray-900 shadow-sm' 
+          ? 'bg-white shadow-sm' 
           : 'bg-slate-800 shadow-md'
       } ${
         isReaderMode && isScrolled ? 'py-2' : 'py-4'
@@ -97,7 +96,6 @@ const Header: React.FC = () => {
                 {isAuthenticated ? (
                   <>
                     <div className="flex items-center space-x-2">
-                      <ThemeToggle />
                       <LanguageSelector />
                     </div>
                     <span className="text-white text-sm">{t('welcome')}, {user?.name}!</span>

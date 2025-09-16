@@ -5,6 +5,8 @@ import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import ReadingProgressBar from '../components/ReadingProgressBar';
+import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
 
@@ -111,8 +113,10 @@ const SummaryDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-6xl mx-auto">
-      {book && (
+    <>
+      <ReadingProgressBar />
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-6xl mx-auto">
+        {book && (
         <header className="mb-10 text-center border-b border-gray-200 pb-6">
           <h1 className="text-4xl sm:text-5xl font-bold mb-3" style={{ color: '#2F4F4F' }}>{getBookTitle(book.id)}</h1>
           <p className="text-xl text-gray-600">by {getBookAuthor(book.id)}</p>
@@ -159,25 +163,77 @@ const SummaryDetailPage: React.FC = () => {
                 </svg>
 {t('detailedSummary') || 'Detailed Summary'}
               </h2>
-              {typeof window.speechSynthesis !== 'undefined' && (
+              <div className="flex items-center space-x-4">
                 <button
-                  onClick={handleToggleSpeech}
-                  className="flex items-center space-x-2 px-6 py-3 rounded-full text-white font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
-                  style={{ backgroundColor: isSpeaking ? '#DC2626' : '#FF7F50' }}
-                  aria-label={isSpeaking ? "Stop listening" : "Listen to summary"}
+                  onClick={() => {
+                    if (!book || !summaryData) return;
+                    
+                    const doc = new jsPDF();
+                    const title = getBookTitle(book.id);
+                    const author = getBookAuthor(book.id);
+                    
+                    // Set title font and size
+                    doc.setFontSize(24);
+                    doc.text(title, 20, 20);
+                    
+                    // Add author
+                    doc.setFontSize(16);
+                    doc.text(`by ${author}`, 20, 30);
+                    
+                    // Add key takeaways
+                    doc.setFontSize(18);
+                    doc.text('Key Takeaways:', 20, 45);
+                    doc.setFontSize(12);
+                    
+                    let yPos = 55;
+                    summaryData.keyTakeaways.forEach((takeaway, index) => {
+                      const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
+                      doc.text(lines, 20, yPos);
+                      yPos += 10 * lines.length;
+                    });
+                    
+                    // Add detailed summary
+                    doc.setFontSize(18);
+                    yPos += 10;
+                    doc.text('Detailed Summary:', 20, yPos);
+                    doc.setFontSize(12);
+                    yPos += 10;
+                    
+                    const summaryLines = doc.splitTextToSize(summaryData.summary, 170);
+                    doc.text(summaryLines, 20, yPos);
+                    
+                    doc.save(`${title} - Summary.pdf`);
+                  }}
+                  className="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 hover:bg-opacity-90 text-white"
+                  style={{ backgroundColor: '#2F4F4F' }}
+                  aria-label="Download summary as PDF"
                 >
-                  {isSpeaking ? (
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  <span>{t('pdf') || 'PDF'}</span>
+                </button>
+
+                {typeof window.speechSynthesis !== 'undefined' && (
+                  <button
+                    onClick={handleToggleSpeech}
+                    className="flex items-center space-x-2 px-6 py-3 rounded-full text-white font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+                    style={{ backgroundColor: isSpeaking ? '#DC2626' : '#FF7F50' }}
+                    aria-label={isSpeaking ? "Stop listening" : "Listen to summary"}
+                  >
+                    {isSpeaking ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                  ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
                       </svg>
-                  )}
-                  <span>{isSpeaking ? (t('stop') || 'Stop') : (t('listen') || 'Listen')}</span>
-                </button>
-              )}
+                    )}
+                    <span>{isSpeaking ? (t('stop') || 'Stop') : (t('listen') || 'Listen')}</span>
+                  </button>
+                )}
+              </div>
             </div>
             <div className="p-6 md:p-8 bg-gradient-to-br from-gray-50 to-white rounded-lg">
               <div className="prose prose-lg max-w-none">
@@ -189,7 +245,8 @@ const SummaryDetailPage: React.FC = () => {
           </div>
         </article>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
