@@ -1,14 +1,40 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useReaderMode } from '../contexts/ReaderModeContext';
 import LanguageSelector from './LanguageSelector';
+import ThemeToggle from './ThemeToggle';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { t } = useLanguage();
+  const { isReaderMode } = useReaderMode();
+
+  // Handle scroll effect for header
+  useEffect(() => {
+    if (!isReaderMode) return;
+    
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 20;
+      if (scrolled !== isScrolled) {
+        setIsScrolled(scrolled);
+        
+        // Toggle scrolled class on body for reader mode
+        if (scrolled) {
+          document.body.classList.add('scrolled');
+        } else {
+          document.body.classList.remove('scrolled');
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isScrolled, isReaderMode]);
 
   const linkStyle = "text-white hover:text-orange-400 transition-colors duration-300 px-3 py-2 rounded-md text-sm font-medium";
   const activeLinkStyle = {
@@ -17,7 +43,16 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-slate-800 shadow-md sticky top-0 z-50" style={{ backgroundColor: '#2F4F4F' }}>
+    <header 
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isReaderMode 
+          ? 'bg-white dark:bg-gray-900 shadow-sm' 
+          : 'bg-slate-800 shadow-md'
+      } ${
+        isReaderMode && isScrolled ? 'py-2' : 'py-4'
+      }`}
+      style={!isReaderMode ? { backgroundColor: '#2F4F4F' } : {}}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -36,7 +71,9 @@ const Header: React.FC = () => {
                   }}
                   onLoad={() => console.log('Logo loaded successfully')}
                 />
-                <span className="text-2xl font-bold text-white">
+                <span className={`text-2xl font-bold ${
+                  isReaderMode ? 'text-gray-900 dark:text-white' : 'text-white'
+                } logo-text`}>
                   BookBriefs
                 </span>
               </NavLink>
@@ -59,7 +96,10 @@ const Header: React.FC = () => {
              <div className="hidden md:flex items-center space-x-4">
                 {isAuthenticated ? (
                   <>
-                    <LanguageSelector />
+                    <div className="flex items-center space-x-2">
+                      <ThemeToggle />
+                      <LanguageSelector />
+                    </div>
                     <span className="text-white text-sm">{t('welcome')}, {user?.name}!</span>
                     <button
                       onClick={logout}
