@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
       {/* Banner Image */}
       <div className="w-full">
         <img 
-          src="/images/Website banner bookbriefs 4.png" 
+          src="/images/Website banner bookbriefs 5.png" 
           alt="BookBriefs Banner" 
           className="w-full h-auto object-cover"
         />
