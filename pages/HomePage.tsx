@@ -15,7 +15,7 @@ const HomePage: React.FC = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/images/Website banner bookbriefs 2.png" 
+            src="/images/Website banner bookbriefs 3.png" 
             alt="BookBriefs Background"
             className="w-full h-full object-cover"
           />
