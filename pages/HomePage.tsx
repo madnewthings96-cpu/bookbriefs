@@ -5,6 +5,7 @@ import { TESTIMONIALS } from '../constants';
 import Testimonials from '../components/Testimonials';
 import PersonalizedRecommendations from '../components/PersonalizedRecommendations';
 import Newsletter from '../components/Newsletter';
+import Categories from '../components/Categories';
 
 const HomePage: React.FC = () => {
 
@@ -40,13 +41,17 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Categories Section */}
+      <section className="py-16 bg-gray-50">
+        <Categories />
+      </section>
+
       {/* Personalized Recommendations */}
       <section className="py-8">
         <div className="container mx-auto">
           <PersonalizedRecommendations />
         </div>
       </section>
-
 
       {/* Testimonials Section */}
       <section className="bg-gray-100 py-16">

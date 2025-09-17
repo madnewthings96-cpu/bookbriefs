@@ -4,6 +4,7 @@ export type Language = 'en' | 'ar' | 'fr' | 'es';
 
 interface LanguageContextType {
   currentLanguage: Language;
+  language: Language;
   setLanguage: (language: Language) => void;
   t: (key: string) => string;
   getBookTitle: (bookId: string) => string;
@@ -397,10 +398,31 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     // Set document direction for Arabic
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
+
+    // Set text alignment based on language
+    if (language === 'ar') {
+      document.body.classList.add('rtl');
+      document.body.style.textAlign = 'right';
+    } else {
+      document.body.classList.remove('rtl');
+      document.body.style.textAlign = 'left';
+    }
+
+    // Trigger a re-render of the app
+    window.dispatchEvent(new Event('languagechange'));
   };
 
   const t = (key: string): string => {
-    return translations[currentLanguage][key as keyof typeof translations['en']] || key;
+    const translation = translations[currentLanguage];
+    if (!translation) return key;
+
+    const value = translation[key as keyof typeof translations['en']];
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object' && value !== null) {
+      // For nested objects like bookTitles and bookAuthors
+      return JSON.stringify(value);
+    }
+    return key;
   };
 
   const getBookTitle = (bookId: string): string => {
@@ -415,6 +437,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   const value: LanguageContextType = {
     currentLanguage,
+    language: currentLanguage,
     setLanguage,
     t,
     getBookTitle,

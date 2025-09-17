@@ -23,12 +23,12 @@ const LanguageSelector: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 text-white hover:text-orange-400 transition-colors duration-300 px-3 py-2 rounded-md text-sm font-medium"
+        className="flex items-center text-white hover:text-orange-400 transition-colors duration-300 px-3 py-2 rounded-md text-lg"
+        aria-label={`Select language. Current: ${currentLang?.name}`}
       >
-        <span>{currentLang?.flag}</span>
-        <span>{currentLang?.name}</span>
+        <span className="transform hover:scale-110 transition-transform">{currentLang?.flag}</span>
         <svg 
-          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+          className={`w-4 h-4 ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -38,20 +38,19 @@ const LanguageSelector: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+        <div className="absolute right-0 mt-2 py-1 bg-white rounded-md shadow-lg z-50 border border-gray-200">
           {languages.map((language) => (
             <button
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center space-x-2 ${
-                currentLanguage === language.code ? 'bg-orange-50 text-orange-600' : 'text-gray-700'
+              className={`w-full px-4 py-2 text-lg hover:bg-gray-100 flex items-center justify-center ${
+                currentLanguage === language.code ? 'bg-orange-50' : ''
               }`}
+              aria-label={language.name}
             >
-              <span>{language.flag}</span>
-              <span>{language.name}</span>
-              {currentLanguage === language.code && (
-                <span className="ml-auto text-orange-500">✓</span>
-              )}
+              <span className="transform hover:scale-110 transition-transform">
+                {language.flag}
+              </span>
             </button>
           ))}
         </div>

@@ -116,6 +116,42 @@
     background-color: #ffffff;
     color: #111827;
   }
+
+  /* RTL Support */
+  body.rtl {
+    direction: rtl;
+    text-align: right;
+  }
+
+  body.rtl .prose {
+    direction: rtl;
+    text-align: right;
+  }
+
+  body.rtl .prose blockquote {
+    border-right: 0.25rem solid #FF7F50;
+    border-left: none;
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+
+  body.rtl .prose ul,
+  body.rtl .prose ol {
+    padding-right: 1.625em;
+    padding-left: 0;
+  }
+
+  body.rtl .flex-row {
+    flex-direction: row-reverse;
+  }
+
+  body.rtl .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  body.rtl .space-x-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
   
   h1, h2, h3, h4, h5, h6 {
     color: #111827;

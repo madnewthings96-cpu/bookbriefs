@@ -69,9 +69,19 @@ const SummaryDetailPage: React.FC = () => {
       setError(t('bookNotFound') || "Book not found.");
       setLoading(false);
     }
+
+    // Listen for language changes
+    const handleLanguageChange = () => {
+      if (currentBook) {
+        fetchSummary(currentBook);
+      }
+    };
+
+    window.addEventListener('languagechange', handleLanguageChange);
     
-    // Cleanup speech synthesis on component unmount
+    // Cleanup speech synthesis and event listener on component unmount
     return () => {
+      window.removeEventListener('languagechange', handleLanguageChange);
       if (window.speechSynthesis.speaking) {
         window.speechSynthesis.cancel();
       }
@@ -164,6 +174,67 @@ const SummaryDetailPage: React.FC = () => {
 {t('detailedSummary') || 'Detailed Summary'}
               </h2>
               <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:space-x-4">
+                <button
+                  onClick={() => {
+                    if (!book || !summaryData) return;
+                    
+                    // Get Arabic translation
+                    const arabicSummary = getBookSummaryTranslation(book.id, 'ar');
+                    if (!arabicSummary) return;
+
+                    const doc = new jsPDF({
+                      orientation: 'p',
+                      unit: 'mm',
+                      format: 'a4',
+                      putOnlyUsedFonts: true
+                    });
+
+                    // Set RTL mode for Arabic
+                    doc.setR2L(true);
+                    
+                    const title = arabicSummary ? getBookTitle(book.id) : book.title;
+                    const author = getBookAuthor(book.id);
+                    
+                    // Create the PDF
+                    doc.setFontSize(24);
+                    doc.text(title, 190, 20, { align: 'right' });
+                    
+                    doc.setFontSize(16);
+                    doc.text(`${author} :تأليف`, 190, 30, { align: 'right' });
+                    
+                    doc.setFontSize(18);
+                    doc.text('النقاط الرئيسية:', 190, 45, { align: 'right' });
+                    doc.setFontSize(12);
+                    
+                    let yPos = 55;
+                    arabicSummary.keyTakeaways.forEach((takeaway) => {
+                      const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
+                      doc.text(lines, 190, yPos, { align: 'right' });
+                      yPos += 10 * lines.length;
+                    });
+                    
+                    doc.setFontSize(18);
+                    yPos += 10;
+                    doc.text('الملخص التفصيلي:', 190, yPos, { align: 'right' });
+                    doc.setFontSize(12);
+                    yPos += 10;
+                    
+                    const summaryLines = doc.splitTextToSize(arabicSummary.summary, 170);
+                    doc.text(summaryLines, 190, yPos, { align: 'right' });
+                    
+                    // Open in new tab
+                    const pdfOutput = doc.output('datauristring');
+                    window.open(pdfOutput, '_blank');
+                  }}
+                  className="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 hover:bg-opacity-90 text-white"
+                  style={{ backgroundColor: '#4CAF50' }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Arabic PDF</span>
+                </button>
+
                 <button
                   onClick={() => {
                     if (!book || !summaryData) return;
