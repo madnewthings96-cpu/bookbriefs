@@ -77,7 +77,7 @@ const PositionSizeCalculator: React.FC = () => {
     const formLabelStyle = "block text-sm font-medium text-gray-700 mb-1";
     
     const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CAD', 'AUD/USD', 'NZD/USD', 'XAU/USD'];
-    const accountCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF'];
+    const accountCurrencies = ['USD'];
 
     return (
         <div>
@@ -140,8 +140,8 @@ const PositionSizeCalculator: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center pt-2">
                         <div>
-                            <p className="font-bold text-lg" style={{color: '#FF7F50'}}>{result.standardLots.toFixed(2)}</p>
-                            <p className="text-sm text-gray-600">Standard Lots</p>
+                            <p className="font-bold text-2xl" style={{color: '#FF7F50'}}>{result.standardLots.toFixed(2)}</p>
+                            <p className="text-sm text-gray-600 font-semibold">Standard Lots</p>
                         </div>
                          <div>
                             <p className="font-bold text-lg" style={{color: '#FF7F50'}}>{result.miniLots.toFixed(2)}</p>

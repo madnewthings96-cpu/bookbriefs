@@ -102,14 +102,17 @@ const Header: React.FC = () => {
 
   return (
     <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-sm ${
         isReaderMode 
-          ? 'bg-white shadow-sm' 
-          : 'bg-slate-800 shadow-md'
+          ? 'bg-white/90 shadow-sm' 
+          : 'shadow-md'
       } ${
         isReaderMode && isScrolled ? 'py-2' : 'py-4'
       }`}
-      style={!isReaderMode ? { backgroundColor: '#2F4F4F' } : {}}
+      style={!isReaderMode ? { 
+        background: 'linear-gradient(to right, #2F4F4F, #1a2f2f)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+      } : {}}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -168,11 +171,11 @@ const Header: React.FC = () => {
                     }, 200);
                   }}
                   placeholder={t('searchPlaceholder') || 'Search book summaries...'}
-                  className={`w-full px-4 py-2 pl-10 pr-4 rounded-lg border ${
+                  className={`w-full px-4 py-3 pl-10 pr-12 rounded-full border-2 ${
                     isReaderMode 
-                      ? 'border-gray-300 focus:border-orange-400 bg-white text-gray-900' 
-                      : 'border-gray-600 focus:border-orange-400 bg-slate-700 text-white'
-                  } focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50 transition-all duration-300`}
+                      ? 'border-gray-200 focus:border-orange-400 bg-white/80 text-gray-900 hover:bg-white' 
+                      : 'border-gray-600 focus:border-orange-400 bg-slate-700/80 text-white hover:bg-slate-700'
+                  } focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50 transition-all duration-300 shadow-sm hover:shadow-md`}
                 />
                 {(isSearchFocused && searchQuery.trim() !== '') && (
                   <SearchResults
@@ -201,6 +204,16 @@ const Header: React.FC = () => {
             </form>
           </div>
           <div className="flex items-center">
+            <div className="mr-4 relative group">
+              <button className="text-white hover:text-orange-400 transition-colors duration-300">
+                <div className="relative">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-orange-500 rounded-full flex items-center justify-center text-xs text-white">2</span>
+                </div>
+              </button>
+            </div>
              <div className="hidden md:flex items-center space-x-4">
                 {isAuthenticated ? (
                   <>
@@ -222,8 +235,7 @@ const Header: React.FC = () => {
                     </NavLink>
                     <NavLink
                         to="/signup"
-                        className="text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity duration-300 text-sm"
-                        style={{ backgroundColor: '#FF7F50' }}
+                        className="text-white font-bold py-2 px-6 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-300 text-sm shadow-md hover:shadow-lg"
                     >
                         {t('signup')}
                     </NavLink>

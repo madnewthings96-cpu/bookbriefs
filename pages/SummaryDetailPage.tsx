@@ -6,13 +6,18 @@ import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import ReadingProgressBar from '../components/ReadingProgressBar';
+import NotesAndHighlightsPanel from '../components/NotesAndHighlightsPanel';
+import AddNoteModal from '../components/AddNoteModal';
+import HighlightableText from '../components/HighlightableText';
 import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
+import { useAuth } from '../contexts/AuthContext';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
+  const { isAuthenticated } = useAuth();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,6 +25,9 @@ const SummaryDetailPage: React.FC = () => {
   
   const [isSpeaking, setIsSpeaking] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Personal Notes & Highlights state
+  const [showAddNoteModal, setShowAddNoteModal] = useState(false);
 
 
   const fetchSummary = useCallback((currentBook: Book) => {
@@ -175,147 +183,110 @@ const SummaryDetailPage: React.FC = () => {
               </h2>
               <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:space-x-4">
                 <button
-                  onClick={() => {
-                    if (!book || !summaryData) return;
-                    
-                    // Get Arabic translation
-                    const arabicSummary = getBookSummaryTranslation(book.id, 'ar');
-                    if (!arabicSummary) return;
-
-                    const doc = new jsPDF({
-                      orientation: 'p',
-                      unit: 'mm',
-                      format: 'a4',
-                      putOnlyUsedFonts: true
-                    });
-
-                    // Set RTL mode for Arabic
-                    doc.setR2L(true);
-                    
-                    const title = arabicSummary ? getBookTitle(book.id) : book.title;
-                    const author = getBookAuthor(book.id);
-                    
-                    // Create the PDF
-                    doc.setFontSize(24);
-                    doc.text(title, 190, 20, { align: 'right' });
-                    
-                    doc.setFontSize(16);
-                    doc.text(`${author} :تأليف`, 190, 30, { align: 'right' });
-                    
-                    doc.setFontSize(18);
-                    doc.text('النقاط الرئيسية:', 190, 45, { align: 'right' });
-                    doc.setFontSize(12);
-                    
-                    let yPos = 55;
-                    arabicSummary.keyTakeaways.forEach((takeaway) => {
-                      const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
-                      doc.text(lines, 190, yPos, { align: 'right' });
-                      yPos += 10 * lines.length;
-                    });
-                    
-                    doc.setFontSize(18);
-                    yPos += 10;
-                    doc.text('الملخص التفصيلي:', 190, yPos, { align: 'right' });
-                    doc.setFontSize(12);
-                    yPos += 10;
-                    
-                    const summaryLines = doc.splitTextToSize(arabicSummary.summary, 170);
-                    doc.text(summaryLines, 190, yPos, { align: 'right' });
-                    
-                    // Open in new tab
-                    const pdfOutput = doc.output('datauristring');
-                    window.open(pdfOutput, '_blank');
-                  }}
-                  className="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 hover:bg-opacity-90 text-white"
-                  style={{ backgroundColor: '#4CAF50' }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <span>Arabic PDF</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (!book || !summaryData) return;
-                    
-                    const doc = new jsPDF();
-                    const title = getBookTitle(book.id);
-                    const author = getBookAuthor(book.id);
-                    
-                    // Set title font and size
-                    doc.setFontSize(24);
-                    doc.text(title, 20, 20);
-                    
-                    // Add author
-                    doc.setFontSize(16);
-                    doc.text(`by ${author}`, 20, 30);
-                    
-                    // Add key takeaways
-                    doc.setFontSize(18);
-                    doc.text('Key Takeaways:', 20, 45);
-                    doc.setFontSize(12);
-                    
-                    let yPos = 55;
-                    summaryData.keyTakeaways.forEach((takeaway, index) => {
-                      const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
-                      doc.text(lines, 20, yPos);
-                      yPos += 10 * lines.length;
-                    });
-                    
-                    // Add detailed summary
-                    doc.setFontSize(18);
-                    yPos += 10;
-                    doc.text('Detailed Summary:', 20, yPos);
-                    doc.setFontSize(12);
-                    yPos += 10;
-                    
-                    const summaryLines = doc.splitTextToSize(summaryData.summary, 170);
-                    doc.text(summaryLines, 20, yPos);
-                    
-                    doc.save(`${title} - Summary.pdf`);
-                  }}
-                  className="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 hover:bg-opacity-90 text-white"
+                  onClick={() => setShowAddNoteModal(true)}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-white"
                   style={{ backgroundColor: '#2F4F4F' }}
-                  aria-label="Download summary as PDF"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>{t('pdf') || 'PDF'}</span>
+                  <span>{t('addNote') || 'Add Note'}</span>
                 </button>
-
-                {typeof window.speechSynthesis !== 'undefined' && (
+                {isAuthenticated ? (
                   <button
-                    onClick={handleToggleSpeech}
-                    className="flex items-center space-x-2 px-6 py-3 rounded-full text-white font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105"
-                    style={{ backgroundColor: isSpeaking ? '#DC2626' : '#FF7F50' }}
-                    aria-label={isSpeaking ? "Stop listening" : "Listen to summary"}
+                    onClick={() => {
+                      if (!book || !summaryData) return;
+
+                      // Get Arabic translation
+                      const arabicSummary = getBookSummaryTranslation(book.id, 'ar');
+                      if (!arabicSummary) return;
+
+                      const doc = new jsPDF({
+                        orientation: 'p',
+                        unit: 'mm',
+                        format: 'a4',
+                        putOnlyUsedFonts: true
+                      });
+
+                      // Set RTL mode for Arabic
+                      doc.setR2L(true);
+
+                      const title = arabicSummary ? getBookTitle(book.id) : book.title;
+                      const author = getBookAuthor(book.id);
+
+                      // Create the PDF
+                      doc.setFontSize(24);
+                      doc.text(title, 190, 20, { align: 'right' });
+
+                      doc.setFontSize(16);
+                      doc.text(`${author} :تأليف`, 190, 30, { align: 'right' });
+
+                      doc.setFontSize(18);
+                      doc.text('النقاط الرئيسية:', 190, 45, { align: 'right' });
+                      doc.setFontSize(12);
+
+                      let yPos = 55;
+                      arabicSummary.keyTakeaways.forEach((takeaway) => {
+                        const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
+                        doc.text(lines, 190, yPos, { align: 'right' });
+                        yPos += 10 * lines.length;
+                      });
+
+                      doc.setFontSize(18);
+                      yPos += 10;
+                      doc.text('الملخص التفصيلي:', 190, yPos, { align: 'right' });
+                      doc.setFontSize(12);
+                      yPos += 10;
+
+                      const summaryLines = doc.splitTextToSize(arabicSummary.summary, 170);
+                      doc.text(summaryLines, 190, yPos, { align: 'right' });
+
+                      // Open in new tab
+                      const pdfOutput = doc.output('datauristring');
+                      window.open(pdfOutput, '_blank');
+                    }}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-white"
+                    style={{ backgroundColor: '#FF7F50' }}
                   >
-                    {isSpeaking ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-                      </svg>
-                    )}
-                    <span>{isSpeaking ? (t('stop') || 'Stop') : (t('listen') || 'Listen')}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Arabic PDF</span>
                   </button>
+                ) : (
+                  <div className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold text-gray-500 bg-gray-100 cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Arabic PDF (Login Required)</span>
+                  </div>
                 )}
               </div>
             </div>
             <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-gray-50 to-white rounded-lg">
               <div className="prose prose-sm sm:prose lg:prose-lg max-w-none">
                 <div className="space-y-4 sm:space-y-6 text-gray-700 leading-relaxed text-base sm:text-lg">
-                  <MarkdownRenderer content={summaryData.summary} />
+                  <HighlightableText bookId={bookId || ''}>
+                    <MarkdownRenderer content={summaryData.summary} />
+                  </HighlightableText>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Personal Notes & Highlights Section */}
+          <div className="mt-12">
+            <NotesAndHighlightsPanel bookId={bookId || ''} />
+          </div>
         </article>
       )}
+
+      {/* Add Note Modal */}
+      <AddNoteModal
+        bookId={bookId || ''}
+        isOpen={showAddNoteModal}
+        onClose={() => setShowAddNoteModal(false)}
+      />
       </div>
     </>
   );

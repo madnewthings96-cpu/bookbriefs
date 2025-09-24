@@ -11,7 +11,7 @@ export interface SummaryData {
 }
 
 export interface BookSummary {
-  id: number;
+  id: string;
   title: string;
   author: string;
   coverImageUrl: string;
@@ -33,4 +33,26 @@ export interface Testimonial {
   name: string;
   quote: string;
   avatarUrl: string;
+}
+
+export interface PersonalNote {
+  id: string;
+  bookId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Highlight {
+  id: string;
+  bookId: string;
+  text: string;
+  context?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PersonalNotesData {
+  notes: PersonalNote[];
+  highlights: Highlight[];
 }

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { BOOKS } from '../constants';
+import { BOOKS, BOOK_SUMMARIES } from '../constants';
 import BookCard from '../components/BookCard';
 
 const SummariesPage: React.FC = () => {
@@ -10,7 +10,12 @@ const SummariesPage: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredBooks = BOOKS.filter(book =>
+  // Only show books that have summaries available
+  const booksWithSummaries = BOOKS.filter(book =>
+    BOOK_SUMMARIES.some(summary => summary.id === book.id)
+  );
+
+  const filteredBooks = booksWithSummaries.filter(book =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.author.toLowerCase().includes(searchQuery.toLowerCase())
   );

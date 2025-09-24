@@ -46,6 +46,11 @@ const HomePage: React.FC = () => {
         <Categories />
       </section>
 
+      {/* Newsletter Section */}
+      <section className="py-16 bg-white">
+        <Newsletter />
+      </section>
+
       {/* Personalized Recommendations */}
       <section className="py-8">
         <div className="container mx-auto">
