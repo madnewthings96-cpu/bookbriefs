@@ -5,25 +5,35 @@ const AboutPage: React.FC = () => {
   return (
     <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-center mb-6" style={{ color: '#2F4F4F' }}>
-        About BookBriefs
+        About Ta7leel
       </h1>
       <div className="prose max-w-none text-gray-800 leading-relaxed space-y-6">
         <p>
-          In a world overflowing with information, finding the time to read and absorb the knowledge from groundbreaking books can be a challenge. That's where <strong>BookBriefs</strong> comes in. Our mission is to unlock the big ideas from the world's best non-fiction books, making them accessible to everyone, everywhere.
+          In the modern world, we are drowning in information but starved for wisdom. The path to financial mastery and personal growth is buried under an avalanche of get-rich-quick schemes, fleeting motivational quotes, and overly complex advice. We believe there is a better way.
         </p>
         <p>
-          We believe in the power of ideas to change lives, and we're passionate about learning and personal growth. However, we also understand the constraints of a busy schedule. BookBriefs was created for the curious minds who want to learn faster and more efficiently.
-        </p>
-        <h2 className="text-2xl font-bold mt-8" style={{ color: '#2F4F4F' }}>How It Works</h2>
-        <p>
-          Using the power of advanced Artificial Intelligence, specifically Google's Gemini models, we distill lengthy books into concise, easy-to-digest summaries and key takeaways. We focus on capturing the core essence of each book, so you can grasp the main concepts in minutes, not hours.
-        </p>
-        <h2 className="text-2xl font-bold mt-8" style={{ color: '#2F4F4F' }}>Our Vision</h2>
-        <p>
-          Our vision is to build a vibrant community of lifelong learners. We aim to be your trusted companion on your journey of knowledge and self-improvement. Whether you're a student, a professional, an entrepreneur, or simply someone with a thirst for knowledge, BookBriefs is here to help you unlock big ideas, faster.
+          I became obsessed with the minds of legendary traders, psychologists, and habit-building experts. I read everything I could get my hands on—from Mark Douglas's Trading in the Zone to James Clear's Atomic Habits. The answers were all there, but they were scattered across thousands of pages.
         </p>
         <p>
-          Thank you for joining us on this journey. Happy learning!
+          Ta7leel (تحليل) was founded on a single, powerful principle: to distill. We cut through the noise to bring you the essential, time-tested ideas from the world's greatest thinkers in finance, psychology, and self-development.
+        </p>
+        <p>
+          Our journey began in the trading trenches, where we learned a hard lesson: success isn't about finding a secret indicator or a magic formula. It's about building a robust mental framework, mastering your psychology, and consistently applying proven systems. The best source for these systems? The hundreds of books written by masters who have already walked the path.
+        </p>
+        <p>
+          But who has the time to read them all?
+        </p>
+        <p>
+          That's where we come in.
+        </p>
+        <p>
+          Every summary on Ta7leel is more than just a summary; it's a distillation of actionable wisdom. We extract the core principles and key takeaways that you can apply immediately to your life and your trading. We complement this knowledge with practical, no-nonsense tools—like our position size calculator—designed to help you manage risk and trade with discipline.
+        </p>
+        <p>
+          We are not here to offer you hype. We are here to offer you clarity. Our mission is to provide you with the distilled knowledge and essential tools you need to get serious about your growth.
+        </p>
+        <p>
+          Welcome to Ta7leel. Let's start building your edge, together.
         </p>
       </div>
     </div>

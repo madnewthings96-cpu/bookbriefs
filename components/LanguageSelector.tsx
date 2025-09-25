@@ -6,10 +6,7 @@ const LanguageSelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const languages = [
-    { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
-    { code: 'ar' as Language, name: 'العربية', flag: '🇸🇦' },
-    { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' },
-    { code: 'es' as Language, name: 'Español', flag: '🇪🇸' }
+    { code: 'en' as Language, name: 'English', flag: '🇺🇸' }
   ];
 
   const currentLang = languages.find(lang => lang.code === currentLanguage);
@@ -18,6 +15,11 @@ const LanguageSelector: React.FC = () => {
     setLanguage(language);
     setIsOpen(false);
   };
+
+  // Hide language selector if there's only one language
+  if (languages.length <= 1) {
+    return null;
+  }
 
   return (
     <div className="relative">

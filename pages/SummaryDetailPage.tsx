@@ -197,10 +197,7 @@ const SummaryDetailPage: React.FC = () => {
                     onClick={() => {
                       if (!book || !summaryData) return;
 
-                      // Get Arabic translation
-                      const arabicSummary = getBookSummaryTranslation(book.id, 'ar');
-                      if (!arabicSummary) return;
-
+                      // Use English content for Arabic-style PDF since Arabic translations were removed
                       const doc = new jsPDF({
                         orientation: 'p',
                         unit: 'mm',
@@ -208,25 +205,25 @@ const SummaryDetailPage: React.FC = () => {
                         putOnlyUsedFonts: true
                       });
 
-                      // Set RTL mode for Arabic
+                      // Set RTL mode for Arabic-style layout
                       doc.setR2L(true);
 
-                      const title = arabicSummary ? getBookTitle(book.id) : book.title;
+                      const title = getBookTitle(book.id);
                       const author = getBookAuthor(book.id);
 
-                      // Create the PDF
+                      // Create the PDF with Arabic-style layout
                       doc.setFontSize(24);
                       doc.text(title, 190, 20, { align: 'right' });
 
                       doc.setFontSize(16);
-                      doc.text(`${author} :تأليف`, 190, 30, { align: 'right' });
+                      doc.text(`By: ${author}`, 190, 30, { align: 'right' });
 
                       doc.setFontSize(18);
-                      doc.text('النقاط الرئيسية:', 190, 45, { align: 'right' });
+                      doc.text('Key Takeaways:', 190, 45, { align: 'right' });
                       doc.setFontSize(12);
 
                       let yPos = 55;
-                      arabicSummary.keyTakeaways.forEach((takeaway) => {
+                      summaryData.keyTakeaways.forEach((takeaway) => {
                         const lines = doc.splitTextToSize(`• ${takeaway}`, 170);
                         doc.text(lines, 190, yPos, { align: 'right' });
                         yPos += 10 * lines.length;
@@ -234,11 +231,11 @@ const SummaryDetailPage: React.FC = () => {
 
                       doc.setFontSize(18);
                       yPos += 10;
-                      doc.text('الملخص التفصيلي:', 190, yPos, { align: 'right' });
+                      doc.text('Detailed Summary:', 190, yPos, { align: 'right' });
                       doc.setFontSize(12);
                       yPos += 10;
 
-                      const summaryLines = doc.splitTextToSize(arabicSummary.summary, 170);
+                      const summaryLines = doc.splitTextToSize(summaryData.summary, 170);
                       doc.text(summaryLines, 190, yPos, { align: 'right' });
 
                       // Open in new tab
@@ -265,7 +262,7 @@ const SummaryDetailPage: React.FC = () => {
             </div>
             <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-gray-50 to-white rounded-lg">
               <div className="prose prose-sm sm:prose lg:prose-lg max-w-none">
-                <div className="space-y-4 sm:space-y-6 text-gray-700 leading-relaxed text-base sm:text-lg">
+                <div className="space-y-4 sm:space-y-6 text-gray-700 leading-relaxed text-sm sm:text-base">
                   <HighlightableText bookId={bookId || ''}>
                     <MarkdownRenderer content={summaryData.summary} />
                   </HighlightableText>

@@ -21,7 +21,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       elements.push(
         <p
           key={`p-${elements.length}`}
-          className={`text-gray-800 leading-relaxed md:leading-loose mb-5 ${rtl ? 'text-right' : 'text-left'}`}
+          className={`text-gray-800 leading-relaxed md:leading-loose mb-5 text-sm sm:text-base ${rtl ? 'text-right' : 'text-left'}`}
           style={rtl ? { textAlign: 'justify', textJustify: 'inter-word' } : undefined}
         >
           {parseInlineMarkdown(paragraph)}
@@ -102,7 +102,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         elements.push(
           <ol
             key={`ol-${elements.length}`}
-            className={`list-decimal list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800`}
+            className={`list-decimal list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800 text-sm sm:text-base`}
           >
             {items}
           </ol>
@@ -125,7 +125,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         elements.push(
           <ul
             key={`ul-${elements.length}`}
-            className={`list-disc list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800`}
+            className={`list-disc list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800 text-sm sm:text-base`}
           >
             {items}
           </ul>

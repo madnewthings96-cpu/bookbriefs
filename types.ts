@@ -3,6 +3,7 @@ export interface Book {
   title: string;
   author: string;
   coverImageUrl: string;
+  category: string;
 }
 
 export interface SummaryData {
@@ -15,6 +16,7 @@ export interface BookSummary {
   title: string;
   author: string;
   coverImageUrl: string;
+  category: string;
   summary: string;
   keyTakeaways: string[];
   isPremium: boolean;

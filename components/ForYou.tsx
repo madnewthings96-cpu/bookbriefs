@@ -78,7 +78,7 @@ const ForYou: React.FC = () => {
               <p className="text-gray-600 text-sm mb-4">{book.author}</p>
               <div className="flex gap-2">
                 <Link
-                  to={`#/summary/${book.id}`}
+                  to={`/summary/${book.id}`}
                   className="flex-1 text-center text-white font-bold py-2 px-3 rounded-full transition-all duration-300 transform hover:scale-105 text-sm"
                   style={{ backgroundColor: 'rgb(255, 127, 80)' }}
                 >

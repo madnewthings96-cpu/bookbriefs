@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
 import Testimonials from '../components/Testimonials';
 import PersonalizedRecommendations from '../components/PersonalizedRecommendations';
-import Newsletter from '../components/Newsletter';
 import Categories from '../components/Categories';
 
 const HomePage: React.FC = () => {
@@ -29,7 +28,7 @@ const HomePage: React.FC = () => {
             Unlock Big Ideas, Faster.
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white drop-shadow-md">
-            BookBriefs uses AI to provide you with concise summaries and key takeaways from the world's best books. Spend less time reading and more time learning.
+            Unlock the essence of the world's greatest books with Bookbriefs. Get to the heart of powerful ideas fast, so you spend less time reading and more time applying what matters.
           </p>
           <Link
             to="/summaries"
@@ -44,11 +43,6 @@ const HomePage: React.FC = () => {
       {/* Categories Section */}
       <section className="py-16 bg-gray-50">
         <Categories />
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="py-16 bg-white">
-        <Newsletter />
       </section>
 
       {/* Personalized Recommendations */}

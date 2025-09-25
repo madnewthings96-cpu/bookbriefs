@@ -116,12 +116,23 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
   // Firebase auth state listener
   useEffect(() => {
+    // Set a timeout to ensure loading doesn't hang indefinitely
+    const timeoutId = setTimeout(() => {
+      console.warn('Firebase auth initialization timeout, proceeding without auth');
+      setLoading(false);
+    }, 10000); // 10 second timeout
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      clearTimeout(timeoutId); // Clear timeout since auth resolved
       setCurrentUser(user);
       
       if (user) {
-        await loadUserData(user);
-        await updateLastLogin(user);
+        try {
+          await loadUserData(user);
+          await updateLastLogin(user);
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
       } else {
         setUserData(null);
       }
@@ -129,7 +140,10 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, []);
 
   // Add book to favorites

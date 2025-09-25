@@ -1,36 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BOOKS } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
-// Book type definition
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  coverImageUrl: string;
-  description: string;
-  categories: string[];
-}
-
-// Sample books data with categories
-const books: Book[] = [
-  {
-    id: 'trading-in-the-zone',
-    title: 'Trading in the Zone',
-    author: 'Mark Douglas',
-    coverImageUrl: '/images/trading-in-the-zone.jpeg',
-    description: 'Master the market with confidence, discipline and a winning attitude.',
-    categories: ['finance', 'psychology']
-  },
-  {
-    id: 'atomic-habits',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    coverImageUrl: '/images/atomic-habits.jpg',
-    description: 'Tiny changes, remarkable results.',
-    categories: ['personal-development', 'psychology']
+// Map category strings to category IDs
+const getCategoryId = (category: string): string => {
+  switch (category) {
+    case 'Personal Development':
+      return 'personal-development';
+    case 'Psychology & Happiness':
+      return 'psychology';
+    case 'Management & Business':
+      return 'management';
+    case 'Finance & Investment':
+      return 'finance';
+    default:
+      return category.toLowerCase().replace(/\s+/g, '-');
   }
-  // Add more books here
-];
+};
 
 const categories = [
   {
@@ -52,34 +39,10 @@ const categories = [
     path: '/categories/management'
   },
   {
-    id: 'fiction',
-    title: 'Fiction Classics',
-    color: '#DDA0DD', // Purple
-    path: '/categories/fiction'
-  },
-  {
-    id: 'biography',
-    title: 'Biography & Memoir',
-    color: '#DEB887', // Brown
-    path: '/categories/biography'
-  },
-  {
     id: 'finance',
     title: 'Finance & Investments',
     color: '#FFD700', // Gold
     path: '/categories/finance'
-  },
-  {
-    id: 'society',
-    title: 'Society & Culture',
-    color: '#87CEEB', // Sky Blue
-    path: '/categories/society'
-  },
-  {
-    id: 'parenting',
-    title: 'Parenting & Education',
-    color: '#FFA07A', // Light Salmon
-    path: '/categories/parenting'
   },
   {
     id: 'art',
@@ -92,42 +55,16 @@ const categories = [
     title: 'Health & Sports',
     color: '#98FB98', // Pale Green
     path: '/categories/health'
-  },
-  {
-    id: 'nature',
-    title: 'Nature & Science',
-    color: '#87CEEB', // Sky Blue
-    path: '/categories/nature'
-  },
-  {
-    id: 'philosophy',
-    title: 'Philosophy & Religion',
-    color: '#98FB98', // Pale Green
-    path: '/categories/philosophy'
   }
 ];
 
-const Topics = [
-  { id: 'public-speaking', title: 'Public Speaking', icon: '🎤' },
-  { id: 'body-soul', title: 'Body & Soul', icon: '🧘‍♀️' },
-  { id: 'positive-thinking', title: 'Positive Thinking', icon: '💭' },
-  { id: 'career-development', title: 'Career Development', icon: '💼' },
-  { id: 'writing', title: 'Writing', icon: '✍️' },
-  { id: 'time-management', title: 'Time Management', icon: '⏰' },
-  { id: 'creativity', title: 'Creativity', icon: '🎨' },
-  { id: 'decision-making', title: 'Decision-making', icon: '🎯' },
-  { id: 'relationship', title: 'Relationship & Communication', icon: '💝' },
-  { id: 'money', title: 'Money & Investing', icon: '💰' },
-  { id: 'self-help', title: 'Self-Help', icon: '🌟' },
-  { id: 'must-read', title: 'Must-Read', icon: '📚' }
-];
-
 const Categories: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('finance');
+  const { getBookTitle, getBookAuthor } = useLanguage();
 
   // Filter books by selected category
   const filteredBooks = selectedCategory
-    ? books.filter(book => book.categories.includes(selectedCategory))
+    ? BOOKS.filter(book => getCategoryId(book.category) === selectedCategory)
     : [];
 
   return (
@@ -165,27 +102,40 @@ const Categories: React.FC = () => {
             {categories.find(cat => cat.id === selectedCategory)?.title} Books
           </h3>
           {filteredBooks.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredBooks.map((book) => (
-                <Link
-                  key={book.id}
-                  to={`/books/${book.id}`}
-                  className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-                >
-                  <div className="aspect-[2/3] relative overflow-hidden">
-                    <img
-                      src={book.coverImageUrl}
-                      alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-semibold text-lg mb-1 text-gray-900">{book.title}</h4>
-                    <p className="text-sm text-gray-600">{book.author}</p>
-                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">{book.description}</p>
-                  </div>
-                </Link>
-              ))}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {filteredBooks.map((book) => {
+                const translatedTitle = getBookTitle(book.id);
+                const translatedAuthor = getBookAuthor(book.id);
+                
+                return (
+                  <Link
+                    key={book.id}
+                    to={`/summary/${book.id}`}
+                    className="block group"
+                  >
+                    <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
+                      <div className="aspect-[3/4] overflow-hidden">
+                        <img
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          src={book.coverImageUrl}
+                          alt={`Cover of ${translatedTitle}`}
+                        />
+                      </div>
+                      <div className="p-3">
+                        <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors duration-300">
+                          {translatedTitle}
+                        </h3>
+                        <p className="text-xs text-gray-600 line-clamp-1">{translatedAuthor}</p>
+                        <div className="mt-2 flex items-center">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                            Summary
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -194,22 +144,6 @@ const Categories: React.FC = () => {
           )}
         </div>
       )}
-
-      {/* Topics Section */}
-      <div className="mb-12">
-        <div className="flex flex-wrap gap-3">
-          {Topics.map((topic) => (
-            <Link
-              key={topic.id}
-              to={`/topics/${topic.id}`}
-              className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-300"
-            >
-              <span>{topic.icon}</span>
-              <span className="text-gray-700 font-medium">{topic.title}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
