@@ -70,6 +70,8 @@ const SignUpPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Sign up error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
       
       // Handle specific Firebase errors
       switch (err.code) {
@@ -88,8 +90,11 @@ const SignUpPage: React.FC = () => {
         case 'auth/network-request-failed':
           setError('Network error. Please check your internet connection and try again.');
           break;
+        case 'auth/invalid-api-key':
+          setError('Invalid API configuration. Please contact support.');
+          break;
         default:
-          setError('Sign up failed. Please try again.');
+          setError(`Sign up failed: ${err.message || 'Please try again.'}`);
       }
     } finally {
       setIsLoading(false);
@@ -125,6 +130,8 @@ const SignUpPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Google sign up error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
       
       // Handle specific Google sign-in errors
       switch (err.code) {
@@ -143,8 +150,17 @@ const SignUpPage: React.FC = () => {
         case 'auth/too-many-requests':
           setError('Too many requests. Please try again later.');
           break;
+        case 'auth/unauthorized-domain':
+          setError('This domain is not authorized for Google sign-in. Please contact support.');
+          break;
+        case 'auth/operation-not-allowed':
+          setError('Google sign-in is not enabled for this app. Please contact support.');
+          break;
+        case 'auth/invalid-api-key':
+          setError('Invalid API configuration. Please contact support.');
+          break;
         default:
-          setError('Google sign-up failed. Please try again.');
+          setError(`Google sign-up failed: ${err.message || 'Please try again.'}`);
       }
     } finally {
       setIsGoogleLoading(false);

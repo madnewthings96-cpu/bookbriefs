@@ -159,7 +159,7 @@ const Header: React.FC = () => {
           </div>
 
           <div className="flex items-center flex-1 justify-center px-4">
-            <div className="relative flex items-center">
+            <div className="relative">
               {/* Search Toggle Button */}
               <button
                 onClick={() => {
@@ -187,16 +187,17 @@ const Header: React.FC = () => {
                 )}
               </button>
 
-              {/* Expandable Search Form */}
+              {/* Expandable Search Form - Now expands downward */}
               <form 
                 onSubmit={handleSearch} 
-                className={`absolute left-0 transition-all duration-300 ease-in-out ${
+                className={`absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out z-50 ${
                   isSearchExpanded 
-                    ? 'w-80 opacity-100 pointer-events-auto' 
-                    : 'w-10 opacity-0 pointer-events-none'
+                    ? 'opacity-100 pointer-events-auto translate-y-0' 
+                    : 'opacity-0 pointer-events-none -translate-y-2'
                 }`}
               >
-                <div className="relative ml-12">
+                <div className="relative w-80">
+                  {/* Search input with enhanced styling for dropdown */}
                   <input
                     ref={searchInputRef}
                     type="text"
@@ -211,14 +212,21 @@ const Header: React.FC = () => {
                       }, 200);
                     }}
                     placeholder={t('searchPlaceholder') || 'Search book summaries...'}
-                    className={`w-full pl-4 pr-12 py-3 rounded-xl border transition-all duration-300 ${
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border transition-all duration-300 ${
                       isReaderMode 
-                        ? 'border-gray-200 focus:border-orange-400 bg-white/95 text-gray-900 placeholder-gray-500' 
-                        : 'border-gray-600 focus:border-orange-400 bg-slate-800/95 text-white placeholder-gray-400'
-                    } focus:outline-none focus:ring-2 focus:ring-orange-400/50 shadow-lg backdrop-blur-sm
+                        ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500' 
+                        : 'border-gray-600 focus:border-orange-400 bg-slate-800 text-white placeholder-gray-400'
+                    } focus:outline-none focus:ring-2 focus:ring-orange-400/50 shadow-xl backdrop-blur-sm
                     text-sm font-medium`}
                   />
                   
+                  {/* Search icon inside input */}
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                    <svg className={`w-4 h-4 ${isReaderMode ? 'text-gray-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+
                   {/* Close button inside search */}
                   <button
                     type="button"
@@ -228,9 +236,9 @@ const Header: React.FC = () => {
                       setSearchResults([]);
                       setIsSearchFocused(false);
                     }}
-                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full 
-                      ${isReaderMode ? 'text-gray-400 hover:text-gray-600' : 'text-gray-400 hover:text-gray-200'}
-                      hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200`}
+                    className={`absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center
+                      ${isReaderMode ? 'text-gray-400 hover:text-gray-600 hover:bg-gray-100' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'}
+                      transition-colors duration-200`}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -251,16 +259,14 @@ const Header: React.FC = () => {
                     />
                   )}
 
-                  {/* Keyboard shortcut hint */}
+                  {/* Keyboard shortcut hint - positioned better for dropdown */}
                   {isSearchFocused && !searchQuery && (
-                    <div className={`absolute right-16 top-1/2 transform -translate-y-1/2 text-xs
+                    <div className={`absolute right-14 top-1/2 transform -translate-y-1/2 text-xs
                       ${isReaderMode ? 'text-gray-400' : 'text-gray-500'} pointer-events-none`}>
-                      <span className="hidden sm:inline">Press </span>
                       <kbd className={`px-2 py-1 text-xs font-semibold rounded 
                         ${isReaderMode ? 'text-gray-600 bg-gray-100 border border-gray-200' : 'text-gray-300 bg-gray-700 border border-gray-600'}`}>
-                        /
+                        Esc
                       </kbd>
-                      <span className="hidden sm:inline"> to search</span>
                     </div>
                   )}
                 </div>
