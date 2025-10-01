@@ -15,12 +15,6 @@ const books = [
     coverUrl: 'https://picsum.photos/seed/becoming/400/600',
   },
   {
-    id: 'power-of-now',
-    title: 'The Power of Now',
-    author: 'Eckhart Tolle',
-    coverUrl: 'https://picsum.photos/seed/powerofnow/400/600',
-  },
-  {
     id: 'atomic-habits',
     title: 'Atomic Habits',
     author: 'James Clear',

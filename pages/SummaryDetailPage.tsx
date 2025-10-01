@@ -46,7 +46,7 @@ const SummaryDetailPage: React.FC = () => {
       setLoading(false);
     } else {
       // Fallback to original English summary
-      const bookSummary = BOOK_SUMMARIES.find(summary => summary.title === currentBook.title);
+      const bookSummary = BOOK_SUMMARIES.find(summary => summary.id === currentBook.id);
       
       if (bookSummary) {
         setSummaryData({
@@ -195,7 +195,52 @@ const SummaryDetailPage: React.FC = () => {
                 {isAuthenticated ? (
                   <button
                     onClick={() => {
-                      if (!book || !summaryData) return;
+                      if (!book) return;
+                      
+                      // For Trading in the Zone, open the actual PDF file
+                      if (book.id === 'trading-in-the-zone') {
+                        window.open('/pdfs/trading in the zone.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Atomic Habits, open the actual PDF file
+                      if (book.id === 'atomic-habits') {
+                        window.open('/pdfs/atomic habits.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Best Loser Wins, open the actual PDF file
+                      if (book.id === 'best-loser-wins') {
+                        window.open('/pdfs/best loser wins.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Disciplined Trader, open the actual PDF file
+                      if (book.id === 'thedisciplinedtrader') {
+                        window.open('/pdfs/the disciplined trader.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Richest Man in Babylon, open the actual PDF file
+                      if (book.id === 'therichestmaninbabylon') {
+                        window.open('/pdfs/the richest man in babylon.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Secrets of the Millionaire Mind, open the actual PDF file
+                      if (book.id === 'secretsofthemillionairemind') {
+                        window.open('/pdfs/secrets of the millionaire mind.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Market Wizards, open the actual PDF file
+                      if (book.id === 'marketwizards') {
+                        window.open('/pdfs/market wizards.pdf', '_blank');
+                        return;
+                      }
+
+                      // For other books, generate PDF as before
+                      if (!summaryData) return;
 
                       // Use English content for Arabic-style PDF since Arabic translations were removed
                       const doc = new jsPDF({

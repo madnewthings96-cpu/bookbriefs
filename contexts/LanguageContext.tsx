@@ -85,7 +85,6 @@ const translations = {
       'atomic-habits': 'Atomic Habits',
       'trading-in-the-zone': 'Trading in the Zone',
       'the-subtle-art-of-not-giving-a-f': 'The Subtle Art of Not Giving a F*ck',
-      'the-power-of-now': 'The Power of Now',
       'sapiens': 'Sapiens: A Brief History of Humankind',
       'thinking-fast-and-slow': 'Thinking, Fast and Slow',
       'the-alchemist': 'The Alchemist',
@@ -104,13 +103,18 @@ const translations = {
       'howtodaytradeforaliving': 'How To Day Trade for a Living',
       'thelawsofhumannature': 'The Laws of Human Nature',
       'the48lawsofpower': 'The 48 Laws of Power',
-      'secretsofthemillionairemind': 'Secrets of the Millionaire Mind'
+      'secretsofthemillionairemind': 'Secrets of the Millionaire Mind',
+      'broken-money': 'Broken Money',
+      'americas-bank': "America's Bank",
+      'best-loser-wins': 'Best Loser Wins',
+      'thementalgameoftrading': 'The Mental Game of Trading',
+      'thezentrader': 'The Zen Trader',
+      'therichestmaninbabylon': 'The Richest Man in Babylon'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
       'trading-in-the-zone': 'Mark Douglas',
       'the-subtle-art-of-not-giving-a-f': 'Mark Manson',
-      'the-power-of-now': 'Eckhart Tolle',
       'sapiens': 'Yuval Noah Harari',
       'thinking-fast-and-slow': 'Daniel Kahneman',
       'the-alchemist': 'Paulo Coelho',
@@ -129,7 +133,13 @@ const translations = {
       'howtodaytradeforaliving': 'Andrew Aziz',
       'thelawsofhumannature': 'Robert Greene',
       'the48lawsofpower': 'Robert Greene',
-      'secretsofthemillionairemind': 'T. Harv Eker'
+      'secretsofthemillionairemind': 'T. Harv Eker',
+      'broken-money': 'Lyn Alden',
+      'americas-bank': 'Roger Lowenstein',
+      'best-loser-wins': 'Tom Hougaard',
+      'thementalgameoftrading': 'Jared Tendler',
+      'thezentrader': 'Peter Castle',
+      'therichestmaninbabylon': 'George S. Clason'
     }
   }
 };

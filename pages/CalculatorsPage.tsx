@@ -58,6 +58,13 @@ const CalculatorsPage: React.FC = () => {
                <p className="text-gray-700 leading-relaxed">
                    Proper position sizing is one of the most critical aspects of successful trading and risk management. It determines how many lots to trade per position, ensuring you don't risk too much of your capital on a single trade. By calculating the correct size, you can protect your account from significant losses, survive market volatility, and maintain the discipline needed for long-term consistency.
                </p>
+               <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-blue-400">
+                   <p className="text-gray-700 leading-relaxed">
+                       Therefore, a 20-pip movement in XAU/USD would be calculated as follows:<br/>
+                       20 pips * 10 points/pip = 200 points<br/><br/>
+                       200 points = 20 Pips
+                   </p>
+               </div>
           </div>
       </section>
 
@@ -76,10 +83,12 @@ const CalculatorsPage: React.FC = () => {
                     </svg>
                 </a>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                {BROKERS.map((broker) => (
-                    <BrokerCard key={broker.name} broker={broker} />
-                ))}
+            <div className="flex justify-center">
+                <div className="max-w-sm w-full">
+                    {BROKERS.map((broker) => (
+                        <BrokerCard key={broker.name} broker={broker} />
+                    ))}
+                </div>
             </div>
           </div>
       </section>

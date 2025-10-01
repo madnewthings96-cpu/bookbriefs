@@ -2,27 +2,40 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
 
-// PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+// This code securely reads the keys from your .env.local file
 const firebaseConfig = {
-  apiKey: "AIzaSyA9Ew4FIh409LI6SC34110-fzVCa_eLuPg",
-  authDomain: "ta7leel-site-dc32f.firebaseapp.com",
-  projectId: "ta7leel-site-dc32f",
-  storageBucket: "ta7leel-site-dc32f.firebasestorage.app",
-  messagingSenderId: "680418141410",
-  appId: "1:680418141410:web:d2b44ed1403fd3835eeabb",
-  measurementId: "G-8S0RPM3B4E"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+// Check that the keys were loaded correctly from the .env.local file
+if (!firebaseConfig.apiKey) {
+    throw new Error("Firebase API key is missing. Make sure it's set in your .env.local file and you have restarted the server.");
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Google Auth Provider
+// Initialize and configure Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
-  prompt: 'select_account'
+    prompt: 'select_account'
 });
 
-// Export the services you'll need
+// Initialize Firebase Analytics (only in browser environment)
+let analytics;
+if (typeof window !== 'undefined') {
+  analytics = getAnalytics(app);
+}
+
+// Export the services you'll need throughout your app
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export { analytics };
