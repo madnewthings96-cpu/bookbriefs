@@ -197,6 +197,60 @@ const SummaryDetailPage: React.FC = () => {
                     onClick={() => {
                       if (!book) return;
                       
+                      // For America's Bank, open the actual PDF file
+                      if (book.id === 'americas-bank') {
+                        window.open('/pdfs/americas bank.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Broken Money, open the actual PDF file
+                      if (book.id === 'broken-money') {
+                        window.open('/pdfs/broken money.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Rich Dad Poor Dad, open the actual PDF file
+                      if (book.id === 'rich-dad-poor-dad') {
+                        window.open('/pdfs/rich dad poor dad.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Mental Game of Trading, open the actual PDF file
+                      if (book.id === 'thementalgameoftrading') {
+                        window.open('/pdfs/the mental game of trading.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Zen Trader, open the actual PDF file
+                      if (book.id === 'thezentrader') {
+                        window.open('/pdfs/the zen trader.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Alchemist, open the actual PDF file
+                      if (book.id === 'the-alchemist') {
+                        window.open('/pdfs/the alchemist.pdf', '_blank');
+                        return;
+                      }
+
+                      // For How To Day Trade for a Living, open the actual PDF file
+                      if (book.id === 'howtodaytradeforaliving') {
+                        window.open('/pdfs/how to day trade for a living.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Trade Like a Stock Market Wizard, open the actual PDF file
+                      if (book.id === 'tradelikeastockmarketwizard') {
+                        window.open('/pdfs/trade like a stock market wizard.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Think and Grow Rich, open the actual PDF file
+                      if (book.id === 'thinkandgrowrich') {
+                        window.open('/pdfs/think and grow rich.pdf', '_blank');
+                        return;
+                      }
+
                       // For Trading in the Zone, open the actual PDF file
                       if (book.id === 'trading-in-the-zone') {
                         window.open('/pdfs/trading in the zone.pdf', '_blank');
