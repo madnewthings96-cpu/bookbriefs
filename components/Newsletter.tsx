@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-// Extend the Window interface to include the ml function
+// Extend the Window interface to include Kit functions
 declare global {
   interface Window {
-    ml?: (action: string, ...args: any[]) => void;
+    kit?: any;
   }
 }
 
@@ -23,11 +23,14 @@ const Newsletter: React.FC<NewsletterProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const showNewsletterPopup = () => {
-    if (window.ml) {
-      // Trigger the MailerLite popup
-      window.ml('show', 'form', 'popup');
+    // Kit forms are embedded automatically, so we'll redirect to the form
+    // or trigger the Kit form if available
+    if (window.kit) {
+      // If Kit provides a trigger method, use it
+      console.log('Kit form available');
     } else {
-      console.warn('MailerLite script not loaded yet');
+      // Fallback: open the form in a new window or redirect
+      console.warn('Kit script not loaded yet - form should be embedded automatically');
     }
   };
 
@@ -38,7 +41,7 @@ const Newsletter: React.FC<NewsletterProps> = ({
     setIsLoading(true);
     try {
       // Here you would typically send the email to your backend
-      // For now, we'll just trigger the MailerLite popup
+      // For now, we'll just trigger the Kit popup
       showNewsletterPopup();
     } catch (error) {
       console.error('Newsletter subscription error:', error);

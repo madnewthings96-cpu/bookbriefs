@@ -98,7 +98,7 @@ const PrivacyPolicyPage: React.FC = () => {
                         <li style={{ marginBottom: '0.3rem' }}><strong>Netlify:</strong> لاستضافة موقعنا.</li>
                         <li style={{ marginBottom: '0.3rem' }}><strong>Google Analytics:</strong> لتحليل حركة مرور الموقع.</li>
                         <li style={{ marginBottom: '0.3rem' }}><strong>Google AdSense:</strong> لعرض الإعلانات.</li>
-                        <li style={{ marginBottom: '0.3rem' }}><strong>MailerLite:</strong> لإدارة وإرسال حملات البريد الإلكتروني.</li>
+                        <li style={{ marginBottom: '0.3rem' }}><strong>Kit (ConvertKit):</strong> لإدارة وإرسال حملات البريد الإلكتروني.</li>
                     </ul>
                     هذه الأطراف الثالثة لديها إمكانية الوصول إلى بياناتك الشخصية فقط لأداء هذه المهام نيابة عنا وهي ملزمة بعدم الكشف عنها أو استخدامها لأي غرض آخر.
                 </li>
