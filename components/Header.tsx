@@ -147,7 +147,7 @@ const Header: React.FC = () => {
             {/* Buy me a coffee button */}
             <div className="hidden sm:flex ml-4">
               <a
-                href="https://www.buymeacoffee.com/bookbriefs"
+                href="https://ko-fi.com/ta7leel"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
@@ -403,7 +403,7 @@ const Header: React.FC = () => {
             {/* Buy me a coffee button for mobile */}
             <div className="mt-4 px-2">
               <a
-                href="https://www.buymeacoffee.com/bookbriefs"
+                href="https://ko-fi.com/ta7leel"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
