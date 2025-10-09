@@ -20,7 +20,24 @@ const Footer: React.FC = () => {
           </a>
         </div>
 
-        <div className="mt-8 border-t border-gray-700 pt-4">
+        <div className="mt-8 border-t border-gray-700 pt-6">
+          {/* Footer Links */}
+          <div className="flex justify-center space-x-6 mb-4">
+            <a 
+              href="/#/privacy-policy" 
+              className="text-sm text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              سياسة الخصوصية
+            </a>
+            <span className="text-gray-600">|</span>
+            <a 
+              href="mailto:info@ta7leel.site" 
+              className="text-sm text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              اتصل بنا
+            </a>
+          </div>
+          
           <p className="text-center text-sm text-gray-400">
             &copy; {currentYear} BookBriefs. All rights reserved.
           </p>
