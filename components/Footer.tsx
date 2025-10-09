@@ -31,10 +31,10 @@ const Footer: React.FC = () => {
             </a>
             <span className="text-gray-600">|</span>
             <a 
-              href="mailto:info@ta7leel.site" 
+              href="/#/terms-of-use" 
               className="text-sm text-gray-400 hover:text-white transition-colors duration-300"
             >
-              اتصل بنا
+              شروط الاستخدام
             </a>
           </div>
           
