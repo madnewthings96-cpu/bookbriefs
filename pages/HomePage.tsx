@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
           <Testimonials testimonials={TESTIMONIALS} />
            <div className="mt-12">
              <Link
-                to="/summaries"
+                to="/signup"
                 className="text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 text-lg"
                 style={{ backgroundColor: '#FF7F50' }}
             >
