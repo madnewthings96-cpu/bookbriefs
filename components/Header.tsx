@@ -140,9 +140,33 @@ const Header: React.FC = () => {
                 <span className={`text-2xl font-bold ${
                   isReaderMode ? 'text-gray-900 dark:text-white' : 'text-white'
                 } logo-text`}>
-                  BookBriefs
                 </span>
               </NavLink>
+            </div>
+            
+            {/* Buy me a coffee button */}
+            <div className="hidden sm:flex ml-4">
+              <a
+                href="https://www.buymeacoffee.com/bookbriefs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                  isReaderMode 
+                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg' 
+                    : 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
+                }`}
+                aria-label="Buy me a coffee"
+              >
+                <svg 
+                  className="w-4 h-4 mr-2" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor"
+                >
+                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                </svg>
+                <span className="hidden md:inline">Buy me a coffee</span>
+                <span className="md:hidden">☕</span>
+              </a>
             </div>
             <div className="hidden md:block">
               <nav className="ml-10 flex items-baseline space-x-4">
@@ -280,7 +304,7 @@ const Header: React.FC = () => {
                     <div className="flex items-center space-x-2">
                       <LanguageSelector />
                     </div>
-                    <span className="text-white text-sm">{t('welcome')}, {user?.name}!</span>
+                    <span className="text-white text-sm">{t('welcome')}!</span>
                     <button
                       onClick={logout}
                       className="text-white hover:text-orange-400 transition-colors duration-300 font-medium text-sm"
@@ -376,10 +400,30 @@ const Header: React.FC = () => {
             {isAuthenticated && (
               <NavLink to="/profile" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
             )}
+            {/* Buy me a coffee button for mobile */}
+            <div className="mt-4 px-2">
+              <a
+                href="https://www.buymeacoffee.com/bookbriefs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <svg 
+                  className="w-4 h-4 mr-2" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor"
+                >
+                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                </svg>
+                Buy me a coffee ☕
+              </a>
+            </div>
+            
             <div className="border-t border-gray-700 mt-3 pt-3 space-y-1">
                 {isAuthenticated ? (
                   <>
-                    <span className="text-gray-300 block px-3 py-2 text-sm">Welcome, {user?.name}!</span>
+                    <span className="text-gray-300 block px-3 py-2 text-sm">Welcome!</span>
                     <button
                       onClick={() => {
                         logout();

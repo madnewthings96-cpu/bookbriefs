@@ -13,11 +13,13 @@ import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
 import { useAuth } from '../contexts/AuthContext';
+import { useUserProgress } from '../contexts/UserProgressContext';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -73,6 +75,16 @@ const SummaryDetailPage: React.FC = () => {
     setBook(currentBook);
     if (currentBook) {
       fetchSummary(currentBook);
+      
+      // Record reading activity when user opens a book summary
+      if (isAuthenticated && bookId) {
+        recordReadingActivity();
+        
+        // Update book progress - add 25% progress each time they visit
+        const currentProgress = getBookProgress(bookId);
+        const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
+        updateBookProgress(bookId, newProgress);
+      }
     } else {
       setError(t('bookNotFound') || "Book not found.");
       setLoading(false);
@@ -337,9 +349,10 @@ const SummaryDetailPage: React.FC = () => {
                       const summaryLines = doc.splitTextToSize(summaryData.summary, 170);
                       doc.text(summaryLines, 190, yPos, { align: 'right' });
 
-                      // Open in new tab
-                      const pdfOutput = doc.output('datauristring');
-                      window.open(pdfOutput, '_blank');
+                      // Open in new tab using bloburl for better browser compatibility
+                      const pdfBlob = doc.output('blob');
+                      const pdfUrl = URL.createObjectURL(pdfBlob);
+                      window.open(pdfUrl, '_blank');
                     }}
                     className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-white"
                     style={{ backgroundColor: '#FF7F50' }}
