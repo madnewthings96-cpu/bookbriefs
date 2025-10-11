@@ -210,186 +210,171 @@ const SummaryDetailPage: React.FC = () => {
                     onClick={() => {
                       if (!book) return;
                       
-                      // Helper function to open PDF in new tab for viewing (not download)
-                      const openPDFInNewTab = (pdfPath: string) => {
-                        // Use Google Docs Viewer for better mobile compatibility
-                        const fullUrl = `${window.location.origin}${pdfPath}`;
-                        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
-                        
-                        // Try to open in new tab
-                        const newWindow = window.open(viewerUrl, '_blank');
-                        
-                        // Fallback: if popup is blocked, try direct PDF link
-                        if (!newWindow) {
-                          window.location.href = pdfPath;
-                        }
-                      };
-                      
                       // For America's Bank, open the actual PDF file
                       if (book.id === 'americas-bank') {
-                        openPDFInNewTab('/pdfs/americas bank.pdf');
+                        window.open('/pdfs/americas bank.pdf', '_blank');
                         return;
                       }
 
                       // For Broken Money, open the actual PDF file
                       if (book.id === 'broken-money') {
-                        openPDFInNewTab('/pdfs/broken money.pdf');
+                        window.open('/pdfs/broken money.pdf', '_blank');
                         return;
                       }
 
                       // For Rich Dad Poor Dad, open the actual PDF file
                       if (book.id === 'rich-dad-poor-dad') {
-                        openPDFInNewTab('/pdfs/rich dad poor dad.pdf');
+                        window.open('/pdfs/rich dad poor dad.pdf', '_blank');
                         return;
                       }
 
                       // For The Mental Game of Trading, open the actual PDF file
                       if (book.id === 'thementalgameoftrading') {
-                        openPDFInNewTab('/pdfs/the mental game of trading.pdf');
+                        window.open('/pdfs/the mental game of trading.pdf', '_blank');
                         return;
                       }
 
                       // For The Zen Trader, open the actual PDF file
                       if (book.id === 'thezentrader') {
-                        openPDFInNewTab('/pdfs/the zen trader.pdf');
+                        window.open('/pdfs/the zen trader.pdf', '_blank');
                         return;
                       }
 
                       // For The Alchemist, open the actual PDF file
                       if (book.id === 'the-alchemist') {
-                        openPDFInNewTab('/pdfs/the alchemist.pdf');
+                        window.open('/pdfs/the alchemist.pdf', '_blank');
                         return;
                       }
 
                       // For How To Day Trade for a Living, open the actual PDF file
                       if (book.id === 'howtodaytradeforaliving') {
-                        openPDFInNewTab('/pdfs/how to day trade for a living.pdf');
+                        window.open('/pdfs/how to day trade for a living.pdf', '_blank');
                         return;
                       }
 
                       // For Trade Like a Stock Market Wizard, open the actual PDF file
                       if (book.id === 'tradelikeastockmarketwizard') {
-                        openPDFInNewTab('/pdfs/trade like a stock market wizard.pdf');
+                        window.open('/pdfs/trade like a stock market wizard.pdf', '_blank');
                         return;
                       }
 
                       // For Think and Grow Rich, open the actual PDF file
                       if (book.id === 'thinkandgrowrich') {
-                        openPDFInNewTab('/pdfs/think and grow rich.pdf');
+                        window.open('/pdfs/think and grow rich.pdf', '_blank');
                         return;
                       }
 
                       // For Trading in the Zone, open the actual PDF file
                       if (book.id === 'trading-in-the-zone') {
-                        openPDFInNewTab('/pdfs/trading in the zone 2.pdf');
+                        window.open('/pdfs/trading in the zone 2.pdf', '_blank');
                         return;
                       }
 
                       // For Atomic Habits, open the actual PDF file
                       if (book.id === 'atomic-habits') {
-                        openPDFInNewTab('/pdfs/atomic habits.pdf');
+                        window.open('/pdfs/atomic habits.pdf', '_blank');
                         return;
                       }
 
                       // For Best Loser Wins, open the actual PDF file
                       if (book.id === 'best-loser-wins') {
-                        openPDFInNewTab('/pdfs/best loser wins.pdf');
+                        window.open('/pdfs/best loser wins.pdf', '_blank');
                         return;
                       }
 
                       // For The Disciplined Trader, open the actual PDF file
                       if (book.id === 'thedisciplinedtrader') {
-                        openPDFInNewTab('/pdfs/the disciplined trader.pdf');
+                        window.open('/pdfs/the disciplined trader.pdf', '_blank');
                         return;
                       }
 
                       // For The Richest Man in Babylon, open the actual PDF file
                       if (book.id === 'therichestmaninbabylon') {
-                        openPDFInNewTab('/pdfs/the richest man in babylon.pdf');
+                        window.open('/pdfs/the richest man in babylon.pdf', '_blank');
                         return;
                       }
 
                       // For Secrets of the Millionaire Mind, open the actual PDF file
                       if (book.id === 'secretsofthemillionairemind') {
-                        openPDFInNewTab('/pdfs/secrets of the millionaire mind.pdf');
+                        window.open('/pdfs/secrets of the millionaire mind.pdf', '_blank');
                         return;
                       }
 
                       // For Market Wizards, open the actual PDF file
                       if (book.id === 'marketwizards') {
-                        openPDFInNewTab('/pdfs/market wizards.pdf');
+                        window.open('/pdfs/market wizards.pdf', '_blank');
                         return;
                       }
 
                       // For Becoming, open the actual PDF file
                       if (book.id === 'becoming') {
-                        openPDFInNewTab('/pdfs/becoming.pdf');
+                        window.open('/pdfs/becoming.pdf', '_blank');
                         return;
                       }
 
                       // For Dune, open the actual PDF file
                       if (book.id === 'dune') {
-                        openPDFInNewTab('/pdfs/dune.pdf');
+                        window.open('/pdfs/dune.pdf', '_blank');
                         return;
                       }
 
                       // For Educated, open the actual PDF file
                       if (book.id === 'educated') {
-                        openPDFInNewTab('/pdfs/educated.pdf');
+                        window.open('/pdfs/educated.pdf', '_blank');
                         return;
                       }
 
                       // For Project Hail Mary, open the actual PDF file
                       if (book.id === 'project-hail-mary') {
-                        openPDFInNewTab('/pdfs/project hail mary.pdf');
+                        window.open('/pdfs/project hail mary.pdf', '_blank');
                         return;
                       }
 
                       // For The Subtle Art of Not Giving a F*ck, open the actual PDF file
                       if (book.id === 'the-subtle-art-of-not-giving-a-f') {
-                        openPDFInNewTab('/pdfs/the subtle art of not giving a fck.pdf');
+                        window.open('/pdfs/the subtle art of not giving a fck.pdf', '_blank');
                         return;
                       }
 
                       // For Sapiens, open the actual PDF file
                       if (book.id === 'sapiens') {
-                        openPDFInNewTab('/pdfs/sapiens.pdf');
+                        window.open('/pdfs/sapiens.pdf', '_blank');
                         return;
                       }
 
                       // For The Four Agreements, open the actual PDF file
                       if (book.id === 'the-four-agreements') {
-                        openPDFInNewTab('/pdfs/the four agreements.pdf');
+                        window.open('/pdfs/the four agreements.pdf', '_blank');
                         return;
                       }
 
                       // For The Laws of Human Nature, open the actual PDF file
                       if (book.id === 'thelawsofhumannature') {
-                        openPDFInNewTab('/pdfs/the laws of human nature.pdf');
+                        window.open('/pdfs/the laws of human nature.pdf', '_blank');
                         return;
                       }
 
                       // For Thinking, Fast and Slow, open the actual PDF file
                       if (book.id === 'thinking-fast-and-slow') {
-                        openPDFInNewTab('/pdfs/thinking fast and slow.pdf');
+                        window.open('/pdfs/thinking fast and slow.pdf', '_blank');
                         return;
                       }
 
                       // For Be Less Zombie, open the actual PDF file
                       if (book.id === 'belesszombie') {
-                        openPDFInNewTab('/pdfs/be less zombie.pdf');
+                        window.open('/pdfs/be less zombie.pdf', '_blank');
                         return;
                       }
 
                       // For The 48 Laws of Power, open the actual PDF file
                       if (book.id === 'the48lawsofpower') {
-                        openPDFInNewTab('/pdfs/the 48 laws of power.pdf');
+                        window.open('/pdfs/the 48 laws of power.pdf', '_blank');
                         return;
                       }
 
                       // For The 33 Strategies of War, open the actual PDF file
                       if (book.id === 'the33strategiesofwar') {
-                        openPDFInNewTab('/pdfs/the 33 strategies of war.pdf');
+                        window.open('/pdfs/the 33 strategies of war.pdf', '_blank');
                         return;
                       }
 
