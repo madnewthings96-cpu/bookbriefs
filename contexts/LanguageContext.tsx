@@ -79,6 +79,8 @@ const translations = {
     summaryComingSoon: "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
     summaryInDevelopment: 'Summary in development',
     checkBackSoon: 'Check back soon for detailed content',
+    youMayAlsoLike: 'You May Also Like',
+    addNote: 'Add Note',
     
     // Book content
     bookTitles: {

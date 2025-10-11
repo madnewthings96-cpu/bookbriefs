@@ -13,6 +13,7 @@ import SummariesPage from './pages/SummariesPage';
 import SummaryDetailPage from './pages/SummaryDetailPage';
 import AboutPage from './pages/AboutPage';
 import CalculatorsPage from './pages/CalculatorsPage';
+import NewsPage from './pages/NewsPage';
 import BlogPage from './pages/BlogPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
@@ -336,6 +337,7 @@ const AppContent: React.FC = () => {
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/calculators" element={<CalculatorsPage />} />
+            <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>

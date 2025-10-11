@@ -24,6 +24,13 @@ const Footer: React.FC = () => {
           {/* Footer Links */}
           <div className="flex justify-center space-x-6 mb-4">
             <a 
+              href="/#/about" 
+              className="text-sm text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              About
+            </a>
+            <span className="text-gray-600">|</span>
+            <a 
               href="/#/privacy-policy" 
               className="text-sm text-gray-400 hover:text-white transition-colors duration-300"
             >

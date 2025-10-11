@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PipValueCalculator from '../components/PipValueCalculator';
 import PositionSizeCalculator from '../components/PositionSizeCalculator';
 import { BROKERS } from '../constants';
@@ -8,13 +8,75 @@ type CalculatorTab = 'pipValue' | 'positionSize';
 
 const CalculatorsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<CalculatorTab>('positionSize');
+  const tickerTapeRef = useRef<HTMLDivElement>(null);
 
   const tabStyle = "py-2 px-4 text-center cursor-pointer font-semibold transition-colors duration-300";
   const activeTabStyle = "text-orange-500 border-b-2 border-orange-500";
   const inactiveTabStyle = "text-gray-500 hover:text-orange-400";
 
+  useEffect(() => {
+    // Load TradingView Ticker Tape widget
+    if (tickerTapeRef.current && !tickerTapeRef.current.querySelector('script')) {
+      const script = document.createElement('script');
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        symbols: [
+          {
+            proName: "FOREXCOM:SPXUSD",
+            title: "S&P 500 "
+          },
+          {
+            proName: "FOREXCOM:NSXUSD",
+            title: "NASDAQ-100"
+          },
+          {
+            proName: "FX_IDC:EURUSD",
+            title: "EUR to USD"
+          },
+          {
+            proName: "BITSTAMP:BTCUSD",
+            title: "Bitcoin"
+          },
+          {
+            proName: "BITSTAMP:ETHUSD",
+            title: "Ethereum"
+          },
+          {
+            proName: "OANDA:XAUUSD",
+            title: "Gold"
+          },
+          {
+            proName: "CMCMARKETS:GBPUSD",
+            title: "GBP to USD"
+          }
+        ],
+        colorTheme: "light",
+        locale: "en",
+        largeChartUrl: "",
+        isTransparent: false,
+        showSymbolLogo: true,
+        displayMode: "adaptive"
+      });
+      tickerTapeRef.current.appendChild(script);
+    }
+  }, []);
+
   return (
     <div className="space-y-16">
+      {/* TradingView Ticker Tape Widget */}
+      <section className="-mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="tradingview-widget-container" ref={tickerTapeRef}>
+          <div className="tradingview-widget-container__widget"></div>
+          <div className="tradingview-widget-copyright">
+            <a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank">
+              <span className="blue-text">Ticker tape</span>
+            </a>
+            <span className="trademark"> by TradingView</span>
+          </div>
+        </div>
+      </section>
+
       {/* Calculators Section */}
       <section className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
