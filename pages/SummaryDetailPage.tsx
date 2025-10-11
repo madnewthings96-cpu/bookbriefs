@@ -212,23 +212,16 @@ const SummaryDetailPage: React.FC = () => {
                       
                       // Helper function to open PDF in new tab for viewing (not download)
                       const openPDFInNewTab = (pdfPath: string) => {
-                        const newWindow = window.open('', '_blank');
-                        if (newWindow) {
-                          newWindow.document.write(`
-                            <html>
-                              <head>
-                                <title>PDF Viewer</title>
-                                <style>
-                                  body { margin: 0; padding: 0; }
-                                  iframe { width: 100vw; height: 100vh; border: none; }
-                                </style>
-                              </head>
-                              <body>
-                                <iframe src="${pdfPath}#toolbar=1&navpanes=1&scrollbar=1" type="application/pdf"></iframe>
-                              </body>
-                            </html>
-                          `);
-                          newWindow.document.close();
+                        // Use Google Docs Viewer for better mobile compatibility
+                        const fullUrl = `${window.location.origin}${pdfPath}`;
+                        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+                        
+                        // Try to open in new tab
+                        const newWindow = window.open(viewerUrl, '_blank');
+                        
+                        // Fallback: if popup is blocked, try direct PDF link
+                        if (!newWindow) {
+                          window.location.href = pdfPath;
                         }
                       };
                       

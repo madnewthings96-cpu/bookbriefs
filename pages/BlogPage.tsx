@@ -1632,33 +1632,32 @@ const BlogPage: React.FC = () => {
                 />
               </article>
 
-              {/* Newsletter Signup Section */}
-              <div className="mt-12 p-8 bg-gray-50 border border-gray-200">
-                <div className="text-center max-w-lg mx-auto">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Georgia, serif' }}>
-                    Sign up for BookBriefs Insights
+              {/* Buy Me a Coffee Button */}
+              <div className="mt-12 mb-12 text-center">
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-8">
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: '#2F4F4F', fontFamily: 'Georgia, serif' }}>
+                    Enjoyed this article?
                   </h3>
-                  <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-                    The latest in business insights and book summaries. Direct to your inbox.
+                  <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                    If you found this content valuable, consider supporting our work by buying us a coffee. 
+                    Your support helps us create more quality content!
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      className="flex-1 px-4 py-3 border border-gray-300 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      style={{ fontFamily: 'Arial, sans-serif' }}
-                    />
-                    <button
-                      className="px-6 py-3 bg-blue-600 text-white text-sm font-bold uppercase tracking-wide hover:bg-blue-700 transition-colors"
-                      style={{ fontFamily: 'Arial, sans-serif' }}
+                  <a 
+                    href="https://ko-fi.com/ta7leel" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-8 py-4 rounded-full font-bold text-white transition-all duration-300 hover:opacity-90 hover:scale-105 shadow-lg text-lg"
+                    style={{ backgroundColor: '#fa9128' }}
+                  >
+                    <svg 
+                      className="w-6 h-6 mr-3" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor"
                     >
-                      Subscribe
-                    </button>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-4 leading-relaxed">
-                    By signing up, I agree to receive personalized offers and communications via email, 
-                    and to receive targeted content from BookBriefs and its affiliates.
-                  </p>
+                      <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                    </svg>
+                    Buy me a coffee
+                  </a>
                 </div>
               </div>
 
