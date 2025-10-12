@@ -3854,7 +3854,7 @@ By internalizing these principles and living them consistently, any investor—r
     title: 'Relentless',
     author: 'Tim S. Grover',
     coverImageUrl: '/images/relentless.jpg',
-    category: 'Self-Help & Motivation',
+    category: 'Health & Sports',
     summary: `# 🔥 Relentless
 ### *From Good to Great to Unstoppable*
 

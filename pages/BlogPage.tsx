@@ -1247,12 +1247,286 @@ const BlogPage: React.FC = () => {
           </div>
         </div>
       `;
+    } else if (postId === 13) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">في رحلة التداول، يخصص معظم المتداولين وقتهم وجهدهم في البحث عن "الاستراتيجية السحرية" أو "المؤشر الخفي" الذي سيضمن لهم النجاح. يغرقون في تفاصيل الرسوم البيانية، ويحللون بيانات الأخبار، ويتتبعون أداء الأصول المختلفة، ولكنهم غالبًا ما يتجاهلون العنصر الأكثر أهمية والأشد تأثيرًا على نتائجهم: أنفسهم.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">الحقيقة القاسية هي أن التداول في جوهره ليس صراعاً بينك وبين السوق، بل هو صراع بينك وبين عواطفك. إن أسوأ عدو يواجهك ليس تذبذب السعر أو تحركات البنوك الكبرى، بل هو جشعك، وخوفك، وميلك لتبرير القرارات العاطفية. وهنا، يبرز الدور الحاسم لأداة بسيطة ولكنها قوية: مفكرة المتداول (Trading Journal).</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">لقد درج المتداولون على النظر إلى المفكرة على أنها مجرد سجل (Log)، مكان لتدوين نقاط الدخول والخروج وحجم المركز. لكن هذا المفهوم محدود للغاية. في الواقع، إن مفكرة المتداول الاحترافي هي أداة متقدمة للتحليل النفسي الذاتي وإدارة المخاطر. إنها نظام إنذار سلوكي مبكر مصمم للكشف عن الأنماط العاطفية والذهنية المدمرة قبل أن تفتك بحسابك.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الأول: المفكرة كسجل فني (الأساسيات التي لا تكفي)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">قبل التعمق في الجانب النفسي، يجب أن نؤسس للركيزة الفنية للمفكرة. معظم المتداولين المبتدئين يبدأون هنا، لكنهم يتوقفون عند هذا الحد، مما يحد من فعالية الأداة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">ما الذي يجب تسجيله في القسم الفني؟</h3>
+          
+          <ul style="margin-bottom: 20px; padding-right: 24px;">
+            <li style="margin-bottom: 12px;"><strong>تفاصيل الصفقة الكاملة:</strong> تاريخ ووقت الدخول والخروج، الأداة المتداولة، الاتجاه (شراء/بيع)، حجم المركز (Position Size).</li>
+            <li style="margin-bottom: 12px;"><strong>نقاط المخاطرة والمكافأة المحددة مسبقًا:</strong> سعر وقف الخسارة (Stop Loss)، سعر جني الأرباح (Take Profit)، ونسبة المخاطرة إلى المكافأة المتوقعة (R:R).</li>
+            <li style="margin-bottom: 12px;"><strong>الأداء الفعلي:</strong> الربح أو الخسارة بالنقاط والمبلغ النقدي، ومدة الصفقة.</li>
+            <li style="margin-bottom: 12px;"><strong>سبب الصفقة (التحليل):</strong> الإعداد الفني الذي اعتمدت عليه (مثل كسر المقاومة، نموذج الشموع اليابانية، تقاطع المتوسطات المتحركة).</li>
+          </ul>
+
+          <div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #856404; font-size: 18px; font-weight: bold;">💡 أهمية قياس "R-Multiples"</h4>
+            <p style="margin: 0; color: #856404; line-height: 1.6;">في المفكرة الاحترافية، يتم تحويل جميع النتائج المالية إلى مضاعفات المخاطرة (R-Multiples). إذا قررت أن مخاطرتك في الصفقة الواحدة هي 100 دولار (وهي 1R)، فإن ربح 300 دولار يصبح 3R، وخسارة 50 دولارًا تصبح -0.5R. هذا يوحد قياس أدائك بغض النظر عن حجم المركز الفعلي أو تقلبات السوق.</p>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الثاني: المفكرة كنظام إنذار سلوكي مبكر</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">هذا هو الجزء الذي يحوّل مفكرتك من سجل قديم إلى أداة تدريب ذاتي متقدمة. الهدف هنا هو التقاط حالتك الذهنية في ثلاث مراحل حرجة: ما قبل الصفقة، أثناء التنفيذ، وما بعد النتيجة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. حالة ما قبل الصفقة: فحص "الركيزة العاطفية"</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">قبل النقر على زر الدخول، يجب أن تسجل حالتك الداخلية. المتداول المنضبط يعرف أن الحالة الذهنية السيئة تؤدي إلى قرارات تداول سيئة، بغض النظر عن جودة الإعداد الفني.</p>
+
+          <div style="background-color: #e8f4fd; border: 1px solid #bee5eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #0c5460;">مؤشر الحالة الجسدية والنفسية:</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #0c5460;">
+              <li style="margin-bottom: 8px;"><strong>النوم والجوع والإجهاد:</strong> هل نمت جيدًا؟ هل أنت مرهق جسديًا أو عقليًا؟</li>
+              <li style="margin-bottom: 8px;"><strong>المشتتات الخارجية:</strong> هل هناك مشكلة عائلية أو ضغط عمل يؤثر عليك؟</li>
+              <li style="margin-bottom: 8px;"><strong>مؤشر الثقة:</strong> سجل مستوى ثقتك في الإعداد الفني على مقياس من 1 إلى 10.</li>
+              <li style="margin-bottom: 8px;"><strong>نية الصفقة:</strong> اكتب جملة واحدة تشرح سبب دخولك.</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. التنفيذ السلوكي: تعقب الانحرافات أثناء الصفقة</h3>
+          
+          <div style="background-color: #f8d7da; border-right: 4px solid #dc3545; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #721c24; font-size: 18px; font-weight: bold;">⚠️ أنماط خطيرة يجب تتبعها</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #721c24;">
+              <li style="margin-bottom: 10px;"><strong>تحريك وقف الخسارة (Moving the Stop):</strong> مؤشر واضح على تداول الأمل (Hope Trading).</li>
+              <li style="margin-bottom: 10px;"><strong>جني الأرباح المبكر (Early Profit Taking):</strong> دليل على الخوف من تحول الربح إلى خسارة.</li>
+              <li style="margin-bottom: 10px;"><strong>ملاحقة الصفقة (Chasing the Trade):</strong> دخول مدفوع بالخوف من فوات الفرصة (FOMO).</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">3. ما بعد الصفقة: تشريح العواقب النفسية</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">التحليل النفسي لا يتوقف عند إغلاق الصفقة. ردود فعلك على النتيجة تحدد سلوكك في الصفقات القادمة.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الثالث: تحديد الأنماط المدمرة</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">القيمة الحقيقية للمفكرة تظهر عندما تبدأ في تحليل البيانات المُجمعة. بعد شهر أو شهرين من التسجيل الدقيق، ابحث عن الأنماط المتكررة (Recurring Patterns).</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #155724; font-size: 18px; font-weight: bold;">🔍 أمثلة على الأنماط التي يجب البحث عنها:</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #155724;">
+              <li style="margin-bottom: 10px;"><strong>خطأ التوقيت:</strong> صفقاتك الخاسرة تتكرر دائمًا في يوم محدد من الأسبوع.</li>
+              <li style="margin-bottom: 10px;"><strong>خطأ الأداة:</strong> معدل نجاحك على سهم معين 70%، بينما ينخفض إلى 30% على أداة أخرى.</li>
+              <li style="margin-bottom: 10px;"><strong>خطأ التحجيم:</strong> أغلب خسائرك الكبيرة حدثت عندما زدت حجم المركز بسبب "ثقة غير مبررة".</li>
+              <li style="margin-bottom: 10px;"><strong>خطأ الإفراط في التداول:</strong> تتداول 5 صفقات في الأيام التي تخسر فيها، مقابل صفقتين في أيام الربح.</li>
+            </ul>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الخلاصة: المفكرة هي انعكاس لذاتك المتداولة</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن مفكرة المتداول ليست مجرد أداة إدارية؛ إنها أداة نمو شخصي. إنها تمنحك وعيًا ذاتيًا لا يمكن لأي كتاب أو دورة تدريبية أن تمنحه لك. التداول الناجح على المدى الطويل لا يعتمد على التنبؤ بحركة السوق، بل يعتمد على التحكم بسلوكك خلال الأوقات الصعبة.</p>
+
+          <div style="background-color: #e8eaf6; border: 2px solid #3f51b5; border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center;">
+            <h3 style="font-size: 22px; font-weight: bold; margin: 0 0 15px 0; color: #1a237e;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #283593; font-size: 18px; font-style: italic; line-height: 1.8;">"عندما تتبنى المفكرة كنظام إنذار سلوكي مبكر، فإنك تتخذ قرارًا واعيًا بأنك ستصبح مدير المخاطر الأول والأخير على حسابك."</p>
+          </div>
+
+          <div style="background-color: #fff8e1; border: 3px solid #ffb300; border-radius: 15px; padding: 30px; margin: 30px 0;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 20px 0; color: #e65100; text-align: center;">📝 ابدأ اليوم</h3>
+            <p style="margin: 0; color: #ef6c00; font-size: 18px; text-align: center; line-height: 1.8;">اجعل تسجيل الحالة النفسية قبل وبعد كل صفقة أمرًا لا يقل أهمية عن تسجيل سعر الدخول. عندها فقط، ستتحول مفكرتك من سجل مهمل إلى الدليل الإرشادي الأكثر قيمة للنجاح المستدام في عالم التداول.</p>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: center; font-size: 20px; font-weight: bold; color: #0066cc;">هل أنت مستعد لمواجهة نفسك في مرآة مفكرتك؟ النجاة في التداول تبدأ هنا.</p>
+        </div>
+      `;
+    } else if (postId === 14) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">في عالم التداول المليء بالضجيج والتقلبات العنيفة، غالبًا ما يُنظر إلى الثقة على أنها الوقود الذي يحرك المتداول الناجح. لكن ما نوع هذه الثقة؟ هل هي الصراخ المتهور بـ "أنا متأكد أن هذا السهم سيرتفع!"، أم هي الهدوء واليقين العميق الذي لا يتزعزع حتى عندما يتلقى المتداول لكمات موجعة من السوق؟</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">الواقع أن الثقة التي تميز المتداول المحترف ليست ثقة قائمة على التفاؤل، بل ثقة مؤسسة على المنهجية والانضباط. إنها "الثقة الهادئة". هذه الثقة لا تعني أنك لن تخسر؛ بل تعني أنك تعرف بالضبط ما ستفعله عندما تخسر.</p>
+
+          <div style="background-color: #e8f4fd; border-right: 4px solid #0dcaf0; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #055160;">💎 جوهر الثقة الهادئة</h3>
+            <p style="margin: 0; color: #055160; font-size: 18px; font-style: italic; line-height: 1.8;">"الثقة الحقيقية ليست أن تعرف أنك ستربح، بل أن تعرف بالضبط ما ستفعله عندما تخسر"</p>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: justify;">إن أصعب اختبار يواجه المتداول ليس التنبؤ بالسعر، بل التعامل مع سلسلة الخسائر المتتالية (Drawdown). عندما تضرب الخسارة، يبدأ المتداول المبتدئ في الشك في كل شيء: في استراتيجيته، في تحليله، والأهم من ذلك، في قدرته على النجاح. أما المتداول المحترف، فيرى في الخسارة مجرد "تكلفة عمل" ضرورية، ويواصل التنفيذ بنفس الدقة والاتساق.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الركن الأول: فصل الذات عن النتيجة (الثقة القائمة على العملية)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">أكبر خطأ نفسي يقع فيه المتداول هو ربط قيمة الذات وقيمة الاستراتيجية بنتيجة الصفقة الواحدة. إذا ربحت، تشعر بأنك عبقري. إذا خسرت، تشعر بالفشل. هذه هي "الفخ العاطفي" الذي يحطم الاتساق.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. إعادة تعريف النجاح:</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">النجاح في التداول ليس أن تربح صفقة معينة؛ بل أن تنفذ خطة التداول الخاصة بك بشكل مثالي. يجب أن تقيس نجاحك يوميًا وأسبوعيًا ليس بـ "كم ربحت"، بل بـ "هل التزمت بالقواعد؟"</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #155724; font-size: 18px; font-weight: bold;">✅ صفقة ناجحة انضباطياً</h4>
+            <p style="margin: 0 0 10px 0; color: #155724; line-height: 1.6;">إذا خسرت صفقة ولكنك التزمت بحجم المركز المحدد، وبوقف الخسارة، وبشروط الدخول الفنية، فهذه صفقة <strong>ناجحة من الناحية الانضباطية</strong>.</p>
+          </div>
+
+          <div style="background-color: #f8d7da; border-right: 4px solid #dc3545; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #721c24; font-size: 18px; font-weight: bold;">❌ صفقة فاشلة سلوكياً</h4>
+            <p style="margin: 0; color: #721c24; line-height: 1.6;">إذا ربحت صفقة ولكنك زدت حجم المركز بشكل متهور أو لم تلتزم بوقف الخسارة، فهذه صفقة <strong>فاشلة من الناحية السلوكية</strong>، لأنها رسخت عادات سيئة قد تدمرك لاحقًا.</p>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. استخدام الأرقام لتهدئة العواطف (R-Multiples):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">استخدم مضاعفات المخاطرة (R-Multiples) لقياس الأداء. إذا كان لديك استراتيجية تحقق متوسط ربح قدره 1.5R ومتوسط خسارة قدره -1R، فهذا نموذج ربحي.</p>
+
+          <div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #856404; font-size: 18px; font-weight: bold;">📊 القاعدة الذهبية</h4>
+            <p style="margin: 0; color: #856404; line-height: 1.6; font-weight: 500;">يجب ألا تفكر أبدًا في "كم خسرت"، بل في "كم R خسرت". تحويل الخسارة إلى رقم إحصائي (مثل -1R) بدلاً من مبلغ مالي ضخم (مثل -5000 دولار) يزيل حدتها العاطفية.</p>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الركن الثاني: المنهجية الصلبة (تحييد الشكوك)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">الشك في الذات بعد سلسلة خسائر يولد عندما لا يكون لديك إطار عمل واضح ومجرب للعودة إليه. الثقة الهادئة تأتي من معرفة أن لديك خطة عمل موثوقة حتى في أسوأ السيناريوهات.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. خطة إدارة المخاطر المضادة (Anti-Revenge Plan):</h3>
+          
+          <div style="background-color: #e7f3ff; border: 1px solid #b8daff; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #004085;">🛡️ نظام الحماية من تداول الانتقام</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #004085;">
+              <li style="margin-bottom: 12px;"><strong>الحد الأقصى اليومي للخسارة:</strong> حدد عددًا من مضاعفات المخاطرة (R) لا يمكنك تجاوزها في يوم واحد (مثل: -2R أو -3R). بمجرد الوصول إليه، أغلق المنصة.</li>
+              <li style="margin-bottom: 12px;"><strong>خطة تقليص الحجم:</strong> إذا خسرت 5 صفقات متتالية، قلص حجم المركز بنسبة 50% حتى تحقق ربحاً واحداً (1R).</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. قاعدة "التوقف والمراجعة":</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">المتداول المتهور يزيد التداول عندما يخسر. المتداول المحترف يتوقف. عندما تتعرض لسلسلة خسائر، يجب أن تتوقف عن التداول وتكرس وقتك للمراجعة العمياء:</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 20px 0;">
+            <div style="background-color: #e8f5e9; border-right: 4px solid #4caf50; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 18px;">📈 مراجعة الاستراتيجية</h4>
+              <p style="margin: 0; color: #2e7d32; font-size: 14px; line-height: 1.6;">هل كانت شروط الدخول متوفرة؟ لا تغير الاستراتيجية إلا بعد تحليل أكثر من 30 صفقة.</p>
+            </div>
+            <div style="background-color: #fff3e0; border-right: 4px solid #ff9800; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">🧠 مراجعة السلوك</h4>
+              <p style="margin: 0; color: #e65100; font-size: 14px; line-height: 1.6;">استخدم المفكرة لتحليل كل صفقة خاسرة. غالباً 80% من الخسائر الكبيرة نتيجة خرق القواعد.</p>
+            </div>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الركن الثالث: المرونة النفسية (إدارة الشك)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">الثقة الهادئة لا تعني غياب الشك؛ بل تعني القدرة على التعامل مع الشك دون أن يسمح لك بتخريب أدائك.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. تقنية "التفاوض مع الذات الناقدة":</h3>
+          
+          <div style="background-color: #f3e5f5; border-right: 4px solid #9c27b0; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #6a1b9a; font-size: 18px; font-weight: bold;">🗣️ الحوار الداخلي المنضبط</h4>
+            <div style="margin-top: 15px;">
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">1️⃣ تحديد الشك:</p>
+              <p style="margin: 0 0 15px 0; color: #6a1b9a; padding-right: 20px; font-style: italic;">"أنا أشعر بالخوف من دخول الصفقة التالية بعد الخسائر المتتالية."</p>
+              
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">2️⃣ الرد بالبيانات:</p>
+              <p style="margin: 0 0 15px 0; color: #6a1b9a; padding-right: 20px; font-style: italic;">"لكن إحصائيات استراتيجيتي تظهر أنها تنجح بنسبة 60% على مدى الـ 100 صفقة الأخيرة. الخسائر المتتالية طبيعية."</p>
+              
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">3️⃣ إعادة التركيز على العملية:</p>
+              <p style="margin: 0; color: #6a1b9a; padding-right: 20px; font-style: italic;">"مهمتي الآن هي التحقق من شروط الدخول فقط، وتنفيذ الأمر، والانتظار."</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. ممارسة التوقف الإلزامي (Forced Breaks):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">الإنهاك العقلي هو المحرك الأساسي للخروج عن الانضباط. إذا كنت تشعر بالتعب أو الغضب أو الإحباط، فإن أفضل صفقة يمكنك القيام بها هي إغلاق جهاز الكمبيوتر.</p>
+
+          <div style="background-color: #e0f2f1; border-right: 4px solid #009688; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #00695c; font-size: 18px; font-weight: bold;">⏸️ استراحة الـ 24 ساعة</h4>
+            <p style="margin: 0; color: #00695c; line-height: 1.6;">بعد خسارة كبيرة أو سلسلة خسائر مؤلمة، خذ استراحة إلزامية لمدة 24 ساعة. هذا يمنح عقلك الوقت لإعادة ضبط مستويات الكورتيزول (هرمون التوتر) ويعيد القدرة على اتخاذ قرارات منطقية.</p>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">3. التوقع الواقعي للخسارة:</h3>
+          
+          <div style="background-color: #fff8e1; border: 2px solid #ffb300; border-radius: 8px; padding: 20px; margin: 24px 0;">
+            <h4 style="margin: 0 0 12px 0; color: #e65100; font-size: 18px; font-weight: bold;">📉 متوسط "الضربات المتتالية"</h4>
+            <p style="margin: 0; color: #ef6c00; line-height: 1.6;">إذا كان معدل نجاحك 60%، فمن المحتمل جدًا أن تواجه 5 أو 6 خسائر متتالية على الأقل مرة واحدة في السنة. <strong>معرفة هذا الرقم وتوقعه تجعلك مهيأ نفسيًا عندما يحدث.</strong> التوقع هو درعك ضد الصدمة العاطفية.</p>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الركن الرابع: بناء عقلية النمو (Growth Mindset)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">الثقة الهادئة هي سمة من سمات عقلية النمو في التداول، والتي تتعارض مع العقلية الثابتة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. عقلية النمو تقول: "الخسارة هي بيانات."</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">المتداول الذي يمتلك عقلية النمو لا يرى في الخسارة حكمًا على قدراته؛ بل يراها رد فعل من السوق على الإعداد الفني الذي استخدمه. كل خسارة هي درس مجاني (وإن كان مؤلمًا) يوضح لك أين يجب أن تتحسن.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. التركيز على "التراكم المعرفي" وليس "الربح الفوري":</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">بدلًا من التركيز على ربح اليوم أو الأسبوع، ركز على تطوير مهاراتك وانضباطك. إذا قمت بتحسين انضباطك في تحديد وقف الخسارة بنسبة 10% هذا الشهر، فهذا إنجاز أكبر وأكثر استدامة من ربح صفقة كبيرة لمرة واحدة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">3. الانضباط هو العملة الجديدة:</h3>
+          
+          <div style="background-color: #e8eaf6; border: 2px solid #3f51b5; border-radius: 12px; padding: 25px; margin: 30px 0; text-align: center;">
+            <h3 style="font-size: 22px; font-weight: bold; margin: 0 0 15px 0; color: #1a237e;">🎯 الحقيقة المطلقة</h3>
+            <p style="margin: 0; color: #283593; font-size: 18px; line-height: 1.8;">السوق لا يدين لك بشيء. لا يمكنك التحكم في الأسعار. <strong style="color: #1a237e;">الشيء الوحيد الذي يمكنك التحكم فيه هو سلوكك.</strong></p>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">خلاصة: الثقة ليست التفاؤل، بل اليقين المنهجي</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن التداول الناجح بعد سلسلة من الخسائر لا يتطلب شجاعة عمياء، بل يتطلب انضباطًا ثابتاً. "الثقة الهادئة" تولد من خلال:</p>
+
+          <div style="background-color: #f0f9ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 25px; margin: 30px 0;">
+            <h3 style="font-size: 22px; font-weight: bold; margin: 0 0 20px 0; color: #1e40af; text-align: center;">🏛️ الأركان الأربعة للثقة الهادئة</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+              <div style="text-align: center; padding: 15px;">
+                <div style="font-size: 32px; margin-bottom: 10px;">🎭</div>
+                <h4 style="color: #1e40af; margin: 0 0 8px 0; font-size: 16px;">الفصل العاطفي</h4>
+                <p style="margin: 0; color: #1e40af; font-size: 13px;">عدم ربط قيمة الذات بنتائج الصفقة</p>
+              </div>
+              <div style="text-align: center; padding: 15px;">
+                <div style="font-size: 32px; margin-bottom: 10px;">💰</div>
+                <h4 style="color: #1e40af; margin: 0 0 8px 0; font-size: 16px;">المرونة المالية</h4>
+                <p style="margin: 0; color: #1e40af; font-size: 13px;">قواعد صارمة لإدارة المخاطر</p>
+              </div>
+              <div style="text-align: center; padding: 15px;">
+                <div style="font-size: 32px; margin-bottom: 10px;">📝</div>
+                <h4 style="color: #1e40af; margin: 0 0 8px 0; font-size: 16px;">المراجعة السلوكية</h4>
+                <p style="margin: 0; color: #1e40af; font-size: 13px;">استخدام المفكرة للكشف عن الأنماط</p>
+              </div>
+              <div style="text-align: center; padding: 15px;">
+                <div style="font-size: 32px; margin-bottom: 10px;">🎲</div>
+                <h4 style="color: #1e40af; margin: 0 0 8px 0; font-size: 16px;">التوقع الواقعي</h4>
+                <p style="margin: 0; color: #1e40af; font-size: 13px;">معرفة أن الخسائر جزء طبيعي من اللعبة</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fff8e1; border: 3px solid #ffb300; border-radius: 15px; padding: 30px; margin: 30px 0;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 20px 0; color: #e65100; text-align: center;">🌟 الفرق الحاسم</h3>
+            <p style="margin: 0; color: #ef6c00; font-size: 18px; text-align: center; line-height: 1.8;">عندما تتبنى هذه الأركان، لن تشعر بالذعر بعد الخسارة؛ بل ستعود ببساطة إلى خطتك، وتضبط حجم المركز، وتنفذ صفقتك التالية بنفس الهدوء الذي نفذت به الصفقة الأولى. <strong>هذا هو الفرق بين المتداول الهاوي الذي ينهار عند أول عقبة، والمتداول المحترف الذي يواصل المسير نحو النجاح المستدام.</strong></p>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: center; font-size: 20px; font-weight: bold; color: #0066cc;">هل خطتك الحالية تمنحك هذه "الثقة الهادئة"؟ إذا كانت الإجابة لا، فقد حان الوقت لإعادة كتابتها.</p>
+        </div>
+      `;
     }
     return `<p>Full content for this article is coming soon...</p>`;
   };
 
   // Professional blog posts data
   const blogPosts: BlogPost[] = [
+    {
+      id: 13,
+      title: "مفكرة المتداول: أداة رصد مبكر للسلوكيات قبل أن تؤثر على أرباحك",
+      excerpt: "في رحلة التداول، يخصص معظم المتداولين وقتهم في البحث عن الاستراتيجية السحرية، متجاهلين العنصر الأهم: أنفسهم. اكتشف كيف تحول المفكرة إلى نظام إنذار سلوكي مبكر قبل أن تفتك الأنماط العاطفية بحسابك.",
+      category: "Trading",
+      date: "2025-10-12",
+      readTime: "20 min read",
+      imageUrl: "/blog images/blog 1.png",
+      tags: ["trading journal", "psychology", "risk management", "behavior patterns", "arabic"]
+    },
+    {
+      id: 14,
+      title: "الثقة الهادئة: كيف تتداول كالمحترفين، حتى بعد سلسلة من الخسائر",
+      excerpt: "في عالم التداول، الثقة الحقيقية ليست الصراخ المتهور، بل الهدوء واليقين العميق الذي لا يتزعزع حتى بعد الخسائر. اكتشف كيف تطور الثقة الهادئة التي تميز المحترفين عن الهواة.",
+      category: "Trading",
+      date: "2025-10-12",
+      readTime: "30 min read",
+      imageUrl: "/blog images/blog 2.png",
+      tags: ["quiet confidence", "trading psychology", "loss management", "professional trading", "arabic"]
+    },
     {
       id: 1,
       title: "Navigating the Market's Core: A Professional Guide to Proprietary Trading vs. Market Making",
@@ -1308,7 +1582,7 @@ const BlogPage: React.FC = () => {
       title: "التداول هو ماراثون وليس سباقًا قصيرًا",
       excerpt: "تعلم لماذا النجاح في التداول يتطلب صبرًا وثباتًا مثل العداء في سباق الماراثون، وكيف تبني استراتيجية طويلة المدى للفوز في لعبة التداول.",
       category: "Trading",
-      date: "2024-03-01",
+      date: "2025-03-01",
       readTime: "18 min read",
       imageUrl: "/images/marathon.png",
       tags: ["trading psychology", "long-term strategy", "discipline", "arabic"]
@@ -1318,7 +1592,7 @@ const BlogPage: React.FC = () => {
       title: "قم بإدارة تداولاتك مثل الأعمال التجارية",
       excerpt: "تعلم كيفية التعامل مع التداول كعمل تجاري متكامل، وفهم التكاليف والإيرادات، وإدارة المخاطر بطريقة احترافية لتحقيق أرباح مستدامة.",
       category: "Trading",
-      date: "2024-03-15",
+      date: "2025-03-15",
       readTime: "16 min read",
       imageUrl: "/images/business.jpg",
       tags: ["business approach", "risk management", "trading costs", "arabic"]
@@ -1328,7 +1602,7 @@ const BlogPage: React.FC = () => {
       title: "20 اقتباسًا صادمًا من أساطير التداول",
       excerpt: "مجموعة من أقوى الاقتباسات والحكم المُلهمة من أساطير التداول الأكثر نجاحًا في التاريخ، تغطي مواضيع التحليل الفني، علم النفس، وإدارة المخاطر.",
       category: "Trading",
-      date: "2024-03-25",
+      date: "2025-03-25",
       readTime: "20 min read",
       imageUrl: "/images/porsche.jpg",
       tags: ["trading quotes", "market legends", "trading wisdom", "arabic"]
@@ -1338,7 +1612,7 @@ const BlogPage: React.FC = () => {
       title: "نصائح للتداول من الأسطورة مارك دوڭلاس",
       excerpt: "اكتشف الحكمة العميقة من مارك دوغلاس حول أهمية المهارات العقلية في التداول، وكيفية التفكير في الاحتمالات بدلاً من اليقينيات لتحقيق النجاح المستدام.",
       category: "Trading",
-      date: "2024-04-10",
+      date: "2025-04-10",
       readTime: "14 min read",
       imageUrl: "/images/mark.jpeg",
       tags: ["mark douglas", "trading psychology", "mental skills", "arabic"]
@@ -1348,7 +1622,7 @@ const BlogPage: React.FC = () => {
       title: "ما يمكن أن يعلمنا إياه الأسود عن التداول الاحترافي",
       excerpt: "تعلم من 'ملك الغابة' كيفية التداول بإستراتيجية وصبر وانضباط. اكتشف كيف تطبق صفات الأسود في الصيد على تداولك لتحقيق النجاح المستدام.",
       category: "Trading",
-      date: "2024-04-25",
+      date: "2025-04-25",
       readTime: "12 min read",
       imageUrl: "/images/lion.jpg",
       tags: ["trading strategy", "patience", "discipline", "arabic"]
@@ -1358,7 +1632,7 @@ const BlogPage: React.FC = () => {
       title: "Top 10 Business Books That Changed Everything",
       excerpt: "Explore the business books that have shaped modern entrepreneurship and continue to influence leaders today.",
       category: "Book Reviews",
-      date: "2024-01-10",
+      date: "2025-01-10",
       readTime: "12 min read",
       imageUrl: "/images/rich dad poor dad.jpg",
       tags: ["business", "entrepreneurship", "leadership"]
@@ -1368,7 +1642,7 @@ const BlogPage: React.FC = () => {
       title: "Speed Reading vs Deep Reading: Finding Balance",
       excerpt: "Understanding when to read fast for information and when to read slowly for comprehension and retention.",
       category: "Reading Tips",
-      date: "2024-01-08",
+      date: "2025-01-08",
       readTime: "6 min read",
       imageUrl: "/images/reading.jpg",
       tags: ["speed reading", "comprehension", "techniques"]

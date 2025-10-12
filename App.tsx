@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, createContext, useContext } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ReaderModeProvider } from './contexts/ReaderModeContext';
@@ -328,7 +328,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
@@ -354,7 +354,7 @@ const AppContent: React.FC = () => {
         </main>
         <Footer />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 
