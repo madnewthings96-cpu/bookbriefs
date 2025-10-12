@@ -1,7 +1,15 @@
 
 import React from 'react';
+import useSEO from '../hooks/useSEO';
 
 const AboutPage: React.FC = () => {
+  useSEO({
+    title: 'About BookBriefs - Our Mission to Transform Learning | BookBriefs',
+    description: 'Learn about BookBriefs mission to distill wisdom from the world\'s greatest books. Discover how we help thousands of readers learn faster and achieve more.',
+    keywords: 'about bookbriefs, mission, book summaries, learning platform, personal development, business education',
+    type: 'website',
+  });
+
   return (
     <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-4xl mx-auto">
       <h1 className="text-4xl font-bold text-center mb-6" style={{ color: '#2F4F4F' }}>

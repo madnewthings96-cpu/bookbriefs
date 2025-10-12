@@ -111,7 +111,9 @@ const translations = {
       'best-loser-wins': 'Best Loser Wins',
       'thementalgameoftrading': 'The Mental Game of Trading',
       'thezentrader': 'The Zen Trader',
-      'therichestmaninbabylon': 'The Richest Man in Babylon'
+      'therichestmaninbabylon': 'The Richest Man in Babylon',
+      'the-intelligent-investor': 'The Intelligent Investor',
+      'relentless': 'Relentless'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -141,7 +143,9 @@ const translations = {
       'best-loser-wins': 'Tom Hougaard',
       'thementalgameoftrading': 'Jared Tendler',
       'thezentrader': 'Peter Castle',
-      'therichestmaninbabylon': 'George S. Clason'
+      'therichestmaninbabylon': 'George S. Clason',
+      'the-intelligent-investor': 'Benjamin Graham',
+      'relentless': 'Tim S. Grover'
     }
   }
 };

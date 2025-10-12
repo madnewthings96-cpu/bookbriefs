@@ -1,0 +1,15 @@
+# robots.txt for BookBriefs
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /profile
+
+# Sitemap location
+Sitemap: https://ta7leel.site/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

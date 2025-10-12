@@ -15,6 +15,8 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
+import useSEO from '../hooks/useSEO';
+import StructuredData from '../components/StructuredData';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
@@ -25,6 +27,21 @@ const SummaryDetailPage: React.FC = () => {
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // SEO for the current book
+  useSEO({
+    title: book 
+      ? `${getBookTitle(book.id)} by ${getBookAuthor(book.id)} - Summary & Key Insights | BookBriefs`
+      : 'Book Summary | BookBriefs',
+    description: book 
+      ? `Read the comprehensive summary of ${getBookTitle(book.id)} by ${getBookAuthor(book.id)}. Discover key takeaways, insights, and lessons from this ${book.category.toLowerCase()} book in minutes.`
+      : 'Discover book summaries and key insights.',
+    keywords: book 
+      ? `${getBookTitle(book.id)}, ${getBookAuthor(book.id)}, book summary, key takeaways, ${book.category}, book insights, book review`
+      : 'book summary, book insights',
+    image: book?.coverImageUrl || '/images/og-default.jpg',
+    type: 'book',
+  });
   
   const [isSpeaking, setIsSpeaking] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -145,6 +162,16 @@ const SummaryDetailPage: React.FC = () => {
 
   return (
     <>
+      {book && (
+        <StructuredData 
+          type="book"
+          name={getBookTitle(book.id)}
+          author={getBookAuthor(book.id)}
+          image={book.coverImageUrl}
+          description={summaryData?.summary.substring(0, 200) || ''}
+          genre={[book.category]}
+        />
+      )}
       <ReadingProgressBar />
       <div className="bg-white p-3 sm:p-4 md:p-6 rounded-lg shadow-xl max-w-5xl mx-auto">
         {book && (
@@ -375,6 +402,18 @@ const SummaryDetailPage: React.FC = () => {
                       // For The 33 Strategies of War, open the actual PDF file
                       if (book.id === 'the33strategiesofwar') {
                         window.open('/pdfs/the 33 strategies of war.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Relentless, open the actual PDF file
+                      if (book.id === 'relentless') {
+                        window.open('/pdfs/relentless.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The Intelligent Investor, open the actual PDF file
+                      if (book.id === 'the-intelligent-investor') {
+                        window.open('/pdfs/the intelligent investor.pdf', '_blank');
                         return;
                       }
 

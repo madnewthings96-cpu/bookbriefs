@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import useSEO from '../hooks/useSEO';
+import StructuredData from '../components/StructuredData';
 
 interface BlogPost {
   id: number;
@@ -17,6 +19,29 @@ const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Update SEO when post is selected
+  useEffect(() => {
+    if (selectedPost) {
+      document.title = `${selectedPost.title} | BookBriefs Blog`;
+    } else {
+      document.title = 'Blog - Business Insights & Book Summaries | BookBriefs';
+    }
+  }, [selectedPost]);
+
+  useSEO({
+    title: selectedPost 
+      ? `${selectedPost.title} | BookBriefs Blog`
+      : 'Blog - Business Insights & Book Summaries | BookBriefs',
+    description: selectedPost
+      ? selectedPost.excerpt
+      : 'Discover expert insights on trading, business, personal development, and book summaries. Learn from industry experts and improve your knowledge.',
+    keywords: 'business blog, trading insights, personal development, book summaries, productivity tips, financial education',
+    type: selectedPost ? 'article' : 'website',
+    ...(selectedPost && {
+      publishedTime: selectedPost.date,
+    }),
+  });
 
   const openPostModal = (post: BlogPost) => {
     setSelectedPost(post);

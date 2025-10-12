@@ -2,9 +2,18 @@
 import React, { useState } from 'react';
 import { BOOKS, BOOK_SUMMARIES } from '../constants';
 import BookCard from '../components/BookCard';
+import useSEO from '../hooks/useSEO';
+import StructuredData from '../components/StructuredData';
 
 const SummariesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+
+  useSEO({
+    title: 'Book Summaries - Discover Insights from Top Business & Self-Help Books | BookBriefs',
+    description: 'Browse our collection of expertly curated book summaries. Get key insights from bestselling business, self-help, and productivity books in minutes.',
+    keywords: 'book summaries, business book summaries, self-help books, productivity books, book reviews, key takeaways, quick reads',
+    type: 'website',
+  });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);

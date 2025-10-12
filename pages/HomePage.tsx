@@ -5,10 +5,21 @@ import { TESTIMONIALS } from '../constants';
 import Testimonials from '../components/Testimonials';
 import PersonalizedRecommendations from '../components/PersonalizedRecommendations';
 import Categories from '../components/Categories';
+import useSEO from '../hooks/useSEO';
+import StructuredData from '../components/StructuredData';
 
 const HomePage: React.FC = () => {
+  useSEO({
+    title: 'BookBriefs - Transform Your Learning with Powerful Book Summaries',
+    description: 'Discover key insights from the world\'s greatest business and self-help books. Get comprehensive book summaries in minutes, not hours. Join thousands of learners today.',
+    keywords: 'book summaries, business books, self-help books, book insights, learning, personal development, productivity, leadership books',
+    type: 'website',
+  });
 
   return (
+    <>
+      <StructuredData type="organization" />
+      <StructuredData type="website" />
     <div>
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #2F4F4F 0%, #3A5A5A 50%, #4A6A6A 100%)' }}>
@@ -117,6 +128,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
     </div>
+    </>
   );
 };
 

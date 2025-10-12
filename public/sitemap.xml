@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Home Page -->
+  <url>
+    <loc>https://ta7leel.site/#/</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Summaries Page -->
+  <url>
+    <loc>https://ta7leel.site/#/summaries</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://ta7leel.site/#/about</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Blog Page -->
+  <url>
+    <loc>https://ta7leel.site/#/blog</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- News Page -->
+  <url>
+    <loc>https://ta7leel.site/#/news</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Calculators Page -->
+  <url>
+    <loc>https://ta7leel.site/#/calculators</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://ta7leel.site/#/privacy-policy</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Terms of Use -->
+  <url>
+    <loc>https://ta7leel.site/#/terms-of-use</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Popular Book Summaries -->
+  <url>
+    <loc>https://ta7leel.site/#/summary/atomic-habits</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://ta7leel.site/images/atomic-habits.jpg</image:loc>
+      <image:title>Atomic Habits by James Clear</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/#/summary/rich-dad-poor-dad</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://ta7leel.site/images/rich dad poor dad.jpg</image:loc>
+      <image:title>Rich Dad Poor Dad by Robert Kiyosaki</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/#/summary/thinking-fast-and-slow</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://ta7leel.site/images/thinking fast and slow.jpg</image:loc>
+      <image:title>Thinking, Fast and Slow by Daniel Kahneman</image:title>
+    </image:image>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/#/summary/deep-work</loc>
+    <lastmod>2025-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://ta7leel.site/images/deep work.jpg</image:loc>
+      <image:title>Deep Work by Cal Newport</image:title>
+    </image:image>
+  </url>
+
+</urlset>
