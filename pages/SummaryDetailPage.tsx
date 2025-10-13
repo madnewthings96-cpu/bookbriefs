@@ -417,6 +417,12 @@ const SummaryDetailPage: React.FC = () => {
                         return;
                       }
 
+                      // For One Up on Wall Street, open the actual PDF file
+                      if (book.id === 'one-up-on-wall-street') {
+                        window.open('/pdfs/one up on wall street.pdf', '_blank');
+                        return;
+                      }
+
                       // For other books, generate PDF as before
                       if (!summaryData) return;
 

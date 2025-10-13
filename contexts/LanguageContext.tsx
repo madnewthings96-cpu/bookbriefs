@@ -113,7 +113,8 @@ const translations = {
       'thezentrader': 'The Zen Trader',
       'therichestmaninbabylon': 'The Richest Man in Babylon',
       'the-intelligent-investor': 'The Intelligent Investor',
-      'relentless': 'Relentless'
+      'relentless': 'Relentless',
+      'one-up-on-wall-street': 'One Up on Wall Street'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -145,7 +146,8 @@ const translations = {
       'thezentrader': 'Peter Castle',
       'therichestmaninbabylon': 'George S. Clason',
       'the-intelligent-investor': 'Benjamin Graham',
-      'relentless': 'Tim S. Grover'
+      'relentless': 'Tim S. Grover',
+      'one-up-on-wall-street': 'Peter Lynch'
     }
   }
 };
