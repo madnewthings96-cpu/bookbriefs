@@ -17,7 +17,15 @@ const firebaseConfig = {
 
 // Check that the keys were loaded correctly from the .env.local file
 if (!firebaseConfig.apiKey) {
-    throw new Error("Firebase API key is missing. Make sure it's set in your .env.local file and you have restarted the server.");
+    console.warn("Firebase API key is missing. Using demo configuration. Make sure it's set in your .env.local file for production.");
+    // Use demo Firebase config for development
+    firebaseConfig.apiKey = "demo-api-key";
+    firebaseConfig.authDomain = "demo.firebaseapp.com";
+    firebaseConfig.projectId = "demo-project";
+    firebaseConfig.storageBucket = "demo-project.appspot.com";
+    firebaseConfig.messagingSenderId = "123456789";
+    firebaseConfig.appId = "1:123456789:web:abcdef123456";
+    firebaseConfig.measurementId = "G-ABCDEFGHIJ";
 }
 
 // Initialize Firebase

@@ -82,6 +82,24 @@ const translations = {
     youMayAlsoLike: 'You May Also Like',
     addNote: 'Add Note',
     
+    // Sign Up Modal
+    createFreeAccount: 'Create a free account to unlock:',
+    recommendations: 'Recommendations',
+    personalizedForYou: 'Personalized for you',
+    pdfDownloads: 'PDF Downloads',
+    downloadAllBooks: 'Download book summaries',
+    bookmarks: 'Bookmarks',
+    saveYourFavoriteBooks: 'Save your favorite books',
+    history: 'History',
+    revisitBooksLater: 'Revisit books later',
+    ratings: 'Ratings',
+    rateAndSeeRatings: 'Rate books & see your ratings',
+    signInWithGoogle: 'Sign in with Google',
+    signInWithEmail: 'Sign in with email',
+    signInWithApple: 'Sign in with Apple',
+    readersCount: '50,000+',
+    readers: 'readers',
+    
     // Book content
     bookTitles: {
       'atomic-habits': 'Atomic Habits',
@@ -114,7 +132,8 @@ const translations = {
       'therichestmaninbabylon': 'The Richest Man in Babylon',
       'the-intelligent-investor': 'The Intelligent Investor',
       'relentless': 'Relentless',
-      'one-up-on-wall-street': 'One Up on Wall Street'
+      'one-up-on-wall-street': 'One Up on Wall Street',
+      'the-psychology-of-money': 'The Psychology of Money'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -147,7 +166,8 @@ const translations = {
       'therichestmaninbabylon': 'George S. Clason',
       'the-intelligent-investor': 'Benjamin Graham',
       'relentless': 'Tim S. Grover',
-      'one-up-on-wall-street': 'Peter Lynch'
+      'one-up-on-wall-street': 'Peter Lynch',
+      'the-psychology-of-money': 'Morgan Housel'
     }
   }
 };

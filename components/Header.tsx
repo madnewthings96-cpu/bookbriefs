@@ -79,18 +79,18 @@ const Header: React.FC = () => {
 
   // Handle scroll effect for header
   useEffect(() => {
-    if (!isReaderMode) return;
-    
     const handleScroll = () => {
       const scrolled = window.scrollY > 20;
       if (scrolled !== isScrolled) {
         setIsScrolled(scrolled);
         
         // Toggle scrolled class on body for reader mode
-        if (scrolled) {
-          document.body.classList.add('scrolled');
-        } else {
-          document.body.classList.remove('scrolled');
+        if (isReaderMode) {
+          if (scrolled) {
+            document.body.classList.add('scrolled');
+          } else {
+            document.body.classList.remove('scrolled');
+          }
         }
       }
     };
@@ -107,16 +107,22 @@ const Header: React.FC = () => {
 
   return (
     <header 
-      className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-sm ${
+      className={`sticky top-0 z-50 transition-all duration-300 ${
         isReaderMode 
-          ? 'bg-white/90 shadow-sm' 
-          : 'shadow-md'
+          ? 'bg-white/90 shadow-sm backdrop-blur-sm' 
+          : isScrolled 
+            ? 'backdrop-blur-md shadow-lg'
+            : 'shadow-md'
       } ${
         isReaderMode && isScrolled ? 'py-2' : 'py-4'
       }`}
       style={!isReaderMode ? { 
-        background: 'linear-gradient(to right, #2F4F4F, #1a2f2f)',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+        background: isScrolled 
+          ? 'linear-gradient(to right, rgba(47, 79, 79, 0.85), rgba(26, 47, 47, 0.85))'
+          : 'linear-gradient(to right, #2F4F4F, #1a2f2f)',
+        boxShadow: isScrolled 
+          ? '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)'
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
       } : {}}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

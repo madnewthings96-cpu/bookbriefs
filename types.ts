@@ -4,6 +4,21 @@ export interface Book {
   author: string;
   coverImageUrl: string;
   category: string;
+  rating?: number;
+  ratingsCount?: string;
+  publicationYear?: number;
+  pageCount?: number;
+}
+
+export interface Review {
+  id: string;
+  bookId: string;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  date: string;
+  reviewText: string;
+  helpful: number;
 }
 
 export interface SummaryData {

@@ -8,8 +8,10 @@ import MarkdownRenderer from '../components/MarkdownRenderer';
 import ReadingProgressBar from '../components/ReadingProgressBar';
 import NotesAndHighlightsPanel from '../components/NotesAndHighlightsPanel';
 import AddNoteModal from '../components/AddNoteModal';
+import SignUpPromptModal from '../components/SignUpPromptModal';
 import HighlightableText from '../components/HighlightableText';
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
+import BookReviews from '../components/BookReviews';
 import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
@@ -48,6 +50,7 @@ const SummaryDetailPage: React.FC = () => {
 
   // Personal Notes & Highlights state
   const [showAddNoteModal, setShowAddNoteModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
 
 
   const fetchSummary = useCallback((currentBook: Book) => {
@@ -177,8 +180,1228 @@ const SummaryDetailPage: React.FC = () => {
         {book && (
         <header className="mb-4 sm:mb-6 text-center border-b border-gray-200 pb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2F4F4F' }}>{getBookTitle(book.id)}</h1>
-          <p className="text-base sm:text-lg text-gray-600">by {getBookAuthor(book.id)}</p>
+          <p className="text-base sm:text-lg text-gray-600 mb-3">by {getBookAuthor(book.id)}</p>
+          
+          {/* Rating and Book Info */}
+          {book.rating && (
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm sm:text-base">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                      key={star}
+                      className={`w-5 h-5 ${
+                        star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                      }`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <span className="font-semibold text-gray-900">{book.rating.toFixed(2)}</span>
+                {book.ratingsCount && (
+                  <span className="text-gray-500">({book.ratingsCount} ratings)</span>
+                )}
+              </div>
+              
+              {book.publicationYear && (
+                <span className="text-gray-500">| {book.publicationYear}</span>
+              )}
+              
+              {book.pageCount && (
+                <span className="text-gray-500">| {book.pageCount} pages</span>
+              )}
+            </div>
+          )}
         </header>
+      )}
+
+      {/* Want to read the full book? Section */}
+      {book && !loading && (
+        <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-5 text-center border border-indigo-100 shadow-md relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+          
+          <div className="relative z-10">
+            <h3 className="text-lg md:text-xl font-bold mb-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Want to read the full book?
+            </h3>
+            <p className="text-gray-600 mb-4 text-xs md:text-sm">
+              Get the complete experience on your favorite platform
+            </p>
+            
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {book.id === 'trading-in-the-zone' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4n8z3I7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4n1pnPi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/43jrnLQ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the-intelligent-investor' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4nOFXTT"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4763wAi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/46QHaUS"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'educated' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4nJ8jyV"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3KLPRqS"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4q4qEIp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'marketwizards' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4nRy6oJ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/46SyIEs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4qeGdgM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thedisciplinedtrader' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3WoeWuF"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3WFDu20"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nLwlJx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thementalgameoftrading' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/46Qkmof"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3IJ7IOF"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/470yzO1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'best-loser-wins' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3W0goTJ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/47aKyc4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/473Agu7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'becoming' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4qqFV6D"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/46PAZ3d"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/47jnSHL"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thezentrader' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3W3DqsQ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nn5kLL"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4mYR6Ah"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'atomic-habits' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/42EOe4j"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3KVuXWd"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/47oavpG"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'broken-money' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4n6vfqx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/43cdcbr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4mYRxup"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'sapiens' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/43jv5VM"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nV4B5w"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4qaeVrH"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thinking-fast-and-slow' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/46NEyHg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/47miWln"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nL5zRv"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the-alchemist' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/46P8QcF"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3KOGW83"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nI5DS4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the-four-agreements' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/48prwAZ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/473bZ7w"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4mYS1Rf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'dune' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/43j0O9z"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nL63XP"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3WFGbRa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'project-hail-mary' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4q8Edq1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nLz9X5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/473CI3N"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the-subtle-art-of-not-giving-a-f' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/46QKP54"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4ombJrp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3J8x88e"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'rich-dad-poor-dad' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3Wyk9zU"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/48nupSO"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/470Bczn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'americas-bank' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4og7AVA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/42CZ8aT"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/42CZ9vt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'therichestmaninbabylon' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4om40tm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/437t5Qs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nRPf1w"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the33strategiesofwar' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3KM3qXi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4qnFkCC"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4nJcwTf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thinkandgrowrich' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/490gcv9"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/48YfYVp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4927jkS"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'belesszombie' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4nT4Bmu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4qavow4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4qavow4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'tradelikeastockmarketwizard' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/498yQ42"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4htpvq1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4htpvq1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'howtodaytradeforaliving' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/46WKf4g"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/475aqpL"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3IMQ6RY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the48lawsofpower' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4n5mDk2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3L8qOhG"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3JcUee1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'thelawsofhumannature' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/476eW7s"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3W0KCpE"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/471422B"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'secretsofthemillionairemind' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4onA4NA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4ogCQUq"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4oelK9L"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'relentless' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/42GMWWB"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3W54Y14"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/42GgALA"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : (
+                <>
+                  <button className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm">
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </button>
+
+                  <button className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm">
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </button>
+
+                  <button className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm">
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {loading && <Spinner />}
@@ -222,16 +1445,6 @@ const SummaryDetailPage: React.FC = () => {
 {t('detailedSummary') || 'Detailed Summary'}
               </h2>
               <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:space-x-4">
-                <button
-                  onClick={() => setShowAddNoteModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-white"
-                  style={{ backgroundColor: '#2F4F4F' }}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  <span>{t('addNote') || 'Add Note'}</span>
-                </button>
                 {isAuthenticated ? (
                   <button
                     onClick={() => {
@@ -423,6 +1636,12 @@ const SummaryDetailPage: React.FC = () => {
                         return;
                       }
 
+                      // For The Psychology of Money, open the actual PDF file
+                      if (book.id === 'the-psychology-of-money') {
+                        window.open('/pdfs/the psychology of money.pdf', '_blank');
+                        return;
+                      }
+
                       // For other books, generate PDF as before
                       if (!summaryData) return;
 
@@ -481,12 +1700,16 @@ const SummaryDetailPage: React.FC = () => {
                     <span>Arabic PDF</span>
                   </button>
                 ) : (
-                  <div className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold text-gray-500 bg-gray-100 cursor-not-allowed">
+                  <button
+                    onClick={() => setShowSignUpModal(true)}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-white"
+                    style={{ backgroundColor: '#FF7F50' }}
+                  >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span>Arabic PDF (Login Required)</span>
-                  </div>
+                    <span>Arabic PDF</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -501,10 +1724,10 @@ const SummaryDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Personal Notes & Highlights Section */}
-          <div className="mt-8">
-            <NotesAndHighlightsPanel bookId={bookId || ''} />
-          </div>
+          {/* Book Reviews Section */}
+          {bookId && (
+            <BookReviews bookId={bookId} />
+          )}
         </article>
       )}
 
@@ -513,6 +1736,12 @@ const SummaryDetailPage: React.FC = () => {
         bookId={bookId || ''}
         isOpen={showAddNoteModal}
         onClose={() => setShowAddNoteModal(false)}
+      />
+
+      {/* Sign Up Prompt Modal */}
+      <SignUpPromptModal
+        isOpen={showSignUpModal}
+        onClose={() => setShowSignUpModal(false)}
       />
       </div>
 

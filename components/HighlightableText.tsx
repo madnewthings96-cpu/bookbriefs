@@ -148,19 +148,6 @@ const HighlightableText: React.FC<HighlightableTextProps> = ({
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-white"></div>
         </div>
       )}
-
-      {user && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="flex items-center text-sm text-blue-800">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>
-              {t('highlightTip') || 'Select any text above to highlight and save important passages for later reference.'}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
