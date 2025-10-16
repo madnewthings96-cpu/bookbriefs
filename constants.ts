@@ -148,7 +148,7 @@ export const BOOKS: Book[] = [
     id: 'trading-in-the-zone',
     title: 'Trading in the Zone',
     author: 'Mark Douglas',
-    coverImageUrl: '/images/trading-in-the-zone.jpeg',
+    coverImageUrl: '/images/trading-in-the-zone.jpg',
     category: 'Finance & Investment',
     rating: 4.31,
     ratingsCount: '12K',

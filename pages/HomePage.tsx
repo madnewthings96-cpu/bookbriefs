@@ -128,7 +128,7 @@ const HomePage: React.FC = () => {
               <div className="flex gap-3 md:gap-4 animate-scroll-reverse">
                 <img src="/images/think and grow rich.jpg" alt="Think and Grow Rich" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/trading-in-the-zone.jpeg" alt="Trading in the Zone" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/trading-in-the-zone.jpg" alt="Trading in the Zone" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/best loser wins.jpg" alt="Best Loser Wins" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/can't hurt me.jpg" alt="Can't Hurt Me" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/law of human nature.jpg" alt="The Laws of Human Nature" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />

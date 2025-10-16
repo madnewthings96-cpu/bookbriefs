@@ -7,6 +7,7 @@ import { ReaderModeProvider } from './contexts/ReaderModeContext';
 import { PersonalNotesProvider } from './contexts/PersonalNotesContext';
 import { UserProgressProvider } from './contexts/UserProgressContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
+import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -19,6 +20,7 @@ import BlogPage from './pages/BlogPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import UserProfilePage from './pages/UserProfilePage';
+import ReadingChallengePage from './pages/ReadingChallengePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -300,13 +302,15 @@ const App: React.FC = () => {
       <LanguageProvider>
         <AuthProvider>
           <FavoritesProvider>
-            <UserProgressProvider>
-              <ReaderModeProvider>
-                <PersonalNotesProvider>
-                  <AppContent />
-                </PersonalNotesProvider>
-              </ReaderModeProvider>
-            </UserProgressProvider>
+            <ReadingChallengeProvider>
+              <UserProgressProvider>
+                <ReaderModeProvider>
+                  <PersonalNotesProvider>
+                    <AppContent />
+                  </PersonalNotesProvider>
+                </ReaderModeProvider>
+              </UserProgressProvider>
+            </ReadingChallengeProvider>
           </FavoritesProvider>
         </AuthProvider>
       </LanguageProvider>
@@ -347,6 +351,11 @@ const AppContent: React.FC = () => {
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/reading-challenge" element={
+              <ProtectedRoute>
+                <ReadingChallengePage />
               </ProtectedRoute>
             } />
             <Route path="/login" element={<LoginPage />} />

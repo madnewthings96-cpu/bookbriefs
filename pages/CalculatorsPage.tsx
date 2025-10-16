@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PipValueCalculator from '../components/PipValueCalculator';
 import PositionSizeCalculator from '../components/PositionSizeCalculator';
+import FIRECalculator from '../components/FIRECalculator';
+import CompoundCalculator from '../components/CompoundCalculator';
 import { BROKERS } from '../constants';
 import BrokerCard from '../components/BrokerCard';
 
-type CalculatorTab = 'pipValue' | 'positionSize';
+type CalculatorTab = 'pipValue' | 'positionSize' | 'fire' | 'compound';
 
 const CalculatorsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<CalculatorTab>('positionSize');
@@ -88,14 +90,14 @@ const CalculatorsPage: React.FC = () => {
           </p>
         </div>
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl">
-          <div className="flex justify-center border-b mb-6">
+          <div className="flex justify-center border-b mb-6 overflow-x-auto">
             <div
               className={`${tabStyle} ${activeTab === 'pipValue' ? activeTabStyle : inactiveTabStyle}`}
               onClick={() => setActiveTab('pipValue')}
               role="tab"
               aria-selected={activeTab === 'pipValue'}
             >
-              Pip Value Calculator
+              Pip Value
             </div>
             <div
               className={`${tabStyle} ${activeTab === 'positionSize' ? activeTabStyle : inactiveTabStyle}`}
@@ -103,31 +105,95 @@ const CalculatorsPage: React.FC = () => {
               role="tab"
               aria-selected={activeTab === 'positionSize'}
             >
-              Position Size Calculator
+              Position Size
+            </div>
+            <div
+              className={`${tabStyle} ${activeTab === 'fire' ? activeTabStyle : inactiveTabStyle}`}
+              onClick={() => setActiveTab('fire')}
+              role="tab"
+              aria-selected={activeTab === 'fire'}
+            >
+              FIRE
+            </div>
+            <div
+              className={`${tabStyle} ${activeTab === 'compound' ? activeTabStyle : inactiveTabStyle}`}
+              onClick={() => setActiveTab('compound')}
+              role="tab"
+              aria-selected={activeTab === 'compound'}
+            >
+              Compound Interest
             </div>
           </div>
           <div>
             {activeTab === 'pipValue' && <PipValueCalculator />}
             {activeTab === 'positionSize' && <PositionSizeCalculator />}
+            {activeTab === 'fire' && <FIRECalculator />}
+            {activeTab === 'compound' && <CompoundCalculator />}
           </div>
         </div>
       </section>
 
       {/* Educational Content Section */}
-      <section className="max-w-3xl mx-auto">
-          <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-orange-400">
-               <h2 className="text-2xl font-bold mb-3" style={{ color: '#2F4F4F' }}>Why is Position Sizing Important?</h2>
-               <p className="text-gray-700 leading-relaxed">
-                   Proper position sizing is one of the most critical aspects of successful trading and risk management. It determines how many lots to trade per position, ensuring you don't risk too much of your capital on a single trade. By calculating the correct size, you can protect your account from significant losses, survive market volatility, and maintain the discipline needed for long-term consistency.
-               </p>
-               <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-blue-400">
-                   <p className="text-gray-700 leading-relaxed">
-                       Therefore, a 20-pip movement in XAU/USD would be calculated as follows:<br/>
-                       20 pips * 10 points/pip = 200 points<br/><br/>
-                       200 points = 20 Pips
-                   </p>
-               </div>
-          </div>
+      <section className="max-w-3xl mx-auto space-y-6">
+          {(activeTab === 'pipValue' || activeTab === 'positionSize') && (
+            <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-orange-400">
+                 <h2 className="text-2xl font-bold mb-3" style={{ color: '#2F4F4F' }}>Why is Position Sizing Important?</h2>
+                 <p className="text-gray-700 leading-relaxed">
+                     Proper position sizing is one of the most critical aspects of successful trading and risk management. It determines how many lots to trade per position, ensuring you don't risk too much of your capital on a single trade. By calculating the correct size, you can protect your account from significant losses, survive market volatility, and maintain the discipline needed for long-term consistency.
+                 </p>
+                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-blue-400">
+                     <p className="text-gray-700 leading-relaxed">
+                         Therefore, a 20-pip movement in XAU/USD would be calculated as follows:<br/>
+                         20 pips * 10 points/pip = 200 points<br/><br/>
+                         200 points = 20 Pips
+                     </p>
+                 </div>
+            </div>
+          )}
+
+          {activeTab === 'fire' && (
+            <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-green-400">
+                 <h2 className="text-2xl font-bold mb-3" style={{ color: '#2F4F4F' }}>What is FIRE?</h2>
+                 <p className="text-gray-700 leading-relaxed mb-4">
+                     FIRE stands for <strong>Financial Independence, Retire Early</strong>. It's a movement focused on aggressive saving and investing to achieve financial freedom much earlier than traditional retirement age. The core principle is to save and invest a significant portion of your income (typically 50-70%) to build a portfolio that can sustain your lifestyle indefinitely.
+                 </p>
+                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-purple-400">
+                     <h3 className="font-semibold text-gray-800 mb-2">The 4% Rule</h3>
+                     <p className="text-gray-700 leading-relaxed">
+                         The FIRE calculator uses the "4% rule," which suggests you can safely withdraw 4% of your portfolio annually without running out of money. To calculate your FIRE number, multiply your annual expenses by 25.<br/><br/>
+                         <strong>Example:</strong> If you spend $40,000/year, your FIRE number is $1,000,000.<br/>
+                         ($1,000,000 × 4% = $40,000/year)
+                     </p>
+                 </div>
+            </div>
+          )}
+
+          {activeTab === 'compound' && (
+            <div className="bg-white p-6 rounded-lg shadow-xl border-l-4 border-blue-400">
+                 <h2 className="text-2xl font-bold mb-3" style={{ color: '#2F4F4F' }}>Understanding Compound Interest</h2>
+                 <p className="text-gray-700 leading-relaxed mb-4">
+                     Compound interest is the interest calculated on the initial principal and also on the accumulated interest from previous periods. Often called <strong>"interest on interest,"</strong> it makes your money grow at a faster rate than simple interest, which is calculated only on the principal amount.
+                 </p>
+                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-indigo-400">
+                     <h3 className="font-semibold text-gray-800 mb-2">The Rule of 72</h3>
+                     <p className="text-gray-700 leading-relaxed mb-2">
+                         A quick way to estimate how long it takes for your investment to double is the <strong>Rule of 72</strong>. Simply divide 72 by your annual interest rate.
+                     </p>
+                     <p className="text-gray-700 leading-relaxed">
+                         <strong>Example:</strong> At an 8% annual return, your money will double in approximately 9 years (72 ÷ 8 = 9).
+                     </p>
+                 </div>
+                 <div className="mt-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                     <h3 className="font-semibold text-gray-800 mb-2">📈 Key Factors</h3>
+                     <ul className="text-gray-700 space-y-1 list-disc list-inside">
+                         <li><strong>Time:</strong> The longer your money compounds, the more dramatic the growth</li>
+                         <li><strong>Rate:</strong> Higher interest rates accelerate wealth accumulation</li>
+                         <li><strong>Frequency:</strong> More frequent compounding (daily vs. annually) increases returns</li>
+                         <li><strong>Contributions:</strong> Regular deposits amplify the compounding effect</li>
+                     </ul>
+                 </div>
+            </div>
+          )}
       </section>
 
 
