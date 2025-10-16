@@ -346,6 +346,10 @@ const AppContent: React.FC = () => {
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/calculators" element={<CalculatorsPage />} />
+            <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
+            <Route path="/calculators/position-size" element={<CalculatorsPage />} />
+            <Route path="/calculators/fire" element={<CalculatorsPage />} />
+            <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/profile" element={

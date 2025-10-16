@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PipValueCalculator from '../components/PipValueCalculator';
 import PositionSizeCalculator from '../components/PositionSizeCalculator';
 import FIRECalculator from '../components/FIRECalculator';
@@ -9,8 +10,37 @@ import BrokerCard from '../components/BrokerCard';
 type CalculatorTab = 'pipValue' | 'positionSize' | 'fire' | 'compound';
 
 const CalculatorsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<CalculatorTab>('positionSize');
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Determine active tab from URL
+  const getTabFromPath = (path: string): CalculatorTab => {
+    if (path.includes('/pip-value')) return 'pipValue';
+    if (path.includes('/position-size')) return 'positionSize';
+    if (path.includes('/fire')) return 'fire';
+    if (path.includes('/compound-interest')) return 'compound';
+    return 'positionSize'; // default
+  };
+
+  const [activeTab, setActiveTab] = useState<CalculatorTab>(getTabFromPath(location.pathname));
   const tickerTapeRef = useRef<HTMLDivElement>(null);
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    setActiveTab(getTabFromPath(location.pathname));
+  }, [location.pathname]);
+
+  // Handle tab change with URL update
+  const handleTabChange = (tab: CalculatorTab) => {
+    setActiveTab(tab);
+    const pathMap: Record<CalculatorTab, string> = {
+      pipValue: '/calculators/pip-value',
+      positionSize: '/calculators/position-size',
+      fire: '/calculators/fire',
+      compound: '/calculators/compound-interest'
+    };
+    navigate(pathMap[tab]);
+  };
 
   const tabStyle = "py-2 px-4 text-center cursor-pointer font-semibold transition-colors duration-300";
   const activeTabStyle = "text-orange-500 border-b-2 border-orange-500";
@@ -93,7 +123,7 @@ const CalculatorsPage: React.FC = () => {
           <div className="flex justify-center border-b mb-6 overflow-x-auto">
             <div
               className={`${tabStyle} ${activeTab === 'pipValue' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => setActiveTab('pipValue')}
+              onClick={() => handleTabChange('pipValue')}
               role="tab"
               aria-selected={activeTab === 'pipValue'}
             >
@@ -101,7 +131,7 @@ const CalculatorsPage: React.FC = () => {
             </div>
             <div
               className={`${tabStyle} ${activeTab === 'positionSize' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => setActiveTab('positionSize')}
+              onClick={() => handleTabChange('positionSize')}
               role="tab"
               aria-selected={activeTab === 'positionSize'}
             >
@@ -109,7 +139,7 @@ const CalculatorsPage: React.FC = () => {
             </div>
             <div
               className={`${tabStyle} ${activeTab === 'fire' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => setActiveTab('fire')}
+              onClick={() => handleTabChange('fire')}
               role="tab"
               aria-selected={activeTab === 'fire'}
             >
@@ -117,7 +147,7 @@ const CalculatorsPage: React.FC = () => {
             </div>
             <div
               className={`${tabStyle} ${activeTab === 'compound' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => setActiveTab('compound')}
+              onClick={() => handleTabChange('compound')}
               role="tab"
               aria-selected={activeTab === 'compound'}
             >

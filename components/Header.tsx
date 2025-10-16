@@ -239,7 +239,7 @@ const Header: React.FC = () => {
                         setSearchResults([]);
                       }, 200);
                     }}
-                    placeholder={t('searchPlaceholder') || 'Search book summaries...'}
+                    placeholder={t('Search') || 'Search'}
                     className={`w-full pl-10 pr-12 py-3 rounded-xl border transition-all duration-300 ${
                       isReaderMode 
                         ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500' 
@@ -362,7 +362,7 @@ const Header: React.FC = () => {
                         setSearchResults([]);
                       }, 200);
                     }}
-                    placeholder={t('searchPlaceholder') || 'Search book summaries...'}
+                    placeholder={t('searchPlaceholder') || 'Search'}
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-600 bg-slate-800/95 text-white 
                       placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400
                       shadow-lg backdrop-blur-sm text-sm font-medium transition-all duration-300"
