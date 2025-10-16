@@ -31,15 +31,15 @@ const SummariesPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#2F4F4F' }}>
+      <div className="container mx-auto px-4 pt-4 pb-8 md:py-8">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#2F4F4F' }}>
             Book Summaries
           </h1>
-          <p className="text-gray-600 text-lg">Discover wisdom from {filteredBooks.length} carefully curated books</p>
+          <p className="text-gray-600 text-base md:text-lg">Discover wisdom from {filteredBooks.length} carefully curated books</p>
         </div>
         
-        <div className="mb-8 max-w-md mx-auto">
+        <div className="mb-6 md:mb-8 max-w-md mx-auto">
           <input
             type="search"
             placeholder="Search by title or author..."

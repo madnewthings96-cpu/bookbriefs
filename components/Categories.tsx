@@ -62,9 +62,9 @@ const Categories: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 relative">
-      <div className="relative inline-block mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 relative z-10 px-6 py-3">📚 Categories</h2>
+    <div className="max-w-7xl mx-auto px-4 pt-4 pb-12 md:py-12 relative">
+      <div className="relative inline-block mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 relative z-10 px-4 py-2 md:px-6 md:py-3">📚 Categories</h2>
         {/* Neon Green Border Animation */}
         <div className="absolute inset-0 rounded-2xl"
           style={{
