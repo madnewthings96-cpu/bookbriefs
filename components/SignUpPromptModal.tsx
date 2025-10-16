@@ -85,16 +85,6 @@ const SignUpPromptModal: React.FC<SignUpPromptModalProps> = ({ isOpen, onClose }
                 <span className="text-gray-600"> {t('saveYourFavoriteBooks') || 'Save your favorite books'}</span>
               </div>
             </div>
-
-            <div className="flex items-start space-x-3">
-              <svg className="w-5 h-5 text-teal-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              <div>
-                <span className="font-semibold text-gray-900">{t('history') || 'History:'}</span>
-                <span className="text-gray-600"> {t('revisitBooksLater') || 'Revisit books later'}</span>
-              </div>
-            </div>
           </div>
 
           {/* Sign-in buttons */}
