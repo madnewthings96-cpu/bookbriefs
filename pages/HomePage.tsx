@@ -110,9 +110,11 @@ const HomePage: React.FC = () => {
                 <img src="/images/atomic-habits.jpg" alt="Atomic Habits" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/becoming.jpg" alt="Becoming" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/rich dad poor dad.jpg" alt="Rich Dad Poor Dad" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/one good trade.jpg" alt="One Good Trade" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/sapiens.jpg" alt="Sapiens" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/educated.jpg" alt="Educated" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/the subtle art.jpg" alt="The Subtle Art" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/fast and slow.jpg" alt="Thinking Fast and Slow" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/the four agreements.jpg" alt="The Four Agreements" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/hail mary.jpg" alt="Project Hail Mary" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
@@ -128,6 +130,7 @@ const HomePage: React.FC = () => {
                 <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/trading-in-the-zone.jpeg" alt="Trading in the Zone" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/best loser wins.jpg" alt="Best Loser Wins" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/can't hurt me.jpg" alt="Can't Hurt Me" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/law of human nature.jpg" alt="The Laws of Human Nature" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/broken money.jpg" alt="Broken Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/the intelligent investor.jpg" alt="The Intelligent Investor" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
@@ -175,15 +178,6 @@ const HomePage: React.FC = () => {
             />
           </div>
           <Testimonials testimonials={TESTIMONIALS} />
-           <div className="mt-16">
-             <Link
-                to="/signup"
-                className="inline-block text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 text-lg shadow-lg hover:shadow-xl"
-                style={{ backgroundColor: '#FF7F50' }}
-            >
-                Start Your Journey
-            </Link>
-           </div>
         </div>
       </section>
     </div>

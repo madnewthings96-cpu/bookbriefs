@@ -133,7 +133,9 @@ const translations = {
       'the-intelligent-investor': 'The Intelligent Investor',
       'relentless': 'Relentless',
       'one-up-on-wall-street': 'One Up on Wall Street',
-      'the-psychology-of-money': 'The Psychology of Money'
+      'the-psychology-of-money': 'The Psychology of Money',
+      'one-good-trade': 'One Good Trade',
+      'cant-hurt-me': "Can't Hurt Me"
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -167,7 +169,9 @@ const translations = {
       'the-intelligent-investor': 'Benjamin Graham',
       'relentless': 'Tim S. Grover',
       'one-up-on-wall-street': 'Peter Lynch',
-      'the-psychology-of-money': 'Morgan Housel'
+      'the-psychology-of-money': 'Morgan Housel',
+      'one-good-trade': 'Mike Bellafiore',
+      'cant-hurt-me': 'David Goggins'
     }
   }
 };

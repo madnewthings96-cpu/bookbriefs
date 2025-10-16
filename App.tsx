@@ -6,6 +6,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { ReaderModeProvider } from './contexts/ReaderModeContext';
 import { PersonalNotesProvider } from './contexts/PersonalNotesContext';
 import { UserProgressProvider } from './contexts/UserProgressContext';
+import { FavoritesProvider } from './contexts/FavoritesContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -298,13 +299,15 @@ const App: React.FC = () => {
     <FirebaseProvider>
       <LanguageProvider>
         <AuthProvider>
-          <UserProgressProvider>
-            <ReaderModeProvider>
-              <PersonalNotesProvider>
-                <AppContent />
-              </PersonalNotesProvider>
-            </ReaderModeProvider>
-          </UserProgressProvider>
+          <FavoritesProvider>
+            <UserProgressProvider>
+              <ReaderModeProvider>
+                <PersonalNotesProvider>
+                  <AppContent />
+                </PersonalNotesProvider>
+              </ReaderModeProvider>
+            </UserProgressProvider>
+          </FavoritesProvider>
         </AuthProvider>
       </LanguageProvider>
     </FirebaseProvider>

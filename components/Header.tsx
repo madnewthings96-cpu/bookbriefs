@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 import LanguageSelector from './LanguageSelector';
 import SearchResults from './SearchResults';
+import UserMenu from './UserMenu';
 import { searchBooks, SearchResult } from '../services/searchService';
 
 const Header: React.FC = () => {
@@ -181,9 +182,6 @@ const Header: React.FC = () => {
                 <NavLink to="/blog" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>Blog</NavLink>
                 <NavLink to="/calculators" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>{t('calculators')}</NavLink>
                 <NavLink to="/news" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>News</NavLink>
-                {isAuthenticated && (
-                  <NavLink to="/profile" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>{t('profile')}</NavLink>
-                )}
               </nav>
             </div>
           </div>
@@ -305,20 +303,10 @@ const Header: React.FC = () => {
           </div>
           <div className="flex items-center">
              <div className="hidden md:flex items-center space-x-4">
-                {isAuthenticated ? (
-                  <>
-                    <div className="flex items-center space-x-2">
-                      <LanguageSelector />
-                    </div>
-                    <span className="text-white text-sm">{t('welcome')}!</span>
-                    <button
-                      onClick={logout}
-                      className="text-white hover:text-orange-400 transition-colors duration-300 font-medium text-sm"
-                    >
-                      {t('logout')}
-                    </button>
-                  </>
-                ) : (
+                <div className="flex items-center space-x-2">
+                  <LanguageSelector />
+                </div>
+                {!isAuthenticated && (
                   <>
                     <NavLink to="/login" className="text-white hover:text-orange-400 transition-colors duration-300 font-medium text-sm">
                         {t('login')}
@@ -331,6 +319,7 @@ const Header: React.FC = () => {
                     </NavLink>
                   </>
                 )}
+                <UserMenu />
             </div>
             <div className="-mr-2 flex md:hidden">
               <button
@@ -403,9 +392,6 @@ const Header: React.FC = () => {
             <NavLink to="/blog" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Blog</NavLink>
             <NavLink to="/calculators" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Calculators</NavLink>
             <NavLink to="/news" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>News</NavLink>
-            {isAuthenticated && (
-              <NavLink to="/profile" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
-            )}
             {/* Buy me a coffee button for mobile */}
             <div className="mt-4 px-2">
               <a

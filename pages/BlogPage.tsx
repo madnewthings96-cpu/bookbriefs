@@ -1501,6 +1501,211 @@ const BlogPage: React.FC = () => {
           <p style="margin-bottom: 18px; text-align: center; font-size: 20px; font-weight: bold; color: #0066cc;">هل خطتك الحالية تمنحك هذه "الثقة الهادئة"؟ إذا كانت الإجابة لا، فقد حان الوقت لإعادة كتابتها.</p>
         </div>
       `;
+    } else if (postId === 15) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">في عالم التداول المتقلب، حيث يمكن لقرار لحظي أن يكلفك غالياً، غالباً ما نرى المتداولين يقعون فريسة للدخول العاطفي. إنها تلك اللحظة التي تتجاهل فيها خطتك المحددة جيداً وتضغط على زر الشراء أو البيع بناءً على حدس أو خوف أو جشع عابر. والنتيجة؟ صفقات متهورة، خسائر غير مبررة، وتآكل بطيء للثقة.</p>
+
+          <div style="background-color: #e8f4fd; border: 3px solid #0dcaf0; border-radius: 15px; padding: 30px; margin: 30px 0; text-align: center;">
+            <h3 style="font-size: 26px; font-weight: bold; margin: 0 0 15px 0; color: #055160;">✈️ انضباط الطيار في التداول</h3>
+            <p style="margin: 0; color: #055160; font-size: 18px; font-style: italic; line-height: 1.8;">"فكر في طيار يقفز إلى قمرة القيادة دون مراجعة قائمة التحقق الخاصة بالإقلاع. إنه أمر لا يمكن تصوره."</p>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: justify;">لكن ماذا لو كان هناك نظام بسيط وقوي، مستوحى من أحد أكثر المهن حساسية في العالم، يمكن أن يحميك من نفسك؟ هنا يأتي دور <strong>قائمة تحقق ما قبل التداول (Pre-Trade Checklist)</strong>، المستوحاة من انضباط الطيارين.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الأول: لماذا قائمة التحقق ضرورية للتداول</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن طبيعة الدماغ البشري تجعله عرضة للخطأ، خاصة تحت الضغط أو الإغراء. وفي التداول، كلتا الحالتين متوفرتان بكثرة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">1. الحد من التحيزات المعرفية:</h3>
+          
+          <div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #856404; font-size: 18px; font-weight: bold;">⚠️ التحيزات المعرفية الشائعة</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #856404;">
+              <li style="margin-bottom: 10px;"><strong>تحيز التأكيد (Confirmation Bias):</strong> رؤية ما يدعم فكرتك وتجاهل ما يعارضها.</li>
+              <li style="margin-bottom: 10px;"><strong>تحيز التوفر (Availability Bias):</strong> التركيز على آخر حدث وتجاهل البيانات الأوسع.</li>
+              <li style="margin-bottom: 10px;"><strong>الخوف من فوات الفرصة (FOMO):</strong> الاندفاع لدخول صفقة خوفاً من تفويت "الفرصة الذهبية".</li>
+              <li style="margin-bottom: 10px;"><strong>الخوف من الخسارة (Loss Aversion):</strong> اتخاذ قرارات متسرعة لتجنب خسارة محتملة.</li>
+            </ul>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: justify;">قائمة التحقق تعمل كـ <strong>"مرشح"</strong> لهذه التحيزات. إنها تجبرك على التفكير بشكل منهجي والتأكد من استيفاء جميع الشروط الموضوعية.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">2. فرض الانضباط والاتساق:</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">التداول الناجح هو التداول المتسق. قائمة التحقق تضمن أنك تقوم بنفس الإجراءات، وتفحص نفس الشروط، في كل مرة قبل الدخول في صفقة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">3. التحرر من "الشعور" و"التخمين":</h3>
+          
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <p style="margin: 0; color: #155724; line-height: 1.6; font-size: 16px;">عندما يكون لديك قائمة تحقق، فإنك <strong>لا تتداول بناءً على رأي، بل بناءً على دليل</strong>. تذكرنا قائمة التحقق بأن التداول ليس عن "الشعور الجيد تجاه الصفقة" أو "التخمين بأنها ستنجح".</p>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الثاني: مكونات قائمة التحقق الفعالة</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">يجب أن تكون قائمة التحقق شخصية ومصممة خصيصاً لاستراتيجيتك وأسلوب تداولك. ومع ذلك، هناك بعض العناصر الأساسية التي يجب أن تتضمنها:</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">أ. الشروط الفنية والموضوعية (التحليل البارد):</h3>
+          
+          <div style="background-color: #e7f3ff; border: 1px solid #b8daff; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #004085;">📊 ظروف السوق العامة</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #004085;">
+              <li style="margin-bottom: 8px;">هل السوق في اتجاه صعودي، هبوطي، أم جانبي (Range-bound)؟</li>
+              <li style="margin-bottom: 8px;">هل هناك أخبار اقتصادية رئيسية قادمة قد تؤثر على الأداة المتداولة؟</li>
+              <li style="margin-bottom: 8px;">هل يتوافق اتجاه الصفقة مع الاتجاه الأكبر للسوق؟</li>
+            </ul>
+          </div>
+
+          <div style="background-color: #f0f9ff; border: 1px solid #c3dafe; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #1e3a8a;">📈 الإعداد الفني (Setup)</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #1e3a8a;">
+              <li style="margin-bottom: 8px;">هل السعر وصل إلى منطقة دعم/مقاومة رئيسية؟</li>
+              <li style="margin-bottom: 8px;">هل هناك نموذج شموع يابانية محدد؟</li>
+              <li style="margin-bottom: 8px;">هل المؤشرات الفنية تعطي إشارات واضحة وفقًا لاستراتيجيتك؟</li>
+              <li style="margin-bottom: 8px;">هل هناك كسر لمنطقة معينة أو نموذج فني؟</li>
+            </ul>
+          </div>
+
+          <div style="background-color: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #2e7d32;">✅ تأكيد الإعداد (Confirmation)</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #2e7d32;">
+              <li style="margin-bottom: 8px;">هل هناك تأكيد من إطار زمني أكبر؟</li>
+              <li style="margin-bottom: 8px;">هل هناك حجم تداول مرتفع يدعم الإشارة؟</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">ب. إدارة المخاطر (الحماية المسبقة):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">هذا هو الجزء الأكثر أهمية للحفاظ على رأس مالك ومنع الدخول العاطفي المتهور.</p>
+
+          <div style="background-color: #f8d7da; border-right: 4px solid #dc3545; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #721c24; font-size: 18px; font-weight: bold;">🛡️ بنود إدارة المخاطر الإلزامية</h4>
+            <div style="margin-top: 15px;">
+              <p style="margin: 0 0 10px 0; color: #721c24; font-weight: 600;">📍 تحديد وقف الخسارة:</p>
+              <ul style="margin: 0 0 15px 0; padding-right: 20px; color: #721c24;">
+                <li style="margin-bottom: 8px;">هل تم تحديد نقطة وقف الخسارة بوضوح؟</li>
+                <li style="margin-bottom: 8px;">هل هي بعيدة بما يكفي لتجنب الضوضاء، وقريبة بما يكفي للحد من الخسارة؟</li>
+              </ul>
+              
+              <p style="margin: 0 0 10px 0; color: #721c24; font-weight: 600;">🎯 تحديد جني الأرباح:</p>
+              <ul style="margin: 0 0 15px 0; padding-right: 20px; color: #721c24;">
+                <li style="margin-bottom: 8px;">هل تم تحديد هدف الربح بوضوح؟</li>
+              </ul>
+              
+              <p style="margin: 0 0 10px 0; color: #721c24; font-weight: 600;">📏 حساب حجم المركز:</p>
+              <ul style="margin: 0 0 15px 0; padding-right: 20px; color: #721c24;">
+                <li style="margin-bottom: 8px;">هل قمت بحساب حجم المركز لضمان ألا تتجاوز المخاطرة 1% أو 2% من رأس مالك؟</li>
+                <li style="margin-bottom: 8px;">هل قمت بمضاعفة المخاطرة عاطفياً بسبب "الثقة المفرطة"؟ (يجب أن تكون الإجابة لا)</li>
+              </ul>
+              
+              <p style="margin: 0 0 10px 0; color: #721c24; font-weight: 600;">⚖️ نسبة المخاطرة إلى المكافأة:</p>
+              <ul style="margin: 0; padding-right: 20px; color: #721c24;">
+                <li style="margin-bottom: 8px;">هل نسبة R:R مقبولة (على الأقل 1:2 أو 1:3)؟</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222;">ج. الحالة النفسية والعقلية (فحص الذات):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">هذا هو الجزء الذي يحول قائمة التحقق إلى <strong>نظام إنذار سلوكي مبكر</strong>.</p>
+
+          <div style="background-color: #f3e5f5; border-right: 4px solid #9c27b0; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 15px 0; color: #6a1b9a; font-size: 18px; font-weight: bold;">🧠 فحص الحالة النفسية</h4>
+            <div style="margin-top: 15px;">
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">💪 الحالة الجسدية والنفسية:</p>
+              <ul style="margin: 0 0 15px 0; padding-right: 20px; color: #6a1b9a;">
+                <li style="margin-bottom: 8px;">هل نمت جيدًا؟ هل أنت متعب أو مريض؟</li>
+                <li style="margin-bottom: 8px;">هل أنت جائع أو عطشان؟</li>
+                <li style="margin-bottom: 8px;">هل أنت تحت أي ضغط عاطفي (من خارج التداول)؟</li>
+              </ul>
+              
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">😊 الحالة العاطفية:</p>
+              <ul style="margin: 0 0 15px 0; padding-right: 20px; color: #6a1b9a;">
+                <li style="margin-bottom: 8px;">هل تشعر بالجشع أو الخوف أو الملل؟</li>
+                <li style="margin-bottom: 8px;">هل تشعر بالرغبة في "الانتقام" من السوق؟</li>
+                <li style="margin-bottom: 8px;">هل تشعر بالثقة المفرطة بعد ربح كبير؟ (علامة حمراء)</li>
+              </ul>
+              
+              <p style="margin: 0 0 10px 0; color: #6a1b9a; font-weight: 600;">❓ سبب الصفقة الحقيقي:</p>
+              <ul style="margin: 0; padding-right: 20px; color: #6a1b9a;">
+                <li style="margin-bottom: 8px;">هل تدخل لأنها تستوفي شروط استراتيجيتك، أم لأنك "تشعر"؟</li>
+                <li style="margin-bottom: 8px;">هل تحاول "ملاحقة الصفقة" (Chasing)?</li>
+              </ul>
+            </div>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الثالث: بناء قائمة التحقق الخاصة بك (خطوة بخطوة)</h2>
+          
+          <div style="background-color: #fff8e1; border: 2px solid #ffb300; border-radius: 12px; padding: 25px; margin: 30px 0;">
+            <h3 style="font-size: 22px; font-weight: bold; margin: 0 0 20px 0; color: #e65100; text-align: center;">🛠️ خطوات البناء</h3>
+            <div style="display: grid; gap: 20px;">
+              <div style="background-color: #fff3e0; padding: 15px; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">1️⃣ ابدأ بخطتك الحالية</h4>
+                <p style="margin: 0; color: #ef6c00; line-height: 1.6;">ما هي القواعد الصارمة التي تتبعها في استراتيجيتك حالياً؟ اكتبها كنقاط.</p>
+              </div>
+              
+              <div style="background-color: #fff3e0; padding: 15px; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">2️⃣ أضف نقاط الضعف</h4>
+                <p style="margin: 0; color: #ef6c00; line-height: 1.6;">ارجع إلى مفكرة التداول وفكر في الأخطاء الشائعة. هل تنسى وقف الخسارة؟ هل تدخل صفقات FOMO؟ أضفها كبنود.</p>
+              </div>
+              
+              <div style="background-color: #fff3e0; padding: 15px; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">3️⃣ صممها بصرياً</h4>
+                <p style="margin: 0; color: #ef6c00; line-height: 1.6;">استخدم Excel أو Google Sheets أو حتى ورقة وقلم. اجعلها على شكل مربعات اختيار (Checkboxes).</p>
+              </div>
+              
+              <div style="background-color: #fff3e0; padding: 15px; border-radius: 8px;">
+                <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">4️⃣ اجعلها إلزامية</h4>
+                <p style="margin: 0; color: #ef6c00; line-height: 1.6; font-weight: bold;">القاعدة الذهبية: "لا صفقة بدون قائمة تحقق كاملة." إذا لم تضع علامة صح أمام جميع البنود، فلا تدخل الصفقة.</p>
+              </div>
+            </div>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الجزء الرابع: الالتزام بانضباط الطيار (ممارسات يومية)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">بناء قائمة التحقق هو الخطوة الأولى. الالتزام بها هو التحدي الحقيقي.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+            <div style="background-color: #e8f4fd; border-right: 4px solid #0dcaf0; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #055160; font-size: 18px;">⚡ التنفيذ الصارم</h4>
+              <p style="margin: 0; color: #055160; font-size: 14px; line-height: 1.6;">مثل الطيار، كل نقطة يجب مراجعتها بوعي وبطء. لا تسرع.</p>
+            </div>
+            
+            <div style="background-color: #f0f9ff; border-right: 4px solid #3b82f6; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 18px;">🔄 المراجعة الدورية</h4>
+              <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">قائمة التحقق ليست ثابتة. عدلها مع تطور استراتيجيتك.</p>
+            </div>
+            
+            <div style="background-color: #e8f5e9; border-right: 4px solid #4caf50; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 18px;">💪 بناء العضلات الانضباطية</h4>
+              <p style="margin: 0; color: #2e7d32; font-size: 14px; line-height: 1.6;">ستصبح جزءاً طبيعياً من روتينك. كلما التزمت، كلما قويت.</p>
+            </div>
+            
+            <div style="background-color: #f3e5f5; border-right: 4px solid #9c27b0; padding: 20px; border-radius: 8px;">
+              <h4 style="margin: 0 0 10px 0; color: #6a1b9a; font-size: 18px;">🎯 التركيز على العملية</h4>
+              <p style="margin: 0; color: #6a1b9a; font-size: 14px; line-height: 1.6;">الهدف ليس ضمان الربح، بل ضمان اتخاذ أفضل قرار ممكن.</p>
+            </div>
+          </div>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222;">الخلاصة: مفتاح الثقة الهادئة والنجاح المستدام</h2>
+          
+          <div style="background-color: #e8eaf6; border: 3px solid #3f51b5; border-radius: 15px; padding: 30px; margin: 30px 0;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 20px 0; color: #1a237e; text-align: center;">✈️🎯 الحقيقة المطلقة</h3>
+            <div style="text-align: center;">
+              <p style="margin: 0 0 15px 0; color: #283593; font-size: 18px; line-height: 1.8;">إن الدخول العاطفي هو السبب الأول لفشل المتداولين. وقائمة تحقق ما قبل التداول هي <strong>الدرع الواقي</strong> ضد هذا الفشل.</p>
+              <p style="margin: 0; color: #283593; font-size: 18px; line-height: 1.8; font-style: italic;">"إنها تمنحك الوضوح، والانضباط، والأهم من ذلك، الثقة الهادئة التي لا تتزعزع حتى في وجه تقلبات السوق."</p>
+            </div>
+          </div>
+
+          <div style="background-color: #fff8e1; border: 3px solid #ffb300; border-radius: 15px; padding: 30px; margin: 30px 0; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 20px 0; color: #e65100;">🚀 كن طيار حسابك</h3>
+            <p style="margin: 0 0 15px 0; color: #ef6c00; font-size: 18px; line-height: 1.8;">مثل الطيار الذي يثق في قائمة تحققه لتوصيل ركابه بأمان، يمكنك أن تثق في قائمة تحققك لتوجيهك نحو تداول أكثر انضباطاً وربحية.</p>
+            <p style="margin: 0; color: #ef6c00; font-size: 18px; line-height: 1.8; font-weight: bold;">إنها ليست مجرد قائمة، بل هي وعد لنفسك بأنك ستحمي رأس مالك، وستلتزم بخطتك، وستتداول كالمحترفين، صفقة بعد صفقة.</p>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: center; font-size: 22px; font-weight: bold; color: #0066cc;">هل أنت مستعد لتكون طيار حسابك التداولي؟ ابدأ ببناء قائمة التحقق الخاصة بك اليوم. ✈️📋</p>
+        </div>
+      `;
     }
     return `<p>Full content for this article is coming soon...</p>`;
   };
@@ -1526,6 +1731,16 @@ const BlogPage: React.FC = () => {
       readTime: "30 min read",
       imageUrl: "/blog images/blog 2.png",
       tags: ["quiet confidence", "trading psychology", "loss management", "professional trading", "arabic"]
+    },
+    {
+      id: 15,
+      title: "كيف تبني قائمة تحقق ما قبل التداول التي تقضي على الدخول العاطفي (انضباط الطيار)",
+      excerpt: "في عالم التداول المتقلب، غالباً ما يقع المتداولون فريسة للدخول العاطفي. اكتشف كيف تبني قائمة تحقق ما قبل التداول، مستوحاة من انضباط الطيارين، لتحميك من نفسك وتضمن اتخاذ قرارات منطقية.",
+      category: "Trading",
+      date: "2025-10-15",
+      readTime: "25 min read",
+      imageUrl: "/blog images/blog 4.png",
+      tags: ["pre-trade checklist", "discipline", "pilot discipline", "emotional trading", "arabic"]
     },
     {
       id: 1,

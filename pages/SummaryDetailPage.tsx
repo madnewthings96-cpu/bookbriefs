@@ -12,6 +12,7 @@ import SignUpPromptModal from '../components/SignUpPromptModal';
 import HighlightableText from '../components/HighlightableText';
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import BookReviews from '../components/BookReviews';
+import FavoriteButton from '../components/FavoriteButton';
 import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
@@ -1375,6 +1376,82 @@ const SummaryDetailPage: React.FC = () => {
                     <span>Audible</span>
                   </a>
                 </>
+              ) : book.id === 'one-good-trade' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4oiXe7o"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/3W6Qk9q"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4omIvIW"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'cant-hurt-me' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/3IYWju7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4hmAod6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4o4CqRm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
               ) : (
                 <>
                   <button className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm">
@@ -1413,7 +1490,13 @@ const SummaryDetailPage: React.FC = () => {
             <div className="lg:col-span-1">
               {book && (
                 <div className="sticky top-6">
-                  <img src={book.coverImageUrl} alt={`Cover of ${getBookTitle(book.id)}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
+                  <div className="relative">
+                    <img src={book.coverImageUrl} alt={`Cover of ${getBookTitle(book.id)}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
+                    {/* Favorite Button */}
+                    <div className="absolute top-3 right-3">
+                      <FavoriteButton bookId={book.id} size="md" />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -1639,6 +1722,18 @@ const SummaryDetailPage: React.FC = () => {
                       // For The Psychology of Money, open the actual PDF file
                       if (book.id === 'the-psychology-of-money') {
                         window.open('/pdfs/the psychology of money.pdf', '_blank');
+                        return;
+                      }
+
+                      // For One Good Trade, open the actual PDF file
+                      if (book.id === 'one-good-trade') {
+                        window.open('/pdfs/one good trade.pdf', '_blank');
+                        return;
+                      }
+
+                      // For Can't Hurt Me, open the actual PDF file
+                      if (book.id === 'cant-hurt-me') {
+                        window.open("/pdfs/can't hurt me.pdf", '_blank');
                         return;
                       }
 

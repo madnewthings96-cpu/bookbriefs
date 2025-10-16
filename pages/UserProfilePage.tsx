@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
+import { useFavorites } from '../contexts/FavoritesContext';
 import { BOOKS } from '../constants';
+import FavoriteButton from '../components/FavoriteButton';
 
 const UserProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { getBookTitle } = useLanguage();
   const { user } = useAuth();
   const { userStats, bookProgress, updateBookProgress, getBookProgress } = useUserProgress();
+  const { favorites } = useFavorites();
 
   // User data with Firebase user info
   const userName = user?.email?.split('@')[0] || "Reader";
@@ -99,50 +102,58 @@ const UserProfilePage: React.FC = () => {
     navigate(`/summary/${bookId}`);
   };
 
+  // Get favorite books
+  const favoriteBooks = BOOKS.filter(book => favorites.includes(book.id));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
-            <div className="mb-6 lg:mb-0">
-              <div className="flex items-center mb-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-blue-600 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-bold text-xl">{userName.charAt(0).toUpperCase()}</span>
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                    {userStats.booksRead > 0 ? `Welcome back, ${userName}!` : `Welcome, ${userName}!`}
-                  </h1>
-                  <p className="text-gray-600 text-lg">
-                    {userStats.booksRead > 0 
-                      ? 'Continue your learning journey with personalized book summaries.' 
-                      : 'Start your learning journey with personalized book summaries.'
-                    }
-                  </p>
-                </div>
+        {/* Favorites Section */}
+        {favoriteBooks.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+                <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                My Favorites
+              </h2>
+              <div className="hidden sm:flex items-center text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm border">
+                <span className="mr-2">❤️</span>
+                {favoriteBooks.length} {favoriteBooks.length === 1 ? 'book' : 'books'} saved
               </div>
             </div>
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-end">
-              <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-6 py-4 rounded-xl shadow-lg text-white text-center min-w-[120px] hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-                <div className="text-3xl font-bold mb-1">{userStats.booksRead}</div>
-                <div className="text-sm font-medium opacity-90">Books Read</div>
-              </div>
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4 rounded-xl shadow-lg text-white text-center min-w-[120px] hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-                <div className="text-3xl font-bold mb-1">{userStats.dayStreak}</div>
-                <div className="text-sm font-medium opacity-90">Day Streak</div>
-              </div>
-            </div>
-            {userStats.booksRead === 0 && (
-              <div className="mt-6 text-center lg:text-right">
-                <div className="inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-lg border border-blue-200">
-                  <span className="mr-2">📚</span>
-                  <span className="text-sm font-medium">Start reading your first book summary to build your streak!</span>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {favoriteBooks.map((book) => (
+                <div 
+                  key={book.id} 
+                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100 group"
+                  onClick={() => handleBookClick(book.id)}
+                >
+                  <div className="relative overflow-hidden aspect-[3/4]">
+                    <img 
+                      src={book.coverImageUrl} 
+                      alt={book.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                      }}
+                    />
+                    {/* Favorite Button */}
+                    <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+                      <FavoriteButton bookId={book.id} size="sm" />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 text-white p-3">
+                      <h3 className="font-bold text-sm mb-0.5 truncate">{book.title}</h3>
+                      <p className="text-xs text-gray-200 truncate">{book.author}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Start Reading Section */}
         <div className="mb-12">

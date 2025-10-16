@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Book } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import FavoriteButton from './FavoriteButton';
 
 interface BookCardProps {
   book: Book;
@@ -17,12 +18,16 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   return (
     <Link to={`/summary/${book.id}`} className="block group">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
-        <div className="aspect-[3/4] overflow-hidden">
+        <div className="aspect-[3/4] overflow-hidden relative">
           <img
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             src={book.coverImageUrl}
             alt={`Cover of ${translatedTitle}`}
           />
+          {/* Favorite Button */}
+          <div className="absolute top-2 right-2 z-10">
+            <FavoriteButton bookId={book.id} size="sm" />
+          </div>
         </div>
         <div className="p-3">
           <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors duration-300">

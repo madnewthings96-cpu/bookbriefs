@@ -43,18 +43,6 @@ const categories = [
     title: 'Finance & Investments',
     color: '#FFD700', // Gold
     path: '/categories/finance'
-  },
-  {
-    id: 'art',
-    title: 'Art & Creativity',
-    color: '#FF69B4', // Hot Pink
-    path: '/categories/art'
-  },
-  {
-    id: 'health',
-    title: 'Health & Sports',
-    color: '#98FB98', // Pale Green
-    path: '/categories/health'
   }
 ];
 
@@ -93,7 +81,7 @@ const Categories: React.FC = () => {
       </div>
       
       {/* Categories Grid with Floating Design */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-12">
         {categories.map((category) => {
           const bookImages = getCategoryBookImages(category.id);
           
@@ -101,7 +89,7 @@ const Categories: React.FC = () => {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id === selectedCategory ? null : category.id)}
-              className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 aspect-[3/4] transform hover:scale-105 ${
+              className={`group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-500 aspect-[4/5] sm:aspect-[3/4] transform hover:scale-105 ${
                 selectedCategory === category.id ? 'ring-4 ring-orange-500 scale-105' : ''
               }`}
               style={{
@@ -116,7 +104,7 @@ const Categories: React.FC = () => {
                     key={index}
                     src={imgUrl}
                     alt={`Book ${index + 1}`}
-                    className="absolute w-12 h-16 sm:w-14 sm:h-20 rounded shadow-xl object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
+                    className="absolute w-10 h-14 sm:w-14 sm:h-20 rounded shadow-xl object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
                     style={{
                       top: index === 0 ? '10%' : index === 1 ? '40%' : '70%',
                       left: index === 0 ? '10%' : index === 1 ? '60%' : '30%',
@@ -129,8 +117,8 @@ const Categories: React.FC = () => {
               </div>
 
               {/* Category Title Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
-                <h3 className="text-sm sm:text-base font-bold text-white leading-tight group-hover:scale-105 transition-transform duration-300 drop-shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-2 sm:p-3">
+                <h3 className="text-xs sm:text-sm md:text-base font-bold text-white leading-tight group-hover:scale-105 transition-transform duration-300 drop-shadow-lg">
                   {category.title}
                 </h3>
               </div>
