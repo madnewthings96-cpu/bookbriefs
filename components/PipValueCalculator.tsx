@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 const PipValueCalculator: React.FC = () => {
   const [currencyPair, setCurrencyPair] = useState('EUR/USD');
+  const [pips, setPips] = useState('10');
   const [positionSize, setPositionSize] = useState('1.0');
   const [accountCurrency, setAccountCurrency] = useState('USD');
   const [pipValue, setPipValue] = useState<string | null>(null);
@@ -10,8 +11,15 @@ const PipValueCalculator: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const size = parseFloat(positionSize);
+    const pipsCount = parseFloat(pips);
+    
     if (isNaN(size) || size <= 0) {
       alert("Please enter a valid position size.");
+      return;
+    }
+    
+    if (isNaN(pipsCount) || pipsCount <= 0) {
+      alert("Please enter a valid number of pips.");
       return;
     }
 
@@ -19,10 +27,10 @@ const PipValueCalculator: React.FC = () => {
     let calculatedValue;
     if (currencyPair === 'XAU/USD') {
       // For gold, 1 pip = $1 per oz, and standard lot is 100 oz
-      calculatedValue = size * 100;
+      calculatedValue = size * 100 * pipsCount;
     } else {
       // For regular currency pairs, 1 pip = $10 per standard lot
-      calculatedValue = size * 10;
+      calculatedValue = size * 10 * pipsCount;
     }
     
     let symbol = '';
@@ -52,6 +60,10 @@ const PipValueCalculator: React.FC = () => {
           </select>
         </div>
         <div>
+          <label htmlFor="pips" className={formLabelStyle}>Pips</label>
+          <input type="number" id="pips" value={pips} onChange={e => setPips(e.target.value)} className={formInputStyle} placeholder="e.g., 10" step="0.1" />
+        </div>
+        <div>
           <label htmlFor="positionSize" className={formLabelStyle}>Position Size (in lots)</label>
           <input type="number" id="positionSize" value={positionSize} onChange={e => setPositionSize(e.target.value)} className={formInputStyle} placeholder="e.g., 1.0" step="0.01" />
         </div>
@@ -69,7 +81,7 @@ const PipValueCalculator: React.FC = () => {
       </form>
       {pipValue !== null && (
         <div className="mt-6 p-4 bg-gray-100 rounded-lg text-center">
-          <p className="text-lg text-gray-800">The value of one pip is: <span className="font-bold" style={{color: '#2F4F4F'}}>{pipValue}</span></p>
+          <p className="text-lg text-gray-800">The value of {pips} pip{parseFloat(pips) !== 1 ? 's' : ''} is: <span className="font-bold" style={{color: '#2F4F4F'}}>{pipValue}</span></p>
         </div>
       )}
     </div>

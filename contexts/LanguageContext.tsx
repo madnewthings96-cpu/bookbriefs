@@ -135,7 +135,8 @@ const translations = {
       'one-up-on-wall-street': 'One Up on Wall Street',
       'the-psychology-of-money': 'The Psychology of Money',
       'one-good-trade': 'One Good Trade',
-      'cant-hurt-me': "Can't Hurt Me"
+      'cant-hurt-me': "Can't Hurt Me",
+      'the-alchemy-of-finance': 'The Alchemy of Finance'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -171,7 +172,8 @@ const translations = {
       'one-up-on-wall-street': 'Peter Lynch',
       'the-psychology-of-money': 'Morgan Housel',
       'one-good-trade': 'Mike Bellafiore',
-      'cant-hurt-me': 'David Goggins'
+      'cant-hurt-me': 'David Goggins',
+      'the-alchemy-of-finance': 'George Soros'
     }
   }
 };
