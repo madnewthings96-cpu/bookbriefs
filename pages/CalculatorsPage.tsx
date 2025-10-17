@@ -25,23 +25,6 @@ const CalculatorsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<CalculatorTab>(getTabFromPath(location.pathname));
   const tickerTapeRef = useRef<HTMLDivElement>(null);
   
-  // Load AdSense script
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2497273887935019';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-    
-    return () => {
-      // Cleanup
-      const existingScript = document.querySelector(`script[src="${script.src}"]`);
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-    };
-  }, []);
-  
   // Initialize ads after they're loaded
   useEffect(() => {
     try {

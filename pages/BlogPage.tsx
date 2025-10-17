@@ -19,22 +19,6 @@ const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Load AdSense script
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2497273887935019';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-    
-    return () => {
-      const existingScript = document.querySelector(`script[src="${script.src}"]`);
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-    };
-  }, []);
   
   // Initialize ads when modal opens
   useEffect(() => {
