@@ -12,6 +12,30 @@ interface Game {
 
 const games: Game[] = [
   {
+    id: 'sudoku',
+    title: 'Sudoku',
+    description: 'Try this numbers game, minus the math.',
+    icon: '🔢',
+    color: 'from-yellow-400 to-orange-600',
+    link: '/games/sudoku'
+  },
+  {
+    id: 'spelling-bee',
+    title: 'Spelling Bee',
+    description: 'How many words can you make with 7 letters?',
+    icon: '🐝',
+    color: 'from-yellow-400 to-yellow-600',
+    link: '/games/spelling-bee'
+  },
+  {
+    id: 'strands',
+    title: 'Strands',
+    description: 'Find hidden words and uncover the theme.',
+    icon: '🔤',
+    color: 'from-green-400 to-teal-600',
+    link: '/games/strands'
+  },
+  {
     id: 'reading-challenge',
     title: 'Reading Challenge',
     description: 'Set and track your reading goals.',
@@ -26,30 +50,6 @@ const games: Game[] = [
     icon: '🎯',
     color: 'from-purple-400 to-purple-600',
     link: '/games/book-trivia'
-  },
-  {
-    id: 'sudoku',
-    title: 'Sudoku',
-    description: 'Try this numbers game, minus the math.',
-    icon: '🔢',
-    color: 'from-yellow-400 to-orange-600',
-    link: '/games/sudoku'
-  },
-  {
-    id: 'strands',
-    title: 'Strands',
-    description: 'Find hidden words and uncover the theme.',
-    icon: '�',
-    color: 'from-green-400 to-teal-600',
-    link: '/games/strands'
-  },
-  {
-    id: 'spelling-bee',
-    title: 'Spelling Bee',
-    description: 'How many words can you make with 7 letters?',
-    icon: '�',
-    color: 'from-yellow-400 to-yellow-600',
-    link: '/games/spelling-bee'
   },
   {
     id: 'author-quiz',

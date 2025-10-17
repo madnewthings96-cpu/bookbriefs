@@ -47,7 +47,7 @@ const categories = [
 ];
 
 const Categories: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>('finance');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { getBookTitle, getBookAuthor } = useLanguage();
 
   // Filter books by selected category
