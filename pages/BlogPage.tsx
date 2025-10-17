@@ -19,18 +19,6 @@ const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // Initialize ads when modal opens
-  useEffect(() => {
-    if (isModalOpen && selectedPost) {
-      try {
-        // @ts-ignore
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {
-        console.error('AdSense error:', e);
-      }
-    }
-  }, [isModalOpen, selectedPost]);
 
   // Update SEO when post is selected
   useEffect(() => {
@@ -2106,82 +2094,57 @@ const BlogPage: React.FC = () => {
             </div>
 
             {/* Article Content */}
-            <div className="max-w-7xl mx-auto px-4 py-8">
-              <div className="flex gap-8">
-                {/* Left Sidebar Ad (Desktop only) */}
-                <aside className="hidden lg:block w-64 flex-shrink-0">
-                  <div className="sticky top-24">
-                    <ins className="adsbygoogle"
-                         style={{ display: 'block' }}
-                         data-ad-client="ca-pub-2497273887935019"
-                         data-ad-slot="1111111111"
-                         data-ad-format="vertical"
-                         data-full-width-responsive="true"></ins>
-                  </div>
-                </aside>
+            <div className="max-w-4xl mx-auto px-4 py-8">
+              {/* Article Header */}
+              <header className="mb-8">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4" 
+                    style={{ fontFamily: 'Georgia, serif' }}>
+                  {selectedPost.title}
+                </h1>
+                
+                <div className="flex items-center text-sm text-gray-600 mb-6 space-x-4">
+                  <span className="font-medium">Published {formatDate(selectedPost.date)}</span>
+                  <span>•</span>
+                  <span>{selectedPost.readTime}</span>
+                </div>
 
-                {/* Main Article Content */}
-                <div className="flex-1 max-w-4xl">
-                  {/* Article Header */}
-                  <header className="mb-8">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4" 
-                        style={{ fontFamily: 'Georgia, serif' }}>
-                      {selectedPost.title}
-                    </h1>
-                    
-                    <div className="flex items-center text-sm text-gray-600 mb-6 space-x-4">
-                      <span className="font-medium">Published {formatDate(selectedPost.date)}</span>
-                      <span>•</span>
-                      <span>{selectedPost.readTime}</span>
-                    </div>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {selectedPost.tags.map((tag) => (
+                    <span 
+                      key={tag}
+                      className="px-3 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium uppercase tracking-wide"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </header>
 
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {selectedPost.tags.map((tag) => (
-                        <span 
-                          key={tag}
-                          className="px-3 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium uppercase tracking-wide"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </header>
+              {/* Article Image */}
+              <div className="mb-8">
+                <img 
+                  src={selectedPost.imageUrl} 
+                  alt={selectedPost.title}
+                  className="w-full h-80 object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                  }}
+                />
+              </div>
 
-                  {/* Article Image */}
-                  <div className="mb-8">
-                    <img 
-                      src={selectedPost.imageUrl} 
-                      alt={selectedPost.title}
-                      className="w-full h-80 object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                      }}
-                    />
-                  </div>
-
-                  {/* In-Article Ad */}
-                  <div className="my-8">
-                    <ins className="adsbygoogle"
-                         style={{ display: 'block', textAlign: 'center' }}
-                         data-ad-client="ca-pub-2497273887935019"
-                         data-ad-slot="2222222222"
-                         data-ad-format="fluid"
-                         data-ad-layout="in-article"></ins>
-                  </div>
-
-                  {/* Article Body */}
-                  <article className="prose prose-lg prose-gray max-w-none">
-                    <div 
-                      className="article-content"
-                      dangerouslySetInnerHTML={{ __html: getFullContent(selectedPost.id) }}
-                      style={{
-                        fontFamily: 'Georgia, serif',
-                        fontSize: '18px',
-                        lineHeight: '1.7',
-                        color: '#333'
-                      }}
-                    />
-                  </article>
+              {/* Article Body */}
+              <article className="prose prose-lg prose-gray max-w-none">
+                <div 
+                  className="article-content"
+                  dangerouslySetInnerHTML={{ __html: getFullContent(selectedPost.id) }}
+                  style={{
+                    fontFamily: 'Georgia, serif',
+                    fontSize: '18px',
+                    lineHeight: '1.7',
+                    color: '#333'
+                  }}
+                />
+              </article>
 
               {/* Buy Me a Coffee Button */}
               <div className="mt-12 mb-12 text-center">
@@ -2244,20 +2207,6 @@ const BlogPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-                </div>
-
-                {/* Right Sidebar Ad (Desktop only) */}
-                <aside className="hidden lg:block w-64 flex-shrink-0">
-                  <div className="sticky top-24">
-                    <ins className="adsbygoogle"
-                         style={{ display: 'block' }}
-                         data-ad-client="ca-pub-2497273887935019"
-                         data-ad-slot="3333333333"
-                         data-ad-format="vertical"
-                         data-full-width-responsive="true"></ins>
-                  </div>
-                </aside>
               </div>
             </div>
           </div>

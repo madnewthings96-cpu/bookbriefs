@@ -22,9 +22,9 @@ const HomePage: React.FC = () => {
       <StructuredData type="website" />
     <div>
       {/* Hero Section */}
-      <section className="relative py-6 md:py-10 px-4 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
+      <section className="relative py-6 md:py-10 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
         {/* Content */}
-        <div className="container mx-auto text-center relative z-10 max-w-6xl">
+        <div className="container mx-auto text-center relative z-10 max-w-6xl">{/* removed px-4 */}
           {/* User Avatars and Rating */}
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center -space-x-3 mb-3">
@@ -155,7 +155,7 @@ const HomePage: React.FC = () => {
 
       {/* Testimonials Section */}
       <section className="bg-white py-20">
-        <div className="container mx-auto text-center max-w-7xl px-4">
+        <div className="container mx-auto text-center max-w-7xl">{/* removed px-4 */}
            <div className="relative inline-block mb-16">
              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 relative z-10 px-8 py-4">
               Readers are enjoying happier and<br />healthier lives
