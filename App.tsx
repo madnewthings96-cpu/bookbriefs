@@ -21,6 +21,11 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ReadingChallengePage from './pages/ReadingChallengePage';
+import BookTriviaPage from './pages/BookTriviaPage';
+import SudokuPage from './pages/SudokuPage';
+import StrandsPage from './pages/StrandsPage';
+import SpellingBeePage from './pages/SpellingBeePage';
+import AuthorQuizPage from './pages/AuthorQuizPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -352,6 +357,11 @@ const AppContent: React.FC = () => {
             <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/games/book-trivia" element={<BookTriviaPage />} />
+            <Route path="/games/sudoku" element={<SudokuPage />} />
+            <Route path="/games/strands" element={<StrandsPage />} />
+            <Route path="/games/spelling-bee" element={<SpellingBeePage />} />
+            <Route path="/games/author-quiz" element={<AuthorQuizPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />

@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
 import Testimonials from '../components/Testimonials';
-import PersonalizedRecommendations from '../components/PersonalizedRecommendations';
+import Games from '../components/Games';
 import Categories from '../components/Categories';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
@@ -150,12 +150,8 @@ const HomePage: React.FC = () => {
         <Categories />
       </section>
 
-      {/* Personalized Recommendations */}
-      <section className="py-8">
-        <div className="container mx-auto">
-          <PersonalizedRecommendations />
-        </div>
-      </section>
+      {/* Games Section */}
+      <Games />
 
       {/* Testimonials Section */}
       <section className="bg-white py-20">
