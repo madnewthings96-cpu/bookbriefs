@@ -24,6 +24,33 @@ const CalculatorsPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<CalculatorTab>(getTabFromPath(location.pathname));
   const tickerTapeRef = useRef<HTMLDivElement>(null);
+  
+  // Load AdSense script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2497273887935019';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+    
+    return () => {
+      // Cleanup
+      const existingScript = document.querySelector(`script[src="${script.src}"]`);
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, []);
+  
+  // Initialize ads after they're loaded
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
+    }
+  }, [activeTab]); // Re-initialize when tab changes
 
   // Update active tab when URL changes
   useEffect(() => {
@@ -109,59 +136,88 @@ const CalculatorsPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Calculators Section */}
-      <section className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold" style={{ color: '#2F4F4F' }}>
-            Forex Trading Calculators
-          </h1>
-          <p className="text-lg text-gray-600 mt-2">
-            Essential tools for your trading journey.
-          </p>
+      {/* Main Content with Sidebar Ads */}
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex gap-8">
+          {/* Left Sidebar Ad */}
+          <aside className="hidden xl:block w-64 flex-shrink-0">
+            <div className="sticky top-4">
+              <ins className="adsbygoogle"
+                   style={{ display: 'block' }}
+                   data-ad-client="ca-pub-2497273887935019"
+                   data-ad-slot="1234567890"
+                   data-ad-format="vertical"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </aside>
+
+          {/* Calculators Section */}
+          <section className="flex-1 max-w-3xl mx-auto">
+            <div className="text-center mb-10">
+              <h1 className="text-4xl font-bold" style={{ color: '#2F4F4F' }}>
+                Forex Trading Calculators
+              </h1>
+              <p className="text-lg text-gray-600 mt-2">
+                Essential tools for your trading journey.
+              </p>
+            </div>
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl">
+              <div className="flex justify-center border-b mb-6 overflow-x-auto">
+                <div
+                  className={`${tabStyle} ${activeTab === 'pipValue' ? activeTabStyle : inactiveTabStyle}`}
+                  onClick={() => handleTabChange('pipValue')}
+                  role="tab"
+                  aria-selected={activeTab === 'pipValue'}
+                >
+                  Pip Value
+                </div>
+                <div
+                  className={`${tabStyle} ${activeTab === 'positionSize' ? activeTabStyle : inactiveTabStyle}`}
+                  onClick={() => handleTabChange('positionSize')}
+                  role="tab"
+                  aria-selected={activeTab === 'positionSize'}
+                >
+                  Position Size
+                </div>
+                <div
+                  className={`${tabStyle} ${activeTab === 'fire' ? activeTabStyle : inactiveTabStyle}`}
+                  onClick={() => handleTabChange('fire')}
+                  role="tab"
+                  aria-selected={activeTab === 'fire'}
+                >
+                  FIRE
+                </div>
+                <div
+                  className={`${tabStyle} ${activeTab === 'compound' ? activeTabStyle : inactiveTabStyle}`}
+                  onClick={() => handleTabChange('compound')}
+                  role="tab"
+                  aria-selected={activeTab === 'compound'}
+                >
+                  Compound Interest
+                </div>
+              </div>
+              <div>
+                {activeTab === 'pipValue' && <PipValueCalculator />}
+                {activeTab === 'positionSize' && <PositionSizeCalculator />}
+                {activeTab === 'fire' && <FIRECalculator />}
+                {activeTab === 'compound' && <CompoundCalculator />}
+              </div>
+            </div>
+          </section>
+
+          {/* Right Sidebar Ad */}
+          <aside className="hidden xl:block w-64 flex-shrink-0">
+            <div className="sticky top-4">
+              <ins className="adsbygoogle"
+                   style={{ display: 'block' }}
+                   data-ad-client="ca-pub-2497273887935019"
+                   data-ad-slot="0987654321"
+                   data-ad-format="vertical"
+                   data-full-width-responsive="true"></ins>
+            </div>
+          </aside>
         </div>
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl">
-          <div className="flex justify-center border-b mb-6 overflow-x-auto">
-            <div
-              className={`${tabStyle} ${activeTab === 'pipValue' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => handleTabChange('pipValue')}
-              role="tab"
-              aria-selected={activeTab === 'pipValue'}
-            >
-              Pip Value
-            </div>
-            <div
-              className={`${tabStyle} ${activeTab === 'positionSize' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => handleTabChange('positionSize')}
-              role="tab"
-              aria-selected={activeTab === 'positionSize'}
-            >
-              Position Size
-            </div>
-            <div
-              className={`${tabStyle} ${activeTab === 'fire' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => handleTabChange('fire')}
-              role="tab"
-              aria-selected={activeTab === 'fire'}
-            >
-              FIRE
-            </div>
-            <div
-              className={`${tabStyle} ${activeTab === 'compound' ? activeTabStyle : inactiveTabStyle}`}
-              onClick={() => handleTabChange('compound')}
-              role="tab"
-              aria-selected={activeTab === 'compound'}
-            >
-              Compound Interest
-            </div>
-          </div>
-          <div>
-            {activeTab === 'pipValue' && <PipValueCalculator />}
-            {activeTab === 'positionSize' && <PositionSizeCalculator />}
-            {activeTab === 'fire' && <FIRECalculator />}
-            {activeTab === 'compound' && <CompoundCalculator />}
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* Educational Content Section */}
       <section className="max-w-3xl mx-auto space-y-6">
