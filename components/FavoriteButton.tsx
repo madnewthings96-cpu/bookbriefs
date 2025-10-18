@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { useAuth } from '../contexts/AuthContext';
+import SignUpPromptModal from './SignUpPromptModal';
 
 interface FavoriteButtonProps {
   bookId: string;
@@ -12,13 +13,14 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ bookId, size = 'md', cl
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isAuthenticated } = useAuth();
   const isFav = isFavorite(bookId);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (!isAuthenticated) {
-      alert('Please login to add favorites');
+      setShowSignUpModal(true);
       return;
     }
     
@@ -38,30 +40,37 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ bookId, size = 'md', cl
   };
 
   return (
-    <button
-      onClick={handleClick}
-      className={`${sizeClasses[size]} flex items-center justify-center rounded-full transition-all duration-300 ${
-        isFav 
-          ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg' 
-          : 'bg-white/90 hover:bg-white text-gray-600 hover:text-red-500 shadow-md'
-      } backdrop-blur-sm transform hover:scale-110 ${className}`}
-      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-      title={isFav ? 'Remove from favorites' : 'Add to favorites'}
-    >
-      <svg 
-        className={iconSizes[size]} 
-        fill={isFav ? 'currentColor' : 'none'} 
-        stroke="currentColor" 
-        viewBox="0 0 24 24"
-        strokeWidth={isFav ? 0 : 2}
+    <>
+      <button
+        onClick={handleClick}
+        className={`${sizeClasses[size]} flex items-center justify-center rounded-full transition-all duration-300 ${
+          isFav 
+            ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg' 
+            : 'bg-white/90 hover:bg-white text-gray-600 hover:text-red-500 shadow-md'
+        } backdrop-blur-sm transform hover:scale-110 ${className}`}
+        aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+        title={isFav ? 'Remove from favorites' : 'Add to favorites'}
       >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" 
-        />
-      </svg>
-    </button>
+        <svg 
+          className={iconSizes[size]} 
+          fill={isFav ? 'currentColor' : 'none'} 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+          strokeWidth={isFav ? 0 : 2}
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" 
+          />
+        </svg>
+      </button>
+      
+      <SignUpPromptModal
+        isOpen={showSignUpModal}
+        onClose={() => setShowSignUpModal(false)}
+      />
+    </>
   );
 };
 
