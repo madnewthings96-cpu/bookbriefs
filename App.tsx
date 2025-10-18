@@ -357,6 +357,7 @@ const AppContent: React.FC = () => {
             <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/games/book-trivia" element={<BookTriviaPage />} />
             <Route path="/games/sudoku" element={<SudokuPage />} />
             <Route path="/games/strands" element={<StrandsPage />} />

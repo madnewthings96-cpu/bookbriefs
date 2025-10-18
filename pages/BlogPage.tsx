@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
@@ -12,9 +13,12 @@ interface BlogPost {
   readTime: string;
   imageUrl: string;
   tags: string[];
+  slug: string;
 }
 
 const BlogPage: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -44,13 +48,11 @@ const BlogPage: React.FC = () => {
   });
 
   const openPostModal = (post: BlogPost) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
+    navigate(`/blog/${post.slug}`);
   };
 
   const closePostModal = () => {
-    setSelectedPost(null);
-    setIsModalOpen(false);
+    navigate('/blog');
   };
 
   const getFullContent = (postId: number): string => {
@@ -1720,7 +1722,8 @@ const BlogPage: React.FC = () => {
       date: "2025-10-12",
       readTime: "20 min read",
       imageUrl: "/blog images/blog 1.png",
-      tags: ["trading journal", "psychology", "risk management", "behavior patterns", "arabic"]
+      tags: ["trading journal", "psychology", "risk management", "behavior patterns", "arabic"],
+      slug: "trading-journal-early-warning-system"
     },
     {
       id: 14,
@@ -1730,7 +1733,8 @@ const BlogPage: React.FC = () => {
       date: "2025-10-12",
       readTime: "30 min read",
       imageUrl: "/blog images/blog 2.png",
-      tags: ["quiet confidence", "trading psychology", "loss management", "professional trading", "arabic"]
+      tags: ["quiet confidence", "trading psychology", "loss management", "professional trading", "arabic"],
+      slug: "quiet-confidence-trading-after-losses"
     },
     {
       id: 15,
@@ -1740,7 +1744,8 @@ const BlogPage: React.FC = () => {
       date: "2025-10-15",
       readTime: "25 min read",
       imageUrl: "/blog images/blog 4.png",
-      tags: ["pre-trade checklist", "discipline", "pilot discipline", "emotional trading", "arabic"]
+      tags: ["pre-trade checklist", "discipline", "pilot discipline", "emotional trading", "arabic"],
+      slug: "pre-trade-checklist-pilot-discipline"
     },
     {
       id: 1,
@@ -1750,7 +1755,8 @@ const BlogPage: React.FC = () => {
       date: "2024-01-20",
       readTime: "15 min read",
       imageUrl: "/images/chart.jpg",
-      tags: ["proprietary trading", "market making", "finance", "trading strategies"]
+      tags: ["proprietary trading", "market making", "finance", "trading strategies"],
+      slug: "proprietary-trading-vs-market-making"
     },
     {
       id: 4,
@@ -1760,7 +1766,8 @@ const BlogPage: React.FC = () => {
       date: "2024-01-25",
       readTime: "20 min read",
       imageUrl: "/images/nomad.jpg",
-      tags: ["nomadic trading", "low frequency", "lifestyle", "arabic"]
+      tags: ["nomadic trading", "low frequency", "lifestyle", "arabic"],
+      slug: "become-nomadic-trader"
     },
     {
       id: 5,
@@ -1770,7 +1777,8 @@ const BlogPage: React.FC = () => {
       date: "2024-01-28",
       readTime: "25 min read",
       imageUrl: "/images/risk.jpg",
-      tags: ["risk management", "capital preservation", "trading psychology", "arabic"]
+      tags: ["risk management", "capital preservation", "trading psychology", "arabic"],
+      slug: "risk-management-saves-trading-account"
     },
     {
       id: 6,
@@ -1780,7 +1788,8 @@ const BlogPage: React.FC = () => {
       date: "2024-01-30",
       readTime: "22 min read",
       imageUrl: "/images/hedge fund market wizards.jpg",
-      tags: ["hedge funds", "professional trading", "trading mindset", "arabic"]
+      tags: ["hedge funds", "professional trading", "trading mindset", "arabic"],
+      slug: "trade-like-hedge-fund-manager"
     },
     {
       id: 7,
@@ -1790,7 +1799,8 @@ const BlogPage: React.FC = () => {
       date: "2024-02-15",
       readTime: "15 min read",
       imageUrl: "/images/soros.jpg",
-      tags: ["george soros", "trading legends", "market psychology", "arabic"]
+      tags: ["george soros", "trading legends", "market psychology", "arabic"],
+      slug: "george-soros-trading-lessons"
     },
     {
       id: 8,
@@ -1800,7 +1810,8 @@ const BlogPage: React.FC = () => {
       date: "2025-03-01",
       readTime: "18 min read",
       imageUrl: "/images/marathon.png",
-      tags: ["trading psychology", "long-term strategy", "discipline", "arabic"]
+      tags: ["trading psychology", "long-term strategy", "discipline", "arabic"],
+      slug: "trading-is-marathon-not-sprint"
     },
     {
       id: 9,
@@ -1810,7 +1821,8 @@ const BlogPage: React.FC = () => {
       date: "2025-03-15",
       readTime: "16 min read",
       imageUrl: "/images/business.jpg",
-      tags: ["business approach", "risk management", "trading costs", "arabic"]
+      tags: ["business approach", "risk management", "trading costs", "arabic"],
+      slug: "manage-trading-like-business"
     },
     {
       id: 10,
@@ -1820,7 +1832,8 @@ const BlogPage: React.FC = () => {
       date: "2025-03-25",
       readTime: "20 min read",
       imageUrl: "/images/porsche.jpg",
-      tags: ["trading quotes", "market legends", "trading wisdom", "arabic"]
+      tags: ["trading quotes", "market legends", "trading wisdom", "arabic"],
+      slug: "20-shocking-quotes-trading-legends"
     },
     {
       id: 11,
@@ -1830,7 +1843,8 @@ const BlogPage: React.FC = () => {
       date: "2025-04-10",
       readTime: "14 min read",
       imageUrl: "/images/mark.jpeg",
-      tags: ["mark douglas", "trading psychology", "mental skills", "arabic"]
+      tags: ["mark douglas", "trading psychology", "mental skills", "arabic"],
+      slug: "trading-tips-mark-douglas"
     },
     {
       id: 12,
@@ -1840,7 +1854,8 @@ const BlogPage: React.FC = () => {
       date: "2025-04-25",
       readTime: "12 min read",
       imageUrl: "/images/lion.jpg",
-      tags: ["trading strategy", "patience", "discipline", "arabic"]
+      tags: ["trading strategy", "patience", "discipline", "arabic"],
+      slug: "what-lions-teach-about-professional-trading"
     },
     {
       id: 2,
@@ -1850,7 +1865,8 @@ const BlogPage: React.FC = () => {
       date: "2025-01-10",
       readTime: "12 min read",
       imageUrl: "/images/rich dad poor dad.jpg",
-      tags: ["business", "entrepreneurship", "leadership"]
+      tags: ["business", "entrepreneurship", "leadership"],
+      slug: "top-10-business-books-changed-everything"
     },
     {
       id: 3,
@@ -1860,9 +1876,24 @@ const BlogPage: React.FC = () => {
       date: "2025-01-08",
       readTime: "6 min read",
       imageUrl: "/images/reading.jpg",
-      tags: ["speed reading", "comprehension", "techniques"]
+      tags: ["speed reading", "comprehension", "techniques"],
+      slug: "speed-reading-vs-deep-reading-balance"
     }
   ];
+
+  // Handle URL-based post selection
+  useEffect(() => {
+    if (slug) {
+      const post = blogPosts.find(p => p.slug === slug);
+      if (post) {
+        setSelectedPost(post);
+        setIsModalOpen(true);
+      }
+    } else {
+      setSelectedPost(null);
+      setIsModalOpen(false);
+    }
+  }, [slug]);
 
   const categories = ['All', 'Finance', 'Trading', 'Book Reviews', 'Reading Tips'];
 

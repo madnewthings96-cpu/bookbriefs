@@ -136,7 +136,8 @@ const translations = {
       'the-psychology-of-money': 'The Psychology of Money',
       'one-good-trade': 'One Good Trade',
       'cant-hurt-me': "Can't Hurt Me",
-      'the-alchemy-of-finance': 'The Alchemy of Finance'
+      'the-alchemy-of-finance': 'The Alchemy of Finance',
+      'competition-demystified': 'Competition Demystified'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -173,7 +174,8 @@ const translations = {
       'the-psychology-of-money': 'Morgan Housel',
       'one-good-trade': 'Mike Bellafiore',
       'cant-hurt-me': 'David Goggins',
-      'the-alchemy-of-finance': 'George Soros'
+      'the-alchemy-of-finance': 'George Soros',
+      'competition-demystified': 'Bruce Greenwald & Judd Kahn'
     }
   }
 };
