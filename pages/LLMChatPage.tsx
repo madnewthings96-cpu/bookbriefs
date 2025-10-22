@@ -11,6 +11,129 @@ interface Message {
   timestamp: Date;
 }
 
+// Helper component to format AI responses
+const FormattedMessage: React.FC<{ content: string }> = ({ content }) => {
+  const formatLine = (line: string, key: number) => {
+    // Check if line has both bold (**text**) and other formatting
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    const matches = line.match(boldRegex);
+    
+    if (matches) {
+      const parts: React.ReactNode[] = [];
+      let lastIndex = 0;
+      
+      line.replace(boldRegex, (match, boldText, offset) => {
+        // Add text before bold
+        if (offset > lastIndex) {
+          parts.push(line.substring(lastIndex, offset));
+        }
+        // Add bold text
+        parts.push(
+          <strong key={`bold-${offset}`} className="font-bold text-gray-900 bg-indigo-50 px-1 rounded">
+            {boldText}
+          </strong>
+        );
+        lastIndex = offset + match.length;
+        return match;
+      });
+      
+      // Add remaining text
+      if (lastIndex < line.length) {
+        parts.push(line.substring(lastIndex));
+      }
+      
+      return <span key={key}>{parts}</span>;
+    }
+    
+    return line;
+  };
+
+  const formatContent = (text: string) => {
+    // Split by double newlines for paragraphs
+    const paragraphs = text.split('\n\n');
+    
+    return paragraphs.map((paragraph, pIdx) => {
+      const lines = paragraph.split('\n');
+      
+      return (
+        <div key={pIdx} className="mb-5 last:mb-0">
+          {lines.map((line, lIdx) => {
+            // Check if line is a header (starts with ###, ##, or #)
+            if (line.startsWith('### ')) {
+              return (
+                <h4 key={lIdx} className="font-bold text-lg text-indigo-700 mt-5 mb-3 border-b-2 border-indigo-200 pb-1">
+                  {line.replace('### ', '')}
+                </h4>
+              );
+            }
+            if (line.startsWith('## ')) {
+              return (
+                <h3 key={lIdx} className="font-bold text-xl text-indigo-800 mt-6 mb-3 border-b-2 border-indigo-300 pb-2">
+                  {line.replace('## ', '')}
+                </h3>
+              );
+            }
+            if (line.startsWith('# ')) {
+              return (
+                <h2 key={lIdx} className="font-bold text-2xl text-indigo-900 mt-6 mb-4 border-b-2 border-indigo-400 pb-2">
+                  {line.replace('# ', '')}
+                </h2>
+              );
+            }
+            
+            // Check if line is a numbered list item
+            if (/^\d+\.\s/.test(line)) {
+              const number = line.match(/^\d+\./)?.[0];
+              const content = line.replace(/^\d+\.\s/, '');
+              return (
+                <div key={lIdx} className="ml-2 mb-3 flex items-start group">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm flex items-center justify-center mr-3 group-hover:bg-indigo-200 transition-colors">
+                    {number?.replace('.', '')}
+                  </span>
+                  <span className="flex-1 pt-1 leading-relaxed">{formatLine(content, lIdx)}</span>
+                </div>
+              );
+            }
+            
+            // Check if line starts with * (for sub-points like * Asset: or * Liability:)
+            if (line.startsWith('* ')) {
+              const content = line.replace(/^\*\s/, '');
+              return (
+                <div key={lIdx} className="ml-12 mb-2 flex items-start bg-gray-50 p-3 rounded-lg border-l-4 border-indigo-300">
+                  <span className="flex-1 leading-relaxed">{formatLine(content, lIdx)}</span>
+                </div>
+              );
+            }
+            
+            // Check if line is a bullet point
+            if (line.startsWith('- ') || line.startsWith('• ')) {
+              const content = line.replace(/^[-•]\s/, '');
+              return (
+                <div key={lIdx} className="ml-6 mb-2 flex items-start">
+                  <span className="text-indigo-600 mr-3 text-lg flex-shrink-0">•</span>
+                  <span className="flex-1 leading-relaxed">{formatLine(content, lIdx)}</span>
+                </div>
+              );
+            }
+            
+            // Regular paragraph with possible bold text
+            if (line.trim()) {
+              return (
+                <p key={lIdx} className="mb-3 leading-relaxed text-gray-700">
+                  {formatLine(line, lIdx)}
+                </p>
+              );
+            }
+            return null;
+          })}
+        </div>
+      );
+    });
+  };
+  
+  return <div className="text-gray-700 text-base">{formatContent(content)}</div>;
+};
+
 const LLMChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -97,11 +220,11 @@ const LLMChatPage: React.FC = () => {
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="w-8 h-8 text-indigo-600 mr-3" />
             <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
-              Trading & Books AI Chat
+              AI Trading & Books
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Ask me anything about trading strategies, book recommendations, financial concepts, and more!
+            اسألني عن أي شيء يتعلق باستراتيجيات التداول، وتوصيات الكتب، والمفاهيم المالية، والمزيد!
           </p>
         </div>
 
@@ -155,7 +278,7 @@ const LLMChatPage: React.FC = () => {
                 <div
                   className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-4 md:p-5 ${
                     message.role === 'user'
-                      ? 'bg-indigo-600 text-white shadow-md'
+                      ? 'bg-indigo-50 text-gray-800 border-2 border-indigo-200 shadow-sm'
                       : 'bg-white text-gray-800 border border-gray-200 shadow-md'
                   }`}
                 >
@@ -165,9 +288,20 @@ const LLMChatPage: React.FC = () => {
                         <Sparkles className="w-4 h-4 text-indigo-600" />
                       </div>
                     )}
+                    {message.role === 'user' && (
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center">
+                        <MessageSquare className="w-4 h-4 text-indigo-700" />
+                      </div>
+                    )}
                     <div className="flex-1">
-                      <p className="whitespace-pre-wrap leading-relaxed">{message.content}</p>
-                      <p className={`text-xs mt-2 ${message.role === 'user' ? 'text-indigo-200' : 'text-gray-500'}`}>
+                      {message.role === 'user' ? (
+                        <p className="whitespace-pre-wrap leading-relaxed font-medium text-gray-900">{message.content}</p>
+                      ) : (
+                        <div className="max-w-none">
+                          <FormattedMessage content={message.content} />
+                        </div>
+                      )}
+                      <p className="text-xs mt-3 text-gray-500">
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
@@ -223,6 +357,19 @@ const LLMChatPage: React.FC = () => {
               AI-powered insights about trading and books
             </p>
           </div>
+        </div>
+
+        {/* Instruction Block */}
+        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-6 md:p-8 mb-8 shadow-md">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center">
+            مساعدك المالي بين يديك.
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 text-center leading-relaxed">
+            اسألني عن التداول، الاستثمار، أو اطلب ملخصاً لأي كتاب في مجال المال والأعمال.
+          </p>
+          <p className="text-base text-gray-600 text-center italic">
+            <span className="font-semibold text-indigo-700">مثال:</span> "كيف أبدأ في التداول؟" أو "لخص لي كتاب سيكولوجية المال".
+          </p>
         </div>
 
         {/* Info Cards */}
