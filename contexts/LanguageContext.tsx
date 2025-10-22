@@ -137,7 +137,8 @@ const translations = {
       'one-good-trade': 'One Good Trade',
       'cant-hurt-me': "Can't Hurt Me",
       'the-alchemy-of-finance': 'The Alchemy of Finance',
-      'competition-demystified': 'Competition Demystified'
+      'competition-demystified': 'Competition Demystified',
+      'the-4-hour-work-week': 'The 4-Hour Work Week'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -175,7 +176,8 @@ const translations = {
       'one-good-trade': 'Mike Bellafiore',
       'cant-hurt-me': 'David Goggins',
       'the-alchemy-of-finance': 'George Soros',
-      'competition-demystified': 'Bruce Greenwald & Judd Kahn'
+      'competition-demystified': 'Bruce Greenwald & Judd Kahn',
+      'the-4-hour-work-week': 'Timothy Ferriss'
     }
   }
 };
