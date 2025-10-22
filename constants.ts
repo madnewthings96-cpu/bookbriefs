@@ -347,7 +347,7 @@ export const BOOKS: Book[] = [
     title: 'The Psychology of Money',
     author: 'Morgan Housel',
     coverImageUrl: '/images/the psychology of money.jpg',
-    category: 'Finance & Investment',
+    category: 'Psychology & Happiness',
     rating: 4.29,
     ratingsCount: '127K',
     publicationYear: 2020,
@@ -369,7 +369,7 @@ export const BOOKS: Book[] = [
     title: "Can't Hurt Me",
     author: 'David Goggins',
     coverImageUrl: "/images/can't hurt me.jpg",
-    category: 'Self-Help & Motivation',
+    category: 'Psychology & Happiness',
     rating: 4.39,
     ratingsCount: '172K',
     publicationYear: 2018,
@@ -402,7 +402,7 @@ export const BOOKS: Book[] = [
     title: 'The 4-Hour Work Week',
     author: 'Timothy Ferriss',
     coverImageUrl: '/images/the 4 hour work week.jpg',
-    category: 'Self-Help & Motivation',
+    category: 'Psychology & Happiness',
     rating: 4.14,
     ratingsCount: '250K',
     publicationYear: 2007,
@@ -4920,7 +4920,7 @@ This simple yet profound approach has created countless successful investors and
     title: 'The Psychology of Money',
     author: 'Morgan Housel',
     coverImageUrl: '/images/the psychology of money.jpg',
-    category: 'Finance & Investment',
+    category: 'Psychology & Happiness',
     summary: `# The Psychology of Money
 ### *Timeless Lessons on Wealth, Greed, and Happiness*
 
@@ -5887,7 +5887,7 @@ For anyone who dreams of long-term success in the financial markets, this book i
     title: "Can't Hurt Me",
     author: 'David Goggins',
     coverImageUrl: "/images/can't hurt me.jpg",
-    category: 'Self-Help & Motivation',
+    category: 'Psychology & Happiness',
     summary: `# Can't Hurt Me
 *Master Your Mind and Defy the Odds*
 
@@ -6583,7 +6583,7 @@ For investors, it offers a rigorous lens for assessing the durability of a compa
     title: 'The 4-Hour Work Week',
     author: 'Timothy Ferriss',
     coverImageUrl: '/images/the 4 hour work week.jpg',
-    category: 'Self-Help & Motivation',
+    category: 'Psychology & Happiness',
     summary: `# The 4-Hour Work Week
 
 ## Deconstruction and Analysis for the Lifestyle Efficiency Architect
