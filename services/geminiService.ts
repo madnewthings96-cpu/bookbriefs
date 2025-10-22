@@ -76,6 +76,11 @@ export const chatWithAI = async (message: string, history: ChatMessage[] = []): 
     - Provide insights on risk management and trading psychology
     - Answer questions about technical and fundamental analysis
     
+    Style guidelines:
+    - Use a few relevant emojis subtly throughout your responses to make them engaging (1-3 emojis per response)
+    - Place emojis naturally next to relevant concepts (e.g., 📈 for growth, 📚 for books, 💡 for ideas, ⚠️ for warnings, ✅ for tips)
+    - Don't overuse emojis - keep them professional and purposeful
+    
     Always provide thoughtful, well-structured responses that help users learn and grow.`;
 
     const prompt = history.length === 0 

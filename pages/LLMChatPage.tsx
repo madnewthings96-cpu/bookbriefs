@@ -142,22 +142,27 @@ const LLMChatPage: React.FC = () => {
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
 
+  // Helper function to detect if text is Arabic
+  const isArabic = (text: string): boolean => {
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return arabicRegex.test(text);
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Only scroll to bottom when a new message is added (not on initial load)
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages.length]);
 
   // Suggested prompts
   const suggestedPrompts = [
     "What are the best trading strategies for beginners?",
-    "Recommend books about technical analysis",
-    "Explain the concept of risk management in trading",
-    "What are the key takeaways from 'Thinking, Fast and Slow'?",
-    "How to develop a trading psychology mindset?",
-    "Summarize the main ideas from 'Rich Dad Poor Dad'"
+    "اشرح مفهوم إدارة المخاطر في التداول"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -213,17 +218,17 @@ const LLMChatPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
-      <div className="container mx-auto px-4 max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-4 md:py-8">
+      <div className="container mx-auto px-1 md:px-3 max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-indigo-600 mr-3" />
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
+        <div className="text-center mb-4 md:mb-8 px-1 md:px-2">
+          <div className="flex items-center justify-center mb-3 md:mb-4">
+            <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-indigo-600 mr-2 md:mr-3" />
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-800">
               AI Trading & Books
             </h1>
           </div>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto px-2">
             اسألني عن أي شيء يتعلق باستراتيجيات التداول، وتوصيات الكتب، والمفاهيم المالية، والمزيد!
           </p>
         </div>
@@ -276,32 +281,33 @@ const LLMChatPage: React.FC = () => {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] md:max-w-[80%] rounded-2xl p-4 md:p-5 ${
+                  className={`max-w-[95%] md:max-w-[85%] lg:max-w-[80%] rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-5 ${
                     message.role === 'user'
                       ? 'bg-indigo-50 text-gray-800 border-2 border-indigo-200 shadow-sm'
                       : 'bg-white text-gray-800 border border-gray-200 shadow-md'
                   }`}
+                  dir={isArabic(message.content) ? 'rtl' : 'ltr'}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2 md:gap-3">
                     {message.role === 'assistant' && (
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <Sparkles className="w-4 h-4 text-indigo-600" />
+                      <div className="flex-shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-indigo-600" />
                       </div>
                     )}
                     {message.role === 'user' && (
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center">
-                        <MessageSquare className="w-4 h-4 text-indigo-700" />
+                      <div className="flex-shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-indigo-200 flex items-center justify-center">
+                        <MessageSquare className="w-3 h-3 md:w-4 md:h-4 text-indigo-700" />
                       </div>
                     )}
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       {message.role === 'user' ? (
-                        <p className="whitespace-pre-wrap leading-relaxed font-medium text-gray-900">{message.content}</p>
+                        <p className="whitespace-pre-wrap leading-relaxed font-medium text-gray-900 text-sm md:text-base">{message.content}</p>
                       ) : (
-                        <div className="max-w-none">
+                        <div className="max-w-none text-sm md:text-base">
                           <FormattedMessage content={message.content} />
                         </div>
                       )}
-                      <p className="text-xs mt-3 text-gray-500">
+                      <p className="text-xs mt-2 md:mt-3 text-gray-500">
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
@@ -343,6 +349,7 @@ const LLMChatPage: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about trading, books, or financial concepts..."
                 className="flex-1 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl bg-gray-50 text-gray-800 placeholder-gray-400 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                dir={isArabic(input) ? 'rtl' : 'ltr'}
                 disabled={isLoading}
               />
               <button
@@ -360,34 +367,34 @@ const LLMChatPage: React.FC = () => {
         </div>
 
         {/* Instruction Block */}
-        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-6 md:p-8 mb-8 shadow-md">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center">
+        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 mb-4 md:mb-8 shadow-md mx-1 md:mx-0">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-3 md:mb-4 text-center">
             مساعدك المالي بين يديك.
           </h2>
-          <p className="text-lg text-gray-700 mb-4 text-center leading-relaxed">
+          <p className="text-sm md:text-base lg:text-lg text-gray-700 mb-3 md:mb-4 text-center leading-relaxed">
             اسألني عن التداول، الاستثمار، أو اطلب ملخصاً لأي كتاب في مجال المال والأعمال.
           </p>
-          <p className="text-base text-gray-600 text-center italic">
+          <p className="text-xs md:text-sm lg:text-base text-gray-600 text-center italic">
             <span className="font-semibold text-indigo-700">مثال:</span> "كيف أبدأ في التداول؟" أو "لخص لي كتاب سيكولوجية المال".
           </p>
         </div>
 
         {/* Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
-            <BookOpen className="w-8 h-8 text-indigo-600 mb-2" />
-            <h3 className="text-gray-800 font-semibold mb-1">Book Insights</h3>
-            <p className="text-gray-600 text-sm">Get summaries and key takeaways from popular trading and business books</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mt-4 md:mt-8 mx-1 md:mx-0">
+          <div className="bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-indigo-600 mb-2" />
+            <h3 className="text-gray-800 font-semibold mb-1 text-sm md:text-base">Book Insights</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Get summaries and key takeaways from popular trading and business books</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
-            <TrendingUp className="w-8 h-8 text-green-600 mb-2" />
-            <h3 className="text-gray-800 font-semibold mb-1">Trading Strategies</h3>
-            <p className="text-gray-600 text-sm">Learn about different trading approaches and risk management techniques</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-600 mb-2" />
+            <h3 className="text-gray-800 font-semibold mb-1 text-sm md:text-base">Trading Strategies</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Learn about different trading approaches and risk management techniques</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
-            <MessageSquare className="w-8 h-8 text-blue-600 mb-2" />
-            <h3 className="text-gray-800 font-semibold mb-1">Interactive Learning</h3>
-            <p className="text-gray-600 text-sm">Ask questions and get personalized explanations tailored to your needs</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-3 md:p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <MessageSquare className="w-6 h-6 md:w-8 md:h-8 text-blue-600 mb-2" />
+            <h3 className="text-gray-800 font-semibold mb-1 text-sm md:text-base">Interactive Learning</h3>
+            <p className="text-gray-600 text-xs md:text-sm">Ask questions and get personalized explanations tailored to your needs</p>
           </div>
         </div>
       </div>
