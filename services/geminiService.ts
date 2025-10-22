@@ -52,3 +52,50 @@ export const generateBookSummary = async (title: string, author: string): Promis
     throw new Error("Failed to generate summary. Please check the console for more details.");
   }
 };
+
+// Chat function for LLM Chat page
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export const chatWithAI = async (message: string, history: ChatMessage[] = []): Promise<string> => {
+  try {
+    // Build conversation history
+    const conversationHistory = history.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }]
+    }));
+
+    // Add system context as the first message if history is empty
+    const systemContext = `You are a knowledgeable AI assistant specializing in trading, investing, books about finance and trading, and personal development. 
+    You provide helpful, accurate, and educational responses. You can:
+    - Explain trading strategies and concepts
+    - Recommend books on trading, investing, and business
+    - Summarize key ideas from popular finance and self-help books
+    - Provide insights on risk management and trading psychology
+    - Answer questions about technical and fundamental analysis
+    
+    Always provide thoughtful, well-structured responses that help users learn and grow.`;
+
+    const prompt = history.length === 0 
+      ? `${systemContext}\n\nUser: ${message}`
+      : message;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        ...conversationHistory,
+        {
+          role: 'user',
+          parts: [{ text: prompt }]
+        }
+      ],
+    });
+
+    return response.text.trim();
+  } catch (error) {
+    console.error("Error in chat:", error);
+    throw new Error("Failed to get response from AI. Please try again.");
+  }
+};

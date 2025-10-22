@@ -28,36 +28,12 @@ const games: Game[] = [
     link: '/games/spelling-bee'
   },
   {
-    id: 'strands',
-    title: 'Strands',
-    description: 'Find hidden words and uncover the theme.',
-    icon: '🔤',
-    color: 'from-green-400 to-teal-600',
-    link: '/games/strands'
-  },
-  {
     id: 'reading-challenge',
     title: 'Reading Challenge',
     description: 'Set and track your reading goals.',
     icon: '📚',
     color: 'from-blue-400 to-blue-600',
     link: '/reading-challenge'
-  },
-  {
-    id: 'book-trivia',
-    title: 'Book Trivia',
-    description: 'Test your knowledge with book quizzes.',
-    icon: '🎯',
-    color: 'from-purple-400 to-purple-600',
-    link: '/games/book-trivia'
-  },
-  {
-    id: 'author-quiz',
-    title: 'Author Quiz',
-    description: 'Guess the author from book descriptions.',
-    icon: '✍️',
-    color: 'from-indigo-400 to-indigo-600',
-    link: '/games/author-quiz'
   }
 ];
 

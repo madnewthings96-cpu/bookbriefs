@@ -28,6 +28,7 @@ import SpellingBeePage from './pages/SpellingBeePage';
 import AuthorQuizPage from './pages/AuthorQuizPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
+import LLMChatPage from './pages/LLMChatPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -363,6 +364,7 @@ const AppContent: React.FC = () => {
             <Route path="/games/strands" element={<StrandsPage />} />
             <Route path="/games/spelling-bee" element={<SpellingBeePage />} />
             <Route path="/games/author-quiz" element={<AuthorQuizPage />} />
+            <Route path="/chat" element={<LLMChatPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />

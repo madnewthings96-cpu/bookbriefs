@@ -152,7 +152,9 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Games Section */}
-      <Games />
+      <section className="bg-white">
+        <Games />
+      </section>
 
       {/* Testimonials Section */}
       <section className="bg-white py-20">
