@@ -1785,6 +1785,12 @@ const SummaryDetailPage: React.FC = () => {
                         return;
                       }
 
+                      // For The 4-Hour Workweek, open the actual PDF file
+                      if (book.id === 'the-4-hour-workweek') {
+                        window.open('/pdfs/the 4 hour workweek.pdf', '_blank');
+                        return;
+                      }
+
                       // For The Laws of Human Nature, open the actual PDF file
                       if (book.id === 'thelawsofhumannature') {
                         window.open('/pdfs/the laws of human nature.pdf', '_blank');

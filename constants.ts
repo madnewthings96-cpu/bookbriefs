@@ -2,6 +2,17 @@ import { Book, Broker, Testimonial, BookSummary, Review } from './types';
 
 export const BOOKS: Book[] = [
   {
+    id: 'the-4-hour-workweek',
+    title: 'The 4-Hour Workweek',
+    author: 'Timothy Ferriss',
+    coverImageUrl: '/images/the 4 hour workweek.jpg',
+    category: 'Personal Development',
+    rating: 3.81,
+    ratingsCount: '484K',
+    publicationYear: 2007,
+    pageCount: 308,
+  },
+  {
     id: 'atomic-habits',
     title: 'Atomic Habits',
     author: 'James Clear',
@@ -428,6 +439,388 @@ export const TESTIMONIALS: Testimonial[] = [
   },
 ];
 export const BOOK_SUMMARIES: BookSummary[] = [
+  {
+    id: 'the-4-hour-workweek',
+    title: "The 4-Hour Workweek",
+    author: "Timothy Ferriss",
+    coverImageUrl: "/images/the 4 hour workweek.jpg",
+    category: "Personal Development",
+    summary: `# The 4-Hour Workweek: Deconstruction and Analysis for the Lifestyle Efficiency Architect
+
+Timothy Ferriss's The 4-Hour Workweek (4HWW) is not a time management book; it is a radical blueprint for total life redesign. It challenges the core assumptions of the traditional career path—the belief in deferred living (working relentlessly now to enjoy life later, during a single, distant retirement) and the false equation of activity with productivity. This exhaustive deconstruction and analysis meticulously dissects the philosophical foundation, counter-intuitive principles, and actionable tactics within Ferriss's seminal work, presenting an architecture for the New Rich lifestyle.
+
+## 1. Executive Summary and Philosophical Foundation
+
+### Executive Summary: The Rebellion Against Deferred Living
+
+The 4-Hour Workweek (4HWW) is a manifesto authored by serial entrepreneur and "human guinea pig" Timothy Ferriss, who distilled his own escape from a 14-hour workday into a tactical guide. The book's central thesis is a rejection of the "standard operating procedure" of life—the cycle of education, career ladder climbing, and a single, delayed retirement. It proposes a New Rich (NR) philosophy: maximizing time and mobility through automated income streams, thereby achieving the freedom of the millionaire without requiring a millionaire's net worth. The book's unique value proposition is its provision of a tactical, step-by-step methodology for generating high-yield passive income (muses) while minimizing management overhead (through outsourcing and extreme elimination), promising a path to a life rich in experiences, travel, and personal growth, all while working 4 hours or less per week.
+
+### The D.E.A.L. Framework: The Four Pillars of the New Rich
+
+Ferriss organizes the transformation from "deferred-life plan" (DLP) worker to New Rich (NR) lifestyle designer around a simple, powerful acronym: D.E.A.L.—Definition, Elimination, Automation, and Liberation. This is the non-linear, recursive methodology for achieving the ultimate goal: Maximum Results with Minimum Time.
+
+#### A. Definition (D): Reorienting the Compass 🧭
+
+**Definition:** Replacing abstract goals (e.g., "be rich") with concrete, time-bound, highly specific lifestyle metrics (e.g., "$4,000/month to travel Europe").
+
+**Core Philosophy:** Lifestyle design is the first step, not the last. Income is only meaningful in the context of desired lifestyle.
+
+**Contrast with Traditional Thinking:** Traditionalists define success by net worth or title; NR defines it by time freedom and mobility. The traditional goal is to "be rich"; the NR goal is to do and be more.
+
+#### B. Elimination (E): The Art of Doing Less ✂️
+
+**Elimination:** Ruthlessly identifying and discarding all non-critical, low-yield, and time-wasting activities, leveraging the Pareto Principle and Parkinson's Law.
+
+**Core Philosophy:** Productivity is about doing less and focusing only on the highest-impact tasks. Activity does not equal productivity.
+
+**Contrast with Traditional Thinking:** Traditionalists believe in busyness and time-in-seat as measures of effort and commitment ("If I work longer, I'll get more done"). NR insists on extreme selective ignorance.
+
+#### C. Automation (A): Creating the Money Machine ⚙️
+
+**Automation:** Creating passive income streams—"Muses"—that are designed to run themselves, primarily through outsourcing processes and tasks that cannot be eliminated.
+
+**Core Philosophy:** Income is worthless if it requires constant, hands-on management. The goal is to generate $1 of automated income for every $0.01 of time invested.
+
+**Contrast with Traditional Thinking:** Traditionalists rely on wages and active income where income ceases when work stops. NR focuses on building systems that generate income without continuous presence.
+
+#### D. Liberation (L): The Geography of Freedom 🗺️
+
+**Liberation:** Creating geographic mobility and professional invisibility, allowing the NR to manage their muse(s) from anywhere in the world and escape the office-centric mindset.
+
+**Core Philosophy:** The ultimate purpose of the preceding steps is to gain absolute freedom of location and time. This includes replacing the single, deferred retirement with Mini-Retirements.
+
+**Contrast with Traditional Thinking:** Traditionalists are tethered to a single location (the office) and a single, distant retirement. NR practices flow—distributing periods of rest and adventure throughout life.
+
+### Thematic Thesis: Time, Income, and Lifestyle
+
+The book's central argument is a redefinition of the relationship between Time, Income, and Lifestyle. Ferriss argues that **relative income** (income divided by time worked) is the only true measure of wealth, superior to absolute income (total dollar amount). A person earning $50,000 per year while working 10 hours a week has a far richer lifestyle—more time and mobility—than a person earning $200,000 working 80 hours a week.
+
+**The Target Reader:** The "New Rich" (NR). Not defined by money, but by time, choice, and mobility. They are the individuals who understand that freedom is the ultimate currency.
+
+**The Transformation Promised:** The book promises the tactical methods to transition from the Deferred-Life Plan (DLP) trap—the endless cycle of earning, spending, and waiting—to a life of perpetual Mini-Retirements, where income and leisure are enjoyed concurrently and geographically unrestricted.
+
+## 2. Core Principles and Key Insights
+
+### The 80/20 Principle (Pareto Principle)
+
+**Application:** 80% of results come from 20% of efforts. 80% of profits come from 20% of customers. 80% of problems come from 20% of customers.
+
+**Action:** Identify and focus on the critical 20% that generates most value. Eliminate or minimize the problematic 80%.
+
+### Parkinson's Law
+
+**Principle:** Work expands to fill the time available for its completion.
+
+**Application:** Set aggressive deadlines to force efficiency. A task that "should" take 4 hours can often be completed in 1 hour when proper constraints are applied.
+
+### Fear-Setting Exercise
+
+**Purpose:** Overcome paralysis by quantifying worst-case scenarios.
+
+**Process:**
+1. Define your worst-case scenario
+2. List steps to repair the damage
+3. Determine the benefits of attempting the goal
+4. Calculate the cost of inaction
+
+### The Low-Information Diet
+
+**Philosophy:** Most information is time-consuming, negative, and irrelevant to your goals.
+
+**Implementation:**
+- Eliminate news consumption
+- Batch-process emails (2x daily maximum)
+- Use selective ignorance as a competitive advantage
+
+## 3. Building Your Muse (Automated Income)
+
+### Criteria for the Perfect Product
+
+1. **Price Point:** $50-$200 for optimal profit margins
+2. **Production Cost:** Less than $5 per unit
+3. **Time to Ship:** Maximum 4 weeks from order to delivery
+4. **Explainable:** Can be fully explained in a good online FAQ
+5. **Niche Market:** Target a specific, reachable audience
+6. **Information Products:** E-books, courses, memberships (highest margins)
+
+### Testing Before Investing
+
+**Micro-Testing Process:**
+1. Create a simple landing page
+2. Drive targeted traffic through $100-$500 in ads
+3. Measure conversion rates
+4. Pre-sell before building the full product
+5. Kill ideas with low conversion rates
+
+### The Art of Outsourcing
+
+**Virtual Assistants (VAs):**
+- Start with personal tasks to learn delegation
+- Provide clear SOPs (Standard Operating Procedures)
+- Give authority, not just tasks
+- Use the $100 test challenge
+- Aim for weekly 5-minute check-ins maximum
+
+## 4. Liberation Strategies
+
+### Negotiating Remote Work
+
+**Phase 1:** Prove productivity increase with trial work-from-home day  
+**Phase 2:** Propose 2-day remote schedule based on results  
+**Phase 3:** Transition to full remote or create "business trip" necessities  
+**Phase 4:** Achieve complete location independence
+
+### Mini-Retirements vs. Traditional Retirement
+
+**Traditional Model:**
+- Work 40+ years
+- Retire at 65
+- Hope you're healthy and wealthy enough to enjoy it
+
+**New Rich Model:**
+- Distribute rest and adventure throughout life
+- 1-6 month "retirements" every few years
+- Combine travel, skill acquisition, and cultural immersion
+- Use geo-arbitrage to maximize purchasing power
+
+### Geo-Arbitrage
+
+**Concept:** Earn in strong currencies (USD, EUR), live in affordable countries.
+
+**Example:** $3,000/month provides:
+- Modest lifestyle in the US
+- Upper-middle-class lifestyle in Thailand, Vietnam, Mexico
+- Luxury lifestyle in many developing nations
+
+## 5. Overcoming Common Obstacles
+
+### The Void Problem
+
+**Issue:** When work is eliminated, many feel purposeless.
+
+**Solutions:**
+- Focus on skill acquisition (languages, sports, arts)
+- Engage in meaningful contribution (teaching, charity)
+- Set learning goals as aggressive as business goals
+- Practice the art of "meta-learning"
+
+### Managing Guilt and Social Pressure
+
+**Challenge:** Society rewards busyness and views leisure with suspicion.
+
+**Response:**
+- Reframe productivity around results, not hours
+- Build confidence through financial independence
+- Surround yourself with like-minded individuals
+- Use mini-retirements as "research" or "skill development"
+
+### Maintaining Systems
+
+**Risk:** Automated systems can break down.
+
+**Prevention:**
+- Document everything in SOPs
+- Build redundancy with backup VAs
+- Create emergency protocols
+- Schedule quarterly system audits
+- Maintain a small time buffer for firefighting
+
+## 6. Advanced Tactics and Refinements
+
+### The Art of Selective Ignorance
+
+**Practice:**
+- No news consumption
+- Email batching (10 AM and 4 PM only)
+- Auto-responders managing expectations
+- Aggressive filtering of information sources
+
+### Customer Management
+
+**Philosophy:** Not all customers are equal.
+
+**Action:**
+- Identify the 20% generating 80% of profit
+- Fire the 20% creating 80% of problems
+- Implement policies that deter difficult customers
+- Focus resources on best customers
+
+### Time Batching
+
+**Technique:** Group similar tasks and complete them in dedicated blocks.
+
+**Benefits:**
+- Reduces context switching
+- Increases efficiency through momentum
+- Minimizes interruptions
+- Clarifies priorities
+
+## 7. Critiques and Limitations
+
+### Common Criticisms
+
+**"It's Not Really 4 Hours":**
+- The title is aspirational and provocative
+- Initial setup requires significant time investment
+- Maintenance typically requires more than 4 hours
+- The principle is about minimizing time, not the literal number
+
+**"Not Everyone Can Do This":**
+- Some careers don't allow remote work
+- Not all products can be automated
+- Requires significant upfront capital or time
+- May not suit risk-averse personalities
+
+**"Ethical Concerns":**
+- Exploitation of low-wage VA labor
+- Environmental impact of excess travel
+- Societal impact if everyone adopted this lifestyle
+
+### Author Response
+
+Ferriss acknowledges:
+- The 4 hours is a target, not a guarantee
+- The system requires adaptation to individual circumstances
+- Initial effort is front-loaded
+- The principles are universal, even if the exact implementation varies
+
+## 8. Cultural Impact and Legacy
+
+### Movement Created
+
+**Digital Nomad Lifestyle:**
+- Legitimized location-independent work
+- Inspired global community of remote workers
+- Spawned countless tools and services
+
+**Lifestyle Design:**
+- Made "work-life balance" obsolete
+- Promoted "work-life integration"
+- Emphasized designing ideal life first, then building career around it
+
+**Entrepreneurial Renaissance:**
+- Democratized business creation
+- Popularized e-commerce and info products
+- Made micro-businesses viable
+
+### Tools and Trends Enabled
+
+- Remote work normalization (pre-COVID)
+- Virtual assistant industry growth
+- Dropshipping and print-on-demand businesses
+- Online course creation explosion
+- Outsourcing platforms (Upwork, Fiverr, etc.)
+
+## 9. Actionable Implementation Plan
+
+### Month 1: Definition Phase
+
+**Week 1-2:**
+- Complete Fear-Setting Exercise
+- Define your target monthly income (TMI)
+- Calculate cost of first mini-retirement
+- Identify dreamlines (6-month, 12-month goals)
+
+**Week 3-4:**
+- Track current time usage
+- Perform 80/20 analysis on activities
+- Identify elimination candidates
+- Begin low-information diet
+
+### Month 2-3: Elimination Phase
+
+**Weeks 5-8:**
+- Implement email batching
+- Eliminate non-essential meetings
+- Apply Parkinson's Law to tasks
+- Delegate or eliminate 80% activities
+
+**Weeks 9-12:**
+- Audit customer base (if applicable)
+- Fire problematic clients
+- Focus on high-value relationships
+- Streamline all workflows
+
+### Month 4-6: Automation Phase
+
+**Weeks 13-18:**
+- Brainstorm muse ideas
+- Research and validate 3 product concepts
+- Create landing pages and test ads
+- Hire first VA for personal tasks
+
+**Weeks 19-24:**
+- Launch validated muse
+- Document all processes in SOPs
+- Hire business VA
+- Build automated fulfillment system
+
+### Month 7-12: Liberation Phase
+
+**Weeks 25-36:**
+- Negotiate remote work arrangement
+- Test business systems with 1-week absence
+- Plan first mini-retirement
+- Build financial buffer
+
+**Weeks 37-52:**
+- Execute first mini-retirement
+- Audit and refine systems
+- Scale successful muses
+- Begin next cycle of DEAL
+
+## 10. Key Principles to Remember
+
+### The New Rich Commandments
+
+1. **Relative income > Absolute income**
+2. **Elimination before automation**
+3. **Results over activity**
+4. **Focus on the critical few**
+5. **Information is a tax, not a benefit**
+6. **Time is the ultimate currency**
+7. **Geographic arbitrage is a force multiplier**
+8. **Mini-retirements > delayed retirement**
+9. **Excitement is the best gauge for decisions**
+10. **Systems > willpower**
+
+### Questions to Guide Decision-Making
+
+- Will this task make me more money or free more time?
+- Am I being productive or just active?
+- What would I do if I could only work 2 hours today?
+- What would excite me most right now?
+- How can I automate, eliminate, or delegate this?
+
+## 11. Conclusion: Beyond the 4-Hour Workweek
+
+The 4-Hour Workweek is not merely about reducing work hours—it's about fundamentally rethinking the relationship between work, value, and life. Ferriss provides not just philosophy, but a tactical blueprint for reclaiming time, the ultimate non-renewable resource.
+
+The book's lasting contribution is its challenge to conventional wisdom about success, security, and the "good life." It demonstrates that freedom—geographic, financial, and temporal—is not reserved for the wealthy or retired, but can be engineered through systematic application of leverage, automation, and ruthless elimination.
+
+Whether or not you achieve exactly 4 hours of work per week, the principles of the New Rich lifestyle offer a powerful framework for anyone seeking to escape the deferred-life plan and design a life of purpose, adventure, and autonomy.
+
+**The ultimate lesson:** The currency of the New Rich is not money—it's time, mobility, and the freedom to pursue what excites you most. Everything else is simply a means to that end.
+
+### Final Challenge
+
+As Ferriss poses: "What if you had to compress your week's work into 4 hours? What would you keep? What would you eliminate? What would you automate?"
+
+The answer to these questions is not just about productivity—it's about life design. And that design starts now, not someday.`,
+    keyTakeaways: [
+      "Relative income (income/time) matters more than absolute income",
+      "The D.E.A.L. framework: Definition, Elimination, Automation, Liberation",
+      "Apply the 80/20 rule: 80% of results come from 20% of efforts",
+      "Use Parkinson's Law: work expands to fill the time allotted",
+      "Replace traditional retirement with mini-retirements throughout life",
+      "Create automated income streams (muses) that run without constant management",
+      "Practice selective ignorance and batch-process information",
+      "Outsource and delegate everything that can't be eliminated",
+      "Use geo-arbitrage to maximize purchasing power by earning in strong currencies and living in affordable locations",
+      "Focus on excitement and experiences rather than accumulation and deferred living"
+    ],
+    isPremium: false
+  },
   {
     id: 'rich-dad-poor-dad',
     title: "Rich Dad Poor Dad",
