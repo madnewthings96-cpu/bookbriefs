@@ -138,7 +138,7 @@ const translations = {
       'cant-hurt-me': "Can't Hurt Me",
       'the-alchemy-of-finance': 'The Alchemy of Finance',
       'competition-demystified': 'Competition Demystified',
-      'the-4-hour-work-week': 'The 4-Hour Work Week'
+      'the-4-hour-workweek': 'The 4-Hour Workweek'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -177,7 +177,7 @@ const translations = {
       'cant-hurt-me': 'David Goggins',
       'the-alchemy-of-finance': 'George Soros',
       'competition-demystified': 'Bruce Greenwald & Judd Kahn',
-      'the-4-hour-work-week': 'Timothy Ferriss'
+      'the-4-hour-workweek': 'Timothy Ferriss'
     }
   }
 };
