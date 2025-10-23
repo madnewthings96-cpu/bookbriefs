@@ -6,12 +6,20 @@ import FIRECalculator from '../components/FIRECalculator';
 import CompoundCalculator from '../components/CompoundCalculator';
 import { BROKERS } from '../constants';
 import BrokerCard from '../components/BrokerCard';
+import useSEO from '../hooks/useSEO';
 
 type CalculatorTab = 'pipValue' | 'positionSize' | 'fire' | 'compound';
 
 const CalculatorsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useSEO({
+    title: 'Free Trading & Financial Calculators - Pip Value, Position Size, FIRE & Compound Interest | BookBriefs',
+    description: 'Calculate trading pip values, position sizes, FIRE numbers, and compound interest with our free financial calculators. Essential tools for traders and investors.',
+    keywords: 'trading calculator, pip value calculator, position size calculator, FIRE calculator, compound interest calculator, forex calculator, trading tools, financial planning',
+    type: 'website',
+  });
   
   // Determine active tab from URL
   const getTabFromPath = (path: string): CalculatorTab => {

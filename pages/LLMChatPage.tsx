@@ -3,6 +3,7 @@ import { Send, Loader2, MessageSquare, BookOpen, TrendingUp, Sparkles } from 'lu
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { chatWithAI } from '../services/geminiService';
+import useSEO from '../hooks/useSEO';
 
 interface Message {
   id: string;
@@ -141,6 +142,13 @@ const LLMChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
+
+  useSEO({
+    title: 'AI Book Chat Assistant - Ask Questions About Books & Get Instant Summaries | BookBriefs',
+    description: 'Chat with our AI assistant to get instant book recommendations, summaries, and insights. Ask questions about any book and receive intelligent, detailed answers.',
+    keywords: 'AI book chat, book assistant, AI book recommendations, book questions, book summaries AI, intelligent book search, book chatbot',
+    type: 'website',
+  });
 
   // Helper function to detect if text is Arabic
   const isArabic = (text: string): boolean => {

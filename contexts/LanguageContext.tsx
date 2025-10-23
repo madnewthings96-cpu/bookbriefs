@@ -97,7 +97,7 @@ const translations = {
     signInWithGoogle: 'Sign in with Google',
     signInWithEmail: 'Sign in with email',
     signInWithApple: 'Sign in with Apple',
-    readersCount: '5,000+',
+    readersCount: '50,000+',
     readers: 'readers',
     
     // Book content

@@ -1,8 +1,16 @@
 import React, { useEffect, useRef } from 'react';
+import useSEO from '../hooks/useSEO';
 
 const NewsPage: React.FC = () => {
   const economicNewsRef = useRef<HTMLDivElement>(null);
   const topStoriesRef = useRef<HTMLDivElement>(null);
+
+  useSEO({
+    title: 'Financial News & Economic Calendar - Real-Time Market Updates | BookBriefs',
+    description: 'Stay updated with the latest financial news, economic events, and market analysis. Access real-time economic calendar and top trading stories from global markets.',
+    keywords: 'financial news, economic calendar, market news, trading news, forex news, stock market updates, economic events, market analysis',
+    type: 'website',
+  });
 
   useEffect(() => {
     // Load TradingView Economic Calendar widget

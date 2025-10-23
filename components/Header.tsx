@@ -418,6 +418,9 @@ const Header: React.FC = () => {
                 {isAuthenticated ? (
                   <>
                     <span className="text-gray-300 block px-3 py-2 text-sm">Welcome!</span>
+                    <NavLink to="/profile" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
+                    <NavLink to="/reading-challenge" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Reading Challenge</NavLink>
+                    <NavLink to="/downloads" className="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Downloads</NavLink>
                     <button
                       onClick={() => {
                         logout();
