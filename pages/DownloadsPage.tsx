@@ -16,9 +16,18 @@ const DownloadsPage: React.FC = () => {
   
   // Placeholder downloads - you can add more items here later
   const [downloads] = useState<DownloadItem[]>([
+    {
+      id: '1',
+      title: 'Ta7leel Trading Journal - Standard',
+      description: 'Professional trading journal template for tracking and analyzing your trades',
+      fileUrl: 'https://www.notion.so/Ta7leel-site-Trading-Journal-Standard-2905d80c6175803e9f67c375e834c0a6',
+      fileSize: 'Notion Template',
+      category: 'Trading',
+      uploadDate: '2024-01-15'
+    }
     // Example structure - you can add your PDFs here
     // {
-    //   id: '1',
+    //   id: '2',
     //   title: 'Reading Guide 2024',
     //   description: 'A comprehensive guide to maximize your reading experience',
     //   fileUrl: '/downloads/reading-guide-2024.pdf',
@@ -39,13 +48,18 @@ const DownloadsPage: React.FC = () => {
     : downloads.filter(item => item.category === selectedCategory);
 
   const handleDownload = (fileUrl: string, title: string) => {
-    // Create a temporary link and trigger download
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = title;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Check if it's an external link (like Notion)
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+      window.open(fileUrl, '_blank');
+    } else {
+      // Create a temporary link and trigger download for local files
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = title;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -147,7 +161,7 @@ const DownloadsPage: React.FC = () => {
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       />
                     </svg>
-                    Download PDF
+                    {download.fileUrl.startsWith('http') ? 'Open Link' : 'Download PDF'}
                   </button>
                 </div>
               </div>
@@ -205,6 +219,34 @@ const DownloadsPage: React.FC = () => {
                 please contact our support team.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Support Section - Buy Me a Coffee */}
+        <div className="mt-8 bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-lg p-8 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h4 className="text-2xl font-bold text-gray-900 mb-3">
+              ☕ Support Our Work
+            </h4>
+            <p className="text-gray-700 mb-6">
+              If you find these resources helpful, consider supporting us with a coffee! 
+              Your support helps us create more quality content and tools for the community.
+            </p>
+            <a
+              href="https://ko-fi.com/ta7leel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              <svg 
+                className="w-6 h-6 mr-2" 
+                viewBox="0 0 24 24" 
+                fill="currentColor"
+              >
+                <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
+              </svg>
+              Buy Me a Coffee on Ko-fi
+            </a>
           </div>
         </div>
       </div>

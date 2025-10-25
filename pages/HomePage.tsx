@@ -67,7 +67,7 @@ const HomePage: React.FC = () => {
                   </svg>
                 ))}
               </div>
-              <span className="text-gray-700 font-semibold">50,000+ readers</span>
+              <span className="text-gray-700 font-semibold">5,000+ readers</span>
             </div>
           </div>
 

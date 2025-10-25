@@ -97,7 +97,7 @@ const translations = {
     signInWithGoogle: 'Sign in with Google',
     signInWithEmail: 'Sign in with email',
     signInWithApple: 'Sign in with Apple',
-    readersCount: '50,000+',
+    readersCount: '5,000+',
     readers: 'readers',
     
     // Book content
@@ -138,7 +138,8 @@ const translations = {
       'cant-hurt-me': "Can't Hurt Me",
       'the-alchemy-of-finance': 'The Alchemy of Finance',
       'competition-demystified': 'Competition Demystified',
-      'the-4-hour-workweek': 'The 4-Hour Workweek'
+      'the-4-hour-workweek': 'The 4-Hour Workweek',
+      'the-black-swan': 'The Black Swan'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -177,7 +178,8 @@ const translations = {
       'cant-hurt-me': 'David Goggins',
       'the-alchemy-of-finance': 'George Soros',
       'competition-demystified': 'Bruce Greenwald & Judd Kahn',
-      'the-4-hour-workweek': 'Timothy Ferriss'
+      'the-4-hour-workweek': 'Timothy Ferriss',
+      'the-black-swan': 'Nassim Nicholas Taleb'
     }
   }
 };
