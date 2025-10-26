@@ -86,7 +86,7 @@ const translations = {
     createFreeAccount: 'Create a free account to unlock:',
     recommendations: 'Recommendations',
     personalizedForYou: 'Personalized for you',
-    pdfDownloads: 'PDF Downloads',
+    pdfDownloads: 'Arabic PDF Downloads',
     downloadAllBooks: 'Download book summaries',
     bookmarks: 'Bookmarks',
     saveYourFavoriteBooks: 'Save your favorite books',
@@ -97,7 +97,7 @@ const translations = {
     signInWithGoogle: 'Sign in with Google',
     signInWithEmail: 'Sign in with email',
     signInWithApple: 'Sign in with Apple',
-    readersCount: '5,000+',
+    readersCount: '50,000+',
     readers: 'readers',
     
     // Book content
@@ -139,7 +139,8 @@ const translations = {
       'the-alchemy-of-finance': 'The Alchemy of Finance',
       'competition-demystified': 'Competition Demystified',
       'the-4-hour-workweek': 'The 4-Hour Workweek',
-      'the-black-swan': 'The Black Swan'
+      'the-black-swan': 'The Black Swan',
+      'the-playbook': 'The PlayBook'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -179,7 +180,8 @@ const translations = {
       'the-alchemy-of-finance': 'George Soros',
       'competition-demystified': 'Bruce Greenwald & Judd Kahn',
       'the-4-hour-workweek': 'Timothy Ferriss',
-      'the-black-swan': 'Nassim Nicholas Taleb'
+      'the-black-swan': 'Nassim Nicholas Taleb',
+      'the-playbook': 'Mike Bellafiore'
     }
   }
 };
