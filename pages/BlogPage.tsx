@@ -1718,34 +1718,34 @@ const BlogPage: React.FC = () => {
       id: 13,
       title: "مفكرة المتداول: أداة رصد مبكر للسلوكيات قبل أن تؤثر على أرباحك",
       excerpt: "في رحلة التداول، يخصص معظم المتداولين وقتهم في البحث عن الاستراتيجية السحرية، متجاهلين العنصر الأهم: أنفسهم. اكتشف كيف تحول المفكرة إلى نظام إنذار سلوكي مبكر قبل أن تفتك الأنماط العاطفية بحسابك.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-10-12",
-      readTime: "20 min read",
+      readTime: "20 دقيقة قراءة",
       imageUrl: "/blog images/blog 1.png",
-      tags: ["trading journal", "psychology", "risk management", "behavior patterns", "arabic"],
-      slug: "trading-journal-early-warning-system"
+      tags: ["مفكرة التداول", "علم النفس", "إدارة المخاطر", "الأنماط السلوكية", "عربي"],
+      slug: "مفكرة-المتداول-نظام-انذار-سلوكي-مبكر"
     },
     {
       id: 14,
       title: "الثقة الهادئة: كيف تتداول كالمحترفين، حتى بعد سلسلة من الخسائر",
       excerpt: "في عالم التداول، الثقة الحقيقية ليست الصراخ المتهور، بل الهدوء واليقين العميق الذي لا يتزعزع حتى بعد الخسائر. اكتشف كيف تطور الثقة الهادئة التي تميز المحترفين عن الهواة.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-10-12",
-      readTime: "30 min read",
+      readTime: "30 دقيقة قراءة",
       imageUrl: "/blog images/blog 2.png",
-      tags: ["quiet confidence", "trading psychology", "loss management", "professional trading", "arabic"],
-      slug: "quiet-confidence-trading-after-losses"
+      tags: ["الثقة الهادئة", "علم نفس التداول", "إدارة الخسائر", "التداول الاحترافي", "عربي"],
+      slug: "الثقة-الهادئة-كيف-تتداول-كالمحترفين-بعد-الخسائر"
     },
     {
       id: 15,
       title: "كيف تبني قائمة تحقق ما قبل التداول التي تقضي على الدخول العاطفي (انضباط الطيار)",
       excerpt: "في عالم التداول المتقلب، غالباً ما يقع المتداولون فريسة للدخول العاطفي. اكتشف كيف تبني قائمة تحقق ما قبل التداول، مستوحاة من انضباط الطيارين، لتحميك من نفسك وتضمن اتخاذ قرارات منطقية.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-10-15",
-      readTime: "25 min read",
+      readTime: "25 دقيقة قراءة",
       imageUrl: "/blog images/blog 4.png",
-      tags: ["pre-trade checklist", "discipline", "pilot discipline", "emotional trading", "arabic"],
-      slug: "pre-trade-checklist-pilot-discipline"
+      tags: ["قائمة التحقق قبل التداول", "الانضباط", "انضباط الطيار", "التداول العاطفي", "عربي"],
+      slug: "قائمة-تحقق-ما-قبل-التداول-انضباط-الطيار"
     },
     {
       id: 1,
@@ -1762,100 +1762,100 @@ const BlogPage: React.FC = () => {
       id: 4,
       title: "كيف تصبح متداولاََ رحالاً وتتاجر من أي مكان",
       excerpt: "من تجربتي، أفضل وأسرع طريقة لكسب المال من التداول هي اتباع نهج التداول منخفض التردد، مع عدم التدخل. تعلم كيف تجعل التداول نشاطًا جانبيًا مع الحفاظ على التوازن في حياتك.",
-      category: "Trading",
+      category: "التداول",
       date: "2024-01-25",
-      readTime: "20 min read",
+      readTime: "20 دقيقة قراءة",
       imageUrl: "/images/nomad.jpg",
-      tags: ["nomadic trading", "low frequency", "lifestyle", "arabic"],
-      slug: "become-nomadic-trader"
+      tags: ["التداول الرحال", "تردد منخفض", "نمط حياة", "عربي"],
+      slug: "كيف-تصبح-متداول-رحال-وتتداول-من-اي-مكان"
     },
     {
       id: 5,
       title: "كيف تساعد إدارة المخاطر في إنقاذ حساب التداول الخاص بك",
       excerpt: "هل تعاني من مشاكل في حساب تداولك؟ اكتشف كيف تساعد إدارة المخاطر الصحيحة في إنقاذ حسابك وبنائه من جديد. تعلم الأسس الثلاثة للتداول الناجح وأهمية الحفاظ على رأس المال.",
-      category: "Trading",
+      category: "التداول",
       date: "2024-01-28",
-      readTime: "25 min read",
+      readTime: "25 دقيقة قراءة",
       imageUrl: "/images/risk.jpg",
-      tags: ["risk management", "capital preservation", "trading psychology", "arabic"],
-      slug: "risk-management-saves-trading-account"
+      tags: ["إدارة المخاطر", "الحفاظ على رأس المال", "علم نفس التداول", "عربي"],
+      slug: "كيف-تساعد-ادارة-المخاطر-في-انقاذ-حساب-التداول"
     },
     {
       id: 6,
       title: "كيفية التداول مثل مدير صندوق التحوط",
       excerpt: "قد تُصدم لسماع هذا، لكن لا يوجد فرق كبير بينك وبين مدير صندوق التحوط المحترف. اكتشف الأسرار والعقلية التي تميز المحترفين عن المبتدئين في عالم التداول.",
-      category: "Trading",
+      category: "التداول",
       date: "2024-01-30",
-      readTime: "22 min read",
+      readTime: "22 دقيقة قراءة",
       imageUrl: "/images/hedge fund market wizards.jpg",
-      tags: ["hedge funds", "professional trading", "trading mindset", "arabic"],
-      slug: "trade-like-hedge-fund-manager"
+      tags: ["صناديق التحوط", "التداول الاحترافي", "عقلية التداول", "عربي"],
+      slug: "كيفية-التداول-مثل-مدير-صندوق-التحوط"
     },
     {
       id: 7,
       title: "ما الذي يمكن أن يُعلّمنا إياه أسطورة التداول جورج سوروس عن التداول",
       excerpt: "استكشف الدروس القيمة من حياة وفلسفة جورج سوروس، 'الرجل الذي حطم بنك إنجلترا'، وتعلم كيفية تطبيق حكمته في تداولك الشخصي.",
-      category: "Trading",
+      category: "التداول",
       date: "2024-02-15",
-      readTime: "15 min read",
+      readTime: "15 دقيقة قراءة",
       imageUrl: "/images/soros.jpg",
-      tags: ["george soros", "trading legends", "market psychology", "arabic"],
-      slug: "george-soros-trading-lessons"
+      tags: ["جورج سوروس", "أساطير التداول", "علم نفس السوق", "عربي"],
+      slug: "دروس-التداول-من-اسطورة-جورج-سوروس"
     },
     {
       id: 8,
       title: "التداول هو ماراثون وليس سباقًا قصيرًا",
       excerpt: "تعلم لماذا النجاح في التداول يتطلب صبرًا وثباتًا مثل العداء في سباق الماراثون، وكيف تبني استراتيجية طويلة المدى للفوز في لعبة التداول.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-03-01",
-      readTime: "18 min read",
+      readTime: "18 دقيقة قراءة",
       imageUrl: "/images/marathon.png",
-      tags: ["trading psychology", "long-term strategy", "discipline", "arabic"],
-      slug: "trading-is-marathon-not-sprint"
+      tags: ["علم نفس التداول", "استراتيجية طويلة المدى", "الانضباط", "عربي"],
+      slug: "التداول-ماراثون-وليس-سباق-قصير"
     },
     {
       id: 9,
       title: "قم بإدارة تداولاتك مثل الأعمال التجارية",
       excerpt: "تعلم كيفية التعامل مع التداول كعمل تجاري متكامل، وفهم التكاليف والإيرادات، وإدارة المخاطر بطريقة احترافية لتحقيق أرباح مستدامة.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-03-15",
-      readTime: "16 min read",
+      readTime: "16 دقيقة قراءة",
       imageUrl: "/images/business.jpg",
-      tags: ["business approach", "risk management", "trading costs", "arabic"],
-      slug: "manage-trading-like-business"
+      tags: ["نهج الأعمال", "إدارة المخاطر", "تكاليف التداول", "عربي"],
+      slug: "ادارة-التداول-مثل-الاعمال-التجارية"
     },
     {
       id: 10,
       title: "20 اقتباسًا صادمًا من أساطير التداول",
       excerpt: "مجموعة من أقوى الاقتباسات والحكم المُلهمة من أساطير التداول الأكثر نجاحًا في التاريخ، تغطي مواضيع التحليل الفني، علم النفس، وإدارة المخاطر.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-03-25",
-      readTime: "20 min read",
+      readTime: "20 دقيقة قراءة",
       imageUrl: "/images/porsche.jpg",
-      tags: ["trading quotes", "market legends", "trading wisdom", "arabic"],
-      slug: "20-shocking-quotes-trading-legends"
+      tags: ["اقتباسات التداول", "أساطير السوق", "حكمة التداول", "عربي"],
+      slug: "عشرون-اقتباس-صادم-من-اساطير-التداول"
     },
     {
       id: 11,
       title: "نصائح للتداول من الأسطورة مارك دوڭلاس",
       excerpt: "اكتشف الحكمة العميقة من مارك دوغلاس حول أهمية المهارات العقلية في التداول، وكيفية التفكير في الاحتمالات بدلاً من اليقينيات لتحقيق النجاح المستدام.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-04-10",
-      readTime: "14 min read",
+      readTime: "14 دقيقة قراءة",
       imageUrl: "/images/mark.jpeg",
-      tags: ["mark douglas", "trading psychology", "mental skills", "arabic"],
-      slug: "trading-tips-mark-douglas"
+      tags: ["مارك دوغلاس", "علم نفس التداول", "المهارات العقلية", "عربي"],
+      slug: "نصائح-التداول-من-الاسطورة-مارك-دوغلاس"
     },
     {
       id: 12,
       title: "ما يمكن أن يعلمنا إياه الأسود عن التداول الاحترافي",
       excerpt: "تعلم من 'ملك الغابة' كيفية التداول بإستراتيجية وصبر وانضباط. اكتشف كيف تطبق صفات الأسود في الصيد على تداولك لتحقيق النجاح المستدام.",
-      category: "Trading",
+      category: "التداول",
       date: "2025-04-25",
-      readTime: "12 min read",
+      readTime: "12 دقيقة قراءة",
       imageUrl: "/images/lion.jpg",
-      tags: ["trading strategy", "patience", "discipline", "arabic"],
-      slug: "what-lions-teach-about-professional-trading"
+      tags: ["استراتيجية التداول", "الصبر", "الانضباط", "عربي"],
+      slug: "ما-يعلمنا-الاسود-عن-التداول-الاحترافي"
     },
     {
       id: 2,
