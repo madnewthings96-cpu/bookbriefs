@@ -105,7 +105,7 @@ const PositionSizeCalculator: React.FC = () => {
                         <input type="number" id="riskPercentage" value={riskPercentage} onChange={e => setRiskPercentage(e.target.value)} className={formInputStyle} placeholder="e.g., 1" />
                     </div>
                     <div>
-                        <label htmlFor="stopLoss" className={formLabelStyle}>Stop Loss (pips)</label>
+                        <label htmlFor="stopLoss" className={formLabelStyle}>Stop Loss (pips) or (points) for XAUUSD</label>
                         <input type="number" id="stopLoss" value={stopLossPips} onChange={e => setStopLossPips(e.target.value)} className={formInputStyle} placeholder="e.g., 20" />
                     </div>
                 </div>
