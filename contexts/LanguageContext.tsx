@@ -86,7 +86,7 @@ const translations = {
     createFreeAccount: 'Create a free account to unlock:',
     recommendations: 'Recommendations',
     personalizedForYou: 'Personalized for you',
-    pdfDownloads: 'Arabic PDF Downloads',
+    pdfDownloads: 'PDF Downloads',
     downloadAllBooks: 'Download book summaries',
     bookmarks: 'Bookmarks',
     saveYourFavoriteBooks: 'Save your favorite books',
@@ -140,7 +140,8 @@ const translations = {
       'competition-demystified': 'Competition Demystified',
       'the-4-hour-workweek': 'The 4-Hour Workweek',
       'the-black-swan': 'The Black Swan',
-      'the-playbook': 'The PlayBook'
+      'the-playbook': 'The PlayBook',
+      'the-chatgpt-millionaire': 'The ChatGPT Millionaire'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -181,7 +182,8 @@ const translations = {
       'competition-demystified': 'Bruce Greenwald & Judd Kahn',
       'the-4-hour-workweek': 'Timothy Ferriss',
       'the-black-swan': 'Nassim Nicholas Taleb',
-      'the-playbook': 'Mike Bellafiore'
+      'the-playbook': 'Mike Bellafiore',
+      'the-chatgpt-millionaire': 'Neil Dagger'
     }
   }
 };

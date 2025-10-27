@@ -20,7 +20,6 @@ const BlogPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -56,7 +55,147 @@ const BlogPage: React.FC = () => {
   };
 
   const getFullContent = (postId: number): string => {
-    if (postId === 1) {
+    if (postId === 16) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">في عالم التداول، لا يوجد شعور يضاهي نشوة تحقيق ربح كبير. تلك اللحظة التي ترى فيها حسابك ينتعش، وتتأكد فيها من أن تحليلك كان صحيحاً، وأنك "فهمت السوق". إنها لحظة استحقاق، وراحة، وإحساس بالرضا. ولكن، تحت ستار هذا الشعور الجميل، يتربص القاتل الصامت: الرضا عن النفس (Complacency).</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">إن الرضا عن النفس بعد ربح كبير ليس مجرد شعور بالاسترخاء؛ إنه فخ نفسي دقيق وخطير يمكن أن يدمر سنوات من الانضباط والاجتهاد في إدارة المخاطر. إنه يهمس لك بأن "القواعد لم تعد تنطبق عليك"، وأنك "تجاوزت مرحلة المتداولين العاديين". والنتيجة؟ سلوك متهور، ومخاطرة مفرطة، وفي النهاية، خسائر مؤلمة تمحو مكاسبك بسرعة أكبر مما حققتها.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">هذا المقال سيكشف كيف يتسلل الرضا عن النفس إلى عقل المتداول، وكيف يدمر أسس إدارة المخاطر، ويقدم استراتيجيات عملية لمواجهة هذا التهديد الخفي والحفاظ على انضباطك مهما كانت حجم مكاسبك.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222; font-family: Georgia, serif;">الجزء الأول: نشوة الفوز... وبذور الدمار</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">تخيل السيناريو: قضيت أسابيع في تحليل دقيق، ودخلت صفقة بأقصى درجات الانضباط، ثم تراقبها وهي تتضاعف مراراً وتكراراً، محققة ربحاً تجاوز كل توقعاتك. في هذه اللحظة، يتفاعل دماغك مع جرعة هائلة من الدوبامين، مما يمنحك شعوراً بالذكاء، والتميز، والسيطرة. هذه هي اللحظة التي يزرع فيها الرضا عن النفس بذوره.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">1. الشعور بالخلود (Invincibility Complex):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>ما يحدث:</strong> بعد فوز كبير، يميل المتداولون إلى الاعتقاد بأنهم لا يمكن أن يخطئوا. تتحول الثقة المبررة في منهجيتهم إلى ثقة مفرطة (Overconfidence) في قدراتهم الشخصية، متجاهلين دور الحظ أو ظروف السوق المواتية.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر على إدارة المخاطر:</strong> تبدأ في الشعور بأن قواعد إدارة المخاطر (مثل حجم المركز، وقف الخسارة) هي للمبتدئين أو للوقت الذي كانت فيه "مهاراتك" أقل تطوراً.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">2. تبرير المخاطرة المتزايدة (Justifying Excessive Risk):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>ما يحدث:</strong> تبدأ في التفكير: "لقد ربحت الكثير، يمكنني أن أخاطر أكثر بقليل في الصفقة التالية. حتى لو خسرت، لن أتأثر كثيراً." هذه هي العقلية التي تؤدي إلى زيادة حجم المركز بشكل غير مبرر.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر على إدارة المخاطر:</strong> تخالف قاعدة الـ 1% أو الـ 2% الذهبية. صفقة واحدة ذات حجم مركز كبير بشكل مفرط يمكن أن تمحو أرباحك الكبيرة، وربما جزءاً من رأس مالك الأصلي، في لمح البصر.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">3. الإفراط في التداول (Overtrading):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>ما يحدث:</strong> تدفعك النشوة إلى البحث عن "الصفقة الكبيرة التالية" على الفور. تصبح أقل صبراً في انتظار الإعدادات المثالية. تبدأ في الدخول إلى صفقات لمجرد الشعور بالحاجة إلى التداول.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر على إدارة المخاطر:</strong> تدخل صفقات ذات جودة منخفضة، وتتجاهل شروط الدخول الصارمة، مما يزيد من احتمالية الخسارة.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222; font-family: Georgia, serif;">الجزء الثاني: الأثر المدمر على انضباط إدارة المخاطر</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن الرضا عن النفس لا يقتصر على الشعور الجيد فحسب؛ إنه يفكك بشكل منهجي أركان انضباطك في إدارة المخاطر.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">أ. تدمير حساب حجم المركز (Position Sizing):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>قبل الربح الكبير:</strong> كنت تحسب حجم مركزك بدقة، مخاطراً بنسبة 1% من حسابك.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>بعد الربح الكبير:</strong> تشعر أن رأس مالك قد زاد، وأنك "كبير" الآن، فتزيد حجم المخاطرة إلى 5% أو 10% في الصفقة التالية. إذا كانت تلك الصفقة خاسرة (وهو أمر وارد جداً)، فإنها تمحو جزءاً كبيراً من مكاسبك. إذا تكرر الأمر، فقد تعود إلى نقطة الصفر أو ما دونها.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">ب. التهاون مع وقف الخسارة (Stop Loss Laxity):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>قبل الربح الكبير:</strong> كنت تضع وقف خسارة صارماً وتلتزم به دون تردد.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>بعد الربح الكبير:</strong> عندما تتجه الصفقة عكسك، تبدأ في تحريك وقف الخسارة يدوياً، أو "توسيع" منطقة الخسارة، اعتقاداً منك بأن السعر "سيرتد حتماً" لأنك "لا تخطئ". هذا هو جوهر "تداول الأمل" المدمر.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">ج. تجاهل المراجعة والتعلم (Ignoring Review and Learning):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>قبل الربح الكبير:</strong> كنت تراجع كل صفقة بعناية، تتعلم من الأخطاء، وتسجل في مفكرتك.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>بعد الربح الكبير:</strong> تشعر أنك لم تعد بحاجة للمراجعة. "ما الذي يمكن أن أتعلمه؟ أنا أربح!" هذا التجاهل يعني أن الأخطاء السلوكية لن يتم اكتشافها أو تصحيحها، مما يضمن تكرارها.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">د. فقدان التركيز على العملية (Losing Focus on Process):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>قبل الربح الكبير:</strong> كنت تركز على تنفيذ خطتك بدقة، بغض النظر عن النتيجة الفردية.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>بعد الربح الكبير:</strong> يتحول تركيزك إلى "كم سأربح" في الصفقة التالية، بدلاً من "هل أتبع القواعد؟". هذا التغيير من التركيز على العملية إلى التركيز على النتيجة هو طريق سريع نحو الخسارة.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222; font-family: Georgia, serif;">الجزء الثالث: استراتيجيات لمواجهة الرضا عن النفس (بناء الانضباط بعد الفوز)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن التغلب على الرضا عن النفس يتطلب جهداً واعياً ومنهجياً. إنه يتطلب منك أن تعامل النجاح بنفس الشك الصحي الذي تعامل به الخسارة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">1. قاعدة "فصل الحسابات" (Account Segregation / Mental Accounting):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الفكرة:</strong> بمجرد تحقيق ربح كبير، قم بسحب جزء منه إلى حساب توفير أو استثمار طويل الأجل لا يمكنك الوصول إليه بسهولة للتداول.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر النفسي:</strong> هذا يجعلك تفكر في الربح الكبير كـ "مكافأة تم تحصيلها" و"تم تأمينها"، بدلاً من "رصيد إضافي للمخاطرة به". إنه يعيد حجم حساب التداول إلى مستوى أقل يجعلك أكثر حذراً.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>تطبيق عملي:</strong> إذا كان حسابك 10,000$ وحققت ربح 3,000$، اسحب 1,500$ أو 2,000$. دع حساب التداول يبدأ وكأنه "بدأ من جديد" بمبلغ أقل لإدارة المخاطر.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">2. "استراحة الانضباط" الإلزامية (Mandatory Discipline Break):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الفكرة:</strong> بعد تحقيق ربح كبير بشكل غير متوقع (صفقة تجاوزت أهدافك بكثير)، خذ قسطاً من الراحة الإلزامية من التداول لمدة يوم أو يومين.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر النفسي:</strong> هذا يمنح عقلك وقتاً لتهدأ من جرعة الدوبامين، ويعيد ضبط عواطفك. بدلاً من الاندفاع لفتح صفقة أخرى بدافع النشوة، فإنك تمنح نفسك مساحة لإعادة التركيز على الانضباط.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>تطبيق عملي:</strong> استخدم هذا الوقت لمراجعة مفكرة التداول، أو القيام بنشاط بدني، أو قضاء الوقت مع العائلة. أي شيء يخرجك من بيئة التداول السريعة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">3. "قائمة التحقق الذهنية" (Mental Checklist) قبل كل صفقة:</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الفكرة:</strong> قبل كل صفقة، قم بمراجعة قائمة تحقق خاصة بالحالة العاطفية (يمكن دمجها مع قائمة تحقق ما قبل التداول).</p>
+
+          <div style="background-color: #f8f9fa; border-right: 4px solid #007bff; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #0056b3; font-size: 18px; font-weight: bold;">الأسئلة:</h4>
+            <ul style="margin: 0; padding-right: 20px; color: #495057;">
+              <li style="margin-bottom: 8px;">"هل أشعر بالثقة المفرطة بعد ربح سابق؟" (إذا كانت الإجابة نعم، تقليل حجم المركز أو عدم التداول).</li>
+              <li style="margin-bottom: 8px;">"هل ألتزم بقاعدة 1% (أو 2%) للمخاطرة؟"</li>
+              <li style="margin-bottom: 8px;">"هل حددت وقف الخسارة وجني الأرباح بشكل موضوعي؟"</li>
+              <li style="margin-bottom: 8px;">"هل أنا أبحث عن الصفقة التالية بدافع الجشع؟"</li>
+            </ul>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر النفسي:</strong> هذه المراجعة الواعية تجبرك على مواجهة أي تحيزات عاطفية قبل أن تتمكن من التأثير على قرار التداول.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">4. التركيز على "التوزيع الطبيعي للنتائج" (Normal Distribution of Outcomes):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الفكرة:</strong> ذكّر نفسك باستمرار بأن أي صفقة رابحة، مهما كانت كبيرة، هي مجرد تحقيق لاحتمال إيجابي ضمن توزيع نتائجك الإحصائية. لا شيء منها مضمون.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;"><strong>الأثر النفسي:</strong> هذا يبني عقلية واقعية لا تبالغ في تقدير النجاح الفردي ولا تسمح له بإرباك العملية العامة. أنت تفهم أن الخسائر ستأتي، حتى بعد أكبر المكاسب.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222; font-family: Georgia, serif;">الجزء الرابع: بناء عقلية "البقاء" (Survival Mindset)</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">الرضا عن النفس هو ترف لا يستطيع المتداول الناجح تحمله. المتداول المحترف يتبنى عقلية "البقاء" كأولوية قصوى.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">1. الحفاظ على رأس المال أولاً:</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">تذكر دائماً أن أهم قاعدة في التداول هي "الحفاظ على رأس المال". الأرباح العظيمة تأتي وتذهب، لكن رأس المال الذي تملكه هو الذي يتيح لك الاستمرار في اللعبة.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">2. "التحيز السلبي" الصحي (Healthy Negativity Bias):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">في التداول، لا بأس أن تكون متشائماً قليلاً (أو على الأقل واقعياً). افترض دائماً أن الصفقة يمكن أن تخسر. هذا "التحيز السلبي" الصحي يجعلك حذراً، ومتحفظاً في تحديد حجم المركز، وملتزماً بوقف الخسارة، ويحميك من الوهم الذي يسببه الرضا عن النفس.</p>
+
+          <h3 style="font-size: 22px; font-weight: bold; margin: 28px 0 14px 0; color: #222; font-family: Georgia, serif;">3. التواضع المستمر (Continuous Humility):</h3>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">السوق معلم قاسٍ. بمجرد أن تعتقد أنك اكتشفت سره، سيلقي عليك درساً جديداً. المتداولون الأكثر نجاحاً هم الأكثر تواضعاً، لأنهم يدركون أن السوق أكبر منهم بكثير، وأن الانضباط هو المفتاح الوحيد للبقاء والنمو.</p>
+
+          <h2 style="font-size: 28px; font-weight: bold; margin: 32px 0 16px 0; color: #222; font-family: Georgia, serif;">الخلاصة: الانضباط بعد الفوز أهم من الانضباط بعد الخسارة</h2>
+          
+          <p style="margin-bottom: 18px; text-align: justify;">إن الرضا عن النفس بعد ربح كبير هو في الواقع أكثر خطورة من الخوف بعد خسارة كبيرة. فالخوف يجعلك حذراً (وربما خائفاً أكثر من اللازم)، لكن الرضا عن النفس يجعلك متهوراً ومدمراً.</p>
+
+          <p style="margin-bottom: 18px; text-align: justify;">لمواجهة هذا القاتل الصامت، يجب أن تتبنى استراتيجيات واعية:</p>
+
+          <div style="background-color: #fff3cd; border-right: 4px solid #ffc107; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <ul style="margin: 0; padding-right: 20px; color: #856404;">
+              <li style="margin-bottom: 12px;"><strong>افصل أرباحك:</strong> اسحب جزءاً منها لتأمينها نفسياً.</li>
+              <li style="margin-bottom: 12px;"><strong>خذ استراحة:</strong> دع عواطفك تهدأ بعد الفوز الكبير.</li>
+              <li style="margin-bottom: 12px;"><strong>راجع حالتك الذهنية:</strong> استخدم قائمة تحقق نفسية قبل كل صفقة.</li>
+              <li style="margin-bottom: 12px;"><strong>كن واقعياً:</strong> افهم أن الربح الكبير لا يجعلك محصناً ضد الخسارة.</li>
+            </ul>
+          </div>
+
+          <p style="margin-bottom: 18px; text-align: justify;">إن بناء انضباط صارم في إدارة المخاطر بعد الفوز هو الاختبار الحقيقي للمتداول المحترف. إنه يظهر أنك قادر على التحكم في عواطفك حتى في أفضل الأوقات، وهذا هو أساس النجاح المستدام في التداول. لا تدع نشوة الفوز تدمر رحلة انضباطك.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"الانضباط بعد الفوز أهم من الانضباط بعد الخسارة. القاتل الصامت يأتي من النشوة، لا من الخوف."</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 1) {
       return `
         <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333;">
           <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">In the intricate and fast-paced world of financial markets, two critical functions, Proprietary (Prop) Trading and Market Making, operate as the powerful engines driving global commerce. While both disciplines involve sophisticated trading strategies and significant capital deployment, they serve fundamentally different purposes and require distinct skill sets.</p>
@@ -1715,6 +1854,17 @@ const BlogPage: React.FC = () => {
   // Professional blog posts data
   const blogPosts: BlogPost[] = [
     {
+      id: 16,
+      title: "القاتل الصامت: كيف يدمر الرضا عن النفس بعد ربح كبير انضباطك في إدارة المخاطر",
+      excerpt: "في عالم التداول، لا يوجد شعور يضاهي نشوة تحقيق ربح كبير. ولكن، تحت ستار هذا الشعور الجميل، يتربص القاتل الصامت: الرضا عن النفس. اكتشف كيف يدمر الرضا عن النفس انضباطك في إدارة المخاطر وكيف تواجهه.",
+      category: "التداول",
+      date: "2025-10-27",
+      readTime: "25 دقيقة قراءة",
+      imageUrl: "/blog images/blog 3.png",
+      tags: ["الرضا عن النفس", "إدارة المخاطر", "علم نفس التداول", "الانضباط", "عربي"],
+      slug: "القاتل-الصامت-الرضا-عن-النفس-بعد-ربح-كبير"
+    },
+    {
       id: 13,
       title: "مفكرة المتداول: أداة رصد مبكر للسلوكيات قبل أن تؤثر على أرباحك",
       excerpt: "في رحلة التداول، يخصص معظم المتداولين وقتهم في البحث عن الاستراتيجية السحرية، متجاهلين العنصر الأهم: أنفسهم. اكتشف كيف تحول المفكرة إلى نظام إنذار سلوكي مبكر قبل أن تفتك الأنماط العاطفية بحسابك.",
@@ -1895,13 +2045,7 @@ const BlogPage: React.FC = () => {
     }
   }, [slug]);
 
-  const categories = ['All', 'Finance', 'Trading', 'Book Reviews', 'Reading Tips'];
-
-  const filteredPosts = selectedCategory === 'All' 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === selectedCategory);
-
-  const formatDate = (dateString: string) => {
+  const filteredPosts = blogPosts;  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
       year: 'numeric', 
@@ -1916,22 +2060,6 @@ const BlogPage: React.FC = () => {
       {/* Enhanced Blog Posts Grid */}
       <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto max-w-7xl">
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  selectedCategory === category
-                    ? 'bg-white text-gray-800 shadow-lg border border-gray-200'
-                    : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
           {/* Featured Post (First Post) */}
           {filteredPosts.length > 0 && (
             <div className="mb-16">

@@ -1645,7 +1645,7 @@ const SummaryDetailPage: React.FC = () => {
               ) : book.id === 'the-playbook' ? (
                 <>
                   <a 
-                    href="https://amzn.to/47pG0ia"
+                    href="https://amzn.to/example4"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1657,7 +1657,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://amzn.to/479xLaX"
+                    href="https://amzn.to/example5"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1669,7 +1669,45 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://amzn.to/47pG0ia"
+                    href="https://amzn.to/example6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                    </svg>
+                    <span>Audible</span>
+                  </a>
+                </>
+              ) : book.id === 'the-chatgpt-millionaire' ? (
+                <>
+                  <a 
+                    href="https://amzn.to/4oatlqx"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Amazon</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/4hEei5R"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
+                  >
+                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
+                    </svg>
+                    <span>Kindle</span>
+                  </a>
+
+                  <a 
+                    href="https://amzn.to/47OAaXV"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1998,6 +2036,12 @@ const SummaryDetailPage: React.FC = () => {
                       // For The PlayBook, open the actual PDF file
                       if (book.id === 'the-playbook') {
                         window.open('/pdfs/the playbook.pdf', '_blank');
+                        return;
+                      }
+
+                      // For The ChatGPT Millionaire, open the actual PDF file
+                      if (book.id === 'the-chatgpt-millionaire') {
+                        window.open('/pdfs/the chatgpt millionaire.pdf', '_blank');
                         return;
                       }
 
