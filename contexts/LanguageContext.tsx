@@ -141,7 +141,8 @@ const translations = {
       'the-4-hour-workweek': 'The 4-Hour Workweek',
       'the-black-swan': 'The Black Swan',
       'the-playbook': 'The PlayBook',
-      'the-chatgpt-millionaire': 'The ChatGPT Millionaire'
+      'the-chatgpt-millionaire': 'The ChatGPT Millionaire',
+      'the-miracle-morning': 'The Miracle Morning'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -183,7 +184,8 @@ const translations = {
       'the-4-hour-workweek': 'Timothy Ferriss',
       'the-black-swan': 'Nassim Nicholas Taleb',
       'the-playbook': 'Mike Bellafiore',
-      'the-chatgpt-millionaire': 'Neil Dagger'
+      'the-chatgpt-millionaire': 'Neil Dagger',
+      'the-miracle-morning': 'Hal Elrod'
     }
   }
 };

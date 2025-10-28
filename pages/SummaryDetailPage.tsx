@@ -1721,7 +1721,7 @@ const SummaryDetailPage: React.FC = () => {
               ) : book.id === 'the-miracle-morning' ? (
                 <>
                   <a 
-                    href="https://amzn.to/47vn8hO"
+                    href="https://amzn.to/example10"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1733,7 +1733,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://amzn.to/47vYsFQ"
+                    href="https://amzn.to/example11"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1745,7 +1745,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://amzn.to/3L4q11w"
+                    href="https://amzn.to/example12"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"

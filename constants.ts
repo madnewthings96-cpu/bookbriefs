@@ -438,6 +438,16 @@ export const BOOKS: Book[] = [
     publicationYear: 2023,
     pageCount: 248,
   },
+  {
+    id: 'the-miracle-morning',
+    title: 'The Miracle Morning',
+    author: 'Hal Elrod',
+    category: 'Self-Help & Personal Development',
+    coverImageUrl: '/images/the miracle morning.jpg',
+    rating: 4.4,
+    publicationYear: 2012,
+    pageCount: 172,
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -8063,6 +8073,271 @@ It is a crucial "first-step" book for the new AI-driven economy. The reader who 
       "Quality control is non-negotiable: unedited AI content is bland and factually flawed; human editing for 60% of time prevents commoditization",
       "Client relations remain human: in a world where everyone has AI, the differentiators are personal branding, marketing acumen, and trust-building",
       "Stay ahead of the curve: dedicate weekly time to AI trend research, experiment with new tools immediately, and use AI to identify emerging opportunities"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'the-miracle-morning',
+    title: "The Miracle Morning",
+    author: "Hal Elrod",
+    coverImageUrl: "/images/the miracle morning.jpg",
+    category: "Self-Help & Personal Development",
+    summary: `# The Miracle Morning: The Not-So-Obvious Secret Guaranteed to Transform Your Life (Before 8AM)
+
+**By Hal Elrod**
+
+---
+
+## Part 1: The Hook, The Premise, The Promise
+
+Do you ever hit the snooze button, bargaining for just nine more minutes, only to wake up feeling more tired, more stressed, and already behind? Do you feel like you're living on autopilot, stuck in a loop of "quiet desperation," where each day just blends into the next, and your true, "Level 10" potential remains locked away?
+
+This is the universal feeling of mediocrity that Hal Elrod not only addresses but promises to solve.
+
+"The Miracle Morning: The Not-So-Obvious Secret Guaranteed to Transform Your Life (Before 8AM)" is not just another book about morning routines. It is a manifesto on personal transformation, forged in the crucible of profound adversity. To understand the power of the Miracle Morning, you must first understand the man behind it.
+
+Hal Elrod's life was a testament to success until it wasn't. At age 20, he was a top-performing sales rep, driving a new Mustang, and living his best life. Then, in an instant, his car was hit head-on by a drunk driver. He was clinically dead for six minutes. He broke 11 major bones, suffered permanent brain damage, and was told by doctors that he would never walk again.
+
+He defied them. Through sheer force of will and relentless positivity, he not only learned to walk but went on to become an ultramarathon runner. He rebuilt his life, becoming a successful coach and speaker. Then, in 2008, the financial crash hit. Hal lost everything. His business evaporated, his income was cut in half, his house was foreclosed on, and he sank into a deep, debilitating depression. This, he says, was his real rock bottom. The car crash was physical; this was emotional, mental, and spiritual.
+
+It was from this place of absolute desperation, with nothing left to lose, that the Miracle Morning was born. He didn't have time for a two-hour routine. He needed a "hail mary" pass. He asked himself a simple question: "What are all the most powerful, life-changing personal development practices I've ever learned, and what would happen if I did all of them, every single morning?"
+
+The result of that experiment is the central thesis of this book, a promise so bold it's almost hard to believe:
+
+**How you start your day is the single most powerful predictor of your success and happiness. By mastering your morning—even just the first 60, 30, or 6 minutes—you can proactively and systematically transform any, or every, area of your life, faster than you ever thought possible.**
+
+Elrod's system is the definitive tool to bridge what he calls the 95% "Mediocrity" Gap. He posits that 95% of society settles. They accept a life of "good enough." They are plagued by "Rearview Mirror Syndrome," allowing their past failures and limitations to dictate their future. They live reactively.
+
+The other 5%? They live lives of purpose, fulfillment, and extraordinary success. They are the exception. The Miracle Morning is the daily, practical lever designed to pull you, one morning at a time, from the 95% into the 5%.
+
+---
+
+## Part 2: Deconstructing the "S.A.V.E.R.S." – The Core of the Book
+
+The "Miracle Morning" is not one single practice. It is a curated bundle of the six most potent, time-tested personal development activities, packaged into a single, unbreakable daily ritual. Elrod calls them the Life S.A.V.E.R.S. This acronym is the heart of the entire system.
+
+This section will provide a detailed, comprehensive breakdown of each practice—not just what it is, but why it works and how to do it, just as Elrod outlines.
+
+### 1. S is for SILENCE
+
+**Define It:** This is the practice of starting your day with purposeful, calm, and quiet intention. It is the antidote to the chaotic, reactive "jump-start" (checking your phone, email, or news) that most of the world endures. This can take the form of meditation, prayer, deep breathing, gratitude, or quiet reflection.
+
+**Explain the "Why":** The modern world is an assault on our senses. We wake up in a state of high-alert, flooding our brains with cortisol (the stress hormone) before our feet even hit the floor. Purposeful silence does the opposite. It calms the nervous system, centers your mind, reduces stress, and cultivates self-awareness. It's about consciously creating an inner state of peace and clarity before the world has a chance to disrupt it. You can't hear the "signal" of your own intuition if your life is filled with "noise."
+
+**Provide the "How-To":**
+
+**Simple Meditation:** This is the most common form. Sit upright in a comfortable position. Close your eyes. Focus on your breath. Inhale for four counts, hold for four, exhale for four. When your mind wanders (and it will), gently, without judgment, bring your focus back to your breath. You can use an app like Calm, Headspace, or Insight Timer, or simply sit in silence.
+
+**Guided Gratitude:** While in silence, mentally (or out loud) list 3-5 things you are genuinely grateful for. Don't just list them; try to feel the gratitude. Feel the warmth of the blankets, the appreciation for a partner, the opportunity of a new day.
+
+**Mindful Reflection:** Ask yourself key questions. "What is my most important priority today?" "What am I committed to not stressing about today?" "How do I want to show up for my family/team?"
+
+**Prayer:** If you are spiritual, this is the time for it.
+
+**The Goal:** The goal is not to "empty your mind." The goal is to quiet your mind and set a calm, purposeful tone for the day. 1 to 10 minutes is all you need.
+
+### 2. A is for AFFIRMATIONS
+
+**Define It:** Affirmations are the practice of consciously designing and reciting written statements that align with your goals and the person you need to become to achieve them. This is not "wishful thinking." It is the strategic reprogramming of your subconscious mind.
+
+**Explain the "Why":** We all run an internal monologue, and for most people, it's negative and limiting. ("I'm not a morning person," "I'm bad with money," "I'm too lazy to exercise"). These thoughts, repeated over years, become deeply ingrained "truths" that form our identity and dictate our actions. Affirmations are the antidote. They are a tool to actively rewrite your limiting beliefs and replace them with empowering ones. By consistently telling yourself who you are committed to being, you begin to bridge the gap between that identity and your current reality. You "act as if" until it becomes who you are.
+
+**Provide the "How-To":** Elrod's method for affirmations is specific and powerful, designed to overcome the common "this feels fake" objection.
+
+**Clearly Define WHAT You Want:** Be specific. "I want to be healthy" is weak. "I am a disciplined person who is 100% committed to being in the best shape of my life, energized, and confident" is strong.
+
+**Clearly Define WHY You Want It:** This is your emotional core. The "what" is the target, the "why" is the fuel. "…because I want to be an active, present father for my children and a role model for a healthy lifestyle."
+
+**Clearly Define WHO You Are Committed to Being:** This is the identity shift. "I am the type of person who enjoys healthy food and never misses a scheduled workout."
+
+**Clearly Define WHAT You Are Committed to Doing (The Action):** This is where the rubber meets the road. It grounds the affirmation in reality. "Therefore, I am committed to drinking 8 glasses of water, eating a salad for lunch, and walking 10,000 steps, no matter what."
+
+**Recite with EMOTION:** This is the secret. You cannot just read your affirmations robotically. You must feel them. Stand up, say them with conviction, and generate the emotions you would feel if they were already true. Your subconscious mind responds to feeling, not just words.
+
+### 3. V is for VISUALIZATION
+
+**Define It:** Visualization (or "Creative Visualization") is the practice of using your imagination to create a vivid mental picture of your desired outcomes and, more importantly, the process of achieving them.
+
+**Explain the "Why":** Your brain has difficulty distinguishing between a vividly imagined experience and a real one. Top athletes have used this for decades; they "see" the perfect golf swing or the swish of the basketball before they ever take the shot. Visualization programs your mind for success. It builds "success memory" and makes you more attuned to opportunities. By visualizing your ideal day, you are mentally rehearsing it. When obstacles arise, you've already "seen" yourself overcoming them, making you more resilient and less reactive.
+
+**Provide the "How-To":** Elrod emphasizes a two-part process. Most people only do part one.
+
+**Visualize the OUTCOME (The "What"):** See your goal as already achieved. See the "New York Times Bestseller" plaque on your wall. See your bank account with the target balance. See yourself crossing the marathon finish line. Feel the pride, the joy, the relief. Make it as sensory-rich as possible.
+
+**Visualize the PROCESS (The "How"):** This is the part Elrod insists on. It's the most critical. You must vividly see yourself doing the work. See yourself sitting at the computer, fingers flying, even when you don't feel like writing. See yourself politely declining the junk food at the party. See yourself lacing up your running shoes in the rain. By visualizing the process and seeing yourself overcome the inevitable friction, you are building the mental discipline required for real-world success.
+
+### 4. E is for EXERCISE
+
+**Define It:** Moving your body, specifically in the morning. This does not have to be (and for many, should not be) your primary, high-intensity workout for the day.
+
+**Explain the "Why":** The goal of morning exercise is not (primarily) to build muscle or lose weight. The goal is to change your physiological state. It's about waking up your body, getting your blood flowing, and flooding your brain with oxygen and endorphins. This has an immediate and profound impact. It shatters "morning fog," boosts your energy, elevates your mood, and increases mental clarity. It's a physical "power-up" that sets a high-energy precedent for the entire day.
+
+**Provide the "How-To":**
+
+**Jumping Jacks:** Elrod's simple go-to. Do them for 60 seconds or 5 minutes.
+
+**Yoga:** A few simple sun salutations can stretch the body and connect with the breath.
+
+**Bodyweight Exercises:** A quick set of push-ups, squats, and planks.
+
+**Short Walk/Run:** A quick 5-10 minute walk or jog around the block.
+
+**The Key:** The goal is 5-20 minutes of movement. Just enough to break a light sweat and tell your body, "It's time to be awake and awesome."
+
+### 5. R is for READING
+
+**Define It:** The active, purposeful consumption of knowledge, specifically from books that will contribute to your personal or professional development.
+
+**Explain the "Why":** To achieve a "Level 10" life, you must first become a "Level 10" person. Reading is the shortcut. Elrod argues that "you are one book away from the idea you need to change your life." By reading, you are essentially "downloading" decades of wisdom, experience, and strategy from the world's most successful people (the authors). It's a direct form of mentorship.
+
+**Provide the "How-To":**
+
+**The 10-Page Rule:** This is Elrod's magic bullet for the "I don't have time to read" excuse. Commit to reading just 10 pages a day.
+
+This is a small, non-intimidating, and highly achievable goal.
+
+But consider the math: 10 pages a day is 3,650 pages a year. That's the equivalent of 15-18 full-sized (200-page) personal development books. This single, small habit, compounded over time, creates a massive intellectual and strategic advantage.
+
+**Read Actively:** Don't just read passively. Read with a pen or highlighter. Look for one key idea you can implement. The goal is not "information," it's "transformation."
+
+**What to read?** Books on finance, mindset, relationships, health, business—any topic you want to improve upon.
+
+### 6. S is for SCRIBING
+
+**Define It:** The act of writing. More specifically, getting your thoughts out of your head and onto paper. This is most commonly done as journaling.
+
+**Explain the "Why":** Your mind is for having ideas, not holding them. In a world of constant digital input, our minds become cluttered with worries, to-do lists, and unresolved thoughts. Scribing is a "brain dump" that clears your mental RAM. It allows you to process emotions, gain profound clarity, solve problems, capture insights, and review lessons. By writing down what you're grateful for, you amplify gratitude. By writing down your goals, you solidify them. By writing down your problems, you often find the solutions emerge on the page.
+
+**Provide the "How-To":**
+
+**Use a Dedicated Journal:** A simple pen and paper is best, as the physical act of writing connects to the brain differently than typing.
+
+**Unstructured "Brain Dump":** Simply write, stream-of-consciousness, whatever is on your mind. Worries, ideas, frustrations—get it all out.
+
+**Gratitude Journal:** "Today, I am grateful for..."
+
+**Goals & Priorities:** "My most important priority today is... I will accomplish it by..."
+
+**Two-Column Journal:** Elrod suggests a simple format. Left column: "Lessons Learned." Right column: "New Commitments." This turns your journal into an active tool for improvement.
+
+**The Goal:** 5 to 10 minutes of writing to clear your head and set your focus.
+
+---
+
+## Part 3: A Detailed Walkthrough of the Book's Flow
+
+While the S.A.V.E.R.S. are the "what," the book's narrative structure provides the "why" and "how" of implementation. It's designed to dismantle your excuses and build your commitment.
+
+### Chapters 1-3: The "Why" – Confronting Mediocrity
+
+The book opens by forcing the reader to confront their own unfulfilled potential. Elrod introduces the 95% Mediocrity Problem, stating that most people unconsciously choose to settle for less than they truly want. He attacks the "snooze" button as a physical manifestation of this choice—a daily decision to resist your life.
+
+He introduces the "Rearview Mirror Syndrome" (RMS), the idea that we are all held captive by our pasts. We believe that who we were is who we are, and we let past failures limit our future. The Miracle Morning, he argues, is the only way to break this cycle by consciously creating a new, better identity today. These chapters are the "tough love" needed to motivate you to change.
+
+### Chapter 4: The "How" – The 5-Step Snooze-Proof Wake-Up Strategy
+
+This is one of the most practical and critical chapters. Elrod knows that the biggest obstacle to the Miracle Morning is the waking up part. He provides a foolproof, 5-step strategy to get you out of bed without hitting snooze.
+
+**Set Your Intentions Before Bed:** This is the most important step. You must decide to wake up with purpose. Your last thought should be, "I am excited to wake up tomorrow to create the life I deserve." This programs your mind.
+
+**Move Your Alarm Clock Across the Room:** A classic, but it works. This forces you to physically get out of your warm, comfortable bed. Once you are standing, you are 80% of the way there.
+
+**Brush Your Teeth:** The moment you're on your feet, walk to the bathroom and do this. It's a simple, mindless action that gives your body time to wake up.
+
+**Drink a Full Glass of Water:** Your body is dehydrated after sleeping. Hydration is a massive energy signal to your brain and body. Elrod suggests leaving a full glass by your alarm clock.
+
+**Get Dressed in Your Workout Clothes:** (Or hop in the shower). Change your state. By putting on your exercise gear, you've created a "uniform" for your new identity and are ready for the "E" in S.A.V.E.R.S.
+
+### Chapter 5: Introducing the S.A.V.E.R.S.
+
+This is the chapter where Elrod formally introduces the acronym, as detailed in Part 2 above. He explains how he curated these six specific practices, pulling from the "best of" guides on meditation, affirmations, exercise, and more. He presents it as the ultimate "all-in-one" personal development ritual.
+
+### Chapter 6: The 6-Minute Miracle
+
+This is the "No Excuses" chapter. Elrod systematically dismantles the #1 excuse: "I don't have time." He introduces a hyper-efficient, 6-minute version of the S.A.V.E.R.S., proving that consistency is more important than duration.
+
+**Minute 1:** Silence. Sit in purposeful, quiet gratitude.
+
+**Minute 2:** Affirmations. Read your core affirmation out loud.
+
+**Minute 3:** Visualization. See yourself winning your day.
+
+**Minute 4:** Exercise. Do jumping jacks for 60 seconds.
+
+**Minute 5:** Reading. Read one page of a personal development book.
+
+**Minute 6:** Scribing. Write down one thing you're grateful for and your #1 priority.
+
+The point is powerful: Everyone has 6 minutes. You can start here and build.
+
+### Chapter 7: Customizing Your Miracle Morning
+
+This chapter makes the system flexible and sustainable. Elrod is not rigid. He encourages you to make the Miracle Morning your own.
+
+**Time:** Do a 6-minute, 30-minute, or 60-minute (10 min per practice) routine.
+
+**Order:** You can do the S.A.V.E.R.S. in any order. Many people prefer to do "E" (Exercise) first to wake up.
+
+**Practice:** You can swap "Silence" for a guided meditation app. You can swap "Exercise" for yoga. You can swap "Scribing" for a specific 5-Minute-Journal. The framework is what matters.
+
+### Chapters 8-10: The 30-Day Challenge & The "After"
+
+This is the implementation plan. Elrod knows that forming a new habit is difficult, so he frames it as a 30-Day Life Transformation Challenge. He brilliantly breaks down the psychological experience of habit-building into three distinct phases:
+
+**Phase 1 (Days 1-10): Unbearable.** This is the hardest part. Your body will resist. Your old identity will fight back. It will feel unnatural and awful. You must use all your discipline to "just show up" and trust the process.
+
+**Phase 2 (Days 11-20): Uncomfortable.** The habit is forming, but it's not yet automatic. It's not hard anymore, but it's not easy either. It still requires active, conscious effort.
+
+**Phase 3 (Days 21-30): Unstoppable.** The new habit is now part of your identity. You've crossed the threshold. You start to crave your Miracle Morning. You feel worse on the days you miss it. You have officially become a "morning person" and the benefits (energy, clarity, positivity) are so obvious that you'd never want to go back.
+
+The book concludes by exploring the "After"—how this one single habit becomes the "tipping point" that ripples out to improve your health, wealth, relationships, and happiness.
+
+---
+
+## Part 4: The Philosophy & The True Value
+
+"The Miracle Morning" is more than a list of things to do. It's a fundamental shift in philosophy. When you distill the book down to its essence, you are left with four powerful core themes.
+
+**Personal Responsibility:** The book is a radical call to take 100% responsibility for your life. Stop blaming your past, your boss, your circumstances. The moment you wake up is the moment you take back control.
+
+**Proactive vs. Reactive Living:** Most people live reactively. They wake up, check their phone, and are immediately pulled into other people's agendas (emails, social media, news). The Miracle Morning is the ultimate act of proactive living. You dedicate the first hour to your agenda—your growth, your peace, your goals. You "fill your own cup" first, so you have more to give others.
+
+**Incremental Improvement (Kaizen):** The 10-page reading rule is a perfect example. The book is not about massive, unsustainable "hustle." It's about the power of small, daily, consistent improvements compounded over time. 1% better every day leads to an exponential transformation.
+
+**The Identity Shift:** This is the deepest magic. The Miracle Morning is not just a routine you do; it's a tool to change your identity. You stop being "a person who is stressed and disorganized" and you become "a person who wakes up early, is disciplined, and is committed to personal growth." Once your identity changes, the behaviors take care of themselves.
+
+---
+
+## Synthesis: Why "The Miracle Morning" is Worth Reading
+
+Let's be honest: none of the S.A.V.E.R.S. are new. Meditation, exercise, journaling... we've heard it all before.
+
+The genius of "The Miracle Morning" is not in the originality of its components. Its genius is in its brilliant curation and packaging.
+
+Hal Elrod took six of the most powerful, disparate, and often overwhelming personal development practices and bundled them into a single, simple, sticky, and unbreakable daily ritual. He gave it a name. He gave it an acronym. He made it "The 6-Minute Miracle" to destroy all excuses.
+
+The book's value is that it provides a System. It's not just "you should meditate," it's "meditate for 10 minutes at this specific time, as part of this specific framework." It's a simple, clear, actionable-from-day-one blueprint for personal transformation.
+
+The "Miracle Morning" is not a book you read; it's a life you live. The real test is not what you know, but what you do.`,
+    keyTakeaways: [
+      "The 95% Reality: 95% of society settles for mediocrity; the Miracle Morning is the tool to join the top 5% who live extraordinary lives",
+      "Your morning ritual is your life ritual: How you start the day determines the trajectory and quality of the entire day—make it intentional",
+      "Rearview Mirror Syndrome: Stop letting your past define your future; the Miracle Morning allows you to consciously create a new identity each day",
+      "The Snooze Button is a Metaphor: Hitting snooze is a physical decision to resist your life; conquering it is the first victory of the day",
+      "S.A.V.E.R.S. Framework: Silence, Affirmations, Visualization, Exercise, Reading, Scribing—six practices designed to transform every area of your life",
+      "Silence = Inner Peace: Start with 1-10 minutes of meditation, prayer, or gratitude to calm the nervous system and set a peaceful, centered tone",
+      "Affirmations = Identity Reprogramming: Design written statements that define who you're committed to being; recite them with emotion to rewrite limiting beliefs",
+      "Visualization = Mental Rehearsal: Vividly imagine not just the outcome, but the process—see yourself doing the work to build success memory",
+      "Exercise = Physiological State Change: Move your body for 5-20 minutes to flood your brain with oxygen and endorphins, shattering morning fog",
+      "Reading = Compressed Wisdom: The 10-page rule—read 10 pages daily equals 15-18 books per year, creating a massive intellectual advantage",
+      "Scribing = Mental Clarity: Journal for 5-10 minutes to 'brain dump' thoughts, amplify gratitude, and gain clarity on priorities and solutions",
+      "The 6-Minute Miracle: The ultimate excuse-destroyer—you can do all six S.A.V.E.R.S. in just 6 minutes (1 minute each) to build consistency",
+      "The 5-Step Snooze-Proof Strategy: Set intentions before bed, move alarm across room, brush teeth, drink water, get dressed—guaranteed wake-up system",
+      "Customization is Key: Adjust the time (6, 30, or 60 minutes), order, and specific practices to fit your life—the framework, not rigidity, matters",
+      "The 30-Day Challenge: Days 1-10 are unbearable, days 11-20 are uncomfortable, days 21-30 are unstoppable—trust the process of habit formation",
+      "Proactive vs. Reactive: Most people wake up and immediately react to others' agendas; the Miracle Morning is the ultimate proactive life design tool",
+      "Incremental Improvement: 1% better every day compounds exponentially—small, consistent actions create massive transformation over time",
+      "The Identity Shift: The Miracle Morning is not just a routine, it's a tool to change who you are—once your identity changes, behaviors follow automatically"
     ],
     isPremium: false,
   }
