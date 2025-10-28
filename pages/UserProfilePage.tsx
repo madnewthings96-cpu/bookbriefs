@@ -92,6 +92,10 @@ const UserProfilePage: React.FC = () => {
   ];
 
   const handleBookClick = (bookId: string) => {
+    // Find the book by ID
+    const book = BOOKS.find(b => b.id === bookId);
+    if (!book) return;
+    
     // Update progress when user clicks on a book
     const currentProgress = getBookProgress(bookId);
     if (!currentProgress || currentProgress.progress < 100) {
@@ -99,7 +103,10 @@ const UserProfilePage: React.FC = () => {
       const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
       updateBookProgress(bookId, newProgress);
     }
-    navigate(`/summary/${bookId}`);
+    
+    // Use Arabic slug if available, otherwise use English ID
+    const bookUrl = book.arabicSlug || bookId;
+    navigate(`/summary/${bookUrl}`);
   };
 
   // Get favorite books

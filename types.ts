@@ -8,6 +8,7 @@ export interface Book {
   ratingsCount?: string;
   publicationYear?: number;
   pageCount?: number;
+  arabicSlug?: string;
 }
 
 export interface Review {

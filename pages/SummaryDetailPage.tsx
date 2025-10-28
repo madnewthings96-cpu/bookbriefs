@@ -22,7 +22,7 @@ import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 
 const SummaryDetailPage: React.FC = () => {
-  const { bookId } = useParams<{ bookId: string }>();
+  const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
@@ -30,6 +30,21 @@ const SummaryDetailPage: React.FC = () => {
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Helper function to resolve Arabic slug to book ID
+  const resolveBookId = (idOrSlug: string | undefined): string | undefined => {
+    if (!idOrSlug) return undefined;
+    
+    // First, try to find book by ID directly
+    const bookById = BOOKS.find(b => b.id === idOrSlug);
+    if (bookById) return idOrSlug;
+    
+    // If not found, try to find by Arabic slug
+    const bookBySlug = BOOKS.find(b => b.arabicSlug === idOrSlug);
+    return bookBySlug?.id;
+  };
+
+  const bookId = resolveBookId(bookIdOrSlug);
 
   // SEO for the current book
   useSEO({

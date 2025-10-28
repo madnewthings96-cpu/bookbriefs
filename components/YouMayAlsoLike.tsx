@@ -131,10 +131,11 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
           >
             {recommendedBooks.map((book) => {
               const isLiked = likedBooks.has(book.id);
+              const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
               return (
                 <Link
                   key={book.id}
-                  to={`/summary/${book.id}`}
+                  to={bookUrl}
                   className="flex-shrink-0 w-[160px] sm:w-[180px] group relative snap-start"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >

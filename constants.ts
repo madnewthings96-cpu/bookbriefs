@@ -11,6 +11,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '484K',
     publicationYear: 2007,
     pageCount: 308,
+    arabicSlug: 'ملخص-كتاب-اسبوع-عمل-4-ساعات',
   },
   {
     id: 'atomic-habits',
@@ -22,6 +23,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '1.1M',
     publicationYear: 2018,
     pageCount: 319,
+    arabicSlug: 'ملخص-كتاب-العادات-الذرية',
   },
   {
     id: 'sapiens',
@@ -33,6 +35,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '567K',
     publicationYear: 2011,
     pageCount: 443,
+    arabicSlug: 'ملخص-كتاب-العاقل-تاريخ-مختصر-للنوع-البشري',
   },
   {
     id: 'thinking-fast-and-slow',
@@ -44,6 +47,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '312K',
     publicationYear: 2011,
     pageCount: 499,
+    arabicSlug: 'ملخص-كتاب-التفكير-السريع-والبطيء',
   },
   {
     id: 'the-alchemist',
@@ -55,6 +59,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '2.5M',
     publicationYear: 1988,
     pageCount: 163,
+    arabicSlug: 'ملخص-كتاب-الخيميائي',
   },
   {
     id: 'educated',
@@ -66,6 +71,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '845K',
     publicationYear: 2018,
     pageCount: 334,
+    arabicSlug: 'ملخص-كتاب-متعلمة',
   },
   {
     id: 'becoming',
@@ -77,6 +83,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '478K',
     publicationYear: 2018,
     pageCount: 426,
+    arabicSlug: 'ملخص-كتاب-صيرورة-ميشيل-أوباما',
   },
   {
     id: 'the-four-agreements',
@@ -88,6 +95,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '267K',
     publicationYear: 1997,
     pageCount: 138,
+    arabicSlug: 'ملخص-كتاب-الاتفاقيات-الأربع',
   },
   {
     id: 'dune',
@@ -99,6 +107,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '883K',
     publicationYear: 1965,
     pageCount: 688,
+    arabicSlug: 'ملخص-كتاب-الكثيب',
   },
   {
     id: 'project-hail-mary',
@@ -110,6 +119,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '421K',
     publicationYear: 2021,
     pageCount: 496,
+    arabicSlug: 'ملخص-كتاب-مشروع-هيل-ماري',
   },
   {
     id: 'the-subtle-art-of-not-giving-a-f',
@@ -121,6 +131,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '534K',
     publicationYear: 2016,
     pageCount: 224,
+    arabicSlug: 'ملخص-كتاب-الفن-اللامبالاة',
   },
   {
     id: 'rich-dad-poor-dad',
@@ -132,6 +143,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '678K',
     publicationYear: 1997,
     pageCount: 336,
+    arabicSlug: 'ملخص-كتاب-الاب-الغني-والاب-الفقير',
   },
   {
     id: 'broken-money',
@@ -143,6 +155,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '2.1K',
     publicationYear: 2023,
     pageCount: 480,
+    arabicSlug: 'ملخص-كتاب-المال-المكسور',
   },
   {
     id: 'americas-bank',
@@ -154,6 +167,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '3.2K',
     publicationYear: 2015,
     pageCount: 368,
+    arabicSlug: 'ملخص-كتاب-بنك-أمريكا',
   },
   {
     id: 'trading-in-the-zone',
@@ -165,6 +179,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '12K',
     publicationYear: 2000,
     pageCount: 240,
+    arabicSlug: 'ملخص-كتاب-التداول-في-المنطقة',
   },
   {
     id: 'best-loser-wins',
@@ -176,6 +191,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '1.8K',
     publicationYear: 2016,
     pageCount: 192,
+    arabicSlug: 'ملخص-كتاب-أفضل-خاسر-يفوز',
   },
   {
     id: 'thementalgameoftrading',
@@ -187,6 +203,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '892',
     publicationYear: 2013,
     pageCount: 304,
+    arabicSlug: 'ملخص-كتاب-اللعبة-العقلية-للتداول',
   },
   {
     id: 'thezentrader',
@@ -198,6 +215,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '567',
     publicationYear: 2005,
     pageCount: 224,
+    arabicSlug: 'ملخص-كتاب-المتداول-زن',
   },
   {
     id: 'therichestmaninbabylon',
@@ -209,6 +227,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '189K',
     publicationYear: 1926,
     pageCount: 194,
+    arabicSlug: 'ملخص-كتاب-أغنى-رجل-في-بابل',
   },
   {
     id: 'the33strategiesofwar',
@@ -220,6 +239,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '28K',
     publicationYear: 2006,
     pageCount: 480,
+    arabicSlug: 'ملخص-كتاب-33-استراتيجية-للحرب',
   },
   {
     id: 'thedisciplinedtrader',
@@ -231,6 +251,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '3.1K',
     publicationYear: 1990,
     pageCount: 256,
+    arabicSlug: 'ملخص-كتاب-المتداول-المنضبط',
   },
   {
     id: 'thinkandgrowrich',
@@ -242,6 +263,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '432K',
     publicationYear: 1937,
     pageCount: 320,
+    arabicSlug: 'ملخص-كتاب-فكر-تصبح-غنيا',
   },
   {
     id: 'belesszombie',
@@ -253,6 +275,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '478',
     publicationYear: 2018,
     pageCount: 288,
+    arabicSlug: 'ملخص-كتاب-كن-أقل-زومبي',
   },
   {
     id: 'marketwizards',
@@ -264,6 +287,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '8.7K',
     publicationYear: 1989,
     pageCount: 458,
+    arabicSlug: 'ملخص-كتاب-سحرة-السوق',
   },
   {
     id: 'tradelikeastockmarketwizard',
@@ -275,6 +299,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '2.1K',
     publicationYear: 2013,
     pageCount: 264,
+    arabicSlug: 'ملخص-كتاب-تداول-مثل-ساحر-سوق-الاسهم',
   },
   {
     id: 'howtodaytradeforaliving',
@@ -286,6 +311,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '1.9K',
     publicationYear: 2016,
     pageCount: 360,
+    arabicSlug: 'ملخص-كتاب-كيفية-التداول-اليومي-للعيش',
   },
   {
     id: 'thelawsofhumannature',
@@ -297,6 +323,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '34K',
     publicationYear: 2018,
     pageCount: 624,
+    arabicSlug: 'ملخص-كتاب-قوانين-الطبيعة-البشرية',
   },
   {
     id: 'the48lawsofpower',
@@ -308,6 +335,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '178K',
     publicationYear: 1998,
     pageCount: 452,
+    arabicSlug: 'ملخص-كتاب-48-قانون-للقوة',
   },
   {
     id: 'secretsofthemillionairemind',
@@ -319,6 +347,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '67K',
     publicationYear: 2005,
     pageCount: 224,
+    arabicSlug: 'ملخص-كتاب-أسرار-عقل-المليونير',
   },
   {
     id: 'the-intelligent-investor',
@@ -330,6 +359,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '78K',
     publicationYear: 1949,
     pageCount: 640,
+    arabicSlug: 'ملخص-كتاب-المستثمر-الذكي',
   },
   {
     id: 'relentless',
@@ -341,6 +371,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '12K',
     publicationYear: 2013,
     pageCount: 208,
+    arabicSlug: 'ملخص-كتاب-لا-هوادة',
   },
   {
     id: 'one-up-on-wall-street',
@@ -352,6 +383,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '23K',
     publicationYear: 1989,
     pageCount: 320,
+    arabicSlug: 'ملخص-كتاب-تفوق-على-وول-ستريت',
   },
   {
     id: 'the-psychology-of-money',
@@ -363,6 +395,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '127K',
     publicationYear: 2020,
     pageCount: 256,
+    arabicSlug: 'ملخص-كتاب-سيكولوجية-المال',
   },
   {
     id: 'one-good-trade',
@@ -374,6 +407,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '1.2K',
     publicationYear: 2010,
     pageCount: 288,
+    arabicSlug: 'ملخص-كتاب-صفقة-واحدة-جيدة',
   },
   {
     id: 'cant-hurt-me',
@@ -385,6 +419,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '172K',
     publicationYear: 2018,
     pageCount: 366,
+    arabicSlug: 'ملخص-كتاب-لا-يمكنك-ايذائي',
   },
   {
     id: 'the-alchemy-of-finance',
@@ -396,6 +431,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '3.5K',
     publicationYear: 1987,
     pageCount: 369,
+    arabicSlug: 'ملخص-كتاب-خيمياء-المال',
   },
   {
     id: 'competition-demystified',
@@ -407,6 +443,7 @@ export const BOOKS: Book[] = [
     ratingsCount: '1.2K',
     publicationYear: 2005,
     pageCount: 304,
+    arabicSlug: 'ملخص-كتاب-المنافسة-مبسطة',
   },
   {
     id: 'the-black-swan',
@@ -417,6 +454,7 @@ export const BOOKS: Book[] = [
     rating: 4.15,
     publicationYear: 2007,
     pageCount: 366,
+    arabicSlug: 'ملخص-كتاب-البجعة-السوداء',
   },
   {
     id: 'the-playbook',
@@ -427,6 +465,7 @@ export const BOOKS: Book[] = [
     rating: 4.25,
     publicationYear: 2015,
     pageCount: 272,
+    arabicSlug: 'ملخص-كتاب-دليل-اللعب',
   },
   {
     id: 'the-chatgpt-millionaire',
@@ -437,6 +476,7 @@ export const BOOKS: Book[] = [
     rating: 4.3,
     publicationYear: 2023,
     pageCount: 248,
+    arabicSlug: 'ملخص-كتاب-مليونير-تشات-جي-بي-تي',
   },
   {
     id: 'the-miracle-morning',
@@ -447,6 +487,7 @@ export const BOOKS: Book[] = [
     rating: 4.4,
     publicationYear: 2012,
     pageCount: 172,
+    arabicSlug: 'ملخص-كتاب-الصباح-المعجزة',
   },
 ];
 

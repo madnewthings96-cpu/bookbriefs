@@ -5,91 +5,91 @@
   <!-- Main Pages -->
   <url>
     <loc>https://ta7leel.site/</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summaries</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/blog</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/calculators</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/calculators/pip-value</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/calculators/position-size</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/calculators/fire</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/calculators/compound-interest</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/news</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/chat</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/about</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/privacy-policy</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/terms-of-use</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
@@ -97,393 +97,421 @@
   <!-- Game Pages -->
   <url>
     <loc>https://ta7leel.site/games/sudoku</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/games/spelling-bee</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <!-- Book Summary Pages -->
   <url>
-    <loc>https://ta7leel.site/summary/the-4-hour-workweek</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-اسبوع-عمل-4-ساعات</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/atomic-habits</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-العادات-الذرية</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/sapiens</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-العاقل-تاريخ-مختصر-للنوع-البشري</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thinking-fast-and-slow</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-التفكير-السريع-والبطيء</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-alchemist</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الخيميائي</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/educated</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-متعلمة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/becoming</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-صيرورة-ميشيل-أوباما</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-four-agreements</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الاتفاقيات-الأربع</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/dune</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الكثيب</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/project-hail-mary</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-مشروع-هيل-ماري</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-subtle-art-of-not-giving-a-f</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الفن-اللامبالاة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/rich-dad-poor-dad</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الاب-الغني-والاب-الفقير</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/broken-money</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-المال-المكسور</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/americas-bank</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-بنك-أمريكا</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/trading-in-the-zone</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-التداول-في-المنطقة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/best-loser-wins</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-أفضل-خاسر-يفوز</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thementalgameoftrading</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-اللعبة-العقلية-للتداول</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thezentrader</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-المتداول-زن</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/therichestmaninbabylon</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-أغنى-رجل-في-بابل</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the33strategiesofwar</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-33-استراتيجية-للحرب</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thedisciplinedtrader</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-المتداول-المنضبط</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thinkandgrowrich</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-فكر-تصبح-غنيا</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/belesszombie</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-كن-أقل-زومبي</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/marketwizards</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-سحرة-السوق</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/tradelikeastockmarketwizard</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-تداول-مثل-ساحر-سوق-الاسهم</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/howtodaytradeforaliving</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-كيفية-التداول-اليومي-للعيش</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/thelawsofhumannature</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-قوانين-الطبيعة-البشرية</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the48lawsofpower</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-48-قانون-للقوة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/secretsofthemillionairemind</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-أسرار-عقل-المليونير</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-intelligent-investor</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-المستثمر-الذكي</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/relentless</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-لا-هوادة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/one-up-on-wall-street</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-تفوق-على-وول-ستريت</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-psychology-of-money</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-سيكولوجية-المال</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/one-good-trade</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-صفقة-واحدة-جيدة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/cant-hurt-me</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-لا-يمكنك-ايذائي</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/the-alchemy-of-finance</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-خيمياء-المال</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://ta7leel.site/summary/competition-demystified</loc>
-    <lastmod>2025-10-23</lastmod>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-المنافسة-مبسطة</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-البجعة-السوداء</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-دليل-اللعب</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-مليونير-تشات-جي-بي-تي</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ta7leel.site/summary/ملخص-كتاب-الصباح-المعجزة</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/4</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ah-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ah-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ah-3</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ah-4</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ah-5</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-rd-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-rd-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-rd-3</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-blw-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-blw-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-tz-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-tz-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ta-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-ta-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-bm-1</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://ta7leel.site/summary/review-bm-2</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

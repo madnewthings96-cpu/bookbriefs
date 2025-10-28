@@ -135,11 +135,12 @@ const Categories: React.FC = () => {
               {filteredBooks.map((book) => {
                 const translatedTitle = getBookTitle(book.id);
                 const translatedAuthor = getBookAuthor(book.id);
+                const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
                 
                 return (
                   <Link
                     key={book.id}
-                    to={`/summary/${book.id}`}
+                    to={bookUrl}
                     className="block group"
                   >
                     <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">

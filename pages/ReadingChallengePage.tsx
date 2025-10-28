@@ -185,9 +185,11 @@ const ReadingChallengePage: React.FC = () => {
                   Books You've Read ({readBooks.length})
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                  {readBooks.map((book) => (
-                    <div key={book.id} className="group relative">
-                      <Link to={`/summary/${book.id}`}>
+                  {readBooks.map((book) => {
+                    const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+                    return (
+                      <div key={book.id} className="group relative">
+                        <Link to={bookUrl}>
                         <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
                           <img
                             src={book.coverImageUrl}
@@ -206,7 +208,8 @@ const ReadingChallengePage: React.FC = () => {
                         </svg>
                       </button>
                     </div>
-                  ))}
+                  );
+                })}
                 </div>
               </div>
             )}
@@ -217,9 +220,11 @@ const ReadingChallengePage: React.FC = () => {
                 Available Books to Read
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {unreadBooks.map((book) => (
-                  <div key={book.id} className="group relative">
-                    <Link to={`/summary/${book.id}`}>
+                {unreadBooks.map((book) => {
+                  const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+                  return (
+                    <div key={book.id} className="group relative">
+                      <Link to={bookUrl}>
                       <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
                         <img
                           src={book.coverImageUrl}
@@ -238,7 +243,8 @@ const ReadingChallengePage: React.FC = () => {
                       </svg>
                     </button>
                   </div>
-                ))}
+                );
+              })}
               </div>
             </div>
           </div>

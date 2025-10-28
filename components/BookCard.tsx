@@ -15,8 +15,11 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const translatedTitle = getBookTitle(book.id);
   const translatedAuthor = getBookAuthor(book.id);
   
+  // Use Arabic slug if available, otherwise use English ID
+  const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+  
   return (
-    <Link to={`/summary/${book.id}`} className="block group">
+    <Link to={bookUrl} className="block group">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
         <div className="aspect-[3/4] overflow-hidden relative">
           <img
