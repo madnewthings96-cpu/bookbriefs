@@ -142,7 +142,8 @@ const translations = {
       'the-black-swan': 'The Black Swan',
       'the-playbook': 'The PlayBook',
       'the-chatgpt-millionaire': 'The ChatGPT Millionaire',
-      'the-miracle-morning': 'The Miracle Morning'
+      'the-miracle-morning': 'The Miracle Morning',
+      'trading-for-a-living': 'Trading for a Living'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -185,7 +186,8 @@ const translations = {
       'the-black-swan': 'Nassim Nicholas Taleb',
       'the-playbook': 'Mike Bellafiore',
       'the-chatgpt-millionaire': 'Neil Dagger',
-      'the-miracle-morning': 'Hal Elrod'
+      'the-miracle-morning': 'Hal Elrod',
+      'trading-for-a-living': 'Dr. Alexander Elder'
     }
   }
 };

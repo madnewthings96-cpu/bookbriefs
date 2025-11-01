@@ -489,6 +489,16 @@ export const BOOKS: Book[] = [
     pageCount: 172,
     arabicSlug: 'ملخص-كتاب-الصباح-المعجزة',
   },
+  {
+    id: 'trading-for-a-living',
+    title: 'Trading for a Living',
+    author: 'Dr. Alexander Elder',
+    category: 'Finance & Investment',
+    coverImageUrl: '/images/trading for a living.jpg',
+    rating: 4.2,
+    publicationYear: 1993,
+    pageCount: 289,
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -8379,6 +8389,385 @@ The "Miracle Morning" is not a book you read; it's a life you live. The real tes
       "Proactive vs. Reactive: Most people wake up and immediately react to others' agendas; the Miracle Morning is the ultimate proactive life design tool",
       "Incremental Improvement: 1% better every day compounds exponentially—small, consistent actions create massive transformation over time",
       "The Identity Shift: The Miracle Morning is not just a routine, it's a tool to change who you are—once your identity changes, behaviors follow automatically"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'trading-for-a-living',
+    title: "Trading for a Living",
+    author: "Dr. Alexander Elder",
+    coverImageUrl: "/images/trading for a living.jpg",
+    category: "Finance & Investment",
+    summary: `# Trading for a Living: A Professional's Guide
+
+**By Dr. Alexander Elder**
+
+---
+
+## Introduction: The Harsh Reality
+
+You are here because you are drawn to the market. You have seen the charts, heard the stories, and felt the pull of financial freedom. You likely believe that with the right secret, the right indicator, or the right "hot tip," you can unlock a vault of easy money.
+
+Let us be perfectly clear: **That is a fantasy.**
+
+The market is not a casino, and it is not a get-rich-quick ATM. It is a ruthless, zero-sum arena that exists, primarily, to transfer wealth from the hopeful and undisciplined amateur to the patient and disciplined professional.
+
+Most people who attempt trading fail. They don't fail because the market is "rigged" or because they lacked a "magic bullet." They fail because they come to a professional's battlefield armed with an amateur's mindset. They are gamblers, not traders.
+
+Dr. Alexander Elder's 1993 masterpiece, **Trading for a Living**, is not a book about getting rich. It is a book about not going broke. It is a manual for transforming you from an emotional gambler into a cool, calculating business operator. Its lessons are timeless because they are not about a specific market or a fleeting strategy; they are about the one variable that never changes: **human psychology**.
+
+---
+
+## The Author: The Psychiatrist at the Trading Desk
+
+To understand the book, you must first understand the author. Dr. Alexander Elder was not a Wall Street banker or a math prodigy. He was a practicing psychiatrist in New York.
+
+This is his greatest strength.
+
+Where other authors see patterns on a chart, Elder sees a global x-ray of mass psychology. He sees a raw, unfiltered display of human greed, fear, hope, and regret. His medical training taught him that to succeed, you cannot change the market, and you cannot predict it. **The only thing you can ever hope to control is yourself.**
+
+Most trading books focus 10% on psychology and 90% on strategy. Elder flips this script. He knows that a trader with an "A+" system and "F" psychology will go broke, guaranteed. Conversely, a trader with "C" system but "A+" psychology and risk management can get rich.
+
+His central thesis is the foundation of this entire guide.
+
+---
+
+## The Central Thesis: The Three-Legged Stool
+
+Elder argues that successful trading stands on three legs, like a stool. If any one leg is weak or missing, the stool collapses. Period. There is no negotiation on this point.
+
+**The Three M's are:**
+
+1. **Mind (Psychology):** Your emotional control and discipline. Your ability to manage fear and greed, think independently, and take 100% responsibility for your results.
+
+2. **Method (Trading System):** Your technical or fundamental "edge." This is your set of rules for analyzing the market, identifying trades, and knowing when to enter and exit.
+
+3. **Money (Risk Management):** Your survival strategy. This is your defensive plan for preserving capital, determining position size, and ensuring that no single trade or losing streak can ever wipe you out.
+
+Amateurs focus 90% of their energy on finding the "perfect" Method. They ignore Mind and Money. They are sitting on a one-legged stool, and the result is inevitable.
+
+This guide is structured around mastering all three. We will begin with the most important leg, the one that defines your entire career: **your Mind**.
+
+---
+
+## Part 1: The First M: Mind (Trading Psychology)
+
+This is the central battlefield. Dr. Elder's core insight, born from his psychiatric practice, is this: **You are your own worst enemy.** The market is not "out to get you." It does not know you exist. It is a vast, impersonal force. The primary battle is with the destructive, impulsive, and emotional person who stares back at you from the mirror.
+
+Your goal is to achieve **emotional neutrality**—to trade like a cold, calculating professional, not an impulsive gambler.
+
+### Individualism vs. The Crowd
+
+The market is a collective of millions of minds. When those minds act together, they form "the crowd." The crowd is not rational; it is primal. It is driven by two base emotions: greed at market tops and fear (or panic) at market bottoms.
+
+**The crowd always loses. Why?**
+
+- At a top, everyone is euphoric. The "dumb money" is finally buying in, driven by greed and a fear of missing out. Who are they buying from? The professionals, who are quietly selling their positions.
+
+- At a bottom, everyone is in despair. The news is terrible, and the crowd panics, selling their assets at any price just to make the pain stop. Who is buying from them? The professionals, who recognize value and are willing to act when there is "blood in the streets."
+
+The amateur needs the crowd. They need the validation of a "hot tip" or a news anchor agreeing with their trade. The professional, in contrast, must think independently.
+
+This means you must be a **disciplined contrarian**. You must have the psychological strength to sell when everyone else is euphoric and to buy when everyone else is terrified. This is psychologically painful. It feels wrong. Your entire being will scream at you to follow the herd. This is the first battle you must win.
+
+### The Sucker's Game: Escaping the Amateur Mindset
+
+Amateurs, or "suckers" as Elder calls them, share a common psychological profile:
+
+- They search for "hot tips." They want someone else to tell them what to do, relieving them of responsibility.
+- They trade on emotion. They buy because they're excited (FOMO) and sell because they're scared (panic).
+- They blame others. When they lose, it's the broker's fault, the "algos," the "market makers," or the news. They are perpetual victims.
+- They trade impulsively. They have no plan. They see a chart move and jump in, gambling on a feeling.
+
+This behavior is a symptom of a deeper psychological flaw: **the refusal to take responsibility**.
+
+### Taking 100% Responsibility
+
+This is the single most important step in your transformation. You must accept absolute and unconditional responsibility for every single trade you ever take.
+
+- You clicked the button to enter.
+- You chose the position size.
+- You set the stop-loss (or, more likely, failed to).
+- You clicked the button to exit.
+
+It doesn't matter what a "guru" said. It doesn't matter what the news was. **You are the one who executed the trade. Your losses are your fault.**
+
+This is not meant to be harsh; it is meant to be empowering. If you are 100% responsible for your losses, you are also 100% responsible for your wins. When you stop blaming the world, you gain the power to analyze your own actions, find your own mistakes, and fix them. A victim cannot learn. A responsible adult can.
+
+### Managing Greed and Fear
+
+These are the two demons that will destroy your account.
+
+**Greed** is the voice that tells you:
+- "This trade is a sure thing! Risk 50% of your account!"
+- "You're up 20%. Don't sell. It's going to the moon! You can triple your money!"
+- "You just had 5 winning trades. You're a genius! Time to trade even bigger!"
+
+**Fear** is the voice that tells you:
+- "Don't take this trade, even though it fits your plan. What if it's a loser?" (Analysis paralysis)
+- "Oh no, the trade is down 1%. It's going to zero! Get out now!" (Cutting winners short)
+- "Your stop-loss is about to be hit. Quick, move it lower! It will come back, just give it room!" (This is the single deadliest trading sin—turning a small, manageable loss into a catastrophic one).
+
+**How do you manage these primal forces?** You cannot eliminate them. You are human. Instead, you manage them. You cage them with one simple, powerful tool: **A Written Trading Plan**.
+
+Your trading plan is created before the market opens, when you are rational, calm, and intelligent. It defines exactly what your setup is, where you will enter, where you will place your stop-loss, and where you will take profit.
+
+When the market opens and you become an emotional, adrenaline-filled creature, you do not think. You simply execute your plan.
+
+### The Ocean Analogy
+
+Elder provides the perfect metaphor for the professional mindset.
+
+Think of the market as a vast, deep ocean. It is impersonal, powerful, and potentially dangerous. It does not know or care about you.
+
+- An amateur is a person who jumps into a rowboat with no map, no compass, and no life vest, tries to fight the ocean, and is shocked when a storm capsizes them.
+
+- A professional is a surfer.
+
+**The surfer:**
+- First studies the ocean (the long-term trend, or "tide").
+- Respects the ocean's power (they practice risk management).
+- Waits patiently for the right wave (their "Method" or setup). They let dozens of bad waves pass by.
+- When their wave comes, they commit and ride it (execute the trade).
+- They know when the ride is over (stop-loss or profit target) and get off.
+
+You cannot control the ocean. You can only control yourself. Your job is to wait for the high-probability waves and manage your own actions.
+
+---
+
+## Part 2: The Second M: Method (Technical Trading Systems)
+
+Only after you have begun to master your mind can you effectively use a Method. Amateurs reverse this; they spend all their time searching for a "Holy Grail" system, believing it will make them rich.
+
+Elder is clear: **There is no Holy Grail indicator.** There is no single "magic bullet" that will tell you what the market will do next.
+
+A "Method" is simply a set of tools and rules that gives you a statistical edge over the long term. It's a filter for identifying high-probability setups and filtering out low-probability "noise." Your system's primary job is not to find winners, but to filter out losers.
+
+### The Philosophy: Combining Tools
+
+No single tool works all the time. Elder's philosophy is to combine different categories of tools to confirm a trade and, most importantly, to understand their weaknesses.
+
+### Charts & Trends: The Foundation
+
+Your starting point is a simple chart. The trend is the single most important piece of information.
+
+- **Uptrend:** A series of higher highs and higher lows.
+- **Downtrend:** A series of lower lows and lower highs.
+- **Sideways Trend (Range):** Price moves between a horizontal "floor" (Support) and a "ceiling" (Resistance).
+
+The amateur's impulse is to fight the trend—to "buy the bottom" of a crashing market or "short the top" of a raging bull. The professional's mantra is: **"The trend is your friend."** Your life becomes infinitely easier when you trade with the dominant trend, not against it.
+
+### Indicators vs. Oscillators: A Critical Distinction
+
+Elder divides technical tools into two main families, and you must understand the difference.
+
+**1. Trend-Following Indicators (e.g., Moving Averages, MACD)**
+
+- **What they do:** They follow price. They are designed to identify and confirm the direction of the main trend.
+- **Their Strength:** They work beautifully in strong, trending markets. They keep you in a trade and prevent you from getting shaken out by minor volatility.
+- **Their Weakness:** They lag. They are slow. They will get you in after the trend has started and get you out after it has ended. In a sideways, choppy market, they are a disaster, generating constant "whipsaw" signals (buy-sell-buy-sell) that will bleed your account dry.
+
+**2. Oscillators (e.g., RSI, Stochastic, Force Index)**
+
+- **What they do:** They measure the velocity or momentum of price moves. They are designed to identify when a market is "overbought" (too high, too fast) or "oversold" (too low, too fast).
+- **Their Strength:** They work beautifully in sideways, choppy markets. They help you "buy low" (at oversold support) and "sell high" (at overbought resistance) within a defined range.
+- **Their Weakness:** They are disastrous in a strong trend. In a powerful bull market, an oscillator will flash "overbought" for weeks or months while the price continues to climb relentlessly. Using it to short would be financial suicide.
+
+The amateur's error? They use one of these tools in the wrong market condition (e.g., using an oscillator in a strong trend) and get destroyed.
+
+### Elder's Signature System: The "Triple Screen"
+
+This is Elder's solution to the conflict. It is his most famous contribution to technical analysis, a system designed to be robust and clear.
+
+**The "Why":** The Triple Screen system forces you to combine different timeframes and different tool categories to filter out bad trades. Its goal is to use long-term trend-following tools to define your strategy (buy or sell) and short-term oscillators to define your tactics (where to enter).
+
+It works by analyzing the same market on three different "screens," or timeframes.
+
+#### Screen 1: The Long-Term Tide (Weekly Chart)
+
+This is your strategic screen. It identifies the "tide" of the market.
+
+- **Timeframe:** Weekly Chart (each candle is one week of price).
+- **Tool:** A trend-following indicator, like the MACD Histogram.
+- **The Rule:** You look at the slope of the MACD Histogram (the bars, not the lines).
+  - If this week's bar is higher than last week's bar (the histogram is rising), the market's tide is UP.
+  - If this week's bar is lower than last week's bar (the histogram is falling), the market's tide is DOWN.
+
+**The Discipline:** This screen dictates your bias. If the weekly tide is UP, you are only allowed to look for buying opportunities. You are forbidden from short-selling. If the tide is DOWN, you are only allowed to look for short-selling opportunities. You are forbidden from buying.
+
+**The Benefit:** This single rule instantly filters out 50% of all bad, impulsive, counter-trend trades.
+
+#### Screen 2: The Intermediate Wave (Daily Chart)
+
+This is your tactical screen. Now that Screen 1 has told you which direction to trade, Screen 2 tells you when to look for an entry. We are looking for a pullback against the main tide—a "wave" that gives us a good price.
+
+- **Timeframe:** Daily Chart (each candle is one day).
+- **Tool:** An oscillator, like the Stochastic or RSI.
+- **The Rule (if Screen 1 is UP):** The weekly tide is bullish. We do not want to buy when the price is overextended. We wait for the "wave" to pull back. We wait for the daily oscillator to fall into the oversold zone (e.g., Stochastic below 20 or RSI below 30). This is our buy zone.
+- **The Rule (if Screen 1 is DOWN):** The weekly tide is bearish. We wait for a "sucker's rally." We wait for the daily oscillator to rise into the overbought zone (e.g., Stochastic above 80 or RSI above 70). This is our short-sell zone.
+
+**The Benefit:** This prevents the #1 amateur mistake: "buying high" in a panic of FOMO or "selling low" in a fit of panic. It forces you to wait patiently for a discount.
+
+#### Screen 3: The Entry & Exit (The Ripple)
+
+This is your execution screen. Screens 1 and 2 have identified a high-probability setup. Now, we need to time the entry.
+
+- **Timeframe:** Daily Chart or an Intraday Chart (like a 4-hour or 1-hour).
+- **Tool:** Price Action / Trailing Stops.
+
+**The Rule (for a Long Trade):**
+- Screen 1 (Weekly) is UP.
+- Screen 2 (Daily) is OVERSOLD.
+- We do not buy immediately. We wait for the turn to begin.
+
+**Entry Tactic:** Place a buy-stop order just above the high of the previous day's candle.
+
+**Why this works:** We are only entered into the trade if the momentum resumes in the direction of the main (weekly) tide. If the daily chart continues to fall, our order is never filled, and we are saved from a bad entry. This is the final confirmation.
+
+**The Stop-Loss:** Your stop-loss is placed just below the low of the pullback (e.g., below the low of the last 1-2 days). This defines your risk before you even enter the trade.
+
+The Triple Screen is not a "magic" system. It is a robust, intelligent, and disciplined framework that forces you to align the tide, the wave, and the ripple in your favor.
+
+---
+
+## Part 3: The Third M: Money (Risk & Money Management)
+
+This is the leg of the stool that guarantees your survival.
+
+You can have the mindset of a Zen master and the best trading system in the world, but if you have poor money management, you will still blow up your account. This is the part of trading that is pure mathematics and pure discipline. **It is not optional.**
+
+### The #1 Goal: Capital Preservation
+
+Let's say this again. A trader's first goal is not to make money. **A trader's first goal is capital preservation.** You must protect your trading equity at all costs. You cannot trade if you have no "chips."
+
+Elder provides two iron-clad, non-negotiable rules for survival.
+
+### The 2% Rule (The "Shark Bite")
+
+This is the most important rule in trading.
+
+**The Rule:** You must never risk more than 2% of your total account equity on any single trade.
+
+Let's break this down.
+
+- **Account Equity:** $50,000
+- **2% Max Risk:** $1,000
+
+This means $1,000 is the absolute maximum you are allowed to lose on one idea. This rule is not about how much money you use in a trade; it's about how much you lose if you are wrong.
+
+**The Psychology:** Elder calls a 2% loss a "scratch." It's an annoyance. It doesn't hurt you psychologically or financially. You can take five 2% losses in a row and you are only down 10%. You are still in the game.
+
+An amateur, driven by greed, might risk 20% or 50% on one "sure thing." This is a "shark bite." A 50% loss is not a scratch. It is a catastrophic, potentially career-ending event. Why? Because to get back to even from a 50% loss, you must make a 100% return on your remaining capital—an incredibly difficult feat.
+
+**The 2% rule mathematically prevents you from ever suffering a "shark bite."**
+
+### The 6% Rule (The "Piranhas")
+
+This rule protects you from "death by a thousand cuts."
+
+**The Rule:** If your total losses for the month (both closed trades and the drawdown on your open trades) reach 6% of your account equity from the start of the month, you must stop trading for the rest of the month.
+
+**Example:** You start the month with $50,000. Your 6% "circuit breaker" is $3,000. If, on the 10th of the month, you have a string of 2% losses that add up to $3,000, you are done. You close all positions and shut down your platform.
+
+**The Psychology:** A long losing streak is almost never just "bad luck." It is a sign that you are out of sync with the market. You are angry, frustrated, and in a "revenge trading" mindset. The 6% rule is a forced time-out. It acts as a circuit breaker that yanks you out of the emotional danger zone, forces you to cool off, and prevents a $3,000 hole from becoming a $10,000 disaster.
+
+### Position Sizing: The Professional's Calculator
+
+This is how you implement the 2% rule. It is how you connect your account size, your entry, and your stop-loss into a professional trade. This is what separates the pros from the amateurs.
+
+Amateurs ask: "How much money should I put in this trade?" 
+Professionals ask: "How many shares/contracts can I trade so that if my stop-loss is hit, I only lose my pre-defined 2%?"
+
+**Here is the three-step formula. You must do this for every single trade.**
+
+**Step 1: Calculate Your Account Risk (The 2% Rule)**
+- Your Equity: $25,000
+- Your Max Risk: $25,000 × 0.02 = $500
+
+**Step 2: Calculate Your Trade Risk (Per Share)**
+Your Setup (from your Method):
+- Planned Entry Price: $50.00
+- Planned Stop-Loss Price: $47.50
+- Your Risk Per Share: $50.00 - $47.50 = $2.50 per share
+
+**Step 3: Calculate Your Position Size**
+- Formula: (Account Risk) / (Trade Risk per Share)
+- Your Calculation: $500 / $2.50 per share = 200 Shares
+
+**Your correct position size is 200 shares.**
+
+If you buy 200 shares at $50 and the trade fails, you will be stopped out at $47.50. You will lose 200 × $2.50 = $500. This is exactly your 2% limit. The trade was executed with professional risk management.
+
+### Stop-Losses and Risk/Reward Ratios
+
+**Stops are Non-Negotiable:** A stop-loss is your "insurance policy." It is the price at which you admit you were wrong. It must be placed in the market at the same time you place your entry order. Amateurs fail to use stops because they are based on hope. Professionals use stops because they are based on math.
+
+**Risk/Reward Ratio:** You should only take trades that have a favorable risk/reward ratio. For example, a 1:3 ratio. This means you are risking $1 (the distance from your entry to your stop) to make a potential $3 (the distance from your entry to your profit target).
+
+**Why this matters:** With a 1:3 R/R, you can be wrong on 70% of your trades and still be a profitable trader. This takes immense psychological pressure off your need to be "right."
+
+---
+
+## Part 4: The Conclusion - The Trader's Journey
+
+We have now assembled the three-legged stool. You can see how the three M's are completely intertwined.
+
+- A trader with a great Method but bad Psychology (Mind) will panic at the first loss, abandon their system, and go on tilt. They fail.
+- A trader with a great Method but bad Risk Management (Money) will get greedy, risk 50% of their account on one trade, and get wiped out by a single "shark bite." They fail.
+- A trader with great Mind and Money but no Method has no statistical edge. They will patiently and safely bleed their account to death from random entries. They fail.
+
+**Success is not a secret indicator. Success is the disciplined integration of all three M's on every single trade, every single day.**
+
+### The Final Tool: The Trading Journal
+
+How do you bind all three M's together? How do you learn from your mistakes and grow as a trader?
+
+**You must keep a detailed trading journal.**
+
+This is your business's ledger, your personal psychiatric diary, and your "game film." A good journal records more than just wins and losses. For every trade, you must write down:
+
+**The Method:** "Why did I enter?" Include a screenshot of the chart and your analysis (e.g., "Triple Screen: Weekly MACD-H up, Daily RSI oversold at 28").
+
+**The Money:** "What was my position size calculation? Where was my entry, my stop, and my profit target? What was the R/R?"
+
+**The Mind:** "How did I feel? Was I patient? Was I scared? Did I follow my plan 100%? If not, why not?"
+
+At the end of every week, you review this journal. You will quickly discover your true weaknesses. You will find that your losses are not random. They come from patterns. Perhaps you always break your rules on Friday afternoons (Mind). Or you consistently fail to calculate your position size (Money). Or you are using an oscillator in a strong trend (Method).
+
+**Your journal is the feedback loop that turns trading from a gamble into a business.**
+
+---
+
+## Why "Trading for a Living" Is a Classic
+
+Dr. Elder's book has remained a bestseller for decades for one reason: **it tells the truth.** It is not a fantasy. It is a blueprint for survival and, eventually, mastery.
+
+Its lessons are timeless because markets will always be driven by human emotion. The technology changes, the assets change, but the greed and fear that move a 17th-century tulip bulb are the exact same emotions that move a 21st-century cryptocurrency.
+
+**Trading for a Living** is not a system to "get rich." It is a manual for staying sane and surviving in one of the world's most difficult professions. It is a mirror that forces you to confront the only opponent who can ever truly defeat you: yourself.
+
+Your journey does not begin with finding a secret. It begins with a choice. You can continue to be an amateur, a gambler driven by hope and fear. Or you can make the decision, today, to pursue this as a serious, professional endeavor.
+
+**The market is a ruthless teacher. It will expose every one of your psychological flaws. Master yourself, or the market will master you. The choice is yours.**`,
+    keyTakeaways: [
+      "The Three M's Framework: Successful trading requires mastery of Mind (psychology), Method (trading system), and Money (risk management)—all three legs must be strong",
+      "You are your own worst enemy: The market is impersonal; your primary battle is with the emotional, impulsive trader within yourself",
+      "The crowd always loses: Be a disciplined contrarian—buy when others panic (blood in streets), sell when others are euphoric (tops)",
+      "Take 100% responsibility: Stop blaming brokers, algos, or news—you clicked the button, you chose the size, you set (or failed to set) the stop",
+      "A written trading plan is mandatory: Create it when calm and rational; execute it mechanically when emotional during market hours",
+      "The Ocean Analogy: You cannot control the market (ocean)—you can only control yourself; be a surfer, not someone fighting the waves",
+      "There is no Holy Grail: No single indicator or system will make you rich; your Method is a filter to identify high-probability setups and avoid losers",
+      "Trend is your friend: Trade with the dominant trend, never against it—fighting the trend is the amateur's path to ruin",
+      "Indicators vs Oscillators: Trend-following indicators (MACD, MA) work in trends but fail in chop; oscillators (RSI, Stochastic) work in ranges but fail in trends",
+      "The Triple Screen System: Screen 1 (weekly trend) = strategic direction, Screen 2 (daily oscillator) = tactical entry timing, Screen 3 (price action) = execution",
+      "The 2% Rule (Shark Bite Protection): Never risk more than 2% of account equity on any single trade—5 losses = 10% drawdown, still survivable",
+      "The 6% Rule (Piranha Protection): If monthly losses reach 6% of starting equity, stop trading immediately—prevents revenge trading and catastrophic losses",
+      "Position sizing is professional discipline: Calculate position size by (Account Risk ÷ Trade Risk per share)—this is what separates pros from amateurs",
+      "Stop-losses are non-negotiable insurance: Place stops at order entry; moving stops to avoid losses is the deadliest sin—turns small loss into disaster",
+      "Risk/Reward ratio of 1:3 minimum: Risk $1 to make $3—allows you to be wrong 70% of the time and still profit; removes pressure to be 'right'",
+      "Capital preservation is goal #1: You cannot trade without chips—protect your equity above all else, profits come second to survival",
+      "Keep a detailed trading journal: Record Method (why entered), Money (position size/R:R), and Mind (emotions/discipline) for every trade—this is your feedback loop",
+      "Emotional neutrality is the ultimate edge: Trade like a cold, calculating professional, not an impulsive gambler—master your psychology or the market will master you"
     ],
     isPremium: false,
   }
