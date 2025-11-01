@@ -395,7 +395,7 @@ const AppContent: React.FC = () => {
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
-        <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-grow container mx-auto px-2 sm:px-3 lg:px-4 py-8">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
