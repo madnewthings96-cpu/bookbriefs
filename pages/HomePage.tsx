@@ -3,8 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
 import Testimonials from '../components/Testimonials';
-import Games from '../components/Games';
+import { ThreeDPhotoCarousel } from '../components/ThreeDPhotoCarousel';
 import Categories from '../components/Categories';
+import SparklesText from '../components/SparklesText';
+import { Magnetic } from '../components/Magnetic';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 
@@ -73,7 +75,14 @@ const HomePage: React.FC = () => {
 
           {/* Main Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-gray-900">
-            Read any book in{' '}
+            Read any{' '}
+            <SparklesText
+              text="book"
+              className="inline-block"
+              colors={{ first: '#FF6B6B', second: '#4ECDC4' }}
+              sparklesCount={8}
+            />
+            {' '}in{' '}
             <span className="relative inline-block">
               <span className="relative z-10">10 minutes</span>
               <span className="absolute bottom-2 left-0 w-full h-3 bg-yellow-300 -skew-y-1"></span>
@@ -91,15 +100,19 @@ const HomePage: React.FC = () => {
           </div>
 
           {/* CTA Button */}
-          <Link
-            to="/summaries"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 text-white font-bold py-4 px-10 rounded-full hover:from-orange-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 text-lg shadow-xl mb-12"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-            Click to Discover
-          </Link>
+          <div className="mb-12 flex justify-center">
+            <Magnetic intensity={0.4} range={150}>
+              <Link
+                to="/summaries"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 text-white font-bold py-4 px-10 rounded-full hover:from-orange-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 text-lg shadow-xl"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+                Discover
+              </Link>
+            </Magnetic>
+          </div>
 
           {/* Book Carousel */}
           <div className="relative">
@@ -151,34 +164,24 @@ const HomePage: React.FC = () => {
         <Categories />
       </section>
 
-      {/* Games Section */}
-      <section className="bg-white">
-        <Games />
+      {/* 3D Book Carousel Section */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Explore Our Collection
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Drag to browse through our curated selection of book summaries
+            </p>
+          </div>
+          <ThreeDPhotoCarousel />
+        </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-white py-20">
-        <div className="container mx-auto text-center max-w-7xl">{/* removed px-4 */}
-           <div className="relative inline-block mb-16">
-             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 relative z-10 px-8 py-4">
-              Readers are enjoying happier and<br />healthier lives
-            </h2>
-            {/* Neon Green Border Animation */}
-            <div className="absolute inset-0 rounded-3xl animate-neon-border"
-              style={{
-                background: 'linear-gradient(90deg, transparent, #10b981, transparent)',
-                backgroundSize: '200% 100%',
-                padding: '3px',
-                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                WebkitMaskComposite: 'xor',
-                maskComposite: 'exclude',
-                animation: 'neon-border-flow 3s linear infinite',
-                boxShadow: '0 0 20px rgba(16, 185, 129, 0.5), inset 0 0 20px rgba(16, 185, 129, 0.3)'
-              }}
-            />
-          </div>
-          <Testimonials testimonials={TESTIMONIALS} />
-        </div>
+      <section className="bg-white">
+        <Testimonials testimonials={TESTIMONIALS} />
       </section>
     </div>
     </>

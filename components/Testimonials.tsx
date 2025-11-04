@@ -1,80 +1,102 @@
-
-
 import React from 'react';
-import { Testimonial } from '../types';
+import { motion } from 'framer-motion';
+
+interface Testimonial {
+  text: string;
+  name: string;
+  role: string;
+  image: string;
+}
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
 }
 
-const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
-  if (!testimonials || testimonials.length === 0) {
-    return null;
-  }
+const TestimonialsColumn: React.FC<{
+  className?: string;
+  testimonials: Testimonial[];
+  duration?: number;
+}> = ({ className, testimonials, duration = 10 }) => {
+  return (
+    <div className={className}>
+      <motion.div
+        animate={{
+          translateY: '-50%',
+        }}
+        transition={{
+          duration: duration,
+          repeat: Infinity,
+          ease: 'linear',
+          repeatType: 'loop',
+        }}
+        className="flex flex-col gap-6 pb-6"
+      >
+        {[...new Array(2)].fill(0).map((_, index) => (
+          <React.Fragment key={index}>
+            {testimonials.map(({ text, image, name, role }, i) => (
+              <div
+                className="p-10 rounded-3xl border border-gray-200 shadow-lg shadow-coral-500/10 max-w-xs w-full bg-white"
+                key={i}
+              >
+                <div className="text-gray-700 leading-relaxed">{text}</div>
+                <div className="flex items-center gap-2 mt-5">
+                  <img
+                    width={40}
+                    height={40}
+                    src={image}
+                    alt={name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                  <div className="flex flex-col">
+                    <div className="font-medium tracking-tight leading-5 text-gray-900">
+                      {name}
+                    </div>
+                    <div className="leading-5 opacity-60 tracking-tight text-gray-600">
+                      {role}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
 
-  // Floating emoji decorations
-  const emojis = [
-    { icon: '😴', color: 'bg-blue-400', position: 'top-8 left-[10%]', size: 'w-16 h-16', delay: '0s' },
-    { icon: '😊', color: 'bg-orange-400', position: 'top-32 left-[20%]', size: 'w-20 h-20', delay: '1s' },
-    { icon: '💜', color: 'bg-purple-400', position: 'top-8 right-[15%]', size: 'w-14 h-14', delay: '0.5s' },
-    { icon: '💚', color: 'bg-green-400', position: 'top-32 right-[25%]', size: 'w-18 h-18', delay: '1.5s' },
-    { icon: '✨', color: 'bg-yellow-300', position: 'top-16 left-[45%]', size: 'w-8 h-8', delay: '2s' },
-    { icon: '💎', color: 'bg-pink-300', position: 'top-24 right-[40%]', size: 'w-10 h-10', delay: '2.5s' },
-  ];
+const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
+  const firstColumn = testimonials.slice(0, 3);
+  const secondColumn = testimonials.slice(3, 6);
+  const thirdColumn = testimonials.slice(0, 2);
 
   return (
-    <div className="w-full mx-auto relative">
-      {/* Floating Emojis */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {emojis.map((emoji, index) => (
-          <div
-            key={index}
-            className={`absolute ${emoji.position} ${emoji.size} rounded-full flex items-center justify-center shadow-lg animate-float opacity-80`}
-            style={{
-              background: `linear-gradient(135deg, ${emoji.color === 'bg-blue-400' ? '#60A5FA' : emoji.color === 'bg-orange-400' ? '#FB923C' : emoji.color === 'bg-purple-400' ? '#C084FC' : emoji.color === 'bg-green-400' ? '#4ADE80' : emoji.color === 'bg-yellow-300' ? '#FDE047' : '#F9A8D4'} 0%, rgba(255,255,255,0.3) 100%)`,
-              animationDelay: emoji.delay,
-              animationDuration: '4s'
-            }}
-          >
-            <span className="text-2xl">{emoji.icon}</span>
-          </div>
-        ))}
+    <section className="py-24 bg-white overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            What our readers say
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            Join thousands of readers who are transforming their reading experience with BookBriefs.
+          </p>
+        </div>
+        
+        <div className="flex justify-center gap-6 max-h-[738px] overflow-hidden mask-gradient [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]">
+          <TestimonialsColumn testimonials={firstColumn} duration={15} />
+          <TestimonialsColumn
+            testimonials={secondColumn}
+            className="hidden md:block"
+            duration={19}
+          />
+          <TestimonialsColumn
+            testimonials={thirdColumn}
+            className="hidden lg:block"
+            duration={17}
+          />
+        </div>
       </div>
-
-      {/* Testimonials Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-        {testimonials.slice(0, 3).map((testimonial, index) => (
-          <div
-            key={index}
-            className="bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
-          >
-            {/* Quote */}
-            <div className="mb-6">
-              <p className="text-gray-800 leading-relaxed text-base">
-                "{testimonial.quote}"
-              </p>
-            </div>
-
-            {/* Author Info */}
-            <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
-              <img
-                src={testimonial.avatarUrl}
-                alt={testimonial.name}
-                className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
-              />
-              <div>
-                <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
-                <p className="text-xs text-gray-600">
-                  {index === 0 ? 'Member on forming more helpful habits' : 
-                   index === 1 ? 'Member on learning to think in more helpful ways' : 
-                   'Member on working through their feelings'}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    </section>
   );
 };
 

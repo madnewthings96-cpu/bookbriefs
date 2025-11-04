@@ -512,21 +512,36 @@ export const BROKERS: Broker[] = [
   },
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS = [
   {
+    text: 'I appreciate your careful approach to your content—one that aims for a high quality hand-crafted result instead of a mediocre one that scales. Please keep up the good work and the high bar of quality.',
     name: 'Khalid B',
-    quote: 'I appreciate your careful approach to your content—one that aims for a high quality hand-crafted result instead of a mediocre one that scales. Please keep up the good work and the high bar of quality.',
-    avatarUrl: '/images/younes a.jpg',
+    role: 'Book Enthusiast',
+    image: '/images/younes a.jpg',
   },
   {
+    text: 'BookBriefs has transformed my commute. I can get through two book summaries in the time it used to take me to read a single chapter. The summaries are surprisingly insightful!',
     name: 'Youness A',
-    quote: 'BookBriefs has transformed my commute. I can get through two book summaries in the time it used to take me to read a single chapter. The summaries are surprisingly insightful!',
-    avatarUrl: 'https://i.pravatar.cc/150?img=2',
+    role: 'Daily Commuter',
+    image: 'https://i.pravatar.cc/150?img=2',
   },
   {
+    text: 'As a lifelong learner, this is the tool I\'ve been waiting for. It helps me decide which books are worth a deeper dive. The audio feature is a game-changer.',
     name: 'Nuralain Ben',
-    quote: 'As a lifelong learner, this is the tool I\'ve been waiting for. It helps me decide which books are worth a deeper dive. The audio feature is a game-changer.',
-    avatarUrl: '/images/nuralain.jpg',
+    role: 'Avid Reader',
+    image: '/images/nuralain.jpg',
+  },
+  {
+    text: 'The quality of summaries is outstanding. I can quickly grasp the main concepts of any book and decide if I want to read the full version. It\'s like having a personal reading assistant.',
+    name: 'Sarah Ahmed',
+    role: 'Business Professional',
+    image: 'https://i.pravatar.cc/150?img=5',
+  },
+  {
+    text: 'Perfect for busy professionals who want to stay informed. I love how the summaries capture the essence without losing important details. Highly recommend!',
+    name: 'Omar Hassan',
+    role: 'Entrepreneur',
+    image: 'https://i.pravatar.cc/150?img=8',
   },
 ];
 export const BOOK_SUMMARIES: BookSummary[] = [

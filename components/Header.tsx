@@ -126,7 +126,7 @@ const Header: React.FC = () => {
           : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
       } : {}}
     >
-      <div className="container mx-auto px-2 sm:px-3 lg:px-4">
+      <div className="container mx-auto px-0 sm:px-0 lg:px-0">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">

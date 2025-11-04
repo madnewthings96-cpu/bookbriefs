@@ -32,6 +32,7 @@ import LLMChatPage from './pages/LLMChatPage';
 import DownloadsPage from './pages/DownloadsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
+import LoadingScreen from './components/LoadingScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { auth, db } from './firebase';
@@ -329,73 +330,13 @@ const App: React.FC = () => {
 const AppContent: React.FC = () => {
   const { loading } = useFirebase();
 
-  // Show loading screen with book animation while Firebase initializes
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-center">
-          {/* Logo Container */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              {/* Minimalist Book Icon */}
-              <div className="relative w-12 h-12">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg transform rotate-3 shadow-lg"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg transform -rotate-3 shadow-lg"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-700 rounded-lg shadow-xl flex items-center justify-center">
-                  <div className="space-y-1 px-2">
-                    <div className="h-0.5 bg-white/80 rounded w-6"></div>
-                    <div className="h-0.5 bg-white/60 rounded w-5"></div>
-                    <div className="h-0.5 bg-white/40 rounded w-6"></div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Brand Name */}
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
-                  BookBriefs
-                </h1>
-              </div>
-            </div>
-          </div>
-
-          {/* Loading Progress Bar */}
-          <div className="w-64 mx-auto mb-6">
-            <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 rounded-full animate-loading-bar"></div>
-            </div>
-          </div>
-
-          {/* Loading Text */}
-          <p className="text-gray-500 text-sm font-medium tracking-wide">
-            Loading...
-          </p>
-        </div>
-
-        <style>{`
-          @keyframes loading-bar {
-            0% {
-              transform: translateX(-100%);
-            }
-            100% {
-              transform: translateX(100%);
-            }
-          }
-          
-          .animate-loading-bar {
-            animation: loading-bar 1.5s ease-in-out infinite;
-          }
-        `}</style>
-      </div>
-    );
-  }
-
   return (
     <BrowserRouter>
+      <LoadingScreen />
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
-        <main className="flex-grow container mx-auto px-2 sm:px-3 lg:px-4 py-8">
+        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
