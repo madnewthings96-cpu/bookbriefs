@@ -192,7 +192,7 @@ const SummaryDetailPage: React.FC = () => {
         />
       )}
       <ReadingProgressBar />
-      <div className="bg-white p-3 sm:p-4 md:p-6 rounded-lg shadow-xl max-w-5xl mx-auto">
+      <div className="bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 rounded-lg shadow-xl max-w-5xl mx-auto">
         {book && (
         <header className="mb-4 sm:mb-6 text-center border-b border-gray-200 pb-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2F4F4F' }}>{getBookTitle(book.id)}</h1>
