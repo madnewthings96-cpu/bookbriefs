@@ -4,6 +4,13 @@
 
 /* Base styles */
 @layer base {
+  :root {
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
+  }
   /* Reader Mode Styles */
   .reader-mode {
     --reader-content-width: min(90vw, 70ch);
@@ -433,4 +440,18 @@ Link {
 #loading-screen.fade-out {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Rainbow Animation */
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-rainbow {
+  animation: rainbow 3s linear infinite;
 }

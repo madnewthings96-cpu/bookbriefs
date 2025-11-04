@@ -8,6 +8,7 @@ import SparklesText from '../components/SparklesText';
 import { Magnetic } from '../components/Magnetic';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
+import { RainbowButton } from '../components/RainbowButton';
 
 const HomePage: React.FC = () => {
   useSEO({
@@ -168,7 +169,7 @@ const HomePage: React.FC = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Top Row - Single Card */}
           <div className="grid grid-cols-1 gap-6 mb-6">
-            {/* Card - Faster than light */}
+            {/* Card - Key Takeaways */}
             <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <div className="mb-6">
                 <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
@@ -199,7 +200,7 @@ const HomePage: React.FC = () => {
 
           {/* Bottom Row - 2 Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Card 4 - Faster than light (with chart) */}
+            {/* Card 4 - Key Takeaways (with chart) */}
             <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0">
@@ -210,7 +211,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Faster than light</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Key Takeaways</h3>
                   <p className="text-gray-600 leading-relaxed mb-4">
                     Get key insights from any book in minutes. Learn faster, remember longer.
                   </p>
@@ -274,6 +275,17 @@ const HomePage: React.FC = () => {
       {/* Testimonials Section */}
       <section className="bg-white">
         <Testimonials testimonials={TESTIMONIALS} />
+      </section>
+
+      {/* Join Button Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto text-center">
+          <Link to="/signup">
+            <RainbowButton className="text-lg px-12 text-white">
+              Join
+            </RainbowButton>
+          </Link>
+        </div>
       </section>
     </div>
     </>
