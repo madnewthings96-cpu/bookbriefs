@@ -399,14 +399,14 @@ const AnimatedForm = memo(function AnimatedForm({
   return (
     <section className='max-md:w-full flex flex-col gap-4 w-96 mx-auto'>
       <BoxReveal boxColor='#FF7F50' duration={0.3}>
-        <h2 className='font-bold text-3xl text-neutral-800 dark:text-neutral-200'>
+        <h2 className='font-bold text-3xl text-neutral-800 dark:text-neutral-200 text-center'>
           {header}
         </h2>
       </BoxReveal>
 
       {subHeader && (
         <BoxReveal boxColor='#FF7F50' duration={0.3} className='pb-2'>
-          <p className='text-neutral-600 text-sm max-w-sm dark:text-neutral-300'>
+          <p className='text-neutral-600 text-sm max-w-sm dark:text-neutral-300 text-center mx-auto'>
             {subHeader}
           </p>
         </BoxReveal>
