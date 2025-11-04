@@ -166,37 +166,9 @@ const HomePage: React.FC = () => {
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-7xl">
-          {/* Top Row - 3 Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {/* Card 1 - Customizable */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="mb-6">
-                <div className="inline-flex items-center justify-center px-6 py-3 bg-gray-50 rounded-full border-2 border-gray-200">
-                  <span className="text-4xl font-bold text-gray-900">100%</span>
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Customizable</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Tailor your reading experience to match your learning style and preferences.
-              </p>
-            </div>
-
-            {/* Card 2 - Secure by default */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="mb-6">
-                <div className="w-20 h-20 mx-auto bg-gray-50 rounded-full border-2 border-gray-200 flex items-center justify-center">
-                  <svg className="w-10 h-10 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Secure by default</h3>
-              <p className="text-gray-600 leading-relaxed text-center">
-                Your progress and highlights are safely stored and synced across all your devices.
-              </p>
-            </div>
-
-            {/* Card 3 - Faster than light */}
+          {/* Top Row - Single Card */}
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            {/* Card - Faster than light */}
             <div className="bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <div className="mb-6">
                 <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
