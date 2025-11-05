@@ -26,16 +26,16 @@ const HomePage: React.FC = () => {
       <StructuredData type="website" />
     <div>
       {/* Hero Section */}
-      <section className="relative py-6 md:py-10 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
+      <section className="relative pt-2 pb-6 md:pt-4 md:pb-10 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
         {/* Content */}
         <div className="container mx-auto text-center relative z-10 max-w-6xl">{/* removed px-4 */}
           {/* Logo and Rating */}
           <div className="flex flex-col items-center mb-6">
-            <div className="mb-4">
+            <div className="mb-4 logo-container">
               <img 
                 src="/favicon/logo-white.png" 
                 alt="BookBriefs Logo" 
-                className="h-16 w-auto"
+                className="h-24 w-auto logo-image"
               />
             </div>
             <div className="flex items-center gap-2">

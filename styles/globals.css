@@ -455,3 +455,70 @@ Link {
 .animate-rainbow {
   animation: rainbow 3s linear infinite;
 }
+
+/* Modern Logo Effects */
+@keyframes logo-float {
+  0%, 100% { 
+    transform: translateY(0px);
+  }
+  50% { 
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes logo-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 10px rgba(255, 127, 80, 0.3));
+  }
+  50% { 
+    filter: drop-shadow(0 0 20px rgba(255, 127, 80, 0.6)) drop-shadow(0 0 30px rgba(255, 127, 80, 0.3));
+  }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { 
+    transform: scale(1);
+  }
+  50% { 
+    transform: scale(1.02);
+  }
+}
+
+.logo-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.logo-image {
+  animation: logo-float 3s ease-in-out infinite, logo-glow 2s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.logo-container:hover .logo-image {
+  transform: scale(1.08) translateY(-4px);
+  filter: drop-shadow(0 8px 24px rgba(255, 127, 80, 0.4)) 
+          drop-shadow(0 0 30px rgba(255, 127, 80, 0.3));
+  animation: logo-pulse 0.6s ease-in-out infinite;
+}
+
+/* Optional: Add a subtle background glow effect */
+.logo-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255, 127, 80, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.logo-container:hover::before {
+  opacity: 1;
+}
