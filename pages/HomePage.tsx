@@ -29,14 +29,14 @@ const HomePage: React.FC = () => {
       <section className="relative py-6 md:py-10 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
         {/* Content */}
         <div className="container mx-auto text-center relative z-10 max-w-6xl">{/* removed px-4 */}
-          {/* User Avatars and Rating */}
+          {/* Logo and Rating */}
           <div className="flex flex-col items-center mb-6">
-            <div className="flex items-center -space-x-3 mb-3">
-              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-orange-400 to-pink-500"></div>
-              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-blue-400 to-purple-500"></div>
-              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-green-400 to-teal-500"></div>
-              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-red-400 to-orange-500"></div>
-              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-purple-400 to-indigo-500"></div>
+            <div className="mb-4">
+              <img 
+                src="/favicon/logo-white.png" 
+                alt="BookBriefs Logo" 
+                className="h-16 w-auto"
+              />
             </div>
             <div className="flex items-center gap-2">
               <div className="flex">
