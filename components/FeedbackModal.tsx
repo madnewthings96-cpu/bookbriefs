@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -9,6 +12,8 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const { user } = useAuth();
 
   // Close modal on Escape key
   useEffect(() => {
@@ -41,17 +46,22 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     if (!feedback.trim()) return;
 
     setIsSubmitting(true);
+    setError('');
 
-    // Simulate API call - Replace with your actual API endpoint
     try {
-      // await fetch('/api/feedback', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ feedback })
-      // });
-
-      // Simulate delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Save feedback to Firestore
+      const feedbackRef = collection(db, 'feedback');
+      await addDoc(feedbackRef, {
+        message: feedback.trim(),
+        userId: user?.id || 'anonymous',
+        userEmail: user?.email || 'anonymous',
+        userName: user?.name || 'Anonymous User',
+        timestamp: serverTimestamp(),
+        page: window.location.pathname,
+        userAgent: navigator.userAgent,
+        status: 'new', // Status: new, reviewed, resolved
+        rating: null, // Can be extended for ratings
+      });
 
       setSubmitSuccess(true);
       setFeedback('');
@@ -63,6 +73,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
       }, 2000);
     } catch (error) {
       console.error('Error submitting feedback:', error);
+      setError('Failed to submit feedback. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -133,6 +144,13 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                   required
                 />
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
 
               {/* Submit Button */}
               <button

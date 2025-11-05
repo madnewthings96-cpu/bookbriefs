@@ -118,6 +118,35 @@ const UserMenu: React.FC = () => {
 
             {/* Feedback */}
             {isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => {
+                    setIsFeedbackModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-3 hover:bg-white/5 transition-all duration-200 text-left group"
+                >
+                  <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-200 mr-3">
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-200 group-hover:text-white">Send Feedback</span>
+                </button>
+                <NavLink
+                  to="/feedback"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center px-4 py-3 hover:bg-white/5 transition-all duration-200 group"
+                >
+                  <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-200 mr-3">
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-200 group-hover:text-white">View All Feedback</span>
+                </NavLink>
+              </>
+            ) : (
               <button
                 onClick={() => {
                   setIsFeedbackModalOpen(true);
@@ -130,20 +159,8 @@ const UserMenu: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-gray-200 group-hover:text-white">Feedback</span>
+                <span className="text-sm font-medium text-gray-200 group-hover:text-white">Send Feedback</span>
               </button>
-            ) : (
-              <a
-                href="#"
-                className="flex items-center px-4 py-3 hover:bg-white/5 transition-all duration-200 group"
-              >
-                <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors duration-200 mr-3">
-                  <svg className="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium text-gray-200 group-hover:text-white">Feedback</span>
-              </a>
             )}
 
             {/* Divider */}

@@ -30,6 +30,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import LLMChatPage from './pages/LLMChatPage';
 import DownloadsPage from './pages/DownloadsPage';
+import FeedbackPage from './pages/FeedbackPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
@@ -369,6 +370,11 @@ const AppContent: React.FC = () => {
             <Route path="/downloads" element={
               <ProtectedRoute>
                 <DownloadsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/feedback" element={
+              <ProtectedRoute>
+                <FeedbackPage />
               </ProtectedRoute>
             } />
             <Route path="/login" element={<LoginPage />} />
