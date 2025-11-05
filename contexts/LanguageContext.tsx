@@ -143,7 +143,8 @@ const translations = {
       'the-playbook': 'The PlayBook',
       'the-chatgpt-millionaire': 'The ChatGPT Millionaire',
       'the-miracle-morning': 'The Miracle Morning',
-      'trading-for-a-living': 'Trading for a Living'
+      'trading-for-a-living': 'Trading for a Living',
+      'the-first-90-days': 'The First 90 Days'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -187,7 +188,8 @@ const translations = {
       'the-playbook': 'Mike Bellafiore',
       'the-chatgpt-millionaire': 'Neil Dagger',
       'the-miracle-morning': 'Hal Elrod',
-      'trading-for-a-living': 'Dr. Alexander Elder'
+      'trading-for-a-living': 'Dr. Alexander Elder',
+      'the-first-90-days': 'Michael D. Watkins'
     }
   }
 };

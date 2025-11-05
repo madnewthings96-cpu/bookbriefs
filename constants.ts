@@ -499,6 +499,16 @@ export const BOOKS: Book[] = [
     publicationYear: 1993,
     pageCount: 289,
   },
+  {
+    id: 'the-first-90-days',
+    title: 'The First 90 Days',
+    author: 'Michael D. Watkins',
+    category: 'Business & Economics',
+    coverImageUrl: '/images/the first 90 days.jpg',
+    rating: 4.3,
+    publicationYear: 2013,
+    pageCount: 304,
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -514,22 +524,10 @@ export const BROKERS: Broker[] = [
 
 export const TESTIMONIALS = [
   {
-    text: 'I appreciate your careful approach to your content—one that aims for a high quality hand-crafted result instead of a mediocre one that scales. Please keep up the good work and the high bar of quality.',
-    name: 'Khalid B',
-    role: 'Book Enthusiast',
-    image: '/images/younes a.jpg',
-  },
-  {
     text: 'BookBriefs has transformed my commute. I can get through two book summaries in the time it used to take me to read a single chapter. The summaries are surprisingly insightful!',
     name: 'Youness A',
     role: 'Daily Commuter',
     image: 'https://i.pravatar.cc/150?img=2',
-  },
-  {
-    text: 'As a lifelong learner, this is the tool I\'ve been waiting for. It helps me decide which books are worth a deeper dive. The audio feature is a game-changer.',
-    name: 'Nuralain Ben',
-    role: 'Avid Reader',
-    image: '/images/nuralain.jpg',
   },
   {
     text: 'The quality of summaries is outstanding. I can quickly grasp the main concepts of any book and decide if I want to read the full version. It\'s like having a personal reading assistant.',
@@ -542,6 +540,24 @@ export const TESTIMONIALS = [
     name: 'Omar Hassan',
     role: 'Entrepreneur',
     image: 'https://i.pravatar.cc/150?img=8',
+  },
+  {
+    text: 'تطبيق رائع ساعدني على قراءة ملخصات الكتب بسرعة. أصبحت أستطيع الاستفادة من محتوى عدة كتب في وقت قصير. الترجمة العربية ممتازة والمحتوى مفيد جداً.',
+    name: 'أحمد المالكي',
+    role: 'مهندس برمجيات',
+    image: 'https://i.pravatar.cc/150?img=12',
+  },
+  {
+    text: 'منصة متميزة للغاية. الملخصات شاملة ومركزة في نفس الوقت. ساعدتني في تطوير نفسي مهنياً وشخصياً من خلال التعرف على أفكار الكتب المهمة بسرعة وكفاءة.',
+    name: 'محمد العتيبي',
+    role: 'رائد أعمال',
+    image: 'https://i.pravatar.cc/150?img=33',
+  },
+  {
+    text: 'أفضل استثمار لوقتي هذا العام! الملخصات عالية الجودة وتساعدني على اختيار الكتب المناسبة لقراءتها كاملة. أنصح به كل من يحب القراءة والتطوير الذاتي.',
+    name: 'ليلى حسين',
+    role: 'مديرة تسويق',
+    image: 'https://i.pravatar.cc/150?img=26',
   },
 ];
 export const BOOK_SUMMARIES: BookSummary[] = [
@@ -8783,6 +8799,342 @@ Your journey does not begin with finding a secret. It begins with a choice. You 
       "Capital preservation is goal #1: You cannot trade without chips—protect your equity above all else, profits come second to survival",
       "Keep a detailed trading journal: Record Method (why entered), Money (position size/R:R), and Mind (emotions/discipline) for every trade—this is your feedback loop",
       "Emotional neutrality is the ultimate edge: Trade like a cold, calculating professional, not an impulsive gambler—master your psychology or the market will master you"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'the-first-90-days',
+    title: "The First 90 Days",
+    author: "Michael D. Watkins",
+    coverImageUrl: "/images/the first 90 days.jpg",
+    category: "Business & Economics",
+    summary: `# The First 90 Days: Proven Strategies for Getting Up to Speed Faster and Smarter
+
+**By Michael D. Watkins**
+
+---
+
+## Executive Summary: The Critical Acceleration Point
+
+Watkins' central thesis is that **the first 90 days—the transition period—is the critical acceleration point** for any leader in a new role. This window determines a leader's long-term success or failure, as success is proportional to the speed at which a leader reaches the **Break-Even Point (BEP)**, where they deliver as much value to the organization as they consume in resources and attention.
+
+The danger lurking in this period is the **Transition Trap**: a set of predictable, common mistakes (like moving too fast, misdiagnosing the situation, or failing to align with the boss) that derail new leaders.
+
+The book's unique value proposition is to provide a **universal, prescriptive playbook** for mitigating these risks, offering a structured, step-by-step methodology to cut the time to the BEP in half. It is a guide not just for what to do, but how to approach the transition strategically, transforming an inherently risky period into a period of maximum leverage and impact.
+
+---
+
+## The Core Imperatives & The Transition Traps
+
+The transition period is governed by three core strategic imperatives that must be executed simultaneously:
+
+### 1. Diagnosing the Situation
+Accurately assessing the organizational context, challenges, and opportunities using the STARS model to tailor the transition strategy appropriately.
+
+### 2. Aligning Expectations
+Establishing clear, explicit, and agreed-upon goals, priorities, and measures of success with the boss, key peers, and subordinates to prevent misalignment and miscommunication.
+
+### 3. Securing Early Wins
+Delivering concrete, visible, and strategically relevant results quickly to build credibility, create momentum, and demonstrate competence, which is crucial for gaining follower-ship.
+
+### The Ten Transition Traps
+
+Understanding the Ten Transition Traps is essential for survival, as they represent the most common pitfalls:
+
+1. **Jumping to Action**: Moving too fast without proper diagnosis.
+2. **Defining the Job by the Past**: Assuming the new role is identical to the old.
+3. **Falling Prey to the "Action Imperative"**: Feeling compelled to make a quick, visible change that turns out to be wrong.
+4. **Coming in and Making Too Many Changes**: Overloading the organization with initiatives.
+5. **Getting Trapped in the Wrong Situation**: Misreading the STARS context.
+6. **Lack of Clarity/Alignment with the Boss**: The failure to manage the relationship with the superior effectively.
+7. **Trying to Do It Alone**: Not engaging key internal and external stakeholders.
+8. **Inheriting a Poor Team**: Failing to assess and reconfigure the team swiftly.
+9. **Neglecting Cultural Learning**: Ignoring the informal power structure and organizational norms.
+10. **Forgetting to Take Care of Yourself**: Burning out due to the intensity of the transition.
+
+---
+
+## Thematic Thesis: The STARS Model
+
+The **STARS Model** is the book's foundational diagnostic tool, asserting that transition strategy must be dictated by the role's situational context. It provides a framework for classifying the challenge a leader faces:
+
+### Start-up (S)
+Launching a new organization, project, or product. The focus is on building from scratch, acquiring resources, and setting direction.
+
+### Turnaround (T)
+Fixing a unit or organization in deep trouble or crisis. The focus is on stabilization, rapid triage, cost cutting, and changing the leadership team.
+
+### Accelerated Growth (A)
+Managing a rapidly expanding organization. The focus is on scaling processes, building infrastructure, and preventing chaos.
+
+### Realignment (R)
+Re-energizing a once-successful organization that is drifting or facing new competitive challenges. The focus is on change management, challenging the status quo, and cultural shift.
+
+### Sustaining Success (S)
+Taking over a high-performing, successful unit. The focus is on optimization, continuous improvement, and thoughtful, evolutionary change.
+
+The target reader includes newly promoted executives, external hires, project managers, and even those taking on new functional responsibilities—essentially, anyone facing a new leadership challenge.
+
+The measurable outcome the book promises is **reaching the Break-Even Point (BEP) faster**, ideally within the 90-day window, ensuring the leader moves from a resource consumer to a net value creator quickly.
+
+---
+
+## Chapter-by-Chapter Deep Dive
+
+Watkins structures the transition into **Ten Strategies**, or ten chapters, providing a complete methodology that spans the 90-day window and beyond.
+
+### Chapter 1: Promote Yourself
+
+This chapter focuses on managing the psychological and professional transition, particularly for internal promotions. The core challenge is the **identity shift** required to succeed in the new role.
+
+**Key Concepts/Rules:**
+
+**The "Act Like a Leader" Rule:** You must shed the behaviors, relationships, and technical work of your old role to make space for the new leadership responsibilities.
+
+**The New Relationship Rule:** You must redefine relationships with your former peers, subordinates, and boss. Maintaining old peer-to-peer relationships undermines authority.
+
+**The Success Cycle:** The realization that what made you successful in the past (e.g., technical brilliance, individual execution) will likely lead to failure in the new, more strategic and people-focused role.
+
+**Challenge and Context Analysis:** This chapter addresses the challenge of identity lag and role ambiguity, particularly acute for Internal Promotions into any STARS context. It is especially critical in Sustaining Success (S) where the existing team may resent the internal leader's promotion over others, or in Realignment (R) where the new leader is expected to challenge the very status quo that they were previously a part of.
+
+**The Transition Playbook Action:**
+
+- **Week 1 (Internal):** Write down the top 5 activities and relationships from the old job that must be dropped. Schedule a 1:1 with the boss specifically to discuss new expectations and perceived skill gaps.
+- **Day 30 (Internal):** Host a 'Transition Kickoff' with former peers to explicitly state the new relationship dynamic (professional, leader-to-peer) and commit to impartiality.
+
+### Chapter 2: Accelerate Your Learning
+
+The core of this chapter is the necessity of **situational diagnosis**—the intellectual groundwork for all future actions. The challenge is sifting vast amounts of information to find the signal in the noise.
+
+**Key Concepts/Rules:**
+
+**The 90-Day Learning Plan:** Create a structured plan to focus learning on the four critical dimensions of the business: the past, present, future, and the key stakeholders.
+
+**The Four Strands of Organizational Learning:** Master the products/technology, the financial structure, the political landscape (power/influence), and the culture (norms/values). Cultural learning is often the most overlooked and most critical.
+
+**The Learning-Action-Reflection Cycle:** Continuously test hypotheses and gather feedback to refine the diagnosis and strategy, rather than operating on initial assumptions.
+
+**Challenge and Context Analysis:** This addresses the trap of Jumping to Action without context. It is foundational for all STARS contexts, but critically important in Turnaround (T), where the cost of a wrong diagnosis is organizational collapse, and in Start-up (S), where there is no existing data and the leader must build the learning engine itself.
+
+**The Transition Playbook Action:**
+
+- **Week 1:** Draft a Situational Diagnostic Hypothesis based on initial external data (analyst reports, press, strategy documents).
+- **Day 15:** Identify and schedule "learning meetings" with the top 20 most knowledgeable and candid people inside and outside the organization, prioritizing informal power brokers.
+- **Day 45:** Present the Draft STARS Assessment to the boss and key peers for validation and challenge, integrating their feedback immediately.
+
+### Chapter 3: Match Strategy to Situation (The STARS Model)
+
+This chapter explains the STARS model in detail and dictates that a one-size-fits-all strategy is a recipe for disaster. The key is recognizing that the BEP is achieved differently in each context.
+
+**Key Concepts/Rules:**
+
+**The Situational Imperative:** Your strategic priorities must be 100% aligned with your STARS context. For example, a Turnaround (T) leader must focus on triage and stabilization first, while a Start-up (S) leader must focus on securing resources and defining the vision.
+
+**The Portfolio of Situations:** Most leaders inherit a combination of STARS contexts across their various organizational units. The true challenge is managing this portfolio and allocating time based on the highest-leverage situation.
+
+**The Strategy Shift:** Understand that the situation will evolve (e.g., a Turnaround moves to Realignment), and the strategy must shift with it, requiring the leader to be adaptable.
+
+**Challenge and Context Analysis:** This is the core diagnostic chapter, preventing the trap of Getting Trapped in the Wrong Situation. It directly addresses the challenge of strategic misallocation of resources. It is universally applicable, but most critical in Realignment (R), where the situation often looks like Sustaining but hides deeper, systemic problems that must be uncovered and treated like a Turnaround.
+
+**The Transition Playbook Action:**
+
+- **Day 30:** Finalize the STARS Categorization for the overall role and the key sub-units. Use a 2x2 matrix (e.g., performance vs. momentum) to justify the classification.
+- **Day 45:** Develop a "Situation-Driven Priority List" outlining the top 3 objectives for the 90 days, explicitly stating why they align with the STARS context (e.g., "In this Turnaround, priority 1 is stabilization of cash flow, not market expansion").
+
+### Chapter 4: Secure Early Wins
+
+Early wins are the engine of momentum and credibility. They must be strategic, visible, and provide a quick return on investment.
+
+**Key Concepts/Rules:**
+
+**The Strategic Win Imperative:** Wins must not be arbitrary; they must be aligned with the STARS context and demonstrate the leader's capability to deliver on the organization's greatest needs. For a Turnaround, an early win is stemming the bleeding; for an Accelerated Growth, it's quickly scaling a process.
+
+**The Credibility-Momentum Cycle:** Early wins fuel credibility, which buys political capital, which enables the leader to tackle harder problems, thus building momentum.
+
+**The Three Buckets of Early Wins:** Focus on (1) Tackling Low-Hanging Fruit (minor, visible improvements), (2) Attacking the Biggest Problem (a clear, high-impact issue), and (3) Process or Systems Improvement (visible, long-term impact).
+
+**Challenge and Context Analysis:** This addresses the universal challenge of establishing credibility and the trap of trying to do it alone. Early wins are most critical in Turnaround (T) and Realignment (R), where organizational morale is low and quick proof of concept is needed to secure buy-in for more difficult changes.
+
+**The Transition Playbook Action:**
+
+- **Week 4:** Identify and launch the first, single, high-visibility project that can be completed in less than 60 days. This should be a direct, measurable win.
+- **Day 60:** Publicly announce and celebrate the first strategic early win, linking it explicitly to the new strategy (i.e., "This demonstrates our commitment to stabilization...").
+
+### Chapter 5: Negotiate Success with Your Boss
+
+The relationship with the boss is the single most critical factor for success. Lack of clarity is the trap of Lack of Clarity/Alignment with the Boss.
+
+**Key Concepts/Rules:**
+
+**The 5-A's of Negotiation:** This is the core methodology for alignment:
+
+1. **Align** on the situation (STARS).
+2. **Achieve** clarity on expectations (goals/metrics).
+3. **Assess** resources (budget/talent).
+4. **Agree** on style (how you work together, communication frequency).
+5. **Avoid** (or clarify) potential pitfalls (the boss's triggers, areas of micromanagement).
+
+**Managing Up:** A clear understanding of the boss's personal goals, style, and fears is essential. The leader must tailor their communication and action to their boss's needs (e.g., does the boss want detail or high-level summaries?).
+
+**The No-Surprises Rule:** Never let the boss be surprised by major organizational developments, especially failures or bad news. Over-communication is key.
+
+**Challenge and Context Analysis:** This addresses the challenge of unclear mandates and is universally important, but most acutely so in Start-up (S) and Turnaround (T). In S, the boss must be negotiated to commit the necessary resources; in T, the boss must be insulated from the political fallout of aggressive change.
+
+**The Transition Playbook Action:**
+
+- **Week 2:** Schedule the first, explicit "Expectation Alignment Meeting" with the boss, structured around the 5-A's checklist. Leave with a written, mutually agreed-upon "BEP Success Contract."
+- **Monthly:** Conduct a formal, structured "Alignment Check" using the 5-A's to detect and correct any emerging misalignment.
+
+### Chapter 6: Secure Alignment
+
+Beyond the boss, the leader must secure horizontal (peer) and vertical (subordinate) alignment to gain control over the full sphere of influence.
+
+**Key Concepts/Rules:**
+
+**The Peer Alignment Imperative:** Peers are often competitors for resources or political capital. The leader must identify the critical interdependencies and negotiate a quid pro quo relationship: "What do you need from me, and what do I need from you?"
+
+**The Subordinate Alignment Check:** Involve direct reports in the diagnostic process to secure their buy-in and gather accurate information. The goal is to move beyond superficial agreement to true commitment.
+
+**The Coalition Rule:** Identify the Core Coalition of 5-10 people inside and outside the unit whose support is absolutely necessary for success, focusing on influence rather than formal title.
+
+**Challenge and Context Analysis:** This addresses the trap of Trying to Do It Alone and the organizational challenge of silo mentality. It is most critical in Realignment (R), where entrenched peer resistance can sabotage change efforts, and in Accelerated Growth (A), where rapid scale demands seamless cross-functional alignment.
+
+**The Transition Playbook Action:**
+
+- **Week 3:** Schedule initial "Peer Interdependency Mapping Meetings" with the top 3 most critical peers, focusing on clarifying resource sharing and information flows.
+- **Day 45:** Facilitate a Cross-Functional Alignment Workshop to present the strategy and secure public, documented commitment from the Core Coalition.
+
+### Chapter 7: Manage Your Team
+
+This is the most time-consuming and emotionally challenging task: assessing, shaping, and motivating the inherited team. The trap is Inheriting a Poor Team.
+
+**Key Concepts/Rules:**
+
+**The Triage Decision (A, B, or C):** Within the first 90 days, the leader must categorize each direct report: A (Keep and Develop), B (Keep for now/Observe/Improve), or C (Move/Replace). The decision must be swift, objective, and based on potential and performance.
+
+**The 4 Pillars of Team Shaping:** Vision, Capabilities (talent/skills), Roles/Structure, and Culture. A leader must ensure the team has alignment across all four.
+
+**The 3-R Process for C-Players:** Reassign (to a better-suited internal role), Retool (training/coaching), or Replace (external exit). The leader must be decisive and compassionate, but action is non-negotiable.
+
+**Challenge and Context Analysis:** This addresses the challenge of inheriting mediocrity or incompetence. It is absolutely crucial in Turnaround (T), where the existing team is often the reason for failure, and in Start-up (S), where the leader must quickly recruit and define a high-performing culture from the ground up.
+
+**The Transition Playbook Action:**
+
+- **Week 6:** Complete the Initial A/B/C Team Assessment based on the first six weeks of observation, 360-degree feedback, and performance data.
+- **Day 90:** Execute the initial Triage Moves (the first 1-2 C-players) to signal new standards and secure organizational respect.
+
+### Chapter 8: Create Coalitions
+
+This chapter details the need to identify and engage with external stakeholders and informal power structures.
+
+**Key Concepts/Rules:**
+
+**The Power-Influence Map:** Systematically map the organization's formal power structure (org chart) against the informal power structure (who actually gets things done). Successful leaders prioritize engaging the informal leaders.
+
+**The Alliance-Building Imperative:** Proactively seek out and neutralize potential opponents and secure the support of powerful, neutral parties before major strategic moves are announced.
+
+**The Customer/Supplier Coalition:** Build strong relationships with key external stakeholders (customers, regulators, suppliers, investors) as they can be the source of crucial information or an external voice to drive internal change.
+
+**Challenge and Context Analysis:** This addresses the challenge of cultural resistance and the trap of Neglecting Cultural Learning. It is critical in Realignment (R), where the existing culture is the enemy of change, and in Turnaround (T), where external support is needed for political insulation.
+
+**The Transition Playbook Action:**
+
+- **Week 5:** Complete the Power-Influence Map. Identify the top 5 Formal Power Brokers and top 5 Informal Leaders.
+- **Day 45:** Conduct focused 1:1 meetings with the top 3 most influential Informal Leaders to understand the true "lay of the land" and secure tentative alliance.
+
+### Chapter 9: Keep Your Balance
+
+The transition is a period of intense, unrelenting pressure. This chapter focuses on personal sustainability and resilience. The trap is Forgetting to Take Care of Yourself.
+
+**Key Concepts/Rules:**
+
+**The Personal Alignment Check:** The leader must ensure that the new role aligns with their values, skills, and life goals. The cost of the transition (e.g., family time, health) must be consciously measured against the reward.
+
+**The Three Pillars of Self-Management:** Rest (adequate sleep/recovery), Fuel (nutrition/health), and Connection (maintaining relationships outside of work).
+
+**The Learning Log:** Maintain a daily journal to reflect on what worked, what didn't, and why. This facilitates the Learning-Action-Reflection cycle and prevents burnout by providing psychological distance.
+
+**Challenge and Context Analysis:** This addresses the universal challenge of burnout and the organizational challenge of sustained high performance. It is a necessary counter-balance to the intensity of Turnaround (T) and Accelerated Growth (A) situations.
+
+**The Transition Playbook Action:**
+
+- **Daily:** Block out at least 30 minutes of "think time" in the schedule, non-negotiably, to reflect and plan.
+- **Weekly:** Designate one "Tech-Free" period (e.g., Sunday morning) to reconnect with family and personal interests.
+
+### Chapter 10: Expedite Everyone
+
+The final strategy is to help others in the organization master their own transitions, which builds a culture of rapid, successful integration.
+
+**Key Concepts/Rules:**
+
+**The Ripple Effect:** Every new leader creates a ripple effect of new leaders/transitions underneath them. The leader's job is to provide the playbook and mentorship to others to accelerate their BEP.
+
+**The Transition-Proof Organization:** The ultimate goal is to institutionalize the transition process so the organization handles leadership changes seamlessly, making it more resilient and agile.
+
+**The Manager as Transition Coach:** The leader must actively coach their direct reports through their own STARS diagnosis, Alignment Check, and Early Wins strategy.
+
+**Challenge and Context Analysis:** This addresses the challenge of institutional knowledge loss and is crucial for embedding a new, performance-oriented culture. It is particularly important in Accelerated Growth (A), where constant scaling means constant hiring and promotion, and in Sustaining Success (S), where succession planning is paramount.
+
+**The Transition Playbook Action:**
+
+- **Day 90 and Beyond:** Launch a "Transition Coaching Program" for all direct reports, requiring them to document their own STARS assessment and 90-day plan using the book's frameworks.
+
+---
+
+## Synthesis and Final Assessment
+
+### Synthesized Transition Imperatives
+
+The five universally applicable, non-negotiable principles that govern successful leadership transitions, regardless of industry or role, are:
+
+1. **Situational Diagnosis Dictates Strategy:** All actions must be preceded by a rigorous, objective assessment of the context using the STARS model; the where informs the how.
+
+2. **Clarity is Non-Negotiable:** Explicitly negotiate and continually align on expectations, goals, and style with the boss and key stakeholders (the 5-A's).
+
+3. **Credibility Precedes Transformation:** Establish quick, visible, and strategic early wins to build political capital and momentum before attempting large-scale change.
+
+4. **Triage Your Team Swiftly:** The team is the vehicle for change. Assess, categorize (A/B/C), and act decisively on inherited talent within the 90-day window.
+
+5. **Master the Power-Culture Grid:** Understand both the formal organizational chart and the informal power structures to build the necessary coalitions for change.
+
+### Critique and Context
+
+Watkins' framework is an enduring classic due to its rigorous structure and methodical approach. Its primary strength lies in its universal applicability—every transition involves a new role, a new boss, a new team, and a new situation. The STARS model, in particular, remains the definitive diagnostic tool.
+
+However, the book's structural focus can be viewed as its limitation. It is heavily reliant on a corporate hierarchy (the "boss" and the "team"), which can feel less explicit in flatter, matrixed, or highly agile organizational structures. Furthermore, while the principles hold true, the tactical advice requires translation for the modern agile and remote work environments.
+
+For instance, "early wins" in a remote setting may need to focus more on visible communication and process standardization (e.g., defining a clear remote meeting cadence) rather than visible floor presence. The core challenge of cultural learning becomes significantly harder when water-cooler talk and informal observation are replaced by scheduled video calls.
+
+Despite this, the philosophical rationale—aligning, learning, and securing wins quickly—is more relevant than ever in today's rapid-cycle business world.
+
+---
+
+## Conclusion
+
+**"The First 90 Days"** is not merely a summary of best practices; it is a comprehensive risk-mitigation strategy and an accelerated development plan codified into a single methodology.
+
+Its enduring status as the definitive, indispensable guide for any leader in transition is secured by its focus on the most critical variable: **speed to the Break-Even Point**.
+
+By offering a strategic map for navigating the perilous transition period, Watkins transforms what is inherently a high-risk gamble into a managed, executable project.`,
+    keyTakeaways: [
+      "The Break-Even Point (BEP) is everything: Success = speed at which you deliver more value than you consume; the 90-day window determines long-term trajectory",
+      "The STARS Model is your diagnostic compass: Start-up, Turnaround, Accelerated Growth, Realignment, or Sustaining Success—strategy must match situation exactly",
+      "The 10 Transition Traps are predictable: Jumping to action, defining job by past, action imperative, too many changes, wrong situation, boss misalignment, going solo, poor team, ignoring culture, burnout",
+      "Promote Yourself mentally: Shed old role behaviors/relationships; what made you successful before will cause failure now—identity shift is non-negotiable",
+      "The 90-Day Learning Plan: Structure learning around 4 dimensions (past, present, future, stakeholders) and 4 strands (products, financials, politics, culture)",
+      "Cultural learning is most overlooked: Master informal power structures, norms, and values—the 'water cooler' intelligence is more critical than the org chart",
+      "One-size-fits-all strategy fails: Turnaround = triage/stabilization first; Start-up = resources/vision; Sustaining = optimization; Realignment = culture shift",
+      "Early wins must be strategic: Aligned with STARS context, visible, quick ROI—builds credibility-momentum cycle that funds harder changes later",
+      "The 5-A's of Boss Negotiation: Align on situation, Achieve clarity on expectations, Assess resources, Agree on style, Avoid pitfalls—no-surprises rule is sacred",
+      "Manage up relentlessly: Understand boss's goals, style, fears; tailor communication; over-communicate; never let boss be surprised by bad news",
+      "Secure horizontal & vertical alignment: Negotiate quid pro quo with peers; move subordinates from agreement to commitment; identify Core Coalition (5-10 influencers)",
+      "A/B/C Team Triage in 90 days: A = keep/develop, B = observe/improve, C = reassign/retool/replace—swift, objective categorization is non-negotiable",
+      "The 3-R Process for C-Players: Reassign to better role, Retool with training, or Replace externally—decisive but compassionate action signals new standards",
+      "Power-Influence Mapping: Chart formal org structure vs. informal power brokers; successful leaders prioritize engaging informal leaders first",
+      "Build coalitions proactively: Neutralize opponents, secure neutral parties, engage external stakeholders (customers, regulators) before announcing major moves",
+      "Personal sustainability = Three Pillars: Rest (sleep/recovery), Fuel (nutrition/health), Connection (relationships outside work)—burnout derails everything",
+      "The Learning Log ritual: Daily journal—what worked, what didn't, why—facilitates Learning-Action-Reflection cycle and provides psychological distance",
+      "Expedite Everyone = Ripple Effect: Coach direct reports through their STARS diagnosis and 90-day plans—builds transition-proof, resilient organization"
     ],
     isPremium: false,
   }
