@@ -1,14 +1,16 @@
 
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
-import Testimonials from '../components/Testimonials';
-import Categories from '../components/Categories';
 import SparklesText from '../components/SparklesText';
 import { Magnetic } from '../components/Magnetic';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { RainbowButton } from '../components/RainbowButton';
+
+// Lazy load heavy components
+const Testimonials = lazy(() => import('../components/Testimonials'));
+const Categories = lazy(() => import('../components/Categories'));
 
 const HomePage: React.FC = () => {
   useSEO({
@@ -30,31 +32,11 @@ const HomePage: React.FC = () => {
           {/* User Avatars and Rating */}
           <div className="flex flex-col items-center mb-6">
             <div className="flex items-center -space-x-3 mb-3">
-              <img 
-                src="https://i.pravatar.cc/150?img=12" 
-                alt="User 1" 
-                className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-              />
-              <img 
-                src="https://i.pravatar.cc/150?img=33" 
-                alt="User 2" 
-                className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-              />
-              <img 
-                src="https://i.pravatar.cc/150?img=45" 
-                alt="User 3" 
-                className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-              />
-              <img 
-                src="https://i.pravatar.cc/150?img=56" 
-                alt="User 4" 
-                className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-              />
-              <img 
-                src="https://i.pravatar.cc/150?img=68" 
-                alt="User 5" 
-                className="w-12 h-12 rounded-full border-4 border-white shadow-lg"
-              />
+              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-orange-400 to-pink-500"></div>
+              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-blue-400 to-purple-500"></div>
+              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-green-400 to-teal-500"></div>
+              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-red-400 to-orange-500"></div>
+              <div className="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-purple-400 to-indigo-500"></div>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex">
@@ -119,40 +101,40 @@ const HomePage: React.FC = () => {
             <div className="flex justify-center items-end gap-3 md:gap-4 overflow-hidden">
               {/* Row 1 - Top */}
               <div className="flex gap-3 md:gap-4 animate-scroll-slow">
-                <img src="/images/the alchemist.jpg" alt="The Alchemist" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/atomic-habits.jpg" alt="Atomic Habits" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/becoming.jpg" alt="Becoming" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/rich dad poor dad.jpg" alt="Rich Dad Poor Dad" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/one good trade.jpg" alt="One Good Trade" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/sapiens.jpg" alt="Sapiens" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/educated.jpg" alt="Educated" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the subtle art.jpg" alt="The Subtle Art" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/fast and slow.jpg" alt="Thinking Fast and Slow" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the four agreements.jpg" alt="The Four Agreements" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/hail mary.jpg" alt="Project Hail Mary" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/dune.jpg" alt="Dune" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the alchemist.jpg" alt="The Alchemist" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the alchemist.jpg" alt="The Alchemist" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/atomic-habits.jpg" alt="Atomic Habits" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/becoming.jpg" alt="Becoming" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/rich dad poor dad.jpg" alt="Rich Dad Poor Dad" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/one good trade.jpg" alt="One Good Trade" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/sapiens.jpg" alt="Sapiens" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/educated.jpg" alt="Educated" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the subtle art.jpg" alt="The Subtle Art" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/fast and slow.jpg" alt="Thinking Fast and Slow" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the four agreements.jpg" alt="The Four Agreements" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/hail mary.jpg" alt="Project Hail Mary" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/dune.jpg" alt="Dune" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the alchemist.jpg" alt="The Alchemist" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
               </div>
             </div>
             
             {/* Second Row */}
             <div className="flex justify-center items-end gap-3 md:gap-4 mt-3 md:mt-4 overflow-hidden">
               <div className="flex gap-3 md:gap-4 animate-scroll-reverse">
-                <img src="/images/think and grow rich.jpg" alt="Think and Grow Rich" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/trading-in-the-zone.jpg" alt="Trading in the Zone" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/best loser wins.jpg" alt="Best Loser Wins" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/can't hurt me.jpg" alt="Can't Hurt Me" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the alchemy of finance.jpg" alt="The Alchemy of Finance" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/competition demystified.jpg" alt="Competition Demystified" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/law of human nature.jpg" alt="The Laws of Human Nature" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/broken money.jpg" alt="Broken Money" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/the intelligent investor.jpg" alt="The Intelligent Investor" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/one up on wall street.jpg" alt="One Up on Wall Street" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/relentless.jpg" alt="Relentless" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/americas bank.jpg" alt="America's Bank" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/think and grow rich.jpg" alt="Think and Grow Rich" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/think and grow rich.jpg" alt="Think and Grow Rich" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the psychology of money.jpg" alt="The Psychology of Money" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/trading-in-the-zone.jpg" alt="Trading in the Zone" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/best loser wins.jpg" alt="Best Loser Wins" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/can't hurt me.jpg" alt="Can't Hurt Me" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the alchemy of finance.jpg" alt="The Alchemy of Finance" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/competition demystified.jpg" alt="Competition Demystified" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/law of human nature.jpg" alt="The Laws of Human Nature" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/broken money.jpg" alt="Broken Money" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the intelligent investor.jpg" alt="The Intelligent Investor" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/one up on wall street.jpg" alt="One Up on Wall Street" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/relentless.jpg" alt="Relentless" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/americas bank.jpg" alt="America's Bank" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/think and grow rich.jpg" alt="Think and Grow Rich" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
               </div>
             </div>
           </div>
@@ -161,7 +143,9 @@ const HomePage: React.FC = () => {
 
       {/* Categories Section */}
       <section className="py-8 bg-gray-50">
-        <Categories />
+        <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div></div>}>
+          <Categories />
+        </Suspense>
       </section>
 
       {/* Features Section */}
@@ -274,7 +258,9 @@ const HomePage: React.FC = () => {
 
       {/* Testimonials Section */}
       <section className="bg-white">
-        <Testimonials testimonials={TESTIMONIALS} />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div></div>}>
+          <Testimonials testimonials={TESTIMONIALS} />
+        </Suspense>
       </section>
 
       {/* Join Button Section */}
