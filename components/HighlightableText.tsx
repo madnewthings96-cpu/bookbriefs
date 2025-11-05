@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { usePersonalNotes } from '../contexts/PersonalNotesContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -120,7 +121,13 @@ const HighlightableText: React.FC<HighlightableTextProps> = ({
       processedContent = processedContent.replace(regex, `<mark class="bg-yellow-200 px-1 rounded" title="Your highlight: ${highlight.createdAt.toLocaleDateString()}">$1</mark>`);
     });
 
-    return <div dangerouslySetInnerHTML={{ __html: processedContent }} />;
+    // Sanitize HTML to prevent XSS attacks
+    const sanitizedContent = DOMPurify.sanitize(processedContent, {
+      ALLOWED_TAGS: ['mark', 'span', 'div', 'p', 'br', 'strong', 'em', 'u'],
+      ALLOWED_ATTR: ['class', 'title']
+    });
+
+    return <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />;
   };
 
   return (

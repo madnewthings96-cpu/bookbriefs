@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { useLanguage } from '../contexts/LanguageContext';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
@@ -2295,7 +2296,12 @@ const BlogPage: React.FC = () => {
               <article className="prose prose-lg prose-gray max-w-none">
                 <div 
                   className="article-content"
-                  dangerouslySetInnerHTML={{ __html: getFullContent(selectedPost.id) }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: DOMPurify.sanitize(getFullContent(selectedPost.id), {
+                      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'div', 'span', 'code', 'pre'],
+                      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'style']
+                    })
+                  }}
                   style={{
                     fontFamily: 'Georgia, serif',
                     fontSize: '18px',
