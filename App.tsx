@@ -12,15 +12,17 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
+import ErrorBoundary from './components/ErrorBoundary';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
 
 // Lazy load all pages for better initial load performance
-const HomePage = lazy(() => import('./pages/HomePage'));
-const SummariesPage = lazy(() => import('./pages/SummariesPage'));
-const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
+// Using webpackPrefetch for better UX on commonly visited pages
+const HomePage = lazy(() => import(/* webpackPrefetch: true */ './pages/HomePage'));
+const SummariesPage = lazy(() => import(/* webpackPrefetch: true */ './pages/SummariesPage'));
+const SummaryDetailPage = lazy(() => import(/* webpackPrefetch: true */ './pages/SummaryDetailPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
 const NewsPage = lazy(() => import('./pages/NewsPage'));
@@ -344,12 +346,16 @@ const AppContent: React.FC = () => {
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
         <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
-          <Suspense fallback={
-            <div className="flex items-center justify-center min-h-[400px]">
-              <Spinner />
-            </div>
-          }>
-            <Routes>
+          <ErrorBoundary>
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-screen w-full">
+                <div className="text-center">
+                  <Spinner />
+                  <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+              </div>
+            }>
+              <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
@@ -392,8 +398,9 @@ const AppContent: React.FC = () => {
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-use" element={<TermsOfUsePage />} />
-          </Routes>
-          </Suspense>
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <Footer />
       </div>
