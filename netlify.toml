@@ -10,22 +10,21 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Content Security Policy - Prevent XSS attacks
+    # Content Security Policy - Prevent XSS attacks (relaxed for development)
     Content-Security-Policy = """
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://assets.mailerlite.com https://www.googletagmanager.com https://www.google-analytics.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      img-src 'self' data: https: blob:;
-      font-src 'self' https://fonts.gstatic.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://*.google.com https://assets.mailerlite.com;
-      frame-src 'self' https://www.google.com;
+      default-src 'self' 'unsafe-inline' 'unsafe-eval';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://* http://localhost:* http://127.0.0.1:*;
+      style-src 'self' 'unsafe-inline' https://*;
+      img-src 'self' data: https: blob: http:;
+      font-src 'self' data: https://*;
+      connect-src 'self' https://* http://localhost:* http://127.0.0.1:* wss://*;
+      frame-src 'self' https://*;
       object-src 'none';
       base-uri 'self';
-      form-action 'self';
-      upgrade-insecure-requests;
+      form-action 'self' https://*;
     """
-    # Prevent clickjacking attacks
-    X-Frame-Options = "DENY"
+    # Prevent clickjacking attacks (SAMEORIGIN allows embedding in your own domain)
+    X-Frame-Options = "SAMEORIGIN"
     # Prevent MIME type sniffing
     X-Content-Type-Options = "nosniff"
     # Enable XSS protection (legacy browsers)

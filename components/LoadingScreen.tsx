@@ -4,8 +4,8 @@ const LoadingScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Minimum loading time to ensure animation is visible
-    const minLoadTime = 1000;
+    // Reduced minimum loading time for faster initial render
+    const minLoadTime = 300; // Reduced from 1000ms to 300ms
     const startTime = Date.now();
 
     const handleLoad = () => {

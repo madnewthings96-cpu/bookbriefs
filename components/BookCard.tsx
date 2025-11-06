@@ -26,6 +26,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             src={book.coverImageUrl}
             alt={`Cover of ${translatedTitle}`}
+            loading="lazy"
+            decoding="async"
           />
           {/* Favorite Button */}
           <div className="absolute top-2 right-2 z-10">

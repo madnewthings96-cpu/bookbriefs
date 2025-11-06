@@ -16,15 +16,30 @@ export default defineConfig(({ mode }) => {
         }
       },
       build: {
-        // Reduce chunk size warnings
-        chunkSizeWarningLimit: 1000,
+        // Increase chunk size limit for Firebase and large dependencies
+        chunkSizeWarningLimit: 2500,
         rollupOptions: {
           output: {
             manualChunks: {
-              firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/analytics']
+              firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/analytics'],
+              vendor: ['react', 'react-dom', 'react-router-dom'],
+              ui: ['framer-motion', 'lucide-react'],
+              'pdf-lib': ['jspdf']
             }
           }
+        },
+        // Enable minification for better performance
+        minify: 'terser',
+        terserOptions: {
+          compress: {
+            drop_console: true, // Remove console logs in production
+            drop_debugger: true
+          }
         }
+      },
+      // Optimize dependencies
+      optimizeDeps: {
+        include: ['react', 'react-dom', 'react-router-dom', 'firebase/app', 'firebase/auth', 'firebase/firestore']
       }
     };
 });

@@ -36,6 +36,8 @@ const HomePage: React.FC = () => {
                 src="/favicon/logo-white.png" 
                 alt="BookBriefs Logo" 
                 className="h-24 w-auto logo-image"
+                loading="eager"
+                fetchPriority="high"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -101,9 +103,9 @@ const HomePage: React.FC = () => {
             <div className="flex justify-center items-end gap-3 md:gap-4 overflow-hidden">
               {/* Row 1 - Top */}
               <div className="flex gap-3 md:gap-4 animate-scroll-slow">
-                <img src="/images/the alchemist.jpg" alt="The Alchemist" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/atomic-habits.jpg" alt="Atomic Habits" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
-                <img src="/images/becoming.jpg" alt="Becoming" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/the alchemist.jpg" alt="The Alchemist" loading="lazy" decoding="async" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/atomic-habits.jpg" alt="Atomic Habits" loading="lazy" decoding="async" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
+                <img src="/images/becoming.jpg" alt="Becoming" loading="lazy" decoding="async" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/rich dad poor dad.jpg" alt="Rich Dad Poor Dad" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/one good trade.jpg" alt="One Good Trade" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
                 <img src="/images/sapiens.jpg" alt="Sapiens" loading="lazy" className="w-16 h-24 md:w-20 md:h-28 lg:w-24 lg:h-32 rounded-lg shadow-lg object-cover hover:scale-110 transition-transform duration-300" />
