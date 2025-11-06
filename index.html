@@ -79,13 +79,18 @@
       }
     </style>
     
-    <!-- MailerLite Universal -->
+    <!-- MailerLite Universal - Deferred Loading -->
     <script>
-        (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
-        .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
-        n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
-        (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
-        ml('account', '1791253');
+        // Defer MailerLite loading to prevent blocking
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+            .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+            n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+            (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+            ml('account', '1791253');
+          }, 2000); // Load after 2 seconds
+        });
     </script>
     <!-- End MailerLite Universal -->
   </head>

@@ -133,11 +133,11 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
   // Firebase auth state listener
   useEffect(() => {
-    // Set a timeout to ensure loading doesn't hang indefinitely
+    // Set a shorter timeout to prevent blocking
     const timeoutId = setTimeout(() => {
       console.warn('Firebase auth initialization timeout, proceeding without auth');
       setLoading(false);
-    }, 10000); // 10 second timeout
+    }, 3000); // 3 second timeout (reduced from 10)
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       clearTimeout(timeoutId); // Clear timeout since auth resolved
@@ -154,6 +154,11 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
         setUserData(null);
       }
       
+      setLoading(false);
+    }, (error) => {
+      // Error callback for auth state changes
+      console.error('Firebase auth error:', error);
+      clearTimeout(timeoutId);
       setLoading(false);
     });
 
