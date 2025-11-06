@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://ta7leel.site/</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://ta7leel.site/" />
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://ta7leel.site/" />
+    <xhtml:link rel="alternate" hreflang="ar-EG" href="https://ta7leel.site/" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summaries</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summaries" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summaries?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/about</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/about?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/blog</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/blog?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/calculators</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/calculators" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/calculators?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/news</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/news" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/news?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/chat</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/chat" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/chat?lang=en" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/العادات-الذرية</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/العادات-الذرية" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/atomic-habits" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/atomic-habits</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/atomic-habits" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/العادات-الذرية" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/الأب-الغني-والأب-الفقير</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الأب-الغني-والأب-الفقير" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/rich-dad-poor-dad" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/rich-dad-poor-dad</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/rich-dad-poor-dad" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الأب-الغني-والأب-الفقير" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/سيكولوجية-المال</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/سيكولوجية-المال" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-psychology-of-money" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/the-psychology-of-money</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-psychology-of-money" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/سيكولوجية-المال" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/التفكير-السريع-والبطيء</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/التفكير-السريع-والبطيء" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/thinking-fast-and-slow" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/thinking-fast-and-slow</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/thinking-fast-and-slow" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/التفكير-السريع-والبطيء" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/الخيميائي</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الخيميائي" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-alchemist" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/the-alchemist</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-alchemist" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الخيميائي" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/العاقل</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/العاقل" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/sapiens" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/sapiens</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/sapiens" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/العاقل" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/الفن-اللامبالاة</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الفن-اللامبالاة" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-subtle-art" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/the-subtle-art</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-subtle-art" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/الفن-اللامبالاة" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/التداول-في-المنطقة</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/التداول-في-المنطقة" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/trading-in-the-zone" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/trading-in-the-zone</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/trading-in-the-zone" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/التداول-في-المنطقة" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/المستثمر-الذكي</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/المستثمر-الذكي" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-intelligent-investor" />
+  </url>
+  <url>
+    <loc>https://ta7leel.site/summary/the-intelligent-investor</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ta7leel.site/summary/the-intelligent-investor" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ta7leel.site/summary/المستثمر-الذكي" />
+  </url>
+</urlset>

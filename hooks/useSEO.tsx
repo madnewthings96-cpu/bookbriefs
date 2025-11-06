@@ -67,8 +67,11 @@ const useSEO = ({
     setMetaTag('og:image', fullImageUrl, true);
     setMetaTag('og:url', currentUrl, true);
     setMetaTag('og:type', type, true);
-    setMetaTag('og:site_name', 'BookBriefs', true);
-    setMetaTag('og:locale', 'en_US', true);
+    setMetaTag('og:site_name', 'تحليل - Ta7leel', true);
+    setMetaTag('og:locale', 'ar_AE', true);
+    setMetaTag('og:locale:alternate', 'en_US', true);
+    setMetaTag('og:locale:alternate', 'ar_SA', true);
+    setMetaTag('og:locale:alternate', 'ar_EG', true);
 
     // Twitter Card tags
     setMetaTag('twitter:card', 'summary_large_image');
@@ -98,18 +101,33 @@ const useSEO = ({
     }
     canonicalLink.href = currentUrl;
 
-    // Add language alternate tags
-    const languages = ['en', 'ar', 'fr', 'es'];
-    languages.forEach(lang => {
-      let alternateLangLink = document.querySelector(`link[hreflang="${lang}"]`) as HTMLLinkElement;
+    // Add language alternate tags for Arabic countries
+    const languages = [
+      { code: 'ar', label: 'Arabic' },
+      { code: 'en', label: 'English' },
+      { code: 'ar-AE', label: 'Arabic (UAE)' },
+      { code: 'ar-SA', label: 'Arabic (Saudi Arabia)' },
+      { code: 'ar-EG', label: 'Arabic (Egypt)' },
+      { code: 'x-default', label: 'Default' }
+    ];
+    
+    languages.forEach(({ code }) => {
+      let alternateLangLink = document.querySelector(`link[hreflang="${code}"]`) as HTMLLinkElement;
       if (!alternateLangLink) {
         alternateLangLink = document.createElement('link');
         alternateLangLink.rel = 'alternate';
-        alternateLangLink.hreflang = lang;
+        alternateLangLink.hreflang = code;
         document.head.appendChild(alternateLangLink);
       }
-      alternateLangLink.href = `${currentUrl}?lang=${lang}`;
+      alternateLangLink.href = code === 'x-default' ? currentUrl : `${currentUrl}${currentUrl.includes('?') ? '&' : '?'}lang=${code}`;
     });
+    
+    // Add Arabic-specific meta tags
+    setMetaTag('content-language', 'ar,en');
+    
+    // Add geo-targeting for MENA region
+    setMetaTag('geo.region', 'AE;SA;EG;QA;KW;BH;OM;JO;LB');
+    setMetaTag('geo.placename', 'Dubai, UAE');
 
   }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, noindex]);
 };
