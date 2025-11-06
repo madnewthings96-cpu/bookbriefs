@@ -1861,7 +1861,7 @@ const BlogPage: React.FC = () => {
       category: "التداول",
       date: "2025-10-27",
       readTime: "25 دقيقة قراءة",
-      imageUrl: "/blog images/blog 3.png",
+      imageUrl: "/blog images/blog 3.webp",
       tags: ["الرضا عن النفس", "إدارة المخاطر", "علم نفس التداول", "الانضباط", "عربي"],
       slug: "القاتل-الصامت-الرضا-عن-النفس-بعد-ربح-كبير"
     },
@@ -1872,7 +1872,7 @@ const BlogPage: React.FC = () => {
       category: "التداول",
       date: "2025-10-12",
       readTime: "20 دقيقة قراءة",
-      imageUrl: "/blog images/blog 1.png",
+      imageUrl: "/blog images/blog 1.webp",
       tags: ["مفكرة التداول", "علم النفس", "إدارة المخاطر", "الأنماط السلوكية", "عربي"],
       slug: "مفكرة-المتداول-نظام-انذار-سلوكي-مبكر"
     },
@@ -1883,7 +1883,7 @@ const BlogPage: React.FC = () => {
       category: "التداول",
       date: "2025-10-12",
       readTime: "30 دقيقة قراءة",
-      imageUrl: "/blog images/blog 2.png",
+      imageUrl: "/blog images/blog 2.webp",
       tags: ["الثقة الهادئة", "علم نفس التداول", "إدارة الخسائر", "التداول الاحترافي", "عربي"],
       slug: "الثقة-الهادئة-كيف-تتداول-كالمحترفين-بعد-الخسائر"
     },
@@ -1894,7 +1894,7 @@ const BlogPage: React.FC = () => {
       category: "التداول",
       date: "2025-10-15",
       readTime: "25 دقيقة قراءة",
-      imageUrl: "/blog images/blog 4.png",
+      imageUrl: "/blog images/blog 4.webp",
       tags: ["قائمة التحقق قبل التداول", "الانضباط", "انضباط الطيار", "التداول العاطفي", "عربي"],
       slug: "قائمة-تحقق-ما-قبل-التداول-انضباط-الطيار"
     },
@@ -2075,14 +2075,21 @@ const BlogPage: React.FC = () => {
               >
                 <div className="md:flex">
                   <div className="md:w-1/2 relative overflow-hidden">
-                    <img 
-                      src={filteredPosts[0].imageUrl} 
-                      alt={filteredPosts[0].title}
-                      className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                      }}
-                    />
+                    <picture>
+                      <source 
+                        srcSet={filteredPosts[0].imageUrl} 
+                        type="image/webp"
+                      />
+                      <img 
+                        src={filteredPosts[0].imageUrl.replace('.webp', '.png')} 
+                        alt={filteredPosts[0].title}
+                        className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                        }}
+                      />
+                    </picture>
                     <div className="absolute top-4 left-4">
                       <span 
                         className="px-3 py-1 text-sm font-semibold text-white rounded-full shadow-lg"
@@ -2153,14 +2160,21 @@ const BlogPage: React.FC = () => {
                     onClick={() => openPostModal(post)}
                   >
                     <div className="relative overflow-hidden">
-                      <img 
-                        src={post.imageUrl} 
-                        alt={post.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMjUgNzVIMTc1VjEyNUgxMjVWNzVaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0xMDAgMTM1SDE4MFYxNDVIMTAwVjEzNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPHA+PC9wYXRoPgo8L3N2Zz4K';
-                        }}
-                      />
+                      <picture>
+                        <source 
+                          srcSet={post.imageUrl} 
+                          type="image/webp"
+                        />
+                        <img 
+                          src={post.imageUrl.replace('.webp', '.png')} 
+                          alt={post.title}
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMjUgNzVIMTc1VjEyNUgxMjVWNzVaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0xMDAgMTM1SDE4MFYxNDVIMTAwVjEzNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPHA+PC9wYXRoPgo8L3N2Zz4K';
+                          }}
+                        />
+                      </picture>
                       <div className="absolute top-3 left-3">
                         <span 
                           className="px-3 py-1 text-xs font-semibold text-white rounded-full shadow-md"
@@ -2282,14 +2296,21 @@ const BlogPage: React.FC = () => {
 
               {/* Article Image */}
               <div className="mb-8">
-                <img 
-                  src={selectedPost.imageUrl} 
-                  alt={selectedPost.title}
-                  className="w-full h-80 object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                  }}
-                />
+                <picture>
+                  <source 
+                    srcSet={selectedPost.imageUrl} 
+                    type="image/webp"
+                  />
+                  <img 
+                    src={selectedPost.imageUrl.replace('.webp', '.png')} 
+                    alt={selectedPost.title}
+                    className="w-full h-80 object-cover"
+                    loading="eager"
+                    onError={(e) => {
+                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                    }}
+                  />
+                </picture>
               </div>
 
               {/* Article Body */}
@@ -2352,14 +2373,21 @@ const BlogPage: React.FC = () => {
                       window.scrollTo(0, 0);
                     }}>
                       <div className="flex space-x-4">
-                        <img 
-                          src={post.imageUrl} 
-                          alt={post.title}
-                          className="w-24 h-20 object-cover flex-shrink-0"
-                          onError={(e) => {
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zNSAyNUg2NVY1NUgzNVYyNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                          }}
-                        />
+                        <picture className="w-24 h-20 flex-shrink-0">
+                          <source 
+                            srcSet={post.imageUrl} 
+                            type="image/webp"
+                          />
+                          <img 
+                            src={post.imageUrl.replace('.webp', '.png')} 
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zNSAyNUg2NVY1NUgzNVYyNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                            }}
+                          />
+                        </picture>
                         <div className="flex-1">
                           <h4 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-1" 
                               style={{ fontFamily: 'Georgia, serif' }}>
