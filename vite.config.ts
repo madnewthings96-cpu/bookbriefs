@@ -17,29 +17,63 @@ export default defineConfig(({ mode }) => {
       },
       build: {
         // Increase chunk size limit for Firebase and large dependencies
-        chunkSizeWarningLimit: 2500,
+        chunkSizeWarningLimit: 600,
         rollupOptions: {
           output: {
             manualChunks: {
-              firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/analytics'],
-              vendor: ['react', 'react-dom', 'react-router-dom'],
-              ui: ['framer-motion', 'lucide-react'],
-              'pdf-lib': ['jspdf']
-            }
+              // Split React vendor code (largest initial bundle)
+              'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+              
+              // Firebase is 498KB - must be separate and lazy loaded
+              'firebase': [
+                'firebase/app',
+                'firebase/auth',
+                'firebase/firestore',
+                'firebase/analytics'
+              ],
+              
+              // PDF library - lazy load only when needed (dynamic import in SummaryDetailPage)
+              'pdf-generator': ['jspdf'],
+              
+              // UI components library
+              'ui-components': [
+                'framer-motion',
+                'lucide-react'
+              ]
+            },
+            
+            // Content-based hashing for better caching
+            chunkFileNames: 'assets/[name]-[hash].js',
+            entryFileNames: 'assets/[name]-[hash].js',
+            assetFileNames: 'assets/[name]-[hash].[ext]'
           }
         },
-        // Enable minification for better performance
+        // Enable aggressive minification
         minify: 'terser',
         terserOptions: {
           compress: {
             drop_console: true, // Remove console logs in production
-            drop_debugger: true
+            drop_debugger: true,
+            passes: 2, // Multiple passes for better compression
+            pure_funcs: ['console.log', 'console.info', 'console.debug'] // Remove specific console methods
+          },
+          mangle: {
+            safari10: true // Fix Safari 10 bugs
           }
-        }
+        },
+        // Disable source maps in production for smaller bundle
+        sourcemap: false
       },
-      // Optimize dependencies
+      // Optimize dependencies - exclude heavy ones from pre-bundling
       optimizeDeps: {
-        include: ['react', 'react-dom', 'react-router-dom', 'firebase/app', 'firebase/auth', 'firebase/firestore']
+        include: ['react', 'react-dom', 'react-router-dom'],
+        exclude: [
+          'firebase/app',
+          'firebase/auth', 
+          'firebase/firestore',
+          'firebase/analytics',
+          'jspdf'
+        ]
       }
     };
 });

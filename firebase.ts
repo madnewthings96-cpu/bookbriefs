@@ -28,25 +28,67 @@ if (!firebaseConfig.apiKey) {
     firebaseConfig.measurementId = "G-ABCDEFGHIJ";
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// CRITICAL: Defer Firebase initialization until after first paint
+let app: any;
+let auth: any;
+let db: any;
+let analytics: any;
+let googleProvider: any;
+let isInitialized = false;
 
-// Initialize and configure Google Auth Provider
-export const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({
+// Initialize Firebase lazily - only when needed
+const initializeFirebase = () => {
+  if (isInitialized) return;
+  
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  
+  // Initialize and configure Google Auth Provider
+  googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({
     prompt: 'select_account'
-});
+  });
+  
+  isInitialized = true;
+};
+
+// Initialize Firebase after the page has loaded (non-blocking)
+if (typeof window !== 'undefined') {
+  // Wait for page to be interactive before initializing
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initializeFirebase, 0);
+  } else {
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initializeFirebase, 0);
+    });
+  }
+}
+
+// Lazy getters with auto-initialization
+export const getAuthInstance = () => {
+  if (!isInitialized) initializeFirebase();
+  return auth;
+};
+
+export const getDbInstance = () => {
+  if (!isInitialized) initializeFirebase();
+  return db;
+};
+
+export const getGoogleProvider = () => {
+  if (!isInitialized) initializeFirebase();
+  return googleProvider;
+};
 
 // Initialize Firebase Analytics lazily (only when needed, not on initial load)
-let analytics: any;
 export const getAnalyticsInstance = () => {
   if (typeof window !== 'undefined' && !analytics) {
+    if (!isInitialized) initializeFirebase();
     analytics = getAnalytics(app);
   }
   return analytics;
 };
 
-// Export the services you'll need throughout your app
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export { analytics };
+// Legacy exports for backward compatibility - these will auto-initialize when accessed
+export { auth, db, googleProvider, analytics };

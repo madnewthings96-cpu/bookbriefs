@@ -136,39 +136,61 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
   // Firebase auth state listener
   useEffect(() => {
-    // Set a shorter timeout to prevent blocking - reduced to 1 second
-    const timeoutId = setTimeout(() => {
-      console.warn('Firebase auth initialization timeout, proceeding without auth');
-      setLoading(false);
-    }, 1000); // 1 second timeout for faster initial load
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      clearTimeout(timeoutId); // Clear timeout since auth resolved
-      setCurrentUser(user);
-      
-      if (user) {
-        // Load user data in background without blocking
-        loadUserData(user).catch(error => {
-          console.error('Error loading user data:', error);
-        });
-        updateLastLogin(user).catch(error => {
-          console.error('Error updating last login:', error);
+    // Don't block rendering - proceed immediately if Firebase isn't ready
+    setLoading(false);
+    
+    // Initialize auth listener in the background (non-blocking)
+    let unsubscribe: (() => void) | undefined;
+    
+    // Use requestIdleCallback to defer auth check until browser is idle
+    const scheduleAuthCheck = () => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => {
+          unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setCurrentUser(user);
+            
+            if (user) {
+              // Load user data in background without blocking
+              loadUserData(user).catch(error => {
+                console.error('Error loading user data:', error);
+              });
+              updateLastLogin(user).catch(error => {
+                console.error('Error updating last login:', error);
+              });
+            } else {
+              setUserData(null);
+            }
+          }, (error) => {
+            console.error('Firebase auth error:', error);
+          });
         });
       } else {
-        setUserData(null);
+        // Fallback: use setTimeout with minimal delay
+        setTimeout(() => {
+          unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setCurrentUser(user);
+            
+            if (user) {
+              loadUserData(user).catch(error => {
+                console.error('Error loading user data:', error);
+              });
+              updateLastLogin(user).catch(error => {
+                console.error('Error updating last login:', error);
+              });
+            } else {
+              setUserData(null);
+            }
+          }, (error) => {
+            console.error('Firebase auth error:', error);
+          });
+        }, 0);
       }
-      
-      setLoading(false);
-    }, (error) => {
-      // Error callback for auth state changes
-      console.error('Firebase auth error:', error);
-      clearTimeout(timeoutId);
-      setLoading(false);
-    });
+    };
+    
+    scheduleAuthCheck();
 
     return () => {
-      clearTimeout(timeoutId);
-      unsubscribe();
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
