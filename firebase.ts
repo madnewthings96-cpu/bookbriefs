@@ -81,11 +81,28 @@ export const getGoogleProvider = () => {
   return googleProvider;
 };
 
-// Initialize Firebase Analytics lazily (only when needed, not on initial load)
+// Initialize Firebase Analytics lazily (only when user interacts)
 export const getAnalyticsInstance = () => {
   if (typeof window !== 'undefined' && !analytics) {
     if (!isInitialized) initializeFirebase();
-    analytics = getAnalytics(app);
+    
+    // Only initialize analytics after user interaction (mobile optimization)
+    const initAnalytics = () => {
+      if (!analytics) {
+        const { getAnalytics } = require('firebase/analytics');
+        analytics = getAnalytics(app);
+        console.log('📊 Firebase Analytics initialized');
+      }
+    };
+    
+    // Wait for user interaction before loading analytics
+    if (!analytics) {
+      ['click', 'scroll', 'touchstart', 'keydown'].forEach(event => {
+        document.addEventListener(event, initAnalytics, { once: true, passive: true });
+      });
+      // Or after 10 seconds of idle time
+      setTimeout(initAnalytics, 10000);
+    }
   }
   return analytics;
 };

@@ -6,6 +6,20 @@
   # Disable secret scanning for Firebase client keys (they're meant to be public)
   NETLIFY_SKIP_SECRET_SCANNING = "true"
 
+# PERFORMANCE: Enable Brotli compression (30-40% better than gzip for mobile)
+[build.processing]
+  skip_processing = false
+[build.processing.css]
+  bundle = true
+  minify = true
+[build.processing.js]
+  bundle = true
+  minify = true
+[build.processing.html]
+  pretty_urls = true
+[build.processing.images]
+  compress = true  # Automatic image compression
+
 # Security Headers
 [[headers]]
   for = "/*"
