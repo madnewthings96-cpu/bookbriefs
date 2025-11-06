@@ -94,21 +94,6 @@
     <priority>0.3</priority>
   </url>
   
-  <!-- Game Pages -->
-  <url>
-    <loc>https://ta7leel.site/games/sudoku</loc>
-    <lastmod>2025-11-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://ta7leel.site/games/spelling-bee</loc>
-    <lastmod>2025-11-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
   <!-- Book Summary Pages -->
   <url>
     <loc>https://ta7leel.site/summary/ملخص-كتاب-اسبوع-عمل-4-ساعات</loc>

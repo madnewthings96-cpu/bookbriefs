@@ -31,11 +31,6 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
 const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
 const ReadingChallengePage = lazy(() => import('./pages/ReadingChallengePage'));
-const BookTriviaPage = lazy(() => import('./pages/BookTriviaPage'));
-const SudokuPage = lazy(() => import('./pages/SudokuPage'));
-const StrandsPage = lazy(() => import('./pages/StrandsPage'));
-const SpellingBeePage = lazy(() => import('./pages/SpellingBeePage'));
-const AuthorQuizPage = lazy(() => import('./pages/AuthorQuizPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsOfUsePage = lazy(() => import('./pages/TermsOfUsePage'));
 const LLMChatPage = lazy(() => import('./pages/LLMChatPage'));
@@ -390,11 +385,6 @@ const AppContent: React.FC = () => {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/games/book-trivia" element={<BookTriviaPage />} />
-            <Route path="/games/sudoku" element={<SudokuPage />} />
-            <Route path="/games/strands" element={<StrandsPage />} />
-            <Route path="/games/spelling-bee" element={<SpellingBeePage />} />
-            <Route path="/games/author-quiz" element={<AuthorQuizPage />} />
             <Route path="/chat" element={<LLMChatPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>

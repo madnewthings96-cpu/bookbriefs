@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 interface Testimonial {
   text: string;
@@ -19,15 +18,9 @@ const TestimonialsColumn: React.FC<{
 }> = ({ className, testimonials, duration = 10 }) => {
   return (
     <div className={className}>
-      <motion.div
-        animate={{
-          translateY: '-50%',
-        }}
-        transition={{
-          duration: duration,
-          repeat: Infinity,
-          ease: 'linear',
-          repeatType: 'loop',
+      <div
+        style={{
+          animation: `scroll-up ${duration}s linear infinite`,
         }}
         className="flex flex-col gap-6 pb-6"
       >
@@ -46,6 +39,7 @@ const TestimonialsColumn: React.FC<{
                     src={image}
                     alt={name}
                     className="h-10 w-10 rounded-full object-cover"
+                    loading="lazy"
                   />
                   <div className="flex flex-col">
                     <div className="font-medium tracking-tight leading-5 text-gray-900">
@@ -60,7 +54,17 @@ const TestimonialsColumn: React.FC<{
             ))}
           </React.Fragment>
         ))}
-      </motion.div>
+      </div>
+      <style>{`
+        @keyframes scroll-up {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(-50%);
+          }
+        }
+      `}</style>
     </div>
   );
 };

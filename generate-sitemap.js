@@ -151,21 +151,6 @@ function generateSitemap() {
     <priority>0.3</priority>
   </url>
   
-  <!-- Game Pages -->
-  <url>
-    <loc>${DOMAIN}${hashPrefix}/games/sudoku</loc>
-    <lastmod>${TODAY}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>${DOMAIN}${hashPrefix}/games/spelling-bee</loc>
-    <lastmod>${TODAY}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
   <!-- Book Summary Pages -->
 `;
 

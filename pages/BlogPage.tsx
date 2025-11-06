@@ -24,15 +24,6 @@ const BlogPage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Update SEO when post is selected
-  useEffect(() => {
-    if (selectedPost) {
-      document.title = `${selectedPost.title} | BookBriefs Blog`;
-    } else {
-      document.title = 'Blog - Business Insights & Book Summaries | BookBriefs';
-    }
-  }, [selectedPost]);
-
   useSEO({
     title: selectedPost 
       ? `${selectedPost.title} | BookBriefs Blog`
@@ -2075,21 +2066,12 @@ const BlogPage: React.FC = () => {
               >
                 <div className="md:flex">
                   <div className="md:w-1/2 relative overflow-hidden">
-                    <picture>
-                      <source 
-                        srcSet={filteredPosts[0].imageUrl} 
-                        type="image/webp"
-                      />
-                      <img 
-                        src={filteredPosts[0].imageUrl.replace('.webp', '.png')} 
-                        alt={filteredPosts[0].title}
-                        className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                        }}
-                      />
-                    </picture>
+                    <img 
+                      src={filteredPosts[0].imageUrl} 
+                      alt={filteredPosts[0].title}
+                      className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
                     <div className="absolute top-4 left-4">
                       <span 
                         className="px-3 py-1 text-sm font-semibold text-white rounded-full shadow-lg"
@@ -2160,21 +2142,12 @@ const BlogPage: React.FC = () => {
                     onClick={() => openPostModal(post)}
                   >
                     <div className="relative overflow-hidden">
-                      <picture>
-                        <source 
-                          srcSet={post.imageUrl} 
-                          type="image/webp"
-                        />
-                        <img 
-                          src={post.imageUrl.replace('.webp', '.png')} 
-                          alt={post.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMjUgNzVIMTc1VjEyNUgxMjVWNzVaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik0xMDAgMTM1SDE4MFYxNDVIMTAwVjEzNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPHA+PC9wYXRoPgo8L3N2Zz4K';
-                          }}
-                        />
-                      </picture>
+                      <img 
+                        src={post.imageUrl} 
+                        alt={post.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
                       <div className="absolute top-3 left-3">
                         <span 
                           className="px-3 py-1 text-xs font-semibold text-white rounded-full shadow-md"
@@ -2296,21 +2269,12 @@ const BlogPage: React.FC = () => {
 
               {/* Article Image */}
               <div className="mb-8">
-                <picture>
-                  <source 
-                    srcSet={selectedPost.imageUrl} 
-                    type="image/webp"
-                  />
-                  <img 
-                    src={selectedPost.imageUrl.replace('.webp', '.png')} 
-                    alt={selectedPost.title}
-                    className="w-full h-80 object-cover"
-                    loading="eager"
-                    onError={(e) => {
-                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNTAgMTAwSDE1MFYyMDBIMjUwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                    }}
-                  />
-                </picture>
+                <img 
+                  src={selectedPost.imageUrl} 
+                  alt={selectedPost.title}
+                  className="w-full h-80 object-cover rounded-lg"
+                  loading="eager"
+                />
               </div>
 
               {/* Article Body */}

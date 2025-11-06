@@ -2,8 +2,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
-import SparklesText from '../components/SparklesText';
-import { Magnetic } from '../components/Magnetic';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { RainbowButton } from '../components/RainbowButton';
@@ -60,12 +58,9 @@ const HomePage: React.FC = () => {
           {/* Main Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-gray-900">
             Read any{' '}
-            <SparklesText
-              text="book"
-              className="inline-block"
-              colors={{ first: '#FF6B6B', second: '#4ECDC4' }}
-              sparklesCount={8}
-            />
+            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
+              book
+            </span>
             {' '}in{' '}
             <span className="relative inline-block">
               <span className="relative z-10">10 minutes</span>
@@ -85,17 +80,15 @@ const HomePage: React.FC = () => {
 
           {/* CTA Button */}
           <div className="mb-12 flex justify-center">
-            <Magnetic intensity={0.4} range={150}>
-              <Link
-                to="/summaries"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 text-white font-bold py-4 px-10 rounded-full hover:from-orange-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 text-lg shadow-xl"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-                Discover
-              </Link>
-            </Magnetic>
+            <Link
+              to="/summaries"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 text-white font-bold py-4 px-10 rounded-full hover:from-orange-500 hover:via-orange-600 hover:to-red-600 hover:scale-105 transition-all duration-300 text-lg shadow-xl"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+              Discover
+            </Link>
           </div>
 
           {/* Book Carousel */}
