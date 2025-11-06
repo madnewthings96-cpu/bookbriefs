@@ -37,11 +37,14 @@ googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
-// Initialize Firebase Analytics (only in browser environment)
-let analytics;
-if (typeof window !== 'undefined') {
-  analytics = getAnalytics(app);
-}
+// Initialize Firebase Analytics lazily (only when needed, not on initial load)
+let analytics: any;
+export const getAnalyticsInstance = () => {
+  if (typeof window !== 'undefined' && !analytics) {
+    analytics = getAnalytics(app);
+  }
+  return analytics;
+};
 
 // Export the services you'll need throughout your app
 export const auth = getAuth(app);

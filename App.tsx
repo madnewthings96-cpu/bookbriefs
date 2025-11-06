@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, { useEffect, useState, createContext, useContext, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -10,34 +10,35 @@ import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import SummariesPage from './pages/SummariesPage';
-import SummaryDetailPage from './pages/SummaryDetailPage';
-import AboutPage from './pages/AboutPage';
-import CalculatorsPage from './pages/CalculatorsPage';
-import NewsPage from './pages/NewsPage';
-import BlogPage from './pages/BlogPage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import UserProfilePage from './pages/UserProfilePage';
-import ReadingChallengePage from './pages/ReadingChallengePage';
-import BookTriviaPage from './pages/BookTriviaPage';
-import SudokuPage from './pages/SudokuPage';
-import StrandsPage from './pages/StrandsPage';
-import SpellingBeePage from './pages/SpellingBeePage';
-import AuthorQuizPage from './pages/AuthorQuizPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TermsOfUsePage from './pages/TermsOfUsePage';
-import LLMChatPage from './pages/LLMChatPage';
-import DownloadsPage from './pages/DownloadsPage';
-import FeedbackPage from './pages/FeedbackPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
-import LoadingScreen from './components/LoadingScreen';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
+
+// Lazy load all pages for better initial load performance
+const HomePage = lazy(() => import('./pages/HomePage'));
+const SummariesPage = lazy(() => import('./pages/SummariesPage'));
+const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
+const NewsPage = lazy(() => import('./pages/NewsPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignUpPage = lazy(() => import('./pages/SignUpPage'));
+const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
+const ReadingChallengePage = lazy(() => import('./pages/ReadingChallengePage'));
+const BookTriviaPage = lazy(() => import('./pages/BookTriviaPage'));
+const SudokuPage = lazy(() => import('./pages/SudokuPage'));
+const StrandsPage = lazy(() => import('./pages/StrandsPage'));
+const SpellingBeePage = lazy(() => import('./pages/SpellingBeePage'));
+const AuthorQuizPage = lazy(() => import('./pages/AuthorQuizPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfUsePage = lazy(() => import('./pages/TermsOfUsePage'));
+const LLMChatPage = lazy(() => import('./pages/LLMChatPage'));
+const DownloadsPage = lazy(() => import('./pages/DownloadsPage'));
+const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 
 // Firebase User Data Context
 interface UserData {
@@ -339,12 +340,16 @@ const AppContent: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <LoadingScreen />
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
         <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
-          <Routes>
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[400px]">
+              <Spinner />
+            </div>
+          }>
+            <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
@@ -388,6 +393,7 @@ const AppContent: React.FC = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-use" element={<TermsOfUsePage />} />
           </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>

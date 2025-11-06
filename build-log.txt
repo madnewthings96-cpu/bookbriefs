@@ -1,0 +1,22 @@
+
+> bookbriefs-ai@0.0.0 build
+> npm run sitemap && vite build
+
+
+> bookbriefs-ai@0.0.0 sitemap
+> node generate-sitemap.js
+
+✅ Sitemap generated successfully with 60 book summaries!
+📄 Saved to: /Users/belhal/Desktop/bookbriefs-ai 2/public/sitemap.xml
+🔗 Your sitemap URL: https://ta7leel.site/sitemap.xml
+vite v6.3.6 building for production...
+transforming...
+✓ 2368 modules transformed.
+✗ Build failed in 2.82s
+error during build:
+[vite:terser] terser not found. Since Vite v3, terser has become an optional dependency. You need to install it.
+    at loadTerserPath (file:///Users/belhal/Desktop/bookbriefs-ai%202/node_modules/vite/dist/node/chunks/dep-Bu492Fnd.js:9752:13)
+    at Object.renderChunk (file:///Users/belhal/Desktop/bookbriefs-ai%202/node_modules/vite/dist/node/chunks/dep-Bu492Fnd.js:9793:27)
+    at Object.handler (file:///Users/belhal/Desktop/bookbriefs-ai%202/node_modules/vite/dist/node/chunks/dep-Bu492Fnd.js:46547:15)
+    at file:///Users/belhal/Desktop/bookbriefs-ai%202/node_modules/rollup/dist/es/shared/node-entry.js:22428:40
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

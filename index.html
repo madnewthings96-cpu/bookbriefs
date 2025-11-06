@@ -87,18 +87,25 @@
       }
     </style>
     
-    <!-- MailerLite Universal - Deferred Loading -->
+    <!-- MailerLite Universal - Load on user interaction -->
     <script>
-        // Defer MailerLite loading to prevent blocking
-        window.addEventListener('load', function() {
-          setTimeout(function() {
-            (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
-            .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
-            n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
-            (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
-            ml('account', '1791253');
-          }, 2000); // Load after 2 seconds
+        // Load MailerLite only when user interacts with the page
+        let mlLoaded = false;
+        const loadMailerLite = () => {
+          if (mlLoaded) return;
+          mlLoaded = true;
+          (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+          .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+          n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+          (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+          ml('account', '1791253');
+        };
+        
+        // Load on first user interaction or after 5 seconds
+        ['click', 'scroll', 'touchstart', 'keydown'].forEach(event => {
+          document.addEventListener(event, loadMailerLite, { once: true, passive: true });
         });
+        setTimeout(loadMailerLite, 5000);
     </script>
     <!-- End MailerLite Universal -->
   </head>
