@@ -522,3 +522,80 @@ Link {
 .logo-container:hover::before {
   opacity: 1;
 }
+
+/* Speed Chart Animations */
+@keyframes drawLine {
+  from {
+    stroke-dashoffset: 500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes growDot {
+  0% {
+    r: 0;
+    opacity: 0;
+  }
+  50% {
+    r: 4;
+    opacity: 1;
+  }
+  100% {
+    r: 3;
+    opacity: 0.9;
+  }
+}
+
+/* Bar Chart Animation */
+@keyframes growBar {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Slide In Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Smooth fade-in for feature badges */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
