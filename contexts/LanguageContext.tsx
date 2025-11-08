@@ -144,7 +144,8 @@ const translations = {
       'the-chatgpt-millionaire': 'The ChatGPT Millionaire',
       'the-miracle-morning': 'The Miracle Morning',
       'trading-for-a-living': 'Trading for a Living',
-      'the-first-90-days': 'The First 90 Days'
+      'the-first-90-days': 'The First 90 Days',
+      'traction': 'Traction'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -189,7 +190,8 @@ const translations = {
       'the-chatgpt-millionaire': 'Neil Dagger',
       'the-miracle-morning': 'Hal Elrod',
       'trading-for-a-living': 'Dr. Alexander Elder',
-      'the-first-90-days': 'Michael D. Watkins'
+      'the-first-90-days': 'Michael D. Watkins',
+      'traction': 'Gino Wickman'
     }
   }
 };
