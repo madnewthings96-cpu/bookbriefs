@@ -140,7 +140,7 @@ const PositionSizeCalculator: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center pt-2">
                         <div>
-                            <p className="font-bold text-2xl" style={{color: '#FF7F50'}}>{result.standardLots.toFixed(2)}</p>
+                            <p className="font-bold text-2xl text-blue-600">{result.standardLots.toFixed(2)}</p>
                             <p className="text-sm text-gray-600 font-semibold">Standard Lots</p>
                         </div>
                          <div>
