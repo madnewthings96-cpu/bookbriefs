@@ -29,6 +29,30 @@ const MerchPage: React.FC = () => {
     type: 'website',
   });
 
+  // Detect user's country from IP address
+  useEffect(() => {
+    const detectCountry = async () => {
+      try {
+        // Using ipapi.co free service (no API key required)
+        const response = await fetch('https://ipapi.co/json/');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.country_code) {
+            setShippingInfo(prev => ({
+              ...prev,
+              country_code: data.country_code,
+            }));
+            console.log('Detected country:', data.country_code, data.country_name);
+          }
+        }
+      } catch (error) {
+        console.log('Could not detect country, using default (US)');
+      }
+    };
+
+    detectCountry();
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
