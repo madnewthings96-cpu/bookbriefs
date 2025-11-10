@@ -2,13 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { getStoreProducts, getStoreProductById, PrintfulProduct, PrintfulProductDetails } from '../services/printfulService';
 import useSEO from '../hooks/useSEO';
 import Spinner from '../components/Spinner';
+import PayPalButton from '../components/PayPalButton';
 
 const MerchPage: React.FC = () => {
   const [products, setProducts] = useState<PrintfulProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<PrintfulProductDetails | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [shippingInfo, setShippingInfo] = useState({
+    name: '',
+    email: '',
+    address1: '',
+    city: '',
+    state_code: '',
+    country_code: 'US',
+    zip: '',
+  });
 
   useSEO({
     title: 'Merch Store - BookBriefs',
@@ -50,13 +62,73 @@ const MerchPage: React.FC = () => {
   };
 
   const handleBuyNow = (variant: any) => {
-    // For now, redirect to Printful's checkout or your custom checkout
-    alert(`Purchase functionality coming soon!\n\nProduct: ${variant.name}\nPrice: $${variant.retail_price}`);
-    // TODO: Implement Stripe/PayPal checkout
+    setSelectedVariant(variant);
+    setShowCheckout(true);
+  };
+
+  const handlePaymentSuccess = async (paypalOrderId: string) => {
+    try {
+      // Create order in Printful
+      const response = await fetch('/.netlify/functions/create-printful-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          variantId: selectedVariant.id,
+          recipient: shippingInfo,
+          paypalOrderId: paypalOrderId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create order');
+      }
+
+      const data = await response.json();
+      console.log('Printful order created:', data);
+
+      alert('✅ Order placed successfully!\n\nYou will receive a confirmation email soon with tracking information.');
+      setShowCheckout(false);
+      setSelectedVariant(null);
+      setShippingInfo({
+        name: '',
+        email: '',
+        address1: '',
+        city: '',
+        state_code: '',
+        country_code: 'US',
+        zip: '',
+      });
+      closeModal();
+    } catch (error) {
+      console.error('Order creation error:', error);
+      alert(`❌ Error: ${error instanceof Error ? error.message : 'Failed to process order'}\n\nPlease contact support if payment was deducted.`);
+    }
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error('Payment error:', error);
+    alert('Payment failed. Please try again.');
   };
 
   const closeModal = () => {
     setSelectedProduct(null);
+    setShowCheckout(false);
+    setSelectedVariant(null);
+  };
+
+  const isShippingComplete = () => {
+    return (
+      shippingInfo.name &&
+      shippingInfo.email &&
+      shippingInfo.address1 &&
+      shippingInfo.city &&
+      shippingInfo.state_code &&
+      shippingInfo.country_code &&
+      shippingInfo.zip
+    );
   };
 
   if (loading) {
@@ -178,7 +250,7 @@ const MerchPage: React.FC = () => {
       )}
 
       {/* Product Detail Modal */}
-      {selectedProduct && (
+      {selectedProduct && !showCheckout && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
@@ -271,12 +343,171 @@ const MerchPage: React.FC = () => {
                     <ul className="text-sm text-gray-600 space-y-1">
                       <li>✓ High-quality print</li>
                       <li>✓ Fast shipping worldwide</li>
-                      <li>✓ Secure payment processing</li>
+                      <li>✓ Secure payment with PayPal</li>
                       <li>✓ 100% satisfaction guarantee</li>
                     </ul>
                   </div>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Modal */}
+      {showCheckout && selectedVariant && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Checkout Header */}
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Checkout</h2>
+              <button
+                onClick={() => setShowCheckout(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="p-6">
+              {/* Order Summary */}
+              <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">Order Summary</h3>
+                <div className="flex justify-between items-center">
+                  <span>{selectedVariant.name}</span>
+                  <span className="font-bold text-xl">${selectedVariant.retail_price}</span>
+                </div>
+              </div>
+
+              {/* Shipping Form */}
+              <div className="mb-6">
+                <h3 className="font-semibold mb-4">Shipping Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Full Name *</label>
+                    <input
+                      type="text"
+                      value={shippingInfo.name}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="John Doe"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email *</label>
+                    <input
+                      type="email"
+                      value={shippingInfo.email}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="john@example.com"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Address *</label>
+                    <input
+                      type="text"
+                      value={shippingInfo.address1}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, address1: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="123 Main St"
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">City *</label>
+                      <input
+                        type="text"
+                        value={shippingInfo.city}
+                        onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="New York"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">State *</label>
+                      <input
+                        type="text"
+                        value={shippingInfo.state_code}
+                        onChange={(e) => setShippingInfo({ ...shippingInfo, state_code: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="NY"
+                        maxLength={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">ZIP Code *</label>
+                      <input
+                        type="text"
+                        value={shippingInfo.zip}
+                        onChange={(e) => setShippingInfo({ ...shippingInfo, zip: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="10001"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Country *</label>
+                      <select
+                        value={shippingInfo.country_code}
+                        onChange={(e) => setShippingInfo({ ...shippingInfo, country_code: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="ES">Spain</option>
+                        <option value="IT">Italy</option>
+                        <option value="NL">Netherlands</option>
+                        <option value="SE">Sweden</option>
+                        <option value="NO">Norway</option>
+                        <option value="DK">Denmark</option>
+                        <option value="FI">Finland</option>
+                        <option value="IE">Ireland</option>
+                        <option value="NZ">New Zealand</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* PayPal Payment */}
+              <div className="mb-4">
+                <h3 className="font-semibold mb-4">Payment Method</h3>
+                {isShippingComplete() ? (
+                  <div className="border rounded-lg p-4">
+                    <PayPalButton
+                      amount={selectedVariant.retail_price}
+                      productName={selectedVariant.name}
+                      variantId={selectedVariant.id}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                    <p className="text-yellow-800">
+                      ⚠️ Please complete all shipping information to proceed with payment
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Security Notice */}
+              <div className="text-xs text-gray-500 text-center mt-4">
+                <p>🔒 Secure checkout powered by PayPal</p>
+                <p>Your payment information is encrypted and secure</p>
+              </div>
             </div>
           </div>
         </div>
@@ -303,9 +534,9 @@ const MerchPage: React.FC = () => {
                 <p className="text-sm text-gray-600">High-quality materials</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl mb-2">🎨</div>
-                <h3 className="font-semibold mb-2">Unique Designs</h3>
-                <p className="text-sm text-gray-600">Exclusive BookBriefs artwork</p>
+                <div className="text-3xl mb-2">💳</div>
+                <h3 className="font-semibold mb-2">Secure Payments</h3>
+                <p className="text-sm text-gray-600">PayPal protection</p>
               </div>
             </div>
           </div>
