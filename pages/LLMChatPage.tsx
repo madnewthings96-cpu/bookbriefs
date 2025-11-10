@@ -245,7 +245,7 @@ const LLMChatPage: React.FC = () => {
               <div className="absolute inset-0 blur-lg bg-indigo-400 opacity-30 animate-pulse"></div>
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              AI Trading & Books
+              الدردشة مع الذكاء الاصطناعي
             </h1>
           </div>
           <p className="text-gray-700 text-base md:text-xl max-w-3xl mx-auto px-2 leading-relaxed font-medium">

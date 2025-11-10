@@ -27,6 +27,7 @@ import LLMChatPage from './pages/LLMChatPage';
 import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MerchPage from './pages/MerchPage';
+import CommunityPage from './pages/CommunityPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -351,6 +352,7 @@ const AppContent: React.FC = () => {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/chat" element={<LLMChatPage />} />
+            <Route path="/community" element={<CommunityPage />} />
             <Route path="/merch" element={<MerchPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>

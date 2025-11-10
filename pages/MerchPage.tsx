@@ -34,19 +34,23 @@ const MerchPage: React.FC = () => {
     const detectCountry = async () => {
       try {
         // Using ipapi.co free service (no API key required)
+        console.log('Fetching country from IP...');
         const response = await fetch('https://ipapi.co/json/');
         if (response.ok) {
           const data = await response.json();
+          console.log('IP API response:', data);
           if (data.country_code) {
             setShippingInfo(prev => ({
               ...prev,
               country_code: data.country_code,
             }));
-            console.log('Detected country:', data.country_code, data.country_name);
+            console.log('✅ Country set to:', data.country_code, data.country_name);
           }
+        } else {
+          console.log('IP API response not OK:', response.status);
         }
       } catch (error) {
-        console.log('Could not detect country, using default (US)');
+        console.log('Could not detect country, using default (US)', error);
       }
     };
 

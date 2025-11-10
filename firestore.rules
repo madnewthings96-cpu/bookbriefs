@@ -99,6 +99,38 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
+    // Community messages - authenticated users can read and create, only owners can update/delete
+    match /communityMessages/{messageId} {
+      // Anyone can read messages (promotes engagement)
+      allow read: if true;
+      
+      // Validate message structure
+      function isValidMessage() {
+        let data = request.resource.data;
+        return data.keys().hasAll(['userId', 'userName', 'userEmail', 'content', 'channel', 'timestamp', 'likes', 'replies']) &&
+               data.content is string &&
+               data.content.size() > 0 &&
+               data.content.size() <= 2000 &&
+               data.channel is string &&
+               data.channel in ['general', 'books', 'trading', 'insights'] &&
+               data.likes is list &&
+               data.replies is int &&
+               data.replies >= 0;
+      }
+      
+      // Authenticated users can create messages
+      allow create: if isAuthenticated() && 
+                      isValidMessage() &&
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Authenticated users can update messages (for likes feature)
+      allow update: if isAuthenticated();
+      
+      // Only message owner can delete their own messages
+      allow delete: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid;
+    }
+    
     // Default deny all other collections
     match /{document=**} {
       allow read, write: if false;
