@@ -312,51 +312,50 @@ const MerchPage: React.FC = () => {
                   {/* Variants */}
                   <div>
                     <h3 className="text-xl font-semibold mb-4">Available Options</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                       {selectedProduct.sync_variants.map((variant) => (
                         <div
                           key={variant.id}
-                          className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                          className="border rounded-lg p-3 hover:shadow-md transition-shadow"
                         >
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <h4 className="font-semibold mb-1">{variant.name}</h4>
-                              {variant.product?.image && (
-                                <img
-                                  src={variant.product.image}
-                                  alt={variant.name}
-                                  className="w-24 h-24 object-cover rounded mt-2"
-                                />
-                              )}
-                            </div>
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-blue-600">
-                                ${variant.retail_price}
-                              </p>
-                              <p className="text-xs text-gray-500">{variant.currency}</p>
-                            </div>
+                          <div className="mb-2">
+                            <h4 className="font-medium text-sm mb-2 line-clamp-2">{variant.name}</h4>
+                            {variant.product?.image && (
+                              <img
+                                src={variant.product.image}
+                                alt={variant.name}
+                                className="w-full aspect-square object-cover rounded mb-2"
+                              />
+                            )}
                           </div>
 
                           {/* Files/Preview Images */}
                           {variant.files && variant.files.length > 0 && (
-                            <div className="mb-3">
-                              <div className="grid grid-cols-3 gap-2">
+                            <div className="mb-2">
+                              <div className="grid grid-cols-3 gap-1">
                                 {variant.files.slice(0, 3).map((file, idx) => (
                                   <img
                                     key={idx}
                                     src={file.preview_url || file.thumbnail_url}
                                     alt={`Preview ${idx + 1}`}
-                                    className="w-full h-20 object-cover rounded"
+                                    className="w-full aspect-square object-cover rounded"
                                   />
                                 ))}
                               </div>
                             </div>
                           )}
 
+                          <div className="text-center mb-2">
+                            <p className="text-lg font-bold text-blue-600">
+                              ${variant.retail_price}
+                            </p>
+                            <p className="text-xs text-gray-500">{variant.currency}</p>
+                          </div>
+
                           {/* Buy Button */}
                           <button
                             onClick={() => handleBuyNow(variant)}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium text-sm py-2 px-3 rounded transition-colors duration-200"
                           >
                             Buy Now - ${variant.retail_price}
                           </button>
