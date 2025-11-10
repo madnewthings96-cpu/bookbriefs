@@ -5,27 +5,66 @@ const NETLIFY_FUNCTION_URL = '/.netlify/functions/printful';
 
 export interface PrintfulProduct {
   id: number;
+  external_id: string;
   name: string;
-  description?: string;
-  image?: string;
-  main_category_id?: number;
-  type?: string;
-  brand?: string;
-  model?: string;
-  files?: any[];
+  variants: number;
+  synced: number;
+  thumbnail_url: string;
+  is_ignored: boolean;
+}
+
+export interface PrintfulVariant {
+  id: number;
+  external_id: string;
+  sync_product_id: number;
+  name: string;
+  synced: boolean;
+  variant_id: number;
+  retail_price: string;
+  currency: string;
+  is_ignored: boolean;
+  sku: string;
+  product: {
+    variant_id: number;
+    product_id: number;
+    image: string;
+    name: string;
+  };
+  files: Array<{
+    id: number;
+    type: string;
+    hash: string;
+    url: string;
+    filename: string;
+    mime_type: string;
+    size: number;
+    width: number;
+    height: number;
+    dpi: number;
+    status: string;
+    created: number;
+    thumbnail_url: string;
+    preview_url: string;
+    visible: boolean;
+  }>;
+}
+
+export interface PrintfulProductDetails {
+  sync_product: PrintfulProduct;
+  sync_variants: PrintfulVariant[];
 }
 
 /**
- * Fetch catalog products from Printful via secure serverless function
+ * Fetch store products from Printful via secure serverless function
+ * These are YOUR actual products in your Printful store
  */
-export const getCatalogProducts = async (limit = 100, offset = 0) => {
+export const getStoreProducts = async () => {
   try {
-    const response = await fetch(
-      `${NETLIFY_FUNCTION_URL}?action=products&limit=${limit}&offset=${offset}`
-    );
+    const response = await fetch(`${NETLIFY_FUNCTION_URL}?action=products`);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
@@ -36,22 +75,23 @@ export const getCatalogProducts = async (limit = 100, offset = 0) => {
 
     return result.data || [];
   } catch (error) {
-    console.error('Error fetching Printful catalog products:', error);
+    console.error('Error fetching Printful store products:', error);
     throw error;
   }
 };
 
 /**
- * Get product details from catalog via secure serverless function
+ * Get product details from your store via secure serverless function
  */
-export const getCatalogProductById = async (productId: number) => {
+export const getStoreProductById = async (productId: string | number) => {
   try {
     const response = await fetch(
       `${NETLIFY_FUNCTION_URL}?action=product&productId=${productId}`
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
@@ -62,40 +102,13 @@ export const getCatalogProductById = async (productId: number) => {
 
     return result.data || null;
   } catch (error) {
-    console.error(`Error fetching catalog product details for ${productId}:`, error);
-    throw error;
-  }
-};
-
-/**
- * Get catalog variants for a product via secure serverless function
- */
-export const getCatalogVariants = async (productId: number) => {
-  try {
-    const response = await fetch(
-      `${NETLIFY_FUNCTION_URL}?action=variants&productId=${productId}`
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to fetch variants');
-    }
-
-    return result.data || [];
-  } catch (error) {
-    console.error(`Error fetching variants for product ${productId}:`, error);
+    console.error(`Error fetching store product details for ${productId}:`, error);
     throw error;
   }
 };
 
 export default {
-  getCatalogProducts,
-  getCatalogProductById,
-  getCatalogVariants,
+  getStoreProducts,
+  getStoreProductById,
 };
 

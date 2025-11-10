@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getCatalogProducts } from '../services/printfulService';
+import { getStoreProducts, PrintfulProduct } from '../services/printfulService';
 import useSEO from '../hooks/useSEO';
 import Spinner from '../components/Spinner';
 
-interface Product {
-  id: number;
-  name: string;
-  description?: string;
-  image?: string;
-  main_category_id?: number;
-  type?: string;
-  brand?: string;
-  model?: string;
-  files?: any[];
-}
-
 const MerchPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<PrintfulProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,13 +19,13 @@ const MerchPage: React.FC = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await getCatalogProducts(20, 0);
-        console.log('Printful products:', data);
+        const data = await getStoreProducts();
+        console.log('Printful store products:', data);
         setProducts(data || []);
         setError(null);
       } catch (err) {
         console.error('Failed to fetch products:', err);
-        setError('Failed to load products. Please check your API configuration.');
+        setError(err instanceof Error ? err.message : 'Failed to load products. Please check your API configuration.');
       } finally {
         setLoading(false);
       }
@@ -107,9 +95,9 @@ const MerchPage: React.FC = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="aspect-square bg-gray-200 flex items-center justify-center">
-                  {product.image ? (
+                  {product.thumbnail_url ? (
                     <img
-                      src={product.image}
+                      src={product.thumbnail_url}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
@@ -136,14 +124,12 @@ const MerchPage: React.FC = () => {
                   <h3 className="font-semibold text-lg mb-2 line-clamp-2">
                     {product.name}
                   </h3>
-                  {product.type && (
-                    <p className="text-sm text-gray-500 mb-2">
-                      Type: {product.type}
-                    </p>
-                  )}
-                  {product.brand && (
-                    <p className="text-sm text-gray-500 mb-2">
-                      Brand: {product.brand}
+                  <p className="text-sm text-gray-500 mb-2">
+                    {product.variants} variant{product.variants !== 1 ? 's' : ''} available
+                  </p>
+                  {product.synced > 0 && (
+                    <p className="text-sm text-green-600 mb-2">
+                      ✓ In stock
                     </p>
                   )}
                   <button
