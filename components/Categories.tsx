@@ -71,7 +71,7 @@ const Categories: React.FC = () => {
       </div>
       
       {/* Categories Grid with Floating Design */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-12">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 mb-12 max-w-4xl mx-auto">
         {categories.map((category) => {
           const bookImages = getCategoryBookImages(category.id);
           
@@ -79,7 +79,7 @@ const Categories: React.FC = () => {
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id === selectedCategory ? null : category.id)}
-              className={`group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-500 aspect-[4/5] sm:aspect-[3/4] transform hover:scale-105 ${
+              className={`group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-500 aspect-square transform hover:scale-105 ${
                 selectedCategory === category.id ? 'ring-4 ring-orange-500 scale-105' : ''
               }`}
               style={{
@@ -94,7 +94,7 @@ const Categories: React.FC = () => {
                     key={index}
                     src={imgUrl}
                     alt={`Book ${index + 1}`}
-                    className="absolute w-10 h-14 sm:w-14 sm:h-20 rounded shadow-xl object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
+                    className="absolute w-8 h-11 sm:w-10 sm:h-14 rounded shadow-lg object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
                     style={{
                       top: index === 0 ? '10%' : index === 1 ? '40%' : '70%',
                       left: index === 0 ? '10%' : index === 1 ? '60%' : '30%',
@@ -107,15 +107,15 @@ const Categories: React.FC = () => {
               </div>
 
               {/* Category Title Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-2 sm:p-3">
-                <h3 className="text-xs sm:text-sm md:text-base font-bold text-white leading-tight group-hover:scale-105 transition-transform duration-300 drop-shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-2">
+                <h3 className="text-xs sm:text-xs md:text-sm font-bold text-white leading-tight group-hover:scale-105 transition-transform duration-300 drop-shadow-lg">
                   {category.title}
                 </h3>
               </div>
 
               {/* Hover Indicator */}
-              <div className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="absolute top-1 right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg className="w-3 h-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
