@@ -246,7 +246,7 @@ const CommunityPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Connect with fellow readers and traders. Share insights, ask questions, and grow together!
+            تواصل مع زملائك القراء والتجار. شارك الأفكار، واطرح الأسئلة، ودعونا ننمو معًا
           </p>
           <div className="flex items-center justify-center gap-6 mt-4 text-sm text-gray-500">
             <div className="flex items-center gap-2">
