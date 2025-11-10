@@ -107,13 +107,10 @@ const CommunityPage: React.FC = () => {
     }
   ];
 
+  // Scroll to bottom only when sending a new message
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   // Load messages from Firestore with real-time updates
   useEffect(() => {
@@ -185,6 +182,7 @@ const CommunityPage: React.FC = () => {
       });
 
       setNewMessage('');
+      scrollToBottom(); // Scroll to see the new message
     } catch (error) {
       console.error('Error sending message:', error);
       alert('Failed to send message. Please try again.');
