@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getStoreProducts, PrintfulProduct } from '../services/printfulService';
+import { getStoreProducts, getStoreProductById, PrintfulProduct, PrintfulProductDetails } from '../services/printfulService';
 import useSEO from '../hooks/useSEO';
 import Spinner from '../components/Spinner';
 
 const MerchPage: React.FC = () => {
   const [products, setProducts] = useState<PrintfulProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<PrintfulProductDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useSEO({
     title: 'Merch Store - BookBriefs',
@@ -33,6 +35,29 @@ const MerchPage: React.FC = () => {
 
     fetchProducts();
   }, []);
+
+  const handleViewDetails = async (productId: number | string) => {
+    try {
+      setLoadingDetails(true);
+      const details = await getStoreProductById(productId);
+      setSelectedProduct(details);
+    } catch (err) {
+      console.error('Failed to load product details:', err);
+      alert('Failed to load product details. Please try again.');
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleBuyNow = (variant: any) => {
+    // For now, redirect to Printful's checkout or your custom checkout
+    alert(`Purchase functionality coming soon!\n\nProduct: ${variant.name}\nPrice: $${variant.retail_price}`);
+    // TODO: Implement Stripe/PayPal checkout
+  };
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+  };
 
   if (loading) {
     return (
@@ -134,7 +159,7 @@ const MerchPage: React.FC = () => {
                   )}
                   <button
                     className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200"
-                    onClick={() => alert('Product details coming soon!')}
+                    onClick={() => handleViewDetails(product.id)}
                   >
                     View Details
                   </button>
@@ -149,6 +174,111 @@ const MerchPage: React.FC = () => {
           <p className="text-gray-500 text-sm mt-2">
             Check your Printful API configuration
           </p>
+        </div>
+      )}
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">{selectedProduct.sync_product.name}</h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {loadingDetails ? (
+                <div className="flex justify-center py-12">
+                  <Spinner />
+                </div>
+              ) : (
+                <>
+                  {/* Product Image */}
+                  <div className="mb-6">
+                    <img
+                      src={selectedProduct.sync_product.thumbnail_url}
+                      alt={selectedProduct.sync_product.name}
+                      className="w-full max-w-md mx-auto rounded-lg"
+                    />
+                  </div>
+
+                  {/* Variants */}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Available Options</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedProduct.sync_variants.map((variant) => (
+                        <div
+                          key={variant.id}
+                          className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h4 className="font-semibold mb-1">{variant.name}</h4>
+                              {variant.product?.image && (
+                                <img
+                                  src={variant.product.image}
+                                  alt={variant.name}
+                                  className="w-24 h-24 object-cover rounded mt-2"
+                                />
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-blue-600">
+                                ${variant.retail_price}
+                              </p>
+                              <p className="text-xs text-gray-500">{variant.currency}</p>
+                            </div>
+                          </div>
+
+                          {/* Files/Preview Images */}
+                          {variant.files && variant.files.length > 0 && (
+                            <div className="mb-3">
+                              <div className="grid grid-cols-3 gap-2">
+                                {variant.files.slice(0, 3).map((file, idx) => (
+                                  <img
+                                    key={idx}
+                                    src={file.preview_url || file.thumbnail_url}
+                                    alt={`Preview ${idx + 1}`}
+                                    className="w-full h-20 object-cover rounded"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Buy Button */}
+                          <button
+                            onClick={() => handleBuyNow(variant)}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-200"
+                          >
+                            Buy Now - ${variant.retail_price}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Additional Info */}
+                  <div className="mt-6 bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Product Information</h4>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>✓ High-quality print</li>
+                      <li>✓ Fast shipping worldwide</li>
+                      <li>✓ Secure payment processing</li>
+                      <li>✓ 100% satisfaction guarantee</li>
+                    </ul>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
