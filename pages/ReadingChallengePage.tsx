@@ -10,20 +10,44 @@ const ReadingChallengePage: React.FC = () => {
   const [goalInput, setGoalInput] = useState('');
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const currentYear = new Date().getFullYear();
 
   const handleSetGoal = async () => {
     const goal = parseInt(goalInput);
-    if (goal > 0 && goal <= 1000) {
+    if (!goal || goal <= 0 || goal > 1000) {
+      setError('Please enter a valid goal between 1 and 1000');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+    
+    try {
       await setGoal(goal);
       setShowGoalModal(false);
       setGoalInput('');
+      setError(null);
+    } catch (err) {
+      console.error('Error setting goal:', err);
+      setError('Failed to set goal. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteGoal = async () => {
-    await deleteGoal();
-    setShowDeleteConfirm(false);
+    setIsSubmitting(true);
+    try {
+      await deleteGoal();
+      setShowDeleteConfirm(false);
+    } catch (err) {
+      console.error('Error deleting goal:', err);
+      setError('Failed to delete challenge. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const readBooks = BOOKS.filter(book => isBookRead(book.id));
@@ -171,6 +195,278 @@ const ReadingChallengePage: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Achievement Badges */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Your Achievements
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {/* First Book Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 1 
+                      ? 'border-blue-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 1 
+                        ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 1 ? '📖' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">First Step</h4>
+                    <p className="text-xs text-center text-gray-600">Read 1 book</p>
+                    {progress.current >= 1 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Getting Started Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 3 
+                      ? 'border-purple-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 3 
+                        ? 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 3 ? '🌱' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Bookworm</h4>
+                    <p className="text-xs text-center text-gray-600">Read 3 books</p>
+                    {progress.current >= 3 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dedicated Reader Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 5 
+                      ? 'border-green-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 5 
+                        ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 5 ? '📚' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Dedicated</h4>
+                    <p className="text-xs text-center text-gray-600">Read 5 books</p>
+                    {progress.current >= 5 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Rising Star Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 10 
+                      ? 'border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 10 
+                        ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 10 ? '⭐' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Rising Star</h4>
+                    <p className="text-xs text-center text-gray-600">Read 10 books</p>
+                    {progress.current >= 10 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Scholar Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 20 
+                      ? 'border-indigo-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 20 
+                        ? 'bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 20 ? '🎓' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Scholar</h4>
+                    <p className="text-xs text-center text-gray-600">Read 20 books</p>
+                    {progress.current >= 20 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Master Reader Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 50 
+                      ? 'border-orange-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 50 
+                        ? 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 50 ? '🏆' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Master</h4>
+                    <p className="text-xs text-center text-gray-600">Read 50 books</p>
+                    {progress.current >= 50 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Centurion Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.current >= 100 
+                      ? 'border-pink-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.current >= 100 
+                        ? 'bg-gradient-to-br from-pink-400 to-pink-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.current >= 100 ? '👑' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Centurion</h4>
+                    <p className="text-xs text-center text-gray-600">Read 100 books</p>
+                    {progress.current >= 100 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Goal Achieved Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.percentage >= 100 
+                      ? 'border-red-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.percentage >= 100 
+                        ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.percentage >= 100 ? '🎯' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Goal Crusher</h4>
+                    <p className="text-xs text-center text-gray-600">Reach your goal</p>
+                    {progress.percentage >= 100 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Early Bird Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.percentage >= 100 && new Date().getMonth() < 6
+                      ? 'border-teal-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.percentage >= 100 && new Date().getMonth() < 6
+                        ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.percentage >= 100 && new Date().getMonth() < 6 ? '🌅' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Early Bird</h4>
+                    <p className="text-xs text-center text-gray-600">Goal by June</p>
+                    {progress.percentage >= 100 && new Date().getMonth() < 6 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Overachiever Badge */}
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
+                    progress.percentage >= 150 
+                      ? 'border-cyan-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                      : 'border-gray-200 opacity-50'
+                  }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
+                      progress.percentage >= 150 
+                        ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-lg' 
+                        : 'bg-gray-100'
+                    }`}>
+                      {progress.percentage >= 150 ? '🚀' : '🔒'}
+                    </div>
+                    <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Overachiever</h4>
+                    <p className="text-xs text-center text-gray-600">150% of goal</p>
+                    {progress.percentage >= 150 && (
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Badge Progress Summary */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {[
+                          progress.current >= 1 ? 1 : 0,
+                          progress.current >= 3 ? 1 : 0,
+                          progress.current >= 5 ? 1 : 0,
+                          progress.current >= 10 ? 1 : 0,
+                          progress.current >= 20 ? 1 : 0,
+                          progress.current >= 50 ? 1 : 0,
+                          progress.current >= 100 ? 1 : 0,
+                          progress.percentage >= 100 ? 1 : 0,
+                          (progress.percentage >= 100 && new Date().getMonth() < 6) ? 1 : 0,
+                          progress.percentage >= 150 ? 1 : 0,
+                        ].reduce((a, b) => a + b, 0)} / 10 Badges Earned
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">Keep reading to unlock more achievements!</p>
+                    </div>
+                    <div className="text-4xl">🏅</div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -261,32 +557,60 @@ const ReadingChallengePage: React.FC = () => {
             <p className="text-gray-600 mb-6">
               How many books do you want to read in {currentYear}?
             </p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+            
             <input
               type="number"
               value={goalInput}
-              onChange={(e) => setGoalInput(e.target.value)}
+              onChange={(e) => {
+                setGoalInput(e.target.value);
+                setError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !isSubmitting) {
+                  handleSetGoal();
+                }
+              }}
               placeholder={challenge ? challenge.goal.toString() : "e.g., 12"}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-6"
               min="1"
               max="1000"
               autoFocus
+              disabled={isSubmitting}
             />
             <div className="flex space-x-3">
               <button
                 onClick={() => {
                   setShowGoalModal(false);
                   setGoalInput('');
+                  setError(null);
                 }}
-                className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSetGoal}
-                disabled={!goalInput || parseInt(goalInput) <= 0}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!goalInput || parseInt(goalInput) <= 0 || isSubmitting}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                {challenge ? 'Update' : 'Set Goal'}
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {challenge ? 'Updating...' : 'Setting...'}
+                  </>
+                ) : (
+                  challenge ? 'Update' : 'Set Goal'
+                )}
               </button>
             </div>
           </div>
@@ -310,18 +634,40 @@ const ReadingChallengePage: React.FC = () => {
             <p className="text-gray-600 mb-6 text-center">
               This will permanently delete your {currentYear} reading challenge and all progress. This action cannot be undone.
             </p>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+            
             <div className="flex space-x-3">
               <button
-                onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200"
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setError(null);
+                }}
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteGoal}
-                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Delete Challenge
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete Challenge'
+                )}
               </button>
             </div>
           </div>

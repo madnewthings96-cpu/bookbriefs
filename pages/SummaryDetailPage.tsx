@@ -1889,7 +1889,7 @@ const SummaryDetailPage: React.FC = () => {
               ) : book.id === 'leading-change' ? (
                 <>
                   <a 
-                    href="https://example22.com"
+                    href="https://amzn.to/4oZOyTV"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1901,7 +1901,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://example23.com"
+                    href="https://amzn.to/49I7BxA"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1913,7 +1913,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://example24.com"
+                    href="https://amzn.to/4qQPsDT"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"

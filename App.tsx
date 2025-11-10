@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, createContext, useContext, lazy, Suspense } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -10,32 +10,29 @@ import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
+import SummariesPage from './pages/SummariesPage';
+import SummaryDetailPage from './pages/SummaryDetailPage';
+import AboutPage from './pages/AboutPage';
+import CalculatorsPage from './pages/CalculatorsPage';
+import NewsPage from './pages/NewsPage';
+import BlogPage from './pages/BlogPage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+import UserProfilePage from './pages/UserProfilePage';
+import ReadingChallengePage from './pages/ReadingChallengePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
+import LLMChatPage from './pages/LLMChatPage';
+import DownloadsPage from './pages/DownloadsPage';
+import FeedbackPage from './pages/FeedbackPage';
+import MerchPage from './pages/MerchPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
-import ErrorBoundary from './components/ErrorBoundary';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
-
-// Lazy load all pages for better initial load performance
-// Using webpackPrefetch for better UX on commonly visited pages
-const HomePage = lazy(() => import(/* webpackPrefetch: true */ './pages/HomePage'));
-const SummariesPage = lazy(() => import(/* webpackPrefetch: true */ './pages/SummariesPage'));
-const SummaryDetailPage = lazy(() => import(/* webpackPrefetch: true */ './pages/SummaryDetailPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
-const NewsPage = lazy(() => import('./pages/NewsPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const SignUpPage = lazy(() => import('./pages/SignUpPage'));
-const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
-const ReadingChallengePage = lazy(() => import('./pages/ReadingChallengePage'));
-const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
-const TermsOfUsePage = lazy(() => import('./pages/TermsOfUsePage'));
-const LLMChatPage = lazy(() => import('./pages/LLMChatPage'));
-const DownloadsPage = lazy(() => import('./pages/DownloadsPage'));
-const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 
 // Firebase User Data Context
 interface UserData {
@@ -131,61 +128,38 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
   // Firebase auth state listener
   useEffect(() => {
-    // Don't block rendering - proceed immediately if Firebase isn't ready
-    setLoading(false);
-    
-    // Initialize auth listener in the background (non-blocking)
-    let unsubscribe: (() => void) | undefined;
-    
-    // Use requestIdleCallback to defer auth check until browser is idle
-    const scheduleAuthCheck = () => {
-      if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(() => {
-          unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setCurrentUser(user);
-            
-            if (user) {
-              // Load user data in background without blocking
-              loadUserData(user).catch(error => {
-                console.error('Error loading user data:', error);
-              });
-              updateLastLogin(user).catch(error => {
-                console.error('Error updating last login:', error);
-              });
-            } else {
-              setUserData(null);
-            }
-          }, (error) => {
-            console.error('Firebase auth error:', error);
-          });
-        });
+    // Set a shorter timeout to prevent blocking
+    const timeoutId = setTimeout(() => {
+      console.warn('Firebase auth initialization timeout, proceeding without auth');
+      setLoading(false);
+    }, 3000); // 3 second timeout (reduced from 10)
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      clearTimeout(timeoutId); // Clear timeout since auth resolved
+      setCurrentUser(user);
+      
+      if (user) {
+        try {
+          await loadUserData(user);
+          await updateLastLogin(user);
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
       } else {
-        // Fallback: use setTimeout with minimal delay
-        setTimeout(() => {
-          unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setCurrentUser(user);
-            
-            if (user) {
-              loadUserData(user).catch(error => {
-                console.error('Error loading user data:', error);
-              });
-              updateLastLogin(user).catch(error => {
-                console.error('Error updating last login:', error);
-              });
-            } else {
-              setUserData(null);
-            }
-          }, (error) => {
-            console.error('Firebase auth error:', error);
-          });
-        }, 0);
+        setUserData(null);
       }
-    };
-    
-    scheduleAuthCheck();
+      
+      setLoading(false);
+    }, (error) => {
+      // Error callback for auth state changes
+      console.error('Firebase auth error:', error);
+      clearTimeout(timeoutId);
+      setLoading(false);
+    });
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      clearTimeout(timeoutId);
+      unsubscribe();
     };
   }, []);
 
@@ -363,16 +337,7 @@ const AppContent: React.FC = () => {
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
         <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
-          <ErrorBoundary>
-            <Suspense fallback={
-              <div className="flex items-center justify-center min-h-screen w-full">
-                <div className="text-center">
-                  <Spinner />
-                  <p className="mt-4 text-gray-600">Loading...</p>
-                </div>
-              </div>
-            }>
-              <Routes>
+          <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
@@ -386,6 +351,7 @@ const AppContent: React.FC = () => {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/chat" element={<LLMChatPage />} />
+            <Route path="/merch" element={<MerchPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />
@@ -410,9 +376,7 @@ const AppContent: React.FC = () => {
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-use" element={<TermsOfUsePage />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
+          </Routes>
         </main>
         <Footer />
       </div>

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 interface ReadingChallenge {
   year: number;
@@ -44,7 +44,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
       }
 
       try {
-        const challengeRef = doc(db, 'readingChallenges', `${user.id}_${currentYear}`);
+        const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
         const challengeDoc = await getDoc(challengeRef);
 
         if (challengeDoc.exists()) {
@@ -73,22 +73,44 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     if (!user) return;
 
     try {
-      const challengeRef = doc(db, 'readingChallenges', `${user.id}_${currentYear}`);
-      const newChallenge: ReadingChallenge = {
-        year: currentYear,
-        goal,
-        booksRead: challenge?.booksRead || [],
-        createdAt: challenge?.createdAt || new Date(),
-        updatedAt: new Date(),
-      };
-
-      await setDoc(challengeRef, {
-        ...newChallenge,
-        createdAt: newChallenge.createdAt,
-        updatedAt: newChallenge.updatedAt,
-      });
-
-      setChallenge(newChallenge);
+      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
+      
+      // Check if challenge already exists
+      const existingDoc = await getDoc(challengeRef);
+      
+      if (existingDoc.exists()) {
+        // Update existing challenge
+        await updateDoc(challengeRef, {
+          goal,
+          updatedAt: serverTimestamp(),
+        });
+        
+        const data = existingDoc.data();
+        setChallenge({
+          year: data.year,
+          goal,
+          booksRead: data.booksRead || [],
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: new Date(),
+        });
+      } else {
+        // Create new challenge
+        await setDoc(challengeRef, {
+          year: currentYear,
+          goal,
+          booksRead: [],
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+        
+        setChallenge({
+          year: currentYear,
+          goal,
+          booksRead: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
     } catch (error) {
       console.error('Error setting reading goal:', error);
       throw error;
@@ -99,7 +121,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     if (!user) return;
 
     try {
-      const challengeRef = doc(db, 'readingChallenges', `${user.id}_${currentYear}`);
+      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
       await deleteDoc(challengeRef);
       setChallenge(null);
     } catch (error) {
@@ -117,10 +139,10 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         updatedBooksRead.push(bookId);
       }
 
-      const challengeRef = doc(db, 'readingChallenges', `${user.id}_${currentYear}`);
+      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
       await updateDoc(challengeRef, {
         booksRead: updatedBooksRead,
-        updatedAt: new Date(),
+        updatedAt: serverTimestamp(),
       });
 
       setChallenge({
@@ -140,10 +162,10 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     try {
       const updatedBooksRead = challenge.booksRead.filter(id => id !== bookId);
 
-      const challengeRef = doc(db, 'readingChallenges', `${user.id}_${currentYear}`);
+      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
       await updateDoc(challengeRef, {
         booksRead: updatedBooksRead,
-        updatedAt: new Date(),
+        updatedAt: serverTimestamp(),
       });
 
       setChallenge({

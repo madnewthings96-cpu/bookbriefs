@@ -200,6 +200,10 @@ const Header: React.FC = () => {
                   News
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                 </NavLink>
+                <NavLink to="/merch" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                  Merch
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </NavLink>
               </nav>
             </div>
           </div>
@@ -410,6 +414,7 @@ const Header: React.FC = () => {
             <NavLink to="/chat" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Chat</NavLink>
             <NavLink to="/calculators" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Calculators</NavLink>
             <NavLink to="/news" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>News</NavLink>
+            <NavLink to="/merch" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Merch</NavLink>
             {/* Buy me a coffee button for mobile */}
             <div className="mt-4 px-2">
               <a
