@@ -236,6 +236,21 @@ const SummaryDetailPage: React.FC = () => {
         </header>
       )}
 
+      {/* Mobile Scroll Indicator - Only visible on mobile */}
+      <div className="block md:hidden mb-6">
+        <div className="flex flex-col items-center justify-center py-2 animate-bounce">
+          <p className="text-sm text-gray-600 font-medium mb-2">Scroll down to read more</p>
+          <svg 
+            className="w-6 h-6 text-indigo-600 animate-pulse" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </div>
+
       {/* Want to read the full book? Section */}
       {book && !loading && (
         <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-5 text-center border border-indigo-100 shadow-md relative overflow-hidden">
@@ -2339,8 +2354,14 @@ const SummaryDetailPage: React.FC = () => {
                         alert('Failed to generate PDF. Please try again.');
                       }
                     }}
-                    className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom"
+                    className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                   >
+                    {/* Animated neon border */}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>
+                    
+                    {/* Button background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 rounded-xl"></div>
+                    
                     {/* Animated gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                     
@@ -2355,8 +2376,14 @@ const SummaryDetailPage: React.FC = () => {
                 ) : (
                   <button
                     onClick={() => setShowSignUpModal(true)}
-                    className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom"
+                    className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                   >
+                    {/* Animated neon border */}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>
+                    
+                    {/* Button background */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 rounded-xl"></div>
+                    
                     {/* Animated gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                     
