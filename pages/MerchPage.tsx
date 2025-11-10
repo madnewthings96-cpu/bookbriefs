@@ -475,6 +475,25 @@ const MerchPage: React.FC = () => {
                         <option value="FI">Finland</option>
                         <option value="IE">Ireland</option>
                         <option value="NZ">New Zealand</option>
+                        {/* Arabic & Middle Eastern Countries */}
+                        <option value="AE">United Arab Emirates</option>
+                        <option value="SA">Saudi Arabia</option>
+                        <option value="QA">Qatar</option>
+                        <option value="KW">Kuwait</option>
+                        <option value="BH">Bahrain</option>
+                        <option value="OM">Oman</option>
+                        <option value="JO">Jordan</option>
+                        <option value="LB">Lebanon</option>
+                        <option value="EG">Egypt</option>
+                        <option value="MA">Morocco</option>
+                        <option value="TN">Tunisia</option>
+                        <option value="DZ">Algeria</option>
+                        <option value="IQ">Iraq</option>
+                        <option value="SY">Syria</option>
+                        <option value="YE">Yemen</option>
+                        <option value="LY">Libya</option>
+                        <option value="SD">Sudan</option>
+                        <option value="PS">Palestine</option>
                       </select>
                     </div>
                   </div>
