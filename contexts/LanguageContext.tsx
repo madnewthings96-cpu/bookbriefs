@@ -147,7 +147,8 @@ const translations = {
       'the-first-90-days': 'The First 90 Days',
       'traction': 'Traction',
       'leading-change': 'Leading Change',
-      'i-will-teach-you-to-be-rich': 'I Will Teach You to Be Rich'
+      'i-will-teach-you-to-be-rich': 'I Will Teach You to Be Rich',
+      'money-master-the-game': 'Money: Master the Game'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -195,7 +196,8 @@ const translations = {
       'the-first-90-days': 'Michael D. Watkins',
       'traction': 'Gino Wickman',
       'leading-change': 'John P. Kotter',
-      'i-will-teach-you-to-be-rich': 'Ramit Sethi'
+      'i-will-teach-you-to-be-rich': 'Ramit Sethi',
+      'money-master-the-game': 'Tony Robbins'
     }
   }
 };
