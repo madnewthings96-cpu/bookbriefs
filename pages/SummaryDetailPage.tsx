@@ -1980,7 +1980,7 @@ const SummaryDetailPage: React.FC = () => {
               ) : book.id === 'money-master-the-game' ? (
                 <>
                   <a 
-                    href="https://example28.com"
+                    href="https://amzn.to/488ydqk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1992,7 +1992,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://example29.com"
+                    href="https://amzn.to/43lLbP0"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2004,7 +2004,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://example30.com"
+                    href="https://amzn.to/3Jw643f"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
