@@ -149,7 +149,8 @@ const translations = {
       'leading-change': 'Leading Change',
       'i-will-teach-you-to-be-rich': 'I Will Teach You to Be Rich',
       'money-master-the-game': 'Money: Master the Game',
-      'the-total-money-makeover': 'The Total Money Makeover'
+      'the-total-money-makeover': 'The Total Money Makeover',
+      'the-7-habits-of-highly-effective-people': 'The 7 Habits of Highly Effective People'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -199,7 +200,8 @@ const translations = {
       'leading-change': 'John P. Kotter',
       'i-will-teach-you-to-be-rich': 'Ramit Sethi',
       'money-master-the-game': 'Tony Robbins',
-      'the-total-money-makeover': 'Dave Ramsey'
+      'the-total-money-makeover': 'Dave Ramsey',
+      'the-7-habits-of-highly-effective-people': 'Stephen R. Covey'
     }
   }
 };
