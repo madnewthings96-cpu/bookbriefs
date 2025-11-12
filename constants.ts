@@ -553,6 +553,17 @@ export const BOOKS: Book[] = [
     pageCount: 688,
     arabicSlug: 'ملخص-كتاب-المال-أتقن-اللعبة',
   },
+  {
+    id: 'the-total-money-makeover',
+    title: 'The Total Money Makeover',
+    author: 'Dave Ramsey',
+    category: 'Personal Finance',
+    coverImageUrl: '/images/the total money makeover.jpg',
+    rating: 4.7,
+    publicationYear: 2013,
+    pageCount: 272,
+    arabicSlug: 'ملخص-كتاب-التحول-المالي-الشامل',
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -10708,6 +10719,373 @@ It is not just a book about money; it is a catalyst for action. If you follow it
       "Audit your 401k for hidden fees: Employer plans often loaded with high-fee mutual funds + admin fees that destroy returns—'set it and forget it' is how you get robbed",
       "Start now with compounding time: 20-year-old saving $300/mo ends with MORE than 30-year-old saving $1,000/mo—10-year head start beats tripled contributions",
       "Contribution is the ultimate secret: The secret to living is giving—wealth is worthless unless it enriches your life and others; automate joy (Vitality spending) + generosity (donations)"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'the-total-money-makeover',
+    title: 'The Total Money Makeover',
+    author: 'Dave Ramsey',
+    category: 'Personal Finance',
+    coverImageUrl: '/images/the total money makeover.jpg',
+    summary: `# The Total Money Makeover - A Financial Coach's Implementation Guide
+
+## 1. Executive Summary and Foundational Philosophy
+
+### Concise Executive Summary
+
+Dave Ramsey's central thesis is a direct assault on modern financial "wisdom." He argues that personal finance is **80% behavior and only 20% head knowledge**. The core problem he identifies is the "normal" cycle of debt and financial stress that American culture has sold as a bill of goods. We are drowning in student loans, car payments, and credit card balances, all while being told this is just "the cost of living." "The Total Money Makeover" (TMM) is a direct rejection of this norm. Its unique value proposition is its **brutal simplicity**. It is not a buffet of suggestions; it is a single, non-negotiable, sequential **7-step plan**—the "Baby Steps"—designed to force behavioral modification. It trades complex financial theory for a simple, powerful, and effective blueprint that prioritizes psychological wins to create unstoppable momentum.
+
+### The Core Philosophical Arguments
+
+To execute this plan, you must first be "de-programmed" from the lies society tells you about money. This requires internalizing a new set of foundational truths.
+
+**"Normal is Broke": The Critique of Societal Norms**
+
+**The Argument:** Look around. "Normal" is a $40,000 car with a $700/month payment. "Normal" is graduating with $50,000 in student loans. "Normal" is using a credit card for Christmas and "emergencies." "Normal" is a 780 credit score that signifies you are a "good" borrower, meaning you have been in and out of debt your whole life without defaulting. Ramsey's position is unequivocal: **"Normal" is broken. "Normal" is a trap.** If you want to win with money, you must reject "normal" and be willing to be weird. Your broke friends and family will not understand. They will call you "extreme." This is the first and most necessary psychological break you must make.
+
+**Contrast with "Normal" Thinking:** Normal thinking says, "A car payment is a fact of life." TMM thinking says, "The only car you can afford is the one you can pay for with cash."
+
+**"Debt is the Enemy": The Abolitionist Stance**
+
+**The Argument:** Debt is not a tool. It is the primary product that has kept you financially enslaved. The bank is not your partner; it is a business selling you a product (a loan) that carries significant, life-altering risk. Ramsey argues there is **no "good debt."** A student loan is a shackle that dictates your career choices. A car loan is a boat anchor that steals from your future wealth. A 0% "same as cash" deal is a marketing gimmick designed to make you buy what you cannot afford. To win, you must develop a visceral hatred for all forms of debt, see it as the enemy, and make a plan to kill it.
+
+**Contrast with "Normal" Thinking:** Normal thinking says, "Use other people's money" or "You need a mortgage to build wealth." TMM thinking says, "The borrower is slave to the lender." You must end this relationship permanently.
+
+**"Gazelle Intensity": The Required Psychological State**
+
+**The Argument:** This is the how. You cannot wander casually out of debt. You must run from it as if your life depends on it. Ramsey uses the proverb: "As a gazelle from the hand of the hunter, as a bird from the snare of the fowler, so deliver yourself." A gazelle being hunted by a cheetah is not "kinda focused." It is in an all-out, single-minded, life-or-death sprint. This is the **"Gazelle Intensity"** required for Baby Step 2. It means you sell things you don't need. You stop going to restaurants. You work extra jobs. You pause all other financial goals. This is a temporary, scorched-earth policy designed to get you out of debt so fast you don't have time to get discouraged.
+
+**Contrast with "Normal" Thinking:** Normal thinking says, "I'll pay a little extra on my credit card each month." TMM thinking says, "I will deliver pizzas 20 hours a week, sell the spare TV, and live on rice and beans until this $10,000 debt is vaporized in the next 6 months."
+
+### The Central Psychological Tool: The Debt Snowball
+
+This is the single most debated—and most powerful—tool in the TMM arsenal. Ramsey demands you use the **Debt Snowball** (paying debts smallest to largest, regardless of interest rate) over the "mathematically superior" Debt Avalanche (paying highest interest rate first).
+
+**Why This Is a Non-Negotiable Behavioral Mandate:**
+
+**The Problem with "Math":** The Debt Avalanche, while mathematically sound, fails to account for the human element. It often requires you to attack a massive student loan or mortgage first, meaning you might work for two years straight without seeing a single account "closed." This is a recipe for burnout.
+
+**The 80/20 Rule in Action:** The Debt Snowball is pure 80% behavior. It is designed for motivation, not math. When you list your debts ($500 credit card, $2,000 personal loan, $15,000 car loan) and attack that $500 card with gazelle intensity, you will likely pay it off in a month or two.
+
+**The Power of the Quick Win:** This first victory is a profound psychological event. You closed an account. You won. This victory releases endorphins, builds confidence, and creates momentum. You see the plan working.
+
+**Creating the Snowball:** You then take the $50 (minimum) + $200 (extra) you were paying on that first card and "roll" it into the $2,000 loan. You are now attacking the second debt with a larger "snowball" and the confidence of a recent win. This momentum becomes unstoppable.
+
+If personal finance were 100% math, we'd all be skinny, rich, and never procrastinate. It's not. It's behavior. The Debt Snowball modifies behavior through a system of rapid, reinforcing wins.
+
+---
+
+## 2. Chapter-by-Chapter Tactical Deconstruction (The 7 Baby Steps)
+
+Before you can take a single step, you must have a plan. The TMM is built on the foundation of a **zero-based budget**. This is your "Do Not Pass Go" prerequisite.
+
+### Prerequisite: The Zero-Based Budget
+
+**Core Goal:** To give every single dollar of your income a name, on paper, before the month begins. This is not a restrictive tool; it is a permission slip to spend.
+
+**Psychological Insight:** This is the single most important behavioral change. You move from a passive "where did my money go?" mindset to an active "I am telling my money where to go" mindset. It exposes the "leaks" (the $200 in random coffee and subscriptions) and forces you to confront your true spending habits.
+
+**The Tactical Blueprint:**
+
+1. **List All Income:** Every paycheck, side hustle, or source of money you expect for the coming month. Let's say it's $4,000.
+
+2. **List All Expenses:** Start with the "four walls" (Food, Utilities, Housing, Transportation). Then list everything else: debt minimums, insurance, personal spending, giving, etc.
+
+3. **Do the Math:** Income ($4,000) - Expenses (All of them) = $0.
+
+This is the key: If you have $300 "left over," your budget is not done. You must assign that $300 a job. "$100 to extra debt, $100 to new shoes, $100 to savings." Every dollar has a name.
+
+This is a monthly activity. You must do this every single month before the month begins. You will fail the first few times. It will take 3-4 months to get this right. Do it anyway.
+
+**You cannot execute the Baby Steps without a zero-based budget. The budget is the tool that finds the money to do the steps.**
+
+### Baby Step 1: Save $1,000 in a Starter Emergency Fund
+
+**Core Goal:** To create a small buffer between you and "Murphy's Law." Life will happen. The car will break down. This $1,000 is the first line of defense.
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** This step is designed to immediately break your dependence on credit cards. For the first time, when an emergency happens, you will not pull out the Visa. You will use your own cash. This is a massive psychological win and proof that you can handle problems without debt.
+
+**Myths Dismantled:**
+
+- **"The credit card is my emergency fund."** No. Debt is not an emergency fund; it's a trap.
+- **"$1,000 isn't enough."** It's not supposed to be. This is a starter fund. Its inadequacy is motivational. It's just enough to cover the small "oh crap" moments, and the fact it's so small will make you uncomfortable, lighting a fire under you to get to Baby Step 2 fast.
+
+**The Tactical Blueprint:**
+
+**Get $1,000 fast.** This is a sprint, not a marathon. Ramsey says to do this in one month or less.
+
+**How to Get It:**
+
+- **Sell stuff:** Look around your house. Sell the old bike, the video games, the clothes you don't wear. Have a garage sale. Use Facebook Marketplace.
+- **Work:** Deliver pizzas, drive for Uber, mow lawns, babysit. Take any extra work you can find.
+- **Pause Everything:** This is critical. During BS1, you stop all extra debt payments. You pay minimums only. You stop all contributions to your 401(k), IRA, or other investments. Yes, even the company match. This is a temporary, focused sprint.
+
+**Where to Put It:** Put this $1,000 in a basic, liquid savings account. It must be separate from your normal checking account. This is not an investment. Its job is not to make you money; its job is to be ready.
+
+**What It's For:** True emergencies only.
+
+- **YES:** Blown transmission, emergency room visit, broken furnace in winter.
+- **NO:** Christmas presents, new tires (that's maintenance, you should budget for it), a good deal on a TV.
+
+**The 'Do Not Pass Go' Rule:**
+
+You must have this $1,000 in place before you start Baby Step 2. Why? Because if you're attacking your debt with "gazelle intensity" and your transmission blows, what will you do? Without this fund, you will go right back into debt, killing your momentum and reinforcing the lie that "you just can't get ahead." This $1,000 fund protects your progress.
+
+### Baby Step 2: Pay Off All Debt (Except the House) Using the Debt Snowball
+
+**Core Goal:** To become 100% consumer debt-free. This is the war. This is the step where you change your life, your habits, and your family tree.
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** This is the "Gazelle Intensity" step. The goal is to create such a radical, short-term, sacrificial lifestyle that you annihilate your debt in 18-24 months. You will live like no one else (on rice and beans) so that later you can live and give like no one else.
+
+This step is about focus. Ramsey is adamant: you cannot serve two masters. You cannot "save for retirement" and "pay off debt." You must attack one enemy. That enemy is debt. This is why you pause 401(k) contributions (even the match). The mathematical loss is tiny compared to the massive psychological and financial gain of 100% focus.
+
+**Myths Dismantled:**
+
+- **"I'll lose the 401(k) match!"** This is the biggest complaint. Ramsey's counter: It's temporary. If you're so worried about a 4% match, you should be outraged by the 18% interest on your credit card. Get focused.
+- **"I'll pay the highest interest rate first."** As covered, this is a behavioral plan. We are managing motivation. The quick wins of the Snowball are the fuel.
+
+**The Tactical Blueprint:**
+
+1. **Get on your zero-based budget.** This is the weapon.
+
+2. **List all debts (except the mortgage) smallest to largest.** Do not look at the interest rates. This is a non-negotiable part of the process.
+
+**Example:**
+- Visa: $500
+- Student Loan #1: $2,200
+- Car Loan: $8,000
+- Student Loan #2: $15,000
+
+3. **Pay minimum payments on all debts... except the smallest one.**
+
+4. **Attack the smallest debt ($500 Visa) with gazelle intensity.** Every dollar you can find from your budget goes here. No restaurants, no movies, no vacations. You sell the car if it's over $8,000 and buy a "beater" with cash. You work 2-3 jobs.
+
+5. **Pay off the $500 Visa.** Celebrate this win. You are on the board.
+
+6. **"Roll" the snowball.** Let's say your minimum on the Visa was $25 and you were throwing $300 extra at it. You now have $325. You take all of it and add it to the minimum payment of the next debt (Student Loan #1).
+
+7. **Attack Student Loan #1.** Its minimum was $50. You are now paying $375 ($325 from the Visa + $50 minimum).
+
+8. **Repeat this process.** When Student Loan #1 is gone, you roll that $375 into the Car Loan's minimum. The snowball gets bigger and faster with each debt you kill.
+
+**What if you use your BS1 Emergency Fund?** If Murphy visits and you spend $800 on a car repair, you pause Baby Step 2. You stop the extra debt payments (go back to minimums) and immediately rebuild your $1,000 (BS1) with intensity. Then, you resume BS2.
+
+**The 'Do Not Pass Go' Rule:**
+
+You do not move to Baby Step 3. You do not invest. You do not save for college. You do nothing else until every single non-mortgage debt is gone. Zero. This singular focus is the secret to the plan's success.
+
+### Baby Step 3: Save 3 to 6 Months of Expenses in a Fully-Funded Emergency Fund
+
+**Core Goal:** To build a true fortress of financial security. This fund protects you from major life catastrophes: a job loss, a major medical event, a disabled relative.
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** You are now debt-free (except the house). The $1,000 fund was a buffer; this is insurance. This is the first time in your life you will feel genuine financial peace. The gazelle intensity from BS2 can now relax into a focused, purposeful jog. You are moving from "surviving" to "secure."
+
+**Why 3-6 Months?**
+
+- **3 Months:** If you are in a highly stable, dual-income household (e.g., two government jobs).
+- **6 Months:** If you are self-employed, a single-income family, in a commission-based job, or in a volatile industry.
+
+**Why did the amount change from $1,000?** In BS2, you had no risk. You had no investments. Now, you are about to start building wealth (BS4). This larger fund protects your investments. If you lose your job and the market crashes, you are not forced to sell your 401(k) at the bottom. You can live on this fund.
+
+**The Tactical Blueprint:**
+
+1. **Calculate Your Number.** This is 3-6 months of **expenses**, not income. Look at your zero-based budget. What does it actually cost to keep your four walls (food, utilities, housing, transportation) and basic life running for one month?
+
+**Example:** If your monthly take-home is $5,000, but your essential expenses are $3,000, your goal is $9,000 (3 months) or $18,000 (6 months).
+
+2. **Fund It.** You just finished BS2. You have a massive "snowball" payment (maybe $800/month) that no longer has a debt to go to. Redirect this entire amount to your new emergency fund. This step often goes much faster than people think.
+
+3. **Where to Put It:** This money must be liquid and safe.
+
+- **YES:** A high-yield savings account or a money market account. It should be separate from your checking, but accessible within 1-2 days.
+- **NO:** Never in mutual funds. Never in stocks. Never in a CD (certificate of deposit) where it's locked up. This is not an investment; it is an insurance policy. Its job is to be there, stable and ready, when you need it.
+
+**The 'Do Not Pass Go' Rule:**
+
+You must complete this step before you start Baby Step 4 (investing). Why? Because this fund is what protects your investments. Without this fund, a simple job loss could force you to liquidate your retirement savings, torching your entire wealth-building plan. Do not pass go.
+
+### Baby Step 4: Invest 15% of Your Household Income for Retirement
+
+**Core Goal:** To systematically build long-term wealth and secure your future dignity.
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** This is the reward. You have moved from "defense" (BS1-3) to "offense." You are 100% debt-free (except the house) and have a 3-6 month "peace of mind" fund. Now, and only now, are you truly ready to build wealth.
+
+**Why 15%?** This is the "sweet spot." It's an aggressive, consistent amount that, when invested over 20-30 years, will build substantial wealth, while still leaving room in your budget for the next two steps (BS5 and BS6).
+
+**Myths Dismantled:**
+
+- **"I should invest more."** Not yet. 15% is the rule while you are paying off your house (BS6). Once the house is paid off, you can invest much more.
+- **"My company pension is enough."** Never rely on one source. You are your own retirement plan.
+
+**The Tactical Blueprint:**
+
+1. **The Prerequisite:** You must have BS1, BS2, and BS3 100% complete.
+
+2. **Calculate 15%:** This is 15% of your gross (pre-tax) household income.
+
+3. **Invest in This Exact Order:**
+
+**1. 401(k) / Workplace Plan:** Invest up to the company match. If your company matches 5%, you put in 5%.
+
+**2. Roth IRA:** After you get the match, you and your spouse (if applicable) should fully fund Roth IRAs. The Roth is a post-tax account, meaning it grows tax-free forever. This is a massive advantage.
+
+**3. Back to the 401(k):** If you hit the Roth IRA limits and still haven't reached your 15% total, go back to your 401(k) or other workplace plan and contribute more until your total contributions (your 5% + your Roth + this extra) equal 15% of your gross income.
+
+4. **What to Invest In:** Ramsey's advice is simple and consistent: **Good growth stock mutual funds**. He avoids single stocks, day trading, and complex products. He advocates for a simple, diversified portfolio spread across four fund types:
+
+- Growth and Income (Large-Cap)
+- Growth (Mid-Cap)
+- Aggressive Growth (Small-Cap)
+- International
+
+**The 'Do Not Pass Go' Rule:**
+
+This is the first time you are allowed to multitask. Baby Steps 4, 5, and 6 are done concurrently. You are now fighting a three-front war: Investing 15% (BS4), saving for college (BS5), and paying off the house (BS6).
+
+### Baby Step 5: Save for Your Children's College
+
+**Core Goal:** To break the generational cycle of debt by helping your children get an education without student loans.
+
+**Key Arguments & Psychological Insights:**
+
+**The "Oxygen Mask" Principle:** This step must come after BS4 has started. You must secure your own retirement first. You can get a loan for college (though you're trying to avoid it); you cannot get a loan for retirement. Do not sacrifice your future (and become a burden on your children) to pay for their college.
+
+**The Behavioral Shift:** This is an act of profound legacy. You are stopping the "normal" (and stupid) idea that a 17-year-old should sign a $100,000 loan.
+
+**The Tactical Blueprint:**
+
+1. **The Prerequisite:** You are debt-free, have a 3-6 month emergency fund, and are currently investing 15% in retirement.
+
+2. **The Vehicles:** Use tax-advantaged savings plans.
+
+- **529 Plan (ESA):** This is the primary tool. It's a "college Roth IRA." Money goes in after-tax, grows tax-free, and comes out tax-free if used for educational expenses (tuition, books, room & board).
+
+3. **The Amount:** This varies wildly. The key is that BS5 is funded with new money from your budget, after your 15% for BS4 is allocated.
+
+4. **The "Common Sense" Rules:**
+
+- Encourage your kids to work.
+- Have them apply for scholarships.
+- Be realistic about college choice. An in-state public university paid for in cash is infinitely better than an Ivy League school paid for with 20 years of debt.
+
+**The 'Do Not Pass Go' Rule:**
+
+This step is done at the same time as BS4 and BS6. Do not start this step until BS1, BS2, and BS3 are complete. Do not ever sacrifice your 15% retirement (BS4) for this step.
+
+### Baby Step 6: Pay Off Your Home Early
+
+**Core Goal:** To achieve the ultimate financial peace: 100% total debt-freedom.
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** This is the final shackle. When you own your home, you are free. No bank, no creditor, no one can take your shelter. Your single largest expense (the mortgage payment) is gone, which "gives you a raise" for the rest of your life.
+
+**Myths Dismantled:**
+
+- **"But the mortgage interest deduction!"** This is a classic trap. You are spending a dollar to save thirty cents. It's bad math.
+- **"My rate is low, I should invest instead."** Ramsey rejects this. Why? The risk. A paid-for home is a 100% guaranteed return (you are no longer paying interest). The stock market is not guaranteed. This step is about eliminating risk and securing peace. The math-heads hate this step, but the debt-free homeowners love it.
+
+**The Tactical Blueprint:**
+
+1. **The Prerequisite:** You are on BS4 (investing 15%) and BS5 (saving for college, if applicable).
+
+2. **Find the "Extra":** This is a second snowball. You take all extra money in your budget after BS4 and BS5 are funded and apply it directly to the principal of your mortgage.
+
+3. **How to Attack:**
+
+- Every raise, every bonus, every side-hustle dollar goes to the principal.
+- You can make one extra payment per year, or split your monthly payment in two (bi-weekly), or just write a separate check labeled "PRINCIPAL ONLY" every single month.
+- The goal is to pay this off in 5-7 years, not 30.
+
+**The 'Do Not Pass Go' Rule:**
+
+This is the third concurrent step (with 4 and 5). It is the last step before the final goal. You do not "invest more" or "buy a rental property" until this step is 100% complete.
+
+### Baby Step 7: Build Wealth and Give Generously
+
+**Core Goal:** To "Live and Give Like No One Else."
+
+**Key Arguments & Psychological Insights:**
+
+**The Behavioral Shift:** This is the destination. You have no debt of any kind. The house is paid for. You have a massive emergency fund. You are investing 15%. Your income is now 100% yours. You have moved from "scared" to "secure" to "surplus."
+
+This is the point of the entire plan. The goal isn't just to have a pile of money. The goal is to change your family tree and become "outrageously generous."
+
+**The Tactical Blueprint:**
+
+1. **Build Wealth:** You can now "max out" all retirement accounts. You can invest in taxable (non-retirement) brokerage accounts. You can buy paid-for rental real estate. You have options because you have no risk.
+
+2. **Give Generously:** With no debt payments, your ability to give to your church, to charities, and to individuals is explosive. You can pay for a friend's car repair. You can fund a mission. You can give with an open hand.
+
+3. **Have Fun:** This is also when you can buy the boat (with cash) or take the big vacation (paid for) without a shred of guilt.
+
+**The "Rule":** This is the goal line. You have won.
+
+---
+
+## 3. Synthesis and Final Assessment
+
+### Top 5 Synthesized Actionable Imperatives
+
+1. **The Zero-Based Budget is Non-Negotiable:** You must have a written plan for your money, on paper, before the month begins. This is the foundation for all 7 steps.
+
+2. **Behavior Trumps Math:** The Debt Snowball (smallest to largest) is the prescribed method because it correctly identifies the problem as behavioral, not mathematical. Momentum is the key.
+
+3. **Intensity Wins:** A casual approach will fail. You must adopt "Gazelle Intensity," a short-term, all-out sprint (BS1 & BS2) to build momentum and get out of debt fast.
+
+4. **Debt is the Enemy (No Exceptions):** You must develop a visceral hatred for debt. Debt is not a tool; it is a trap. This "enemy" mindset is critical for maintaining focus.
+
+5. **Follow the Sequence. No Multitasking (At First):** The steps must be done in order. Do not save for retirement (BS4) while in debt (BS2). The sequential nature is designed to eliminate risk and build a solid foundation.
+
+### Critique and Context
+
+"The Total Money Makeover" is profoundly effective for its target audience: people who are in deep consumer debt and feel hopeless. It is a behavioral modification program, not a nuanced financial theory text.
+
+**Common Criticisms (and Ramsey's Rebuttals):**
+
+**"The $1,000 Starter Fund (BS1) is too low."**
+
+- **Critique:** In 2025, $1,000 doesn't cover a major car repair.
+- **Ramsey's Rebuttal:** It's supposed to be inadequate! It's a quick, tangible win to get you started. The discomfort of having only $1,000 is the motivation you need to sprint through Baby Step 2.
+
+**"Pausing the 401(k) Match (BS2) is mathematically insane."**
+
+- **Critique:** You are "walking away from free money."
+- **Ramsey's Rebuttal:** He is not anti-match; he is anti-debt. It is a temporary pause (18-24 months) to create 100% focus. If you could "kinda" pay off debt while "kinda" investing, you wouldn't be in this mess. The psychological power of a single, focused enemy (debt) is worth far more than the small, temporary loss of a 4% match.
+
+### Conclusion
+
+"The Total Money Makeover" is not a plan for "smart" people who want to leverage debt and play arbitrage games with interest rates. It is a plan for real people who are sick and tired of being sick and tired. It's a plan for those who are "normal" (broke) and want to be "weird" (financially free). Its value is not in its mathematical complexity, but in its brutal simplicity and its profound understanding of human behavior. It is a proven, non-negotiable, step-by-step program for achieving financial peace.`,
+    keyTakeaways: [
+      "Personal finance is 80% behavior, 20% knowledge: You fail not because you don't know what to do, but because you don't do it—TMM is behavioral modification, not financial theory",
+      "Normal is broke—reject it: $700 car payments, $50k student loans, credit cards for 'emergencies' is society's trap—to win with money, you must be 'weird' and reject normal",
+      "Debt is the enemy, not a tool: No 'good debt' exists—student loans enslave career choices, car loans steal future wealth, 0% deals are marketing tricks to sell what you can't afford",
+      "The Debt Snowball beats math: Pay smallest to largest (ignore interest rates)—quick wins create psychological momentum; Avalanche is mathematically superior but behaviorally doomed to burnout",
+      "Zero-based budget is prerequisite: Give every dollar a name before month begins (Income - All Expenses = $0)—shifts from 'where did my money go?' to 'I tell my money where to go'",
+      "Baby Step 1: $1,000 starter emergency fund: Get it in 1 month (sell stuff, work extra)—breaks credit card dependence; inadequacy is motivational fuel to sprint through BS2",
+      "Baby Step 2: Pay off all debt with Gazelle Intensity: Attack debt like gazelle fleeing cheetah—work 2-3 jobs, sell car, live on rice and beans; pause ALL investing (even 401k match) for 18-24 months",
+      "The Snowball rolls and accelerates: Pay minimums on all debts except smallest; attack smallest with intensity; when paid, 'roll' that payment into next debt—momentum becomes unstoppable",
+      "Baby Step 3: 3-6 month fully-funded emergency fund: After debt-free, save 3-6 months expenses (NOT income)—protects investments from forced liquidation during job loss + market crash",
+      "Baby Step 4: Invest 15% for retirement (finally): Only after BS1-3 complete—order: 401k to match → max Roth IRA → back to 401k; four fund types (large/mid/small cap + international)",
+      "Pause 401k match during BS2 is non-negotiable: Temporary 18-24 month pause for 100% debt focus—if worried about 4% match, be outraged by 18% credit card; intensity beats diversification here",
+      "Baby Steps 4, 5, 6 are concurrent: After BS3, fight three-front war—invest 15% retirement + save for kids' college + pay off house early (5-7 years, not 30)",
+      "Baby Step 5: Save for kids' college (oxygen mask rule): Secure YOUR retirement first (BS4)—can't get loan for retirement; use 529/ESA; encourage work/scholarships; state school beats Ivy + debt",
+      "Baby Step 6: Pay off home early: 100% guaranteed return (no more interest) vs. risky stock market—ignore 'mortgage interest deduction' (spending $1 to save 30¢ is stupid math)",
+      "Baby Step 7: Build wealth and give outrageously: No debt, house paid, 15% invested—now max all accounts, buy rental property, give explosively; change family tree, not just bank account",
+      "Gazelle Intensity is life-or-death sprint: Proverb: 'Deliver yourself as gazelle from hunter'—temporary scorched-earth (sell everything, work 60 hours, no restaurants) to vaporize debt in months",
+      "The $1,000 fund is intentionally inadequate: It's a starter, not forever fund—just enough for small emergencies; discomfort lights fire to sprint BS2; protects debt payoff momentum from derailment",
+      "If emergency hits during BS2, pause and rebuild: Use $1,000 for true emergency (blown transmission YES, new tires NO)—immediately pause BS2, rebuild $1,000, then resume debt attack",
+      "Rice and beans, beans and rice: BS2 mantra—live on bare minimum (gazelle eating grass while fleeing)—temporary sacrifice (18-24 months) so you can 'live like no one else' forever",
+      "Live like no one else, so later you can live and give like no one else: The ultimate trade—short-term weirdness (no restaurants, 3 jobs, paid-for beater car) for lifetime freedom and generosity"
     ],
     isPremium: false,
   }
