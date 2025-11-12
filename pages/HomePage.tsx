@@ -80,15 +80,21 @@ const HomePage: React.FC = () => {
 
           {/* CTA Button */}
           <div className="mb-12 flex justify-center">
-            <Link
-              to="/summaries"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 text-white font-bold py-4 px-10 rounded-full hover:from-orange-500 hover:via-orange-600 hover:to-red-600 hover:scale-105 transition-all duration-300 text-lg shadow-xl"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-              Discover
-            </Link>
+            <div className="button-wrap relative z-10 rounded-full bg-transparent pointer-events-none">
+              <Link
+                to="/summaries"
+                className="glass-button cursor-pointer relative rounded-full pointer-events-auto z-30 outline-none focus:outline-none inline-flex items-center"
+              >
+                <span className="button-text relative block select-none font-bold text-neutral-800 tracking-tight px-6 py-3.5 flex items-center gap-2" style={{ fontSize: '24px', fontFamily: "'Scheherazade New', 'Amiri', serif" }}>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                  إقرأ
+                </span>
+                {/* Shine Effect */}
+                <div className="button-shine"></div>
+              </Link>
+            </div>
           </div>
 
           {/* Book Carousel */}
