@@ -150,7 +150,9 @@ const translations = {
       'i-will-teach-you-to-be-rich': 'I Will Teach You to Be Rich',
       'money-master-the-game': 'Money: Master the Game',
       'the-total-money-makeover': 'The Total Money Makeover',
-      'the-7-habits-of-highly-effective-people': 'The 7 Habits of Highly Effective People'
+      'the-7-habits-of-highly-effective-people': 'The 7 Habits of Highly Effective People',
+      'how-to-win-friends-and-influence-people': 'How to Win Friends and Influence People',
+      'influence-the-psychology-of-persuasion': 'Influence: The Psychology of Persuasion'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -201,7 +203,9 @@ const translations = {
       'i-will-teach-you-to-be-rich': 'Ramit Sethi',
       'money-master-the-game': 'Tony Robbins',
       'the-total-money-makeover': 'Dave Ramsey',
-      'the-7-habits-of-highly-effective-people': 'Stephen R. Covey'
+      'the-7-habits-of-highly-effective-people': 'Stephen R. Covey',
+      'how-to-win-friends-and-influence-people': 'Dale Carnegie',
+      'influence-the-psychology-of-persuasion': 'Robert B. Cialdini'
     }
   }
 };
