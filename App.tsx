@@ -10,6 +10,7 @@ import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MobileBottomNav from './components/MobileBottomNav';
 import HomePage from './pages/HomePage';
 import SummariesPage from './pages/SummariesPage';
 import SummaryDetailPage from './pages/SummaryDetailPage';
@@ -337,7 +338,7 @@ const AppContent: React.FC = () => {
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
-        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
+        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 pt-8 pb-32 md:pb-12">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
@@ -381,6 +382,7 @@ const AppContent: React.FC = () => {
           </Routes>
         </main>
         <Footer />
+        <MobileBottomNav />
       </div>
     </BrowserRouter>
   );
