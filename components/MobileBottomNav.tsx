@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, CreditCard, PieChart, Binoculars, Menu, Sparkles } from 'lucide-react';
+import { Home, BookOpen, Calculator, Binoculars, Newspaper, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 
@@ -16,10 +16,10 @@ const MobileBottomNav: React.FC = () => {
 
   const navItems: MobileNavItem[] = [
     { to: '/', label: t('home') || 'Home', icon: Home },
-    { to: '/summaries', label: t('summaries') || 'Summaries', icon: CreditCard },
-    { to: '/calculators', label: t('calculators') || 'Calculators', icon: PieChart },
+    { to: '/summaries', label: t('summaries') || 'Summaries', icon: BookOpen },
+    { to: '/calculators', label: t('calculators') || 'Calculators', icon: Calculator },
     { to: '/community', label: t('community') || 'Community', icon: Binoculars },
-    { to: '/news', label: t('news') || 'News', icon: Menu },
+    { to: '/news', label: t('news') || 'News', icon: Newspaper },
   ];
 
   const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-gray-900/95 text-white shadow-[0_15px_35px_-15px_rgba(15,23,42,0.8)]';
