@@ -152,7 +152,8 @@ const translations = {
       'the-total-money-makeover': 'The Total Money Makeover',
       'the-7-habits-of-highly-effective-people': 'The 7 Habits of Highly Effective People',
       'how-to-win-friends-and-influence-people': 'How to Win Friends and Influence People',
-      'influence-the-psychology-of-persuasion': 'Influence: The Psychology of Persuasion'
+      'influence-the-psychology-of-persuasion': 'Influence: The Psychology of Persuasion',
+      'a-random-walk-down-wall-street': 'A Random Walk Down Wall Street'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -205,7 +206,8 @@ const translations = {
       'the-total-money-makeover': 'Dave Ramsey',
       'the-7-habits-of-highly-effective-people': 'Stephen R. Covey',
       'how-to-win-friends-and-influence-people': 'Dale Carnegie',
-      'influence-the-psychology-of-persuasion': 'Robert B. Cialdini'
+      'influence-the-psychology-of-persuasion': 'Robert B. Cialdini',
+      'a-random-walk-down-wall-street': 'Burton G. Malkiel'
     }
   }
 };
