@@ -608,6 +608,17 @@ export const BOOKS: Book[] = [
     pageCount: 454,
     arabicSlug: 'ملخص-كتاب-نزهة-عشوائية-في-وول-ستريت',
   },
+  {
+    id: 'the-simple-path-to-wealth',
+    title: 'The Simple Path to Wealth',
+    author: 'J.L. Collins',
+    category: 'Finance',
+    coverImageUrl: '/images/the simple path to wealth.webp',
+    rating: 4.7,
+    publicationYear: 2016,
+    pageCount: 286,
+    arabicSlug: 'ملخص-كتاب-الطريق-البسيط-للثروة',
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -12242,6 +12253,286 @@ Burton G. Malkiel's "A Random Walk Down Wall Street" is more than just an invest
       "Automation Eliminates Market Timing (Remove Human Emotion): Set up automatic payroll deductions or bank transfers to index funds—removes dangerous temptation to 'wait for better time' or panic sell during downturns; consistency beats cleverness",
       "The Dartboard Monkey (Humbling Illustration): A blindfolded monkey throwing darts at stock list would perform as well as, and often better than, high-priced expert's portfolio—not because monkey is smart, but because expert's fees guarantee underperformance",
       "Time is the Greatest Asset (Compounding Power): Starting at age 25 vs. 35 can double final retirement wealth due to exponential compounding—10 years of early contributions worth more than 20 years of late contributions; patience and early start are everything"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'the-simple-path-to-wealth',
+    title: 'The Simple Path to Wealth',
+    author: 'J.L. Collins',
+    coverImageUrl: '/images/the simple path to wealth.webp',
+    category: 'Finance',
+    summary: `The Architecture of Freedom: A Rigorous Synthesis of J.L. Collins' "The Simple Path to Wealth"
+
+# Executive Summary and Foundational Philosophy
+
+## Executive Summary
+
+J.L. Collins' The Simple Path to Wealth is a direct, uncompromising, and minimalist manifesto for achieving financial independence. Its central thesis is that the mechanics of building wealth are profoundly simple, though the psychological discipline required is not easy. The book serves as a powerful antidote to the financial industry, which Collins argues manufactures complexity to profit from confusion. The core problem it solves is the fear, analysis paralysis, and overwhelm that stops most people from ever starting their investment journey.
+
+Born from a series of letters to his daughter, the book's unique value proposition is its clarity and freedom from conflicts of interest. It is not financial "advice" but a prescriptive, evidence-based roadmap. It dismisses stock picking, market timing, and sophisticated products as a "loser's game." Instead, it champions a single, powerful strategy: invest relentlessly in a broad-market index fund (VTSAX), eliminate all debt, and live off a safe withdrawal rate. The ultimate goal is not to be "rich" in the conventional sense, but to acquire "F-You Money"—the capital required to buy true freedom and control over your time.
+
+## The Core Philosophical Pillars
+
+The Simple Path is built on an interlocking set of philosophical principles. These are not mere suggestions; they are the non-negotiable mental models required to execute the strategy.
+
+### Pillar 1: The Pursuit of "F-You Money"
+
+This is the foundational concept of the book and the first milestone on the path to wealth. "F-You Money" is not a number; it is a state of power. It is the amount of capital that grants you complete personal autonomy, freeing you from any person, job, or situation you wish to leave. It is the money that allows you to walk away from an abusive boss, a toxic work environment, or a career that drains your soul, without fear of financial ruin.
+
+This concept is a crucial psychological reframe. The goal is not "retirement" in the traditional sense of golf courses and beach-sitting. The goal is to reclaim your time and your agency now. F-You Money is the ultimate buffer against a world that wants to command your eight-plus hours a day. It is the first stage of "wealth," and for many, it is more important than the final FI number itself.
+
+### Pillar 2: The Debt-as-Slavery Doctrine
+
+Collins' view on debt is absolutist and severe: **Debt is slavery**. It is the mathematical antithesis of freedom. When you are in debt, you are not working to build your future; you are working to pay for your past. You have sold your future time and labor to a lender, and your life is not fully your own until that chain is broken.
+
+He makes a small, reluctant exception for a modest mortgage on a sensible home, but all other debt—especially high-interest consumer debt like credit cards and auto loans—is a financial emergency. It is an anchor dragging behind you, negating the power of your investments. The Simple Path demands that the elimination of this debt is Priority Zero, a prerequisite to any serious wealth accumulation. You cannot serve two masters: your freedom (investments) and your slavery (debt).
+
+### Pillar 3: The Anti-Complexity Principle
+
+This is the intellectual core of the book. Collins argues that the entire financial services industry—brokers, active fund managers, financial "gurus," and the media—has a vested interest in making investing seem impenetrably complex. Complexity is their product. It justifies their fees, their salaries, and their very existence. If investors knew the simple, boring truth, this multi-trillion dollar industry would crumble.
+
+**Simplicity is the ultimate competitive advantage**. By refusing to play the game, you win. The "loser's game," as defined by Charles Ellis, is one where victory is achieved not by making brilliant moves, but by avoiding mistakes. The primary mistakes are paying high fees, trading emotionally, and believing you can outsmart the market. The Simple Path (VTSAX) avoids every single one of these errors. It is a rebellion against a predatory system.
+
+### Pillar 4: Wealth as Freedom, Not Accumulation
+
+Collins meticulously distinguishes between being "rich" and being "wealthy." Being rich is about accumulation and spending. It is a high net worth, a big house, a fast car. It often requires a high-stress, high-income job to sustain.
+
+Being wealthy is about freedom. It is about having enough. It is a high-earning doctor who must work 80 hours a week to pay for his lifestyle. In Collins' framework, this doctor is poorer than a school teacher who has diligently saved, lives frugally, and has achieved their FI number. The teacher owns their time. The doctor's time is owned by his job and his possessions. The ultimate goal of the Simple Path is not to maximize a number in an account, but to maximize the number of days on earth that you are free to do whatever you choose.
+
+## Thematic Thesis: Simplicity as the Ultimate Advantage
+
+The book's central, unifying argument is that in the world of investing, **simplicity is the ultimate competitive advantage**. The Simple Path is designed for the intelligent individual who is paralyzed by a world of infinite, contradictory advice. The "experts" offer a dizzying array of options: stocks, bonds, crypto, real estate, options, commodities. Collins cuts through this noise with a single, powerful command: **Buy VTSAX**.
+
+This prescription is not a "get rich quick" scheme. It is a "get wealthy for sure" strategy. The transformation it promises is a move from fear to confidence, from confusion to clarity, and from servitude to freedom. It is a roadmap for taking complete control of your financial life by doing less, not more.
+
+# Deep Deconstruction: The Three Phases of Wealth
+
+The Simple Path is a linear journey, broken into three distinct, sequential phases: Accumulation, Investment (Strategy & Preservation), and Withdrawal.
+
+## Phase 1: The Accumulation Engine (The Start and the Savings Rate)
+
+This is the "brute force" phase of the journey. It is defined by aggressive saving, debt elimination, and the establishment of the simple, one-fund portfolio.
+
+### Core Goal: The Primacy of the Savings Rate
+
+In the beginning, your **savings rate is the only variable that matters**. Collins argues that investors obsess over the wrong things: "What's the market doing?" "What's the perfect asset allocation?" "Should I buy Bitcoin?" This is all a distraction.
+
+In your early years of investing, your returns are almost irrelevant. The amount of new money you contribute to the portfolio dwarfs any gains the market can provide.
+
+**Example:** If you have $10,000 saved, a "bad" year of -20% and a "great" year of +20% results in a trivial $4,000 difference. But your decision to save $30,000 versus $50,000 in that same year has a $20,000 impact.
+
+Your **savings rate**—the gap between what you earn and what you spend—is your primary weapon. The Simple Path demands that you focus 100% of your energy here. This lever is entirely within your control, whereas market returns are not. A high savings rate (Collins advocates for 50% or more, if possible) is the accelerator pedal for FI. It not only builds your "F-You Money" pile faster, but it also simultaneously trains you to live on less, which dramatically lowers your final FI target number.
+
+### The Debt Strategy: A Non-Negotiable Prerequisite
+
+Before the Accumulation Engine can truly roar, all chains must be broken. This is the tactical application of the "Debt-as-Slavery" doctrine.
+
+1. **Stop the Bleeding:** Cut up the credit cards. Do not take on one cent of new consumer debt.
+2. **Triage:** List all debts from highest interest rate to lowest.
+3. **Attack:** Collins is not dogmatic about the "snowball" vs. "avalanche" method. The key is to attack the debt with "gazelle intensity," as Dave Ramsey would say. Every spare dollar goes to eliminating this "reverse investment" that is actively working against you.
+4. **The Exception (Maybe):** The only "investment" to be made during this time is contributing just enough to a 401(k) to get the full employer match. This is free money, and it's the only return guaranteed to be higher than your debt's interest rate. After that, all firepower goes to debt.
+
+Only when debt is zero (excluding a modest mortgage) can your savings be directed to the engine of wealth: VTSAX.
+
+### The VTSAX Doctrine (Initiation)
+
+For the accumulator, the strategy is brutally simple: **Buy VTSAX**.
+
+**What is it?** VTSAX (Vanguard Total Stock Market Index Fund) or its ETF equivalent, VTI. This single fund holds every publicly traded company in the United States (large, mid, and small-cap). It is the ultimate "haystack."
+
+**Why VTSAX?** By buying VTSAX, you are not betting on a single company (like Apple), a single sector (like tech), or even a single fund manager. You are making one simple, powerful bet: American capitalism will, over the long term, continue to grow. You are guaranteed to capture the entire return of the market, less a microscopic fee (around 0.04%).
+
+**Why not the S&P 500?** Collins finds the S&P 500 (the 500 largest companies) perfectly acceptable. But he prefers the Total Market (3,000+ companies) because it is more diversified and captures the explosive growth of the next Apple or Amazon when they are still small/mid-cap companies.
+
+The psychological benefits of this one-fund strategy are perhaps its greatest strength:
+
+- **It Eliminates Decision Fatigue:** You never have to wonder if you are in the "right" fund. You never have to rebalance. You never have to read a quarterly report. Your one and only job is to buy more.
+
+- **It Prevents Tinkering (The Enemy):** The greatest danger to a portfolio is its owner. With a complex portfolio of 10 different funds, an investor is tempted to tinker—selling the "loser" to buy more of the "winner." This is market timing, and it almost always fails. With one fund, there is nothing to do. You can't sell tech to buy healthcare; you own both.
+
+- **It Builds Unwavering Confidence:** Your belief system is simple and powerful. You are not "playing the market." You are the market. This robust, simple belief is what gives you the psychological steel to hold on during the inevitable crashes.
+
+## Phase 2: The Investment Blueprint (The Strategy and the Science)
+
+This phase overlaps with Accumulation but represents the intellectual and psychological "why" of the strategy. It explains why this simple path outperforms complex ones and how to survive the journey.
+
+### The Case Against Active Management (Exhaustive Analysis)
+
+Collins' entire philosophy is built on the resounding, evidence-based failure of active management. Active management is the art of stock picking or market timing, whether done by you or a high-priced professional in a mutual fund.
+
+**The Statistical Evidence (SPIVA):** Collins points to the data. The S&P Indices Versus Active (SPIVA) reports consistently show that over any 10, 15, or 20-year period, **90-95% of actively managed mutual funds fail to beat their simple, unmanaged benchmark index** (like the S&P 500).
+
+Think about that: These are the professionals—MBAs from Wharton, 80 hours a week of research, access to sophisticated tools. They cannot, as a group, beat a simple, dumb index. The few who do in one period are statistically unable to repeat that performance in the next. It is a game of luck, not skill.
+
+**The Tyranny of Compounding Costs:** The first reason active management fails is fees. An active fund might charge a 1.0% expense ratio, and a financial advisor might charge another 1.0% to put you in that fund. A 2% total fee seems small.
+
+Collins reveals it is catastrophic. It's not 2% of your principal; it's 2% of your total holdings every single year. VTSAX charges ~0.04%.
+
+Over a 40-year career, that 2% fee differential doesn't just cost you 2%; it can consume over 50-60% of your final nest egg. The "small" fee compounds against you, creating a drag that is mathematically almost impossible to overcome.
+
+**The Psychological Folly:** The second reason active management fails is psychology. Stock picking feels good. It feels like control. We read a story, like a product, and buy the stock (narrative bias). We buy what's "hot" (recency bias) and sell what's "cold" (panic). We are biologically hard-wired to be terrible investors.
+
+Collins argues that accepting you cannot beat the market is the single most intelligent investing decision you can make. Indexing is the humility that makes you rich.
+
+### Market Risk and Volatility: The Price of Admission
+
+If VTSAX is the vehicle, a strong stomach is the fuel.
+
+**Reframing Crashes:** Collins' most powerful lesson is on market volatility. He demands you change your perspective: **A market crash is not a risk; it is a sale**.
+
+Volatility is the price you pay for the superior long-term returns of stocks. You cannot have one without the other.
+
+For the accumulator in Phase 1, a 50% market crash is the greatest gift imaginable. It means every dollar you invest is buying twice as many shares of VTSAX. You are buying the world's greatest companies at a half-off discount.
+
+The "risk" is not the crash. The risk is that you panic and sell at the bottom, locking in the temporary paper loss and turning it into a permanent, real one.
+
+**The Required Mindset (Stay the Course):**
+
+The Simple Path has one job during a bear market: **Nothing**. You must ignore the noise. The "financial porn" on TV is designed to make you panic. Your strategy is to automate your investments into VTSAX and never look at your account. You must trust in 70+ years of market history: The market always goes up. It is a "pathological optimist." Your only job is to hold on and keep buying.
+
+### The Role of Bonds (VBLTX)
+
+For most of the accumulation phase, Collins advocates for **100% stocks (VTSAX)**. He is a proponent of aggressive, simple growth. However, he introduces bonds (specifically, VBLTX - Vanguard Total Bond Market Index) for one, and only one, reason.
+
+**When to Add Them:** Late in the accumulation phase, or as you are transitioning to the withdrawal phase.
+
+**Their Sole Purpose:** Bonds are not for growth. Their returns will always be lower than stocks. Their only job is to be non-correlated to stocks. They are a volatility dampener. When stocks crash, bonds tend to stay stable or even go up.
+
+**The Job:** This stability provides a critical tool for managing the single greatest threat to a retiree: **Sequence of Returns Risk**. The bonds are your "dry powder" and your "cash cushion" that allow you to survive a crash without selling your stocks at the bottom. This is the entire key to Phase 3.
+
+## Phase 3: The Withdrawal Strategy (FI and The 4% Rule)
+
+You have accumulated your "F-You Money." You have survived the crashes and bought relentlessly. Now, you are ready to live off your investments.
+
+### Defining the FI Number: The 25x Rule
+
+Your "FI Number" is the amount of money you need to be financially independent forever. Collins uses the simple, powerful formula:
+
+**FI Number = Annual Expenses × 25**
+
+This formula is simply the 4% Rule (which we'll cover next) stated in reverse ($1 ÷ 0.04 = 25$).
+
+The beauty of this formula is its two levers. You can reach your goal by increasing your investments, or by decreasing your annual expenses. This is why minimalism is the sister philosophy of FI. Learning to live well on less ($30,000/year instead of $60,000/year) cuts your FI Number in half (from $1.5M to $750k).
+
+### The 4% Rule: The Safe Withdrawal Guideline
+
+Once you have your FI number (e.g., $1,000,000), how do you withdraw it without running out of money?
+
+**The Rule:** The 4% Rule states that you can withdraw 4% of your initial portfolio value in your first year of retirement ($40,000 on a $1M portfolio), and then adjust that amount for inflation every subsequent year.
+
+**The Origin (The Trinity Study):** This "rule" comes from a 1998 study by three professors at Trinity University. They back-tested portfolios (various mixes of stocks and bonds) against every 30-year period in US market history.
+
+**The Finding:** They found that a 4% withdrawal rate, with a portfolio of at least 50% stocks, had a near 100% success rate of not running out of money over 30 years. It survived starting retirement on the eve of the Great Depression, the 1970s stagflation, and the 2000 dot-com bust.
+
+Collins presents this as a robust, evidence-based guideline for starting your withdrawal plan.
+
+### Sequence of Returns Risk (SWRR) and the Bond Tent
+
+This is the most critical risk in retirement, and the entire reason you hold bonds.
+
+**What is SWRR?** It is the order in which your investment returns occur. During accumulation, sequence doesn't matter. But during withdrawal, it is everything.
+
+**The Catastrophic Scenario:**
+- You retire with $1M.
+- Year 1: The market crashes 40%. Your portfolio is now $600k.
+- You still need to withdraw $40,000 to live.
+- To get $40k, you must sell shares of your crashed VTSAX. This $40k now represents 6.7% of your $600k portfolio, not 4% of $1M.
+- You have permanently "locked in" the loss and crippled your portfolio's ability to recover. This is "dollar-cost-ravaging," and it's how you go broke.
+
+**The Bond Tent: How to Mitigate SWRR:**
+
+This is where your VBLTX (bonds) save you. This is their job.
+
+**The Tactic:** As you enter retirement, you hold a "bond tent" of ~20-25% of your portfolio in VBLTX. Your portfolio is now 75% VTSAX, 25% VBLTX.
+
+**The Same Catastrophic Scenario (The Collins Way):**
+- You retire with $1M ($750k stocks, $250k bonds).
+- Year 1: VTSAX (stocks) crashes 40%. Your $750k in stocks is now worth $450k.
+- Your VBLTX (bonds) are stable, still worth $250k. Your total portfolio is $700k.
+- You still need to withdraw $40,000 to live.
+- **CRITICALLY:** You do not sell a single share of your crashed VTSAX. You sell $40,000 from your VBLTX (bond) allocation.
+- **The Result:** Your stocks ($450k) are left untouched, "sheltering in place," free to rebound fully when the market recovers. Your bonds are now $210k. You have weathered the storm. In Year 2 or 3, when the market (VTSAX) has recovered, you can then sell some of your now-high stocks to re-fill your bond allocation, "re-stocking" your dry powder for the next crash.
+
+This "bond tent" strategy is the entire mechanism that makes the 4% rule work.
+
+# The Implementation Blueprint
+
+This is the consolidated, non-negotiable, step-by-step summary of the Simple Path from start to finish.
+
+**Phase 0: Debt.** Destroy all high-interest consumer debt. It is an emergency.
+
+**Phase 1: Accumulation.**
+- Live on less than you earn. Aim for a 50%+ savings rate.
+- Prioritize tax-advantaged accounts: 401(k) (to the match), then HSA (if available), then Roth IRA, then maxing the 401(k), then a taxable brokerage account.
+- In all accounts, buy one fund: VTSAX (or VTI). (Collins reluctantly concedes VXUS for international, but his core is 100% US).
+- Automate everything. Set up automatic contributions and never look at the account.
+- **NEVER SELL**. When the market crashes, ignore it. If you are brave, buy more.
+
+**Phase 2: Preservation (The Transition).**
+- As you are 3-5 years from your FI Number, begin building your Bond Tent.
+- Start allocating new money, or slightly rebalancing, into VBLTX (Total Bond Market) until you reach your target allocation (e.g., 75% VTSAX, 25% VBLTX).
+
+**Phase 3: Withdrawal (FI).**
+- Calculate your FI Number: **Annual Expenses × 25**.
+- When your portfolio hits this number, you are free.
+- Withdraw 4% in the first year.
+- In "up" years for stocks: Take your 4% by selling VTSAX. Rebalance if stocks are now too high (e.g., sell stocks to buy bonds back to 75/25).
+- In "down" years for stocks: Take your 4% by selling VBLTX. Do not touch your stocks.
+- Live your free life.
+
+# Synthesis and Final Assessment
+
+## Synthesized Actionable Imperatives
+
+The entire 300-page book can be distilled into five core commands:
+
+1. **Debt is Slavery. Eliminate It.** You cannot build wealth while servicing debt. It is a mathematical and psychological anchor.
+
+2. **Your Savings Rate is Your Weapon.** This is the only lever you control. It is more powerful than market returns for the first 10-15 years.
+
+3. **Buy VTSAX (and Nothing Else).** Simplicity is your ultimate advantage. Buy the entire market, pay no fees, and own the haystack.
+
+4. **Never Sell (Treat Crashes as Sales).** Your one job is to stay the course. Volatility is the price of admission. Do not panic. Keep buying.
+
+5. **The 4% Rule is Your Guide (Protected by Bonds).** Live off a 4% withdrawal rate, using your bond allocation as a "dry powder" buffer to survive bear markets without selling your stocks.
+
+## Critique and Context (Limitations)
+
+While the Simple Path is a masterpiece of minimalist finance, it is not without valid critiques:
+
+**US-Centric Reliance:** The entire strategy (VTSAX) and the entire evidence base (The Trinity Study) are rooted in the 20th-century, world-beating performance of the US market. This is a significant home-country bias. If the next 50 years is not the "American Century," a 100% VTSAX portfolio will underperform a globally diversified one (like VT, the Total World Index).
+
+**Extreme Psychological Tolerance:** Collins is a "100% stock" evangelist for most of the journey. While "just hold" is simple advice, living through a 50% drop (seeing $500k become $250k) is psychologically brutal. Many investors may overestimate their risk tolerance, and the lack of a bond "dampener" during accumulation could cause them to panic and sell, blowing up the entire plan.
+
+**The 4% Rule's Rigidity:** The 4% rule is a rigid guideline based on a 30-year retirement. For early retirees (e.g., age 35), a 50+ year retirement may warrant a more conservative 3.0% - 3.5% SWR. The rule also doesn't account for flexibility (spending less in down years), which is the single best way to ensure a portfolio's success.
+
+## Conclusion: A Map to Freedom
+
+The Simple Path to Wealth is not a book about finance. It is a book about freedom. Its true value is not its (borrowed) Boglehead investing theory, but its power as a psychological antidote to a toxic, predatory, and confusing financial world.
+
+It gives the reader permission: permission to ignore the "experts," permission to stop worrying about the economy, and permission to choose a path so simple that it's almost insulting. Collins provides an actionable, evidence-based, and—most importantly—psychologically comforting map for anyone who wants to trade a life of mandatory work for one of genuine freedom.`,
+    keyTakeaways: [
+      "F-You Money (The Foundational Goal): The capital required for complete personal autonomy—ability to walk away from any toxic job, boss, or situation without financial fear; first milestone on path to wealth, more important psychologically than final FI number itself",
+      "Debt is Slavery (Absolutist Doctrine): Debt is mathematical antithesis of freedom—when in debt, you work to pay for past, not build future; selling future time/labor to lender; all consumer debt (credit cards, auto loans) is financial emergency requiring Priority Zero elimination",
+      "Savings Rate is Your Primary Weapon (Early Years Truth): In accumulation phase, savings rate matters infinitely more than market returns—$20,000 difference between saving $30k vs. $50k dwarfs any market gain/loss on small portfolio; 50%+ savings rate is accelerator pedal for FI",
+      "The VTSAX Doctrine (One-Fund Strategy): Vanguard Total Stock Market Index Fund (or VTI ETF) holds every publicly traded US company—single bet on American capitalism's long-term growth; 0.04% fee vs. 1-2% for active funds; eliminates decision fatigue and prevents destructive tinkering",
+      "Anti-Complexity Principle (Rebellion Against Industry): Financial services industry manufactures complexity to profit from confusion—simplicity is ultimate competitive advantage; by refusing to play 'loser's game,' you win by avoiding mistakes (high fees, emotional trading, market timing)",
+      "Crashes are Sales, Not Risks (Paradigm Shift): For accumulators, 50% market crash is greatest gift—every dollar buys twice as many VTSAX shares; volatility is price of admission for superior long-term stock returns; true risk is panic-selling at bottom, not the crash itself",
+      "Active Management's Statistical Failure (SPIVA Evidence): 90-95% of actively managed mutual funds fail to beat simple benchmark index over 10-20 years—even professionals (Wharton MBAs, 80-hour research weeks) cannot beat dumb index as group; outperformance is luck, not skill",
+      "The Compounding Fee Catastrophe (Wealth Destroyer): 2% annual fee (1% fund + 1% advisor) consumes 50-60% of final nest egg over 40 years—not 2% of principal but 2% of total holdings every year; fee differential compounds against you, creating mathematically insurmountable drag",
+      "Wealth vs. Rich (Freedom vs. Accumulation): Being wealthy = owning your time; being rich = high net worth requiring high-stress job to sustain; $200k/year doctor working 80 hours is poorer than $50k/year teacher who achieved FI—teacher owns time, doctor's time is owned",
+      "The 25x Rule (FI Number Formula): FI Number = Annual Expenses × 25 (inverse of 4% Rule)—formula has two levers: increase investments OR decrease expenses; learning to live on $30k/year vs. $60k/year cuts FI target from $1.5M to $750k (minimalism as sister philosophy)",
+      "The 4% Rule (Safe Withdrawal Rate): Withdraw 4% of initial portfolio value in Year 1 ($40k on $1M), then adjust for inflation annually—Trinity Study back-tested every 30-year period in US history; near 100% success rate with 50%+ stocks, surviving Great Depression, 1970s stagflation, 2000 dot-com",
+      "Sequence of Returns Risk (Retirement's Greatest Threat): Order of returns matters during withdrawal, not accumulation—retiring into immediate 40% crash forces selling crashed stocks to live, permanently locking in losses ('dollar-cost-ravaging'); cripples portfolio's recovery ability",
+      "The Bond Tent (SWRR Mitigation Strategy): Hold 20-25% VBLTX (Total Bond Market) as 'dry powder' entering retirement—when stocks crash, withdraw living expenses from stable bonds, leaving crashed stocks untouched to recover; when stocks recover, sell high stocks to refill bonds",
+      "Never Sell During Accumulation (Stay the Course): VTSAX strategy has one job during bear markets: Nothing—automate investments, ignore 'financial porn' on TV designed to trigger panic; trust 70+ years of market history showing market always recovers (pathological optimist)",
+      "Tax-Advantaged Account Priority (Sequenced Approach): 401(k) to match (free money) → HSA (triple tax advantage) → Roth IRA (tax-free growth) → max 401(k) → taxable brokerage; tax savings are highest guaranteed return available",
+      "100% Stocks During Accumulation (Aggressive Growth): Collins advocates 100% VTSAX for most of journey—bonds only added 3-5 years before FI to build Bond Tent; young accumulators have time horizon to weather volatility; bonds lower returns and aren't needed for sequence risk yet",
+      "Automate to Eliminate Emotion (Remove Human Factor): Set up automatic payroll deductions to VTSAX and never look at account—removes temptation to 'wait for better time' or market time; consistency beats cleverness; automation is discipline insurance against biological investor flaws",
+      "The Haystack Strategy (Anti-Stock-Picking): Don't search for needle (next Apple/Amazon)—buy entire haystack (VTSAX with 3,000+ companies); guaranteed to capture explosive growth whenever/wherever it occurs; Total Market superior to S&P 500 because captures small/mid-cap future giants early",
+      "Simplicity Prevents Tinkering (Portfolio's Greatest Enemy): Complex 10-fund portfolio tempts destructive tinkering—selling 'loser' to buy 'winner' is market timing and fails; with one fund (VTSAX), there's nothing to do; can't sell tech to buy healthcare because you own both automatically",
+      "The Psychological Folly of Stock Picking (Biology vs. Wealth): Humans hard-wired to be terrible investors—narrative bias (buy story we like), recency bias (buy what's hot), panic bias (sell what's cold); accepting you cannot beat market is single most intelligent investing decision; indexing is humility that makes you rich"
     ],
     isPremium: false,
   },
