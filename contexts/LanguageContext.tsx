@@ -154,7 +154,8 @@ const translations = {
       'how-to-win-friends-and-influence-people': 'How to Win Friends and Influence People',
       'influence-the-psychology-of-persuasion': 'Influence: The Psychology of Persuasion',
       'a-random-walk-down-wall-street': 'A Random Walk Down Wall Street',
-      'the-simple-path-to-wealth': 'The Simple Path to Wealth'
+      'the-simple-path-to-wealth': 'The Simple Path to Wealth',
+      'basic-economics': 'Basic Economics'
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -209,7 +210,8 @@ const translations = {
       'how-to-win-friends-and-influence-people': 'Dale Carnegie',
       'influence-the-psychology-of-persuasion': 'Robert B. Cialdini',
       'a-random-walk-down-wall-street': 'Burton G. Malkiel',
-      'the-simple-path-to-wealth': 'J.L. Collins'
+      'the-simple-path-to-wealth': 'J.L. Collins',
+      'basic-economics': 'Thomas Sowell'
     }
   }
 };

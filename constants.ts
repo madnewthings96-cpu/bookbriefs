@@ -619,6 +619,17 @@ export const BOOKS: Book[] = [
     pageCount: 286,
     arabicSlug: 'ملخص-كتاب-الطريق-البسيط-للثروة',
   },
+  {
+    id: 'basic-economics',
+    title: 'Basic Economics',
+    author: 'Thomas Sowell',
+    category: 'Economics',
+    coverImageUrl: '/images/basic economics.jpg',
+    rating: 4.8,
+    publicationYear: 2000,
+    pageCount: 704,
+    arabicSlug: 'ملخص-كتاب-الاقتصاد-الأساسي',
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -12533,6 +12544,249 @@ It gives the reader permission: permission to ignore the "experts," permission t
       "The Haystack Strategy (Anti-Stock-Picking): Don't search for needle (next Apple/Amazon)—buy entire haystack (VTSAX with 3,000+ companies); guaranteed to capture explosive growth whenever/wherever it occurs; Total Market superior to S&P 500 because captures small/mid-cap future giants early",
       "Simplicity Prevents Tinkering (Portfolio's Greatest Enemy): Complex 10-fund portfolio tempts destructive tinkering—selling 'loser' to buy 'winner' is market timing and fails; with one fund (VTSAX), there's nothing to do; can't sell tech to buy healthcare because you own both automatically",
       "The Psychological Folly of Stock Picking (Biology vs. Wealth): Humans hard-wired to be terrible investors—narrative bias (buy story we like), recency bias (buy what's hot), panic bias (sell what's cold); accepting you cannot beat market is single most intelligent investing decision; indexing is humility that makes you rich"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'basic-economics',
+    title: 'Basic Economics',
+    author: 'Thomas Sowell',
+    coverImageUrl: '/images/basic economics.jpg',
+    category: 'Economics',
+    summary: `Basic Economics: A Common Sense Guide to the Economy
+A Comprehensive Synthesis of the Fifth Edition by Thomas Sowell
+
+# 1. Executive Summary and Foundational Framework
+
+## Introduction: The Tragedy of Good Intentions
+
+At the heart of Thomas Sowell's Basic Economics lies a simple yet profound definition: **Economics is the study of the use of scarce resources which have alternative uses.**
+
+Sowell's central thesis is that economic events are not random, nor are they solely the result of the "greed" of the wealthy or the "compassion" of politicians. Instead, an economy is a complex system where resources are allocated through a network of incentives. The defining characteristic of Sowell's worldview is the distinction between **intentions and results**. He argues that the most disastrous economic policies in history—from rent control to central planning—were often born of noble intentions but failed because they ignored the immutable laws of scarcity and incentives.
+
+**To understand economics is to stop looking at what politicians say their policies will do, and instead analyze the specific incentives those policies create for the millions of human beings who must react to them.**
+
+## The Core Philosophical Pillars
+
+Before dissecting the specific sectors of the economy, one must master the mental models that underpin Sowell's analysis.
+
+### 1. Scarcity: The Unyielding Reality
+
+**There is no such thing as "enough."** In the real world, there are never enough resources to satisfy every desire of every person completely.
+
+**The Definition:** Scarcity does not mean a shortage; it means that human desires are limitless, while resources (time, labor, raw materials) are limited.
+
+**The Application:** When politicians declare that "affordable healthcare is a right," they are ignoring scarcity. Declaring something a right does not create the doctors, hospitals, or medicine required to provide it. Economics is the study of how we make trade-offs to allocate these finite resources among competing claimants.
+
+### 2. Productivity vs. Pay: The Link to Output
+
+A fundamental error in economic thinking is the belief that high wages cause high prices, or that unions/minimum wage laws "create" wealth.
+
+**The Definition:** The standard of living in a country is determined by its **productivity**—the amount of output produced per unit of input.
+
+**The Application:** A country cannot consume more than it produces. High wages in the United States compared to India are not due to generosity, but because American labor (augmented by capital and technology) produces more output per hour. Wealth is not money; wealth is the goods and services produced.
+
+### 3. Systemic Thinking: "And Then What?"
+
+Most economic fallacies stem from "Stage One Thinking"—looking only at the immediate effect of a policy.
+
+**The Definition:** Systemic thinking requires asking, **"And then what?"** If you cap the price of milk, the immediate effect is cheaper milk (Stage One). But then, dairy farmers produce less because it is less profitable, and consumers buy more because it is cheaper. The result is a shortage (Stage Two).
+
+**The Application:** Policies must be judged by their long-term repercussions on the entire system, not their immediate benefit to a specific group.
+
+### 4. The Role of Prices: The Nervous System
+
+Prices are not arbitrary obstacles to getting what we want; they are a communication network.
+
+**The Definition:** Prices convey condensed information about the relative scarcity of a resource and the demand for it.
+
+**The Application:** When the price of lumber rises, it signals builders to use less wood (perhaps switching to brick) and signals lumber companies to plant more trees. No central planner is needed to give these orders; the price mechanism does it automatically.
+
+# 2. Deep Deconstruction: The Seven Parts of the Economy
+
+## Part I: Prices and Markets
+
+**The Central Economic Principle:** Price fluctuations are the mechanism by which resources are reallocated to their most valued uses. Prices are messengers conveying news of scarcity or plenty. When the government interferes with this transmission, it is akin to killing the messenger—the underlying reality of scarcity remains, but the ability to manage it is destroyed.
+
+### Key Arguments and Myth-Busting:
+
+**The Myth of Price Gouging:**
+
+- **Conventional Wisdom:** Raising prices during a disaster is "greed" and should be illegal.
+- **Economic Reality:** High prices during a disaster incentivize suppliers to rush goods to the stricken area (increasing supply) and force locals to economize on essential goods (preventing hoarding).
+- **Historical Case Study:** Sowell contrasts the abundance of supplies in unregulated markets with the shortages in planned economies. He cites the Soviet Union, where prices were fixed by the government. Because prices couldn't rise to signal high demand, goods were constantly in shortage. Soviet industries would produce millions of unsold "left-footed" shoes or nails that were too small because the incentive structure was based on quotas (weight or quantity) rather than a price system that reflected consumer preference.
+
+**Rent Control:**
+
+- **Conventional Wisdom:** Rent control keeps housing affordable for the poor.
+- **Economic Reality:** Rent control creates housing shortages. It reduces the incentive for builders to construct new housing (increasing supply) and reduces the incentive for landlords to maintain existing properties.
+- **Historical Case Study:** Sowell points to San Francisco and New York City, cities with strict rent control and chronic homelessness/housing shortages. He contrasts this with the housing market after World War II. Despite a massive influx of returning veterans, there was no housing shortage in cities without rent control because builders rushed to meet demand. He also cites Sweden, where rent controls led to average waiting times of over a decade for apartments, creating a black market for housing contracts.
+
+**Price Floors (Agricultural Subsidies):**
+
+- **The Mechanism:** When the government sets a minimum price for wheat or sugar to "help farmers," it creates a surplus. Consumers buy less because of the artificially high price, and farmers produce more to capture the guaranteed price.
+- **The Result:** The government is forced to buy the surplus. Sowell notes instances where the US government bought vast amounts of powdered milk and stored it in caves until it spoiled, a pure waste of resources driven by price interference.
+
+## Part II: Industry and Commerce
+
+**The Central Economic Principle:** Profit is not a "waste" or an arbitrary surcharge; it is the price paid for efficiency. However, **Losses are even more important than profits**. The threat of financial loss forces businesses to use resources efficiently or face extinction.
+
+### Key Arguments and Myth-Busting:
+
+**The Role of Profits:**
+
+- **Conventional Wisdom:** Corporations make "obscene" profits that drive up costs.
+- **Economic Reality:** Profits are typically a tiny fraction of the price (often 1-3% for supermarkets). The majority of revenue covers costs (labor, materials, rent).
+- **Historical Case Study:** Sowell uses the example of A&P (The Great Atlantic & Pacific Tea Company). Once the largest retailer in the world, it failed to adapt to changing consumer preferences and the rise of supermarkets like Walmart. The market ruthlessly eliminated A&P not because of a conspiracy, but because they ceased to serve customers efficiently. This proves that "market power" is fleeting without customer satisfaction.
+
+**The Mirage of Monopoly:**
+
+- **Conventional Wisdom:** Big companies destroy competition and then raise prices.
+- **Economic Reality:** High market share does not equal monopoly power if barriers to entry are low. The moment a large company raises prices above market levels, new competitors enter.
+- **Historical Case Study:** Sowell discusses Kodak. For decades, Kodak dominated photography. Yet, they could not "control" the market. Innovation (digital cameras) from competitors destroyed their dominance. The only true monopolies, Sowell argues, are those protected by government mandates (like the India License Raj, where the government strictly limited who could produce goods, protecting inefficient incumbents from competition).
+
+**Regulation and Costs:**
+
+- **The Incentive Structure:** Regulatory agencies have an incentive to expand their power. It is safer for a regulator to ban a safe drug that might have a side effect (Type I error) than to approve a drug that saves lives but kills a few people (Type II error). The bad publicity of the latter is fatal to a bureaucrat's career, leading to "drug lag" where life-saving medicines are delayed for years.
+
+## Part III: Work and Pay
+
+**The Central Economic Principle:** Wages are not set by the benevolence of employers nor the greed of corporations. They are determined by the supply and demand for labor, which is ultimately driven by the productivity of that labor.
+
+### Key Arguments and Myth-Busting:
+
+**The Minimum Wage Myth:**
+
+- **Conventional Wisdom:** Minimum wage laws lift people out of poverty.
+- **Economic Reality:** Minimum wage laws price inexperienced workers out of the market. If a worker produces $8 of value per hour, but the law mandates a $15 wage, that worker will simply not be hired. **The real minimum wage is always zero (unemployment).**
+- **Historical Case Study:** Sowell provides devastating data regarding Black teenage unemployment. In the 1940s, before aggressive minimum wage hikes and during an era of rampant racism, Black teen unemployment was lower than White teen unemployment. Why? Because they could compete on price. As minimum wage laws expanded (often supported by unions trying to protect white workers from "cheap" competition), Black teen unemployment skyrocketed. The law removed the bottom rungs of the economic ladder.
+
+**The Economics of Discrimination:**
+
+- **Conventional Wisdom:** Capitalist employers discriminate to keep minorities down.
+- **Economic Reality:** A free market imposes a cost on discrimination. If an employer refuses to hire productive Black workers, they lose money to a competitor who does hire them.
+- **Historical Case Study:** Apartheid South Africa. Sowell highlights that it was the government that imposed racist hiring laws, while white business owners constantly tried to bypass them. Why? Because white labor was scarce and expensive. To maximize profit, white business owners wanted to hire Black workers and pay them equal wages for equal work. The racist government had to pass laws punishing businesses for hiring Black workers—proving that the free market naturally eroded discrimination, while the state enforced it.
+
+**The Gender Pay Gap:**
+
+- **Analysis:** Sowell deconstructs the "cents on the dollar" statistic. When you control for variables such as continuous years of employment (women more often take breaks for child-rearing), hours worked, and hazard pay (men dominate dangerous jobs), the gap virtually disappears. He notes that never-married women with the same education as men often earn more than their male counterparts.
+
+## Part IV: Time and Risk
+
+**The Central Economic Principle:** The economy exists in time. Interest rates are the price of time (waiting). Speculation and insurance are mechanisms to manage the inherent risk of the future.
+
+### Key Arguments and Myth-Busting:
+
+**The Function of Speculation:**
+
+- **Conventional Wisdom:** Speculators are gamblers who destabilize the economy.
+- **Economic Reality:** Speculators stabilize prices. By buying when prices are low (abundance) and selling when prices are high (scarcity), they smooth out extreme fluctuations.
+- **Historical Case Study:** Sowell uses the example of agricultural speculators. If a speculator anticipates a crop failure, they buy grain now, storing it. This raises current prices slightly (forcing conservation) but ensures there is supply later when the crop fails. Without the speculator, prices would stay low now (encouraging waste) and skyrocket later (causing famine).
+
+**Interest and Allocation:**
+
+- **The Mechanism:** Interest rates tell us whether it is better to consume resources now or invest them for the future. Low interest rates signal that resources are abundant and should be invested in long-term projects (like building factories). Artificial manipulation of interest rates (by Central Banks) creates "bubbles" by sending false signals to investors, leading to malinvestment.
+
+## Part V: The National Economy
+
+**The Central Economic Principle:** National economics (Macroeconomics) is subject to the "Fallacy of Composition"—what is true for an individual is not necessarily true for the nation. Specifically, **money is not wealth**.
+
+### Key Arguments and Myth-Busting:
+
+**The Role of Banks:**
+
+- **Function:** Banks are intermediaries that move savings from those who don't need them immediately to those who can use them productively. They act as a filter, evaluating risk so that society's savings aren't wasted on bad ideas.
+- **Incentive:** When government guarantees bank deposits (FDIC), it reduces the vigilance of depositors. Banks may take higher risks because they are "gambling with other people's money" while the taxpayer holds the bag (Moral Hazard).
+
+**Inflation:**
+
+- **Definition:** Inflation is a hidden tax. It is caused by the government printing more money than there are goods and services produced.
+- **Historical Case Study:** Sowell points to post-WWI Germany and Zimbabwe. In these cases, governments printed money to pay debts. The result was hyperinflation where people carried wheelbarrows of cash to buy bread. The "wealth" of the nation didn't change, but the currency became worthless. This destroys savings and hurts the poor/middle class the most.
+
+## Part VI: The International Economy
+
+**The Central Economic Principle:** International trade is not a zero-sum game (where one wins and one loses). It is a positive-sum game where both sides benefit through **Comparative Advantage**.
+
+### Key Arguments and Myth-Busting:
+
+**Comparative Advantage:**
+
+- **The Concept:** Even if the USA is better at producing everything than another country, it still makes sense to trade. The USA should focus on what it does best (high-tech, pharmaceuticals) and trade for what it does merely "well" (textiles, assembly).
+- **The Application:** This maximizes global output. Sowell explains that "protecting jobs" in inefficient industries (like steel tariffs) actually costs jobs in efficient industries (auto manufacturers who now have to pay more for steel).
+
+**The "Balance of Trade" Fallacy:**
+
+- **Conventional Wisdom:** A trade deficit (importing more than exporting) means a country is losing money.
+- **Economic Reality:** Money sent abroad to buy imports usually comes back as investment. If the US buys Toyotas from Japan, Japan uses those dollars to invest in the US stock market or buy US Treasury bonds.
+- **Historical Case Study:** The US has had a trade deficit for much of its history as the world's strongest economy. Conversely, during the Great Depression, the US often had a trade surplus. A trade surplus is not inherently a sign of economic health.
+
+**Foreign Aid vs. Human Capital:**
+
+- **Argument:** Transferring wealth (Foreign Aid) does not create development. Development comes from **Human Capital** (skills, habits, discipline).
+- **Historical Example:** The Marshall Plan worked in Europe because Europeans already possessed the human capital (skills/industrial knowledge) to rebuild. They just needed physical capital. Pouring money into nations without established property rights or rule of law (parts of Sub-Saharan Africa) has historically fueled corruption rather than growth.
+
+## Part VII: Special Economic Issues
+
+**The Central Economic Principle:** Markets are imperfect, but government solutions are often worse because they lack the feedback mechanism of profit and loss.
+
+### Key Arguments and Myth-Busting:
+
+**The Non-Profit Sector:**
+
+- Sowell argues that universities and hospitals often suffer from extreme inefficiency because they do not face the "discipline of the bottom line." Without the need to make a profit, administrators multiply, and costs (tuition/healthcare) soar far faster than inflation.
+
+**Success and Failure:**
+
+- In a market, failure is just as important as success. Bankruptcy clears out inefficient use of resources. Government "bailouts" prevent this cleansing process, keeping "zombie companies" alive and draining resources from healthy firms.
+
+# 3. Synthesis and Final Assessment
+
+## Synthesized Economic Imperatives
+
+To view the world through the lens of Thomas Sowell is to adopt five critical imperatives:
+
+1. **There are no solutions, only trade-offs.** Never ask if a policy is "good." Ask what we must give up to get it.
+
+2. **Incentives trump intentions.** A policy designed to help the poor that incentivizes dependency will hurt the poor, regardless of how noble the rhetoric.
+
+3. **Prices are information.** Interfering with prices (subsidies, rent control, minimum wage) destroys the information necessary for economic coordination.
+
+4. **Wealth is not fixed.** The poor are not poor because the rich are rich. Wealth is created. The goal is to increase productivity, not merely redistribute existing piles of money.
+
+5. **Follow the money (and the risk).** Always identify who bears the cost of a decision. If the decision-maker (politician/bureaucrat) pays no price for being wrong, the decision will likely be reckless.
+
+## Critique and Context
+
+Sowell's Basic Economics is unique because it contains no equations and no graphs (save for the conceptual). It relies entirely on logic and history.
+
+**The Strength:** This makes it accessible to the "citizen economist." It forces the reader to understand the mechanism, not just memorize a formula.
+
+**The Controversy:** Sowell is an unapologetic free-market advocate (Chicago School). Critics argue he underplays market failures (like environmental externalities) or the potential for positive government intervention. However, Sowell would counter that "market failure" must be weighed against "government failure," which is often more durable and harder to correct.
+
+## Conclusion
+
+Thomas Sowell's Basic Economics is not merely a textbook; it is a tool for intellectual self-defense. In an era of populism and sound-bite politics, Sowell empowers the individual to look past the emotional rhetoric of the political class. By understanding the iron laws of scarcity and the delicate dance of incentives, the reader transitions from a passive observer to an informed analyst, capable of recognizing that in the economy, as in physics, you cannot cheat the laws of nature—you can only understand them.`,
+    keyTakeaways: [
+      "Scarcity is Universal (The Foundational Reality): Human desires are limitless while resources (time, labor, materials) are finite—declaring healthcare or housing a 'right' doesn't create doctors or buildings; economics is study of how we allocate finite resources among infinite competing wants through trade-offs",
+      "Systemic Thinking: 'And Then What?' (Stage Two Analysis): Most economic fallacies stem from Stage One thinking (immediate effect)—rent control makes rent cheaper (Stage One), but then builders stop constructing housing and landlords stop maintaining properties, creating shortages (Stage Two); policies must be judged by long-term system-wide effects",
+      "Prices are Information, Not Obstacles (The Nervous System): Prices convey condensed information about relative scarcity and demand—when lumber price rises, builders switch to brick and lumber companies plant more trees; no central planner needed; interfering with prices (caps, subsidies) is like killing messenger while underlying scarcity remains",
+      "Productivity Determines Standard of Living (Not Wages): Country cannot consume more than it produces—high US wages vs. India aren't due to generosity but because American labor (augmented by capital/technology) produces more output per hour; wealth is goods/services produced, not money printed",
+      "Rent Control Creates Housing Shortages (Intentions vs. Results): Intended to help poor afford housing, but reduces incentive to build new housing (supply) and maintain existing properties—San Francisco and New York have strict rent control and chronic homelessness; Sweden has decade-long apartment waiting lists and black markets",
+      "Minimum Wage Prices Workers Out of Market (Real Minimum Wage is Zero): If worker produces $8/hour value but law mandates $15, they won't be hired—1940s Black teen unemployment was lower than White (despite racism) because could compete on price; as minimum wage expanded, Black teen unemployment skyrocketed; law removes bottom economic ladder rungs",
+      "Profits Are Tiny, Losses Are Critical (Market Discipline): Supermarket profits are 1-3% of price; majority covers costs—but losses force efficient resource use or extinction; A&P (once world's largest retailer) failed to adapt to Walmart and market ruthlessly eliminated them; 'market power' is fleeting without customer satisfaction",
+      "Free Markets Erode Discrimination, Governments Enforce It (Apartheid Proof): Discriminating employer loses money to competitor who hires productive minority workers—Apartheid South Africa: white business owners tried to bypass racist hiring laws (white labor scarce/expensive), so government had to punish businesses for hiring Black workers; free market naturally eroded discrimination",
+      "Monopoly is Fleeting Without Government Protection (Kodak Case): High market share ≠ monopoly power if barriers to entry low—Kodak dominated photography for decades but innovation (digital cameras) destroyed dominance; only true monopolies are government-protected (India License Raj limiting production, protecting inefficient incumbents)",
+      "Speculation Stabilizes Prices (Not Gambling): Speculators buy when prices low (abundance), sell when high (scarcity), smoothing fluctuations—agricultural speculator anticipating crop failure buys grain now (raises current price slightly, forcing conservation) and ensures supply later when crop fails; without them, prices stay low now (encouraging waste) then skyrocket (causing famine)",
+      "Price Gouging Laws Create Shortages During Disasters (Unintended Consequences): High disaster prices incentivize suppliers to rush goods to stricken area (increasing supply) and force locals to economize (preventing hoarding)—Soviet Union fixed prices, so couldn't rise to signal demand; constant shortages of goods, produced millions of unsold 'left-footed' shoes",
+      "Inflation is Hidden Tax on Poor/Middle Class (Printing Money Destroys Wealth): Government printing more money than goods/services produced causes inflation—post-WWI Germany and Zimbabwe hyperinflation had people carrying wheelbarrows of cash for bread; nation's wealth unchanged but currency worthless, destroying savings",
+      "Trade is Positive-Sum, Not Zero-Sum (Comparative Advantage): Even if USA better at producing everything, still makes sense to trade—focus on what do best (high-tech, pharma), trade for what do 'well' (textiles); maximizes global output; 'protecting jobs' in inefficient industries (steel tariffs) costs jobs in efficient ones (auto manufacturers paying more for steel)",
+      "Trade Deficits Are Not Inherently Bad (Balance of Trade Fallacy): Money sent abroad for imports usually returns as investment—US buys Toyotas from Japan, Japan invests in US stocks/bonds; US had trade deficits as world's strongest economy; during Great Depression often had trade surplus; surplus ≠ economic health",
+      "Regulatory Agencies Expand Power, Not Efficiency (Bureaucratic Incentives): Safer for regulator to ban safe drug with potential side effect (Type I error) than approve life-saving drug that kills few (Type II error)—bad publicity of latter fatal to career; creates 'drug lag' delaying life-saving medicines for years",
+      "Foreign Aid Without Human Capital Fuels Corruption (Marshall Plan vs. Africa): Transferring wealth doesn't create development—development comes from human capital (skills, habits, discipline); Marshall Plan worked because Europeans had industrial knowledge, just needed physical capital; aid to nations without property rights/rule of law historically fuels corruption",
+      "Government Guarantees Create Moral Hazard (FDIC Example): When government guarantees bank deposits, reduces depositor vigilance—banks take higher risks 'gambling with other people's money' while taxpayer holds bag; removes market discipline feedback mechanism",
+      "Non-Profit Sector Lacks Bottom-Line Discipline (University/Hospital Inefficiency): Without need to make profit, administrators multiply and costs (tuition/healthcare) soar far faster than inflation—lack of profit/loss feedback mechanism prevents efficient resource allocation",
+      "Bailouts Prevent Market Cleansing (Zombie Companies): In market, failure is as important as success—bankruptcy clears out inefficient resource use; government bailouts keep 'zombie companies' alive, draining resources from healthy firms and preventing reallocation to productive uses",
+      "Gender Pay Gap Disappears When Controlled (Variable Analysis): Raw 'cents on dollar' statistic misleading—when control for continuous employment (women take breaks for child-rearing), hours worked, hazard pay (men dominate dangerous jobs), gap virtually disappears; never-married women with same education as men often earn more than male counterparts"
     ],
     isPremium: false,
   },
