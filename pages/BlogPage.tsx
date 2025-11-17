@@ -47,7 +47,752 @@ const BlogPage: React.FC = () => {
   };
 
   const getFullContent = (postId: number): string => {
-    if (postId === 16) {
+    if (postId === 20) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">عقلية المتداول المحترف: قهر التحيزات الذهنية وبلوغ ذروة الأداء</h2>
+          
+          <h3 style="font-size: 24px; font-weight: bold; margin: 28px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">مقدمة: الارتقاء من الكفاءة إلى التميز</h3>
+          
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">في رحلتنا عبر عالم التداول، تناولنا في المقالات السابقة الأساسيات الحاسمة: فهم سيكولوجية الخوف والطمع، وتطبيق الانضباط الصارم وإدارة المخاطر، وبناء خطة عمل متكاملة مع سجل تداول دقيق. هذه الركائز تبني متداولاً كفؤاً وقادراً على البقاء في السوق. ولكن، ما الذي يفصل بين المتداول الكفؤ والمتداول المتميز الذي يحقق نتائج استثنائية باستمرار؟</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الجواب يكمن في المستوى التالي من الإتقان العقلي. إنه عالم "ما وراء الأساسيات"، حيث نتعلم كيفية التعرف على الفخاخ الذهنية الخفية التي تسمى "التحيزات المعرفية" ونهزمها، ونتقن فن الصبر، ونبني العادات اليومية التي تضعنا في حالة "ذروة الأداء"، تماماً مثل الرياضيين المحترفين. هذا المقال هو دليلك للارتقاء من مجرد تطبيق القواعد إلى تجسيد عقلية النخبة في التداول.</p>
+
+          <div style="background-color: #fef3c7; border: 3px solid #f59e0b; border-radius: 15px; padding: 28px; margin: 32px 0; text-align: center;">
+            <h4 style="margin: 0 0 16px 0; color: #92400e; font-size: 22px; font-weight: bold;">🎯 رحلة التميز</h4>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+              <div style="background-color: #fed7aa; padding: 16px 24px; border-radius: 10px;">
+                <p style="margin: 0; color: #7c2d12; font-size: 18px; font-weight: 600;">كفؤ ✓</p>
+              </div>
+              <div style="font-size: 28px; color: #92400e;">➜</div>
+              <div style="background-color: #fbbf24; padding: 16px 24px; border-radius: 10px;">
+                <p style="margin: 0; color: #78350f; font-size: 18px; font-weight: 600;">متميز ⭐</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #ef4444; padding-bottom: 12px;">الجزء الأول: المخربون الخفيون - كشف التحيزات المعرفية في التداول</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">التحيزات المعرفية هي اختصارات ذهنية (طرق تفكير تلقائية) يستخدمها دماغنا لتبسيط معالجة المعلومات واتخاذ القرارات بسرعة. وفي حين أنها مفيدة في حياتنا اليومية، إلا أنها يمكن أن تكون مدمرة في عالم التداول، حيث تؤدي إلى قرارات غير عقلانية ومكلفة. إليك أشهر هذه التحيزات وكيفية التغلب عليها:</p>
+
+          <div style="background-color: #fef2f2; border: 3px solid #ef4444; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #991b1b; font-size: 22px; font-weight: bold; text-align: center;">🧠 التحيزات المعرفية الأربعة القاتلة</h4>
+            
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #fee2e2; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">✅</div>
+                <h5 style="color: #dc2626; font-size: 20px; font-weight: bold; margin: 0;">1. التحيز التأكيدي (Confirmation Bias)</h5>
+              </div>
+              
+              <div style="background-color: #fef2f2; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #991b1b; font-weight: bold; margin: 0 0 8px 0;">❓ ما هو؟</h6>
+                <p style="margin: 0; color: #7f1d1d; line-height: 1.6;">الميل للبحث عن وتفسير وتذكر المعلومات التي تتوافق مع معتقداتنا الحالية، مع تجاهل الأدلة التي تتعارض معها.</p>
+              </div>
+              
+              <div style="background-color: #fff7ed; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #c2410c; font-weight: bold; margin: 0 0 8px 0;">📊 في التداول:</h6>
+                <p style="margin: 0; color: #7c2d12; line-height: 1.6;">إذا كنت تعتقد أن سهماً ما سيرتفع، ستبدأ في قراءة الأخبار الإيجابية فقط عنه وتتجاهل أي تقارير سلبية، مما يعزز قرارك الخاطئ.</p>
+              </div>
+              
+              <div style="background-color: #d1fae5; padding: 16px; border-radius: 8px;">
+                <h6 style="color: #065f46; font-weight: bold; margin: 0 0 8px 0;">💡 كيف تتغلب عليه؟</h6>
+                <p style="margin: 0; color: #047857; line-height: 1.6; font-weight: 500;">كن "محامي الشيطان" لنفسك. قبل الدخول في أي صفقة، ابحث بنشاط عن أسباب فشلها المحتملة. اسأل نفسك: "ما هي الحجة المعاكسة لوجهة نظري؟".</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #dbeafe; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">📅</div>
+                <h5 style="color: #1e40af; font-size: 20px; font-weight: bold; margin: 0;">2. تحيز الحداثة (Recency Bias)</h5>
+              </div>
+              
+              <div style="background-color: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #1e3a8a; font-weight: bold; margin: 0 0 8px 0;">❓ ما هو؟</h6>
+                <p style="margin: 0; color: #1e40af; line-height: 1.6;">إعطاء وزن أكبر للأحداث الأخيرة وتوقع استمرارها في المستقبل.</p>
+              </div>
+              
+              <div style="background-color: #fff7ed; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #c2410c; font-weight: bold; margin: 0 0 8px 0;">📊 في التداول:</h6>
+                <p style="margin: 0; color: #7c2d12; line-height: 1.6;">بعد سلسلة من الصفقات الرابحة، قد تصبح مفرط الثقة وتزيد من حجم مخاطرتك، معتقداً أن "الحظ" سيستمر. والعكس صحيح بعد سلسلة من الخسائر.</p>
+              </div>
+              
+              <div style="background-color: #d1fae5; padding: 16px; border-radius: 8px;">
+                <h6 style="color: #065f46; font-weight: bold; margin: 0 0 8px 0;">💡 كيف تتغلب عليه؟</h6>
+                <p style="margin: 0; color: #047857; line-height: 1.6; font-weight: 500;">ثق بخطتك وإحصائياتك على المدى الطويل، وليس بمشاعرك تجاه آخر صفقة. سجل التداول هو أفضل علاج لهذا التحيز، لأنه يذكرك بالصورة الكبيرة.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #fef3c7; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">⚓</div>
+                <h5 style="color: #92400e; font-size: 20px; font-weight: bold; margin: 0;">3. تحيز الإرساء (Anchoring Bias)</h5>
+              </div>
+              
+              <div style="background-color: #fffbeb; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #78350f; font-weight: bold; margin: 0 0 8px 0;">❓ ما هو؟</h6>
+                <p style="margin: 0; color: #92400e; line-height: 1.6;">الاعتماد المفرط على أول معلومة تتلقاها عند اتخاذ القرار.</p>
+              </div>
+              
+              <div style="background-color: #fff7ed; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #c2410c; font-weight: bold; margin: 0 0 8px 0;">📊 في التداول:</h6>
+                <p style="margin: 0; color: #7c2d12; line-height: 1.6;">"ترسيخ" سعر الشراء في ذهنك. قد ترفض بيع سهم خاسر لأنك تنتظره "ليعود إلى سعر الشراء"، على الرغم من أن كل المؤشرات الفنية تقول إنه سيستمر في الهبوط. سعر شرائك لا يهم السوق على الإطلاق.</p>
+              </div>
+              
+              <div style="background-color: #d1fae5; padding: 16px; border-radius: 8px;">
+                <h6 style="color: #065f46; font-weight: bold; margin: 0 0 8px 0;">💡 كيف تتغلب عليه؟</h6>
+                <p style="margin: 0; color: #047857; line-height: 1.6; font-weight: 500;">قيّم كل صفقة بناءً على الظروف الحالية للسوق، وليس بناءً على تاريخها معك. أمر وقف الخسارة هو أداتك الأساسية لتحرير نفسك من هذا التحيز.</p>
+              </div>
+            </div>
+
+            <div style="background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #fae8ff; padding: 12px; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">😰</div>
+                <h5 style="color: #86198f; font-size: 20px; font-weight: bold; margin: 0;">4. النفور من الخسارة (Loss Aversion)</h5>
+              </div>
+              
+              <div style="background-color: #fdf4ff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #701a75; font-weight: bold; margin: 0 0 8px 0;">❓ ما هو؟</h6>
+                <p style="margin: 0; color: #86198f; line-height: 1.6;">الألم النفسي الناتج عن الخسارة يكون أقوى بمرتين من متعة تحقيق ربح بنفس المقدار.</p>
+              </div>
+              
+              <div style="background-color: #fff7ed; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h6 style="color: #c2410c; font-weight: bold; margin: 0 0 8px 0;">📊 في التداول:</h6>
+                <p style="margin: 0; color: #7c2d12; line-height: 1.6;">هذا هو السبب الرئيسي الذي يجعل المتداولين يتمسكون بالصفقات الخاسرة لفترة طويلة جداً (على أمل أن تنعكس)، بينما يسارعون لإغلاق الصفقات الرابحة مبكراً جداً (خوفاً من أن يتحول الربح الصغير إلى خسارة).</p>
+              </div>
+              
+              <div style="background-color: #d1fae5; padding: 16px; border-radius: 8px;">
+                <h6 style="color: #065f46; font-weight: bold; margin: 0 0 8px 0;">💡 كيف تتغلب عليه؟</h6>
+                <p style="margin: 0; color: #047857; line-height: 1.6; font-weight: 500;">التزم بشكل صارم بأهداف وقف الخسارة وجني الأرباح المحددة مسبقاً في خطتك. هذا يزيل القرار العاطفي من المعادلة ويجبرك على التصرف بمنطقية.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #8b5cf6; padding-bottom: 12px;">الجزء الثاني: القوة الخارقة للصبر - إتقان فن "عدم القيام بأي شيء"</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في عالم مهووس بالسرعة والحركة المستمرة، يُعتبر الصبر في التداول قوة خارقة حقيقية. الصبر ليس انتظاراً سلبياً، بل هو استراتيجية نشطة ومنضبطة تتجلى في مجالين حاسمين:</p>
+
+          <div style="background-color: #faf5ff; border: 3px solid #8b5cf6; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #6b21a8; font-size: 22px; font-weight: bold; text-align: center;">⏳ نوعا الصبر في التداول</h4>
+            
+            <div style="background-color: #fff; padding: 28px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="background-color: #ede9fe; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+                <h5 style="color: #6b21a8; font-size: 20px; font-weight: bold; margin: 0;">1️⃣ الصبر في انتظار الفرصة المناسبة</h5>
+              </div>
+              
+              <p style="margin-bottom: 16px; color: #4a5568; line-height: 1.8; text-align: justify;">السوق لا يقدم فرصاً عالية الاحتمال كل دقيقة. يقضي المتداولون المحترفون معظم وقتهم في المراقبة والتحليل، في انتظار أن تتوافق ظروف السوق تماماً مع معايير الدخول المحددة في خطتهم.</p>
+              
+              <div style="background-color: #fef3c7; padding: 16px; border-radius: 8px; border-right: 4px solid #f59e0b;">
+                <p style="margin: 0; color: #92400e; line-height: 1.7; font-weight: 500;">✨ هذا يمنع "التداول المفرط" (Overtrading) والدخول في صفقات ضعيفة لمجرد الشعور بالملل أو الرغبة في "فعل شيء ما".</p>
+              </div>
+            </div>
+            
+            <div style="background-color: #fff; padding: 28px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="background-color: #d1fae5; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+                <h5 style="color: #065f46; font-size: 20px; font-weight: bold; margin: 0;">2️⃣ الصبر داخل الصفقة الرابحة</h5>
+              </div>
+              
+              <p style="margin-bottom: 16px; color: #4a5568; line-height: 1.8; text-align: justify;">بمجرد دخولك في صفقة جيدة، فإن الاختبار الحقيقي هو أن تمتلك الصبر لتركها تنمو وتصل إلى هدفها المنطقي. مقاومة إغراء جني الأرباح الصغيرة مبكراً هو ما يصنع الفارق بين الأرباح الهامشية والأرباح الكبيرة التي تغير قواعد اللعبة.</p>
+              
+              <div style="background-color: #dbeafe; padding: 16px; border-radius: 8px; border-right: 4px solid #3b82f6;">
+                <p style="margin: 0; color: #1e40af; line-height: 1.7; font-weight: 500;">🎯 الصبر مرتبط ارتباطاً وثيقاً بـ "تأجيل الإشباع" - التخلي عن مكافأة صغيرة وفورية (ربح 50 دولاراً الآن) من أجل مكافأة أكبر لاحقاً (ربح 200 دولار عند الهدف).</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 28px; margin: 32px 0; text-align: center;">
+            <h4 style="margin: 0 0 16px 0; color: #1e40af; font-size: 22px; font-weight: bold;">💎 معادلة القوة الخارقة</h4>
+            <div style="background-color: #dbeafe; padding: 20px; border-radius: 10px; margin-top: 16px;">
+              <p style="margin: 0; color: #1e3a8a; font-size: 20px; font-weight: 600; line-height: 1.8;">صبر في الانتظار + صبر في التنفيذ = أرباح استثنائية</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #10b981; padding-bottom: 12px;">الجزء الثالث: المتداول كالرياضي المحترف - بناء عادات ذروة الأداء</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">فكر في المتداولين الناجحين مثلهم مثل الرياضيين الأولمبيين. نجاحهم ليس وليد الصدفة، بل هو نتاج عادات يومية صارمة مصممة للحفاظ على صحتهم العقلية والجسدية في أفضل حالاتها. لكي تصل إلى ذروة أدائك، تبنَّ هذه العادات:</p>
+
+          <div style="background-color: #ecfdf5; border: 3px solid #10b981; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #065f46; font-size: 22px; font-weight: bold; text-align: center;">🏆 العادات الأربع لذروة الأداء</h4>
+            
+            <div style="margin-bottom: 24px; background-color: #fff; padding: 24px; border-radius: 10px; border-right: 5px solid #10b981;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #d1fae5; padding: 12px; border-radius: 50%; font-size: 28px;">🌅</div>
+                <h5 style="color: #047857; font-size: 20px; font-weight: bold; margin: 0;">1. طوّر روتيناً لما قبل السوق</h5>
+              </div>
+              <p style="margin-bottom: 12px; color: #4a5568; line-height: 1.8;">لا تجلس أمام الشاشة وتبدأ في الضغط على الأزرار مباشرة. خصص 30-60 دقيقة لتهيئة نفسك.</p>
+              <div style="background-color: #f0fdf4; padding: 16px; border-radius: 8px;">
+                <ul style="margin: 0; padding-right: 20px; color: #166534; line-height: 1.9;">
+                  <li>مراجعة خطة التداول</li>
+                  <li>تحديد مستويات الدعم والمقاومة الرئيسية لليوم</li>
+                  <li>قراءة الأخبار الاقتصادية الهامة (للسياق، لا للقرارات العاطفية)</li>
+                  <li>ممارسة التأمل أو التنفس العميق لتهدئة العقل وتركيزه</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 24px; background-color: #fff; padding: 24px; border-radius: 10px; border-right: 5px solid #14b8a6;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #ccfbf1; padding: 12px; border-radius: 50%; font-size: 28px;">💪</div>
+                <h5 style="color: #0f766e; font-size: 20px; font-weight: bold; margin: 0;">2. أعطِ الأولوية لصحتك الجسدية والعقلية</h5>
+              </div>
+              <p style="margin-bottom: 12px; color: #4a5568; line-height: 1.8;">قراراتك المالية تكون بجودة حالتك الذهنية. قلة النوم، وسوء التغذية، والتوتر من خارج عالم التداول، كلها عوامل ستؤثر سلباً على حكمك.</p>
+              <div style="background-color: #f0fdfa; padding: 16px; border-radius: 8px;">
+                <ul style="margin: 0; padding-right: 20px; color: #115e59; line-height: 1.9;">
+                  <li>✅ احصل على قسط كافٍ من النوم (7-8 ساعات)</li>
+                  <li>✅ مارس الرياضة بانتظام</li>
+                  <li>✅ تناول طعاماً صحياً ومتوازناً</li>
+                  <li>✅ خذ فترات راحة منتظمة</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 24px; background-color: #fff; padding: 24px; border-radius: 10px; border-right: 5px solid #06b6d4;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #cffafe; padding: 12px; border-radius: 50%; font-size: 28px;">🎯</div>
+                <h5 style="color: #0e7490; font-size: 20px; font-weight: bold; margin: 0;">3. اصنع بيئة عمل خالية من المشتتات</h5>
+              </div>
+              <p style="margin-bottom: 12px; color: #4a5568; line-height: 1.8;">أثناء ساعات التداول، يجب أن يكون تركيزك كاملاً. كلما قلّت المشتتات، زادت قدرتك على الدخول في "حالة التدفق" (Flow State).</p>
+              <div style="background-color: #ecfeff; padding: 16px; border-radius: 8px;">
+                <ul style="margin: 0; padding-right: 20px; color: #155e75; line-height: 1.9;">
+                  <li>🚫 أغلق وسائل التواصل الاجتماعي</li>
+                  <li>🚫 أوقف الإشعارات غير الضرورية</li>
+                  <li>🚫 أخبر عائلتك بحاجتك للتركيز</li>
+                  <li>✅ خصص مكان هادئ للتداول</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="background-color: #fff; padding: 24px; border-radius: 10px; border-right: 5px solid #3b82f6;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background-color: #dbeafe; padding: 12px; border-radius: 50%; font-size: 28px;">🌙</div>
+                <h5 style="color: #1e40af; font-size: 20px; font-weight: bold; margin: 0;">4. التزم بروتين ما بعد السوق</h5>
+              </div>
+              <p style="margin-bottom: 12px; color: #4a5568; line-height: 1.8;">بمجرد انتهاء يوم التداول، لا تغلق الكمبيوتر وتهرب. خصص 15 دقيقة لمراجعة يومك.</p>
+              <div style="background-color: #eff6ff; padding: 16px; border-radius: 8px;">
+                <ul style="margin: 0; padding-right: 20px; color: #1e3a8a; line-height: 1.9;">
+                  <li>📝 قم بتحديث سجل تداولك</li>
+                  <li>📝 دوّن ملاحظاتك حول ما سار بشكل جيد وما لم يسر</li>
+                  <li>📝 أغلق يوم العمل عقلياً</li>
+                  <li>📝 حافظ على توازن صحي بين العمل والحياة</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fff7ed; border: 3px solid #fb923c; border-radius: 15px; padding: 32px; margin: 40px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #9a3412; font-size: 24px; font-weight: bold; text-align: center;">🔥 الدورة اليومية للمتداول المحترف</h4>
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #fed7aa; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">🌅</div>
+                <h5 style="color: #7c2d12; font-weight: bold; margin: 0 0 8px 0;">الصباح</h5>
+                <p style="margin: 0; color: #92400e;">روتين ما قبل السوق</p>
+              </div>
+              <div style="text-align: center; font-size: 28px; color: #ea580c;">⬇️</div>
+              <div style="background-color: #fed7aa; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+                <h5 style="color: #7c2d12; font-weight: bold; margin: 0 0 8px 0;">التداول</h5>
+                <p style="margin: 0; color: #92400e;">تركيز كامل - بيئة خالية من المشتتات</p>
+              </div>
+              <div style="text-align: center; font-size: 28px; color: #ea580c;">⬇️</div>
+              <div style="background-color: #fed7aa; padding: 20px; border-radius: 10px; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">🌙</div>
+                <h5 style="color: #7c2d12; font-weight: bold; margin: 0 0 8px 0;">المساء</h5>
+                <p style="margin: 0; color: #92400e;">مراجعة وتسجيل - ثم إغلاق ذهني</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">خاتمة: رحلة الإتقان المستمر</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الوصول إلى عقلية المتداول المحترف ليس حدثاً، بل هو عملية تطور لا تنتهي. إنه التزام يومي بأن تكون طالباً للسوق، والأهم من ذلك، طالباً لنفسك. من خلال فهم التحيزات الخفية التي تؤثر على قراراتك، وممارسة الصبر كأداة استراتيجية، وبناء العادات اليومية التي تعزز الأداء المتميز، فإنك تبني الميزة التنافسية النهائية.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify; font-size: 18px; font-weight: 500;">هذه الميزة ليست استراتيجية سرية أو مؤشراً سحرياً، بل هي عقل منضبط، وواثق، ومدرك لذاته.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"الفرق بين المتداول الكفؤ والمتميز ليس في المعرفة، بل في الإتقان العقلي. قهر تحيزاتك، وتحلَّ بالصبر، وابنِ عاداتك - وستصبح من النخبة."</p>
+          </div>
+
+          <div style="background-color: #f3f4f6; border: 3px solid #6366f1; border-radius: 15px; padding: 30px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #4338ca; font-size: 22px; font-weight: bold; text-align: center;">🎯 خلاصة الطريق إلى التميز</h4>
+            
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #fef2f2; padding: 18px; border-radius: 8px; border-right: 4px solid #ef4444;">
+                <h5 style="color: #991b1b; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">🧠 اقهر التحيزات</h5>
+                <p style="margin: 0; color: #7f1d1d; line-height: 1.6;">كن محامي الشيطان لنفسك • ثق بالبيانات لا المشاعر • قيّم بناءً على الحاضر لا الماضي • التزم بخطتك بصرامة</p>
+              </div>
+              
+              <div style="background-color: #faf5ff; padding: 18px; border-radius: 8px; border-right: 4px solid #8b5cf6;">
+                <h5 style="color: #6b21a8; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">⏳ اتقن الصبر</h5>
+                <p style="margin: 0; color: #581c87; line-height: 1.6;">انتظر الفرص المثالية • لا تتداول من الملل • اترك الصفقات الرابحة تنمو • أجّل الإشباع الفوري</p>
+              </div>
+              
+              <div style="background-color: #ecfdf5; padding: 18px; border-radius: 8px; border-right: 4px solid #10b981;">
+                <h5 style="color: #065f46; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">🏆 ابنِ العادات</h5>
+                <p style="margin: 0; color: #047857; line-height: 1.6;">روتين قبل السوق • صحة جسدية وعقلية • بيئة خالية من المشتتات • مراجعة بعد السوق</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 19px; font-weight: 600; line-height: 1.8;">🚀 رحلة الإتقان بدأت. كل يوم هو فرصة جديدة لتصبح أفضل نسخة من نفسك كمتداول. التميز ليس هدفاً، بل رحلة يومية من التطور المستمر.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 19) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">الخطة والمراجعة: كيف تبني خطة تداول صارمة وتستخدم سجل التداول لصقل مهاراتك</h2>
+          
+          <h3 style="font-size: 24px; font-weight: bold; margin: 28px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">مقدمة: تحويل النظرية إلى واقع مربح</h3>
+          
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">في المنشورين السابقين، استكشفنا أعماق سيكولوجية التداول وأكدنا على أن الانضباط وإدارة المخاطر هما حجر الزاوية للنجاح. لقد تعلمنا عن الخوف والطمع، وضرورة الالتزام بقواعد مثل قاعدة الـ 1-2%. ولكن كيف نترجم كل هذه المفاهيم الذهبية إلى أفعال ملموسة ومنظمة على أرض الواقع؟ كيف نضمن أننا لا نتخذ قراراتنا بناءً على أهواء اللحظة، بل بناءً على استراتيجية مدروسة؟</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الإجابة تكمن في أداتين لا غنى عنهما للمتداول المحترف: <strong>خطة التداول</strong> و<strong>سجل التداول</strong>. خطة التداول هي خارطة طريقك، وسجل التداول هو مرآتك الصادقة التي تعكس أداءك وتكشف لك أسرار عقلك. في هذا المقال، سنوضح خطوة بخطوة كيف تبني خطة تداول شاملة، وكيف تستخدم سجل التداول لتحليل أدائك، والتعلم من أخطائك، وتحقيق التطور المستمر.</p>
+
+          <div style="background-color: #ebf8ff; border: 3px solid #4299e1; padding: 28px; margin: 32px 0; border-radius: 12px; text-align: center;">
+            <h4 style="margin: 0 0 16px 0; color: #2c5282; font-size: 22px; font-weight: bold;">🗺️ الأدوات الأساسية للمتداول المحترف</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+              <div style="background-color: #bee3f8; padding: 20px; border-radius: 8px;">
+                <div style="font-size: 32px; margin-bottom: 12px;">📋</div>
+                <h5 style="color: #2c5282; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">خطة التداول</h5>
+                <p style="margin: 0; color: #2d3748; font-size: 15px;">خارطة طريقك</p>
+              </div>
+              <div style="background-color: #bee3f8; padding: 20px; border-radius: 8px;">
+                <div style="font-size: 32px; margin-bottom: 12px;">📊</div>
+                <h5 style="color: #2c5282; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">سجل التداول</h5>
+                <p style="margin: 0; color: #2d3748; font-size: 15px;">مرآتك الصادقة</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #4299e1; padding-bottom: 12px;">الجزء الأول: مخطط النجاح - بناء خطة التداول الشاملة الخاصة بك</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">خطة التداول ليست مجرد مجموعة من الأفكار في رأسك؛ إنها وثيقة عمل مكتوبة ومفصلة تحكم كل قرار تتخذه في السوق. إنها بمثابة خطة عمل لمشروعك التجاري (التداول)، ودورها الأساسي هو إبعاد العواطف عن عملية اتخاذ القرار وضمان الاتساق في الأداء. إليك المكونات الأساسية التي يجب أن تتضمنها خطتك:</p>
+
+          <div style="background-color: #f7fafc; border-right: 4px solid #805ad5; padding: 28px; margin: 32px 0; border-radius: 10px;">
+            <h4 style="margin: 0 0 24px 0; color: #553c9a; font-size: 22px; font-weight: bold;">📝 المكونات الخمسة الأساسية لخطة التداول</h4>
+            
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <h5 style="color: #6b46c1; font-size: 20px; font-weight: bold; margin: 0 0 16px 0;">1️⃣ حدد دوافعك وأهدافك</h5>
+              <p style="margin: 0 0 12px 0; color: #4a5568; line-height: 1.7;">قبل أن تخاطر بأي أموال، اسأل نفسك: لماذا أتداول؟ هل هو لتحقيق دخل إضافي، أم لتنمية رأس المال على المدى الطويل، أم لتحقيق الاستقلال المالي؟ كن واضحًا وصريحًا.</p>
+              <div style="background-color: #faf5ff; padding: 16px; border-radius: 6px; margin-top: 12px;">
+                <p style="margin: 0; color: #553c9a; font-weight: 500;">💡 مثال: تحقيق عائد سنوي بنسبة 15%، أو الوصول إلى مبلغ معين خلال إطار زمني محدد</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <h5 style="color: #6b46c1; font-size: 20px; font-weight: bold; margin: 0 0 16px 0;">2️⃣ قيّم مدى تحملك للمخاطر</h5>
+              <p style="margin: 0 0 12px 0; color: #4a5568; line-height: 1.7;">هذا هو حجر الأساس في إدارة المخاطر. ما هو الحد الأقصى للمبلغ الذي أنت مستعد لخسارته في صفقة واحدة، أو في يوم واحد، أو في أسبوع واحد، دون أن يؤثر ذلك على استقرارك النفسي أو المالي؟</p>
+              <div style="background-color: #fef5e7; padding: 16px; border-radius: 6px; margin-top: 12px; border-right: 3px solid #f39c12;">
+                <p style="margin: 0; color: #7c2d12; font-weight: 500;">⚠️ القاعدة الذهبية: نسبة المخاطرة لكل صفقة (1-2% من إجمالي حسابك)</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <h5 style="color: #6b46c1; font-size: 20px; font-weight: bold; margin: 0 0 16px 0;">3️⃣ اختر أسواقك وأسلوب تداولك</h5>
+              <p style="margin: 0 0 16px 0; color: #4a5568; line-height: 1.7;">لا يمكنك أن تكون خبيرًا في كل شيء. ركز على عدد قليل من الأسواق التي تفهمها جيدًا. ثم حدد أسلوب التداول الذي يتناسب مع شخصيتك وجدولك الزمني:</p>
+              <div style="background-color: #f0f9ff; padding: 16px; border-radius: 6px;">
+                <ul style="margin: 0; padding-right: 20px; color: #1e3a8a; line-height: 1.8;">
+                  <li style="margin-bottom: 8px;"><strong>التداول اليومي (Day Trading):</strong> فتح وإغلاق الصفقات في نفس اليوم</li>
+                  <li style="margin-bottom: 8px;"><strong>التداول المتأرجح (Swing Trading):</strong> الاحتفاظ بالصفقات لعدة أيام أو أسابيع</li>
+                  <li style="margin-bottom: 0;"><strong>التداول طويل الأجل (Position Trading):</strong> الاحتفاظ بالصفقات لأسابيع أو أشهر</li>
+                </ul>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px; background-color: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <h5 style="color: #6b46c1; font-size: 20px; font-weight: bold; margin: 0 0 16px 0;">4️⃣ طوّر استراتيجيتك بالتفصيل</h5>
+              <p style="margin: 0 0 16px 0; color: #4a5568; line-height: 1.7;">هذا هو قلب خطة التداول، ويجب أن يكون واضحًا لا لبس فيه:</p>
+              <div style="background-color: #f0fdf4; padding: 16px; border-radius: 6px; margin-bottom: 12px;">
+                <h6 style="color: #166534; font-weight: bold; margin: 0 0 8px 0;">✅ معايير الدخول</h6>
+                <p style="margin: 0; color: #15803d; font-size: 15px;">ما هي الشروط الفنية أو الأساسية المحددة التي يجب أن تتحقق لدخول صفقة؟ (مثال: تقاطع متوسطين متحركين، اختراق مستوى دعم أو مقاومة، ظهور نموذج شموع معين)</p>
+              </div>
+              <div style="background-color: #fef2f2; padding: 16px; border-radius: 6px;">
+                <h6 style="color: #991b1b; font-weight: bold; margin: 0 0 8px 0;">🚪 معايير الخروج</h6>
+                <p style="margin: 0 0 8px 0; color: #b91c1c; font-size: 15px;"><strong>أمر وقف الخسارة (Stop-Loss):</strong> السعر الذي ستغلق عنده الصفقة لتقليل خسائرك</p>
+                <p style="margin: 0; color: #b91c1c; font-size: 15px;"><strong>أمر جني الأرباح (Take-Profit):</strong> السعر المستهدف لتأمين أرباحك</p>
+              </div>
+            </div>
+
+            <div style="background-color: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+              <h5 style="color: #6b46c1; font-size: 20px; font-weight: bold; margin: 0 0 16px 0;">5️⃣ حدد قواعد إدارة المخاطر بدقة</h5>
+              <div style="margin-bottom: 16px;">
+                <h6 style="color: #2d3748; font-weight: bold; margin: 0 0 8px 0;">📊 حجم الصفقة (Position Sizing)</h6>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">بناءً على نسبة المخاطرة التي حددتها (1-2%) ومستوى وقف الخسارة، احسب بدقة حجم الصفقة المناسب. هذه العملية تضمن أن تكون خسارتك المحتملة دائمًا تحت السيطرة.</p>
+              </div>
+              <div style="background-color: #e0f2fe; padding: 16px; border-radius: 6px;">
+                <h6 style="color: #075985; font-weight: bold; margin: 0 0 8px 0;">⚖️ نسبة المخاطرة إلى العائد</h6>
+                <p style="margin: 0; color: #0c4a6e; line-height: 1.7;">لا تدخل أي صفقة إلا إذا كان الربح المحتمل يساوي على الأقل ضعف الخسارة المحتملة. البحث عن نسبة 1:2 أو أعلى يجعلك رابحًا على المدى الطويل حتى لو كانت نسبة نجاح صفقاتك أقل من 50%.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #48bb78; padding-bottom: 12px;">الجزء الثاني: مرآة أدائك - قوة سجل التداول</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">إذا كانت خطة التداول هي الخريطة، فإن سجل التداول هو نظام تحديد المواقع (GPS) الذي يخبرك بموقعك الحالي، وإذا ما كنت تلتزم بالمسار الصحيح. الاحتفاظ بسجل تداول ليس خيارًا، بل هو ضرورة مطلقة لأي شخص جاد بشأن تحسين أدائه. إنه الأداة التي تحولك من متداول عشوائي إلى متداول يتعلم ويتطور باستمرار.</p>
+
+          <div style="background-color: #ecfdf5; border: 3px solid #10b981; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #065f46; font-size: 22px; font-weight: bold; text-align: center;">📔 ما الذي يجب أن تسجله؟</h4>
+            <p style="margin-bottom: 20px; color: #047857; line-height: 1.8; text-align: justify;">سجل التداول هو أكثر بكثير من مجرد قائمة بالأرباح والخسائر. لتحقيق أقصى استفادة، يجب أن يتضمن كل إدخال ما يلي:</p>
+            
+            <div style="display: grid; gap: 20px;">
+              <div style="background-color: #d1fae5; padding: 20px; border-radius: 8px; border-right: 4px solid #059669;">
+                <h5 style="color: #065f46; font-size: 18px; font-weight: bold; margin: 0 0 12px 0;">1️⃣ البيانات الفنية</h5>
+                <p style="margin: 0; color: #047857; line-height: 1.6;">تاريخ ووقت الدخول والخروج، الأداة المالية، حجم الصفقة، سعر الدخول والخروج، مستوى وقف الخسارة وجني الأرباح الأولي.</p>
+              </div>
+              
+              <div style="background-color: #dbeafe; padding: 20px; border-radius: 8px; border-right: 4px solid #3b82f6;">
+                <h5 style="color: #1e40af; font-size: 18px; font-weight: bold; margin: 0 0 12px 0;">2️⃣ السبب المنطقي للصفقة</h5>
+                <p style="margin: 0; color: #1e3a8a; line-height: 1.6;">لماذا دخلت هذه الصفقة؟ ما هي الإشارة الفنية أو الأساسية التي اعتمدت عليها؟ أرفق لقطة شاشة للرسم البياني عند الدخول.</p>
+              </div>
+              
+              <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; border-right: 4px solid #f59e0b;">
+                <h5 style="color: #92400e; font-size: 18px; font-weight: bold; margin: 0 0 12px 0;">3️⃣ الحالة النفسية والعاطفية ⭐</h5>
+                <p style="margin: 0; color: #78350f; line-height: 1.6; font-weight: 500;">هذا هو الجزء الأهم! سجل مشاعرك قبل وأثناء وبعد الصفقة. هل كنت تشعر بالثقة، الخوف، الطمع، التردد، أو الملل؟</p>
+              </div>
+              
+              <div style="background-color: #fae8ff; padding: 20px; border-radius: 8px; border-right: 4px solid #a855f7;">
+                <h5 style="color: #6b21a8; font-size: 18px; font-weight: bold; margin: 0 0 12px 0;">4️⃣ تقييم الأداء</h5>
+                <p style="margin: 0; color: #581c87; line-height: 1.6;">بعد إغلاق الصفقة، قم بتقييمها بموضوعية. هل اتبعت خطتك 100%؟ إذا انحرفت عن الخطة، فلماذا؟ ما الذي فعلته بشكل صحيح؟ وما الخطأ الذي ارتكبته؟</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fff7ed; border: 3px solid #fb923c; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #9a3412; font-size: 22px; font-weight: bold; text-align: center;">🔍 كيف تستخدم سجلك للتطور؟</h4>
+            <p style="margin-bottom: 20px; color: #7c2d12; line-height: 1.8; text-align: center; font-size: 17px; font-weight: 500;">البيانات لا قيمة لها بدون تحليل. خصص وقتًا في نهاية كل أسبوع لمراجعة سجل تداولاتك.</p>
+            
+            <div style="background-color: #fff; padding: 24px; border-radius: 10px; margin-top: 20px;">
+              <h5 style="color: #c2410c; font-size: 19px; font-weight: bold; margin: 0 0 16px 0;">🎯 ابحث عن الأنماط المتكررة:</h5>
+              <ul style="margin: 0; padding-right: 24px; color: #7c2d12; line-height: 1.9; font-size: 16px;">
+                <li style="margin-bottom: 12px;"><strong>هل ترتكب نفس الأخطاء؟</strong> (مثلاً، تحريك وقف الخسارة، إغلاق الصفقات الرابحة مبكرًا)</li>
+                <li style="margin-bottom: 12px;"><strong>ما هي الظروف التي تحقق فيها أفضل أداء؟</strong> (أسواق معينة، أوقات معينة من اليوم، استراتيجيات معينة)</li>
+                <li><strong>ما هي المحفزات العاطفية التي تؤثر عليك؟</strong> هل تميل إلى "التداول الانتقامي" بعد الخسارة؟ هل تصبح مفرط الثقة بعد سلسلة من الانتصارات؟</li>
+              </ul>
+            </div>
+            
+            <div style="background-color: #fed7aa; padding: 20px; border-radius: 8px; margin-top: 16px; text-align: center;">
+              <p style="margin: 0; color: #7c2d12; font-size: 17px; font-weight: 600; line-height: 1.7;">💡 باستخدام هذه الأفكار، يمكنك العودة إلى خطة التداول الخاصة بك وإجراء تعديلات مستنيرة ومبنية على بيانات حقيقية من أدائك الشخصي، وليس على العواطف.</p>
+            </div>
+          </div>
+
+          <div style="background-color: #f0fdf4; border: 4px solid #22c55e; border-radius: 15px; padding: 32px; margin: 40px 0;">
+            <h3 style="font-size: 26px; font-weight: bold; margin: 0 0 20px 0; color: #166534; text-align: center;">♻️ دائرة النجاح الكاملة</h3>
+            <p style="margin-bottom: 20px; color: #15803d; line-height: 1.8; text-align: justify; font-size: 17px;">إن الجمع بين خطة تداول محكمة وسجل تداول دقيق يخلق حلقة تغذية راجعة قوية للتطور المستمر. الخطة تمنحك الانضباط والهيكل اللازمين للتداول بموضوعية، بينما يمنحك السجل الوعي الذاتي والبصيرة اللازمين لتحديد نقاط ضعفك وتحسين استراتيجيتك.</p>
+            
+            <div style="background-color: #dcfce7; padding: 24px; border-radius: 10px; text-align: center;">
+              <div style="font-size: 40px; margin-bottom: 16px;">📋 ➡️ 💹 ➡️ 📊 ➡️ 📈 ➡️ 📋</div>
+              <p style="margin: 0; color: #166534; font-size: 16px; line-height: 1.8;"><strong>خطة → تنفيذ → تسجيل → مراجعة → تحسين الخطة</strong></p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">خاتمة: عملية مستمرة من التطور</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">تذكر دائمًا أن التداول الناجح ليس وجهة نهائية، بل هو عملية مستمرة من التخطيط والتنفيذ والمراجعة والتحسين. من خلال تبني هذه الأدوات الاحترافية، فإنك تبني الأساس لمهنة تداول مستدامة ومربحة على المدى الطويل.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"خطة التداول بدون سجل تداول مثل سفينة بدون بوصلة. والسجل بدون خطة مثل بوصلة بدون خريطة. معاً، يصنعان المتداول المحترف."</p>
+          </div>
+
+          <div style="background-color: #eff6ff; border: 3px solid #3b82f6; border-radius: 15px; padding: 30px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #1e40af; font-size: 22px; font-weight: bold; text-align: center;">📌 النقاط الأساسية للتطبيق الفوري</h4>
+            
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; border-right: 4px solid #2563eb;">
+                <h5 style="color: #1e40af; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">✅ ابدأ اليوم</h5>
+                <p style="margin: 0; color: #1e3a8a; line-height: 1.6;">اكتب خطة تداول بسيطة من صفحة واحدة تتضمن العناصر الخمسة الأساسية</p>
+              </div>
+              
+              <div style="background-color: #dcfce7; padding: 18px; border-radius: 8px; border-right: 4px solid #16a34a;">
+                <h5 style="color: #166534; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">✅ أنشئ سجلك</h5>
+                <p style="margin: 0; color: #15803d; line-height: 1.6;">استخدم جدول بيانات Excel أو دفتر ورقي - الأهم هو الالتزام بالتسجيل</p>
+              </div>
+              
+              <div style="background-color: #fef3c7; padding: 18px; border-radius: 8px; border-right: 4px solid #f59e0b;">
+                <h5 style="color: #92400e; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">✅ راجع أسبوعياً</h5>
+                <p style="margin: 0; color: #78350f; line-height: 1.6;">خصص ساعة كل أسبوع لمراجعة سجلك وتحديث خطتك بناءً على ما تعلمته</p>
+              </div>
+              
+              <div style="background-color: #fce7f3; padding: 18px; border-radius: 8px; border-right: 4px solid #ec4899;">
+                <h5 style="color: #9f1239; margin: 0 0 10px 0; font-size: 17px; font-weight: bold;">✅ كن صادقاً</h5>
+                <p style="margin: 0; color: #881337; line-height: 1.6;">السجل لك وحدك - كن صادقاً تماماً مع نفسك عن مشاعرك وأخطائك</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 19px; font-weight: 600; line-height: 1.8;">🚀 ابدأ رحلة التطور المستمر اليوم. كل متداول محترف بدأ بخطة بسيطة وسجل فارغ. الفرق الوحيد بينك وبينهم هو القرار بالبدء.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 18) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">الانضباط وإدارة المخاطر: الركائز الأساسية لنجاحك في التداول</h2>
+          
+          <h3 style="font-size: 24px; font-weight: bold; margin: 28px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">مقدمة: من الهواية إلى الاحتراف</h3>
+          
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">في عالم الأسواق المالية، ما الذي يفصل بين المتداولين الهواة الذين يحققون أرباحًا مؤقتة والمحترفين الذين يبنون ثروات على المدى الطويل؟ الإجابة تكمن في كلمتين: الانضباط وإدارة المخاطر. فهما ليسا مجرد مفاهيم نظرية، بل هما الركائز الأساسية التي تحول التداول من مقامرة عشوائية إلى عمل تجاري منظم ومستدام.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في هذا المقال، سنستكشف كيف يمكن لبناء الانضباط وتطبيق استراتيجيات صارمة لإدارة المخاطر أن يحمي رأس مالك، ويقلل من تأثير العواطف، ويمهد لك الطريق نحو تحقيق أهدافك المالية بثقة وثبات.</p>
+
+          <div style="background-color: #ebf8ff; border-right: 4px solid #4299e1; padding: 24px; margin: 32px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #2c5282; font-size: 20px; font-weight: bold;">🎯 الحقيقة الأساسية</h4>
+            <p style="margin: 0; color: #2d3748; line-height: 1.6; font-size: 18px;">"المتداولون الهواة يبحثون عن الاستراتيجية المثالية، بينما المحترفون يبنون الانضباط ويحمون رأس المال."</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 32px 0 20px 0; color: #2d3748; font-family: Georgia, serif;">الانضباط في التداول: الالتزام بالخطة هو سر النجاح</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الانضباط في التداول هو القدرة على الالتزام بخطة واستراتيجية تداول محددة، حتى في أصعب الظروف. إنه يعني اتخاذ القرارات بناءً على المنطق والتحليل، وليس بناءً على ردود الفعل العاطفية اللحظية.</p>
+
+          <div style="background-color: #f7fafc; border: 2px solid #cbd5e0; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #2d3748; font-size: 22px; font-weight: bold; text-align: center;">📋 ركائز الانضباط في التداول</h4>
+            
+            <div style="margin-bottom: 24px; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h5 style="color: #2b6cb0; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">📝 أهمية خطة التداول</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.7;">لا يمكن الحديث عن الانضباط دون وجود خطة تداول واضحة. خطة التداول هي وثيقتك الشخصية التي تحدد كل شيء: أهدافك، استراتيجيتك للدخول والخروج من الصفقات، الأسواق التي ستتداول فيها، والأهم من ذلك، قواعد إدارة المخاطر الخاصة بك. وجود خطة يزيل العشوائية ويجعل قراراتك مدروسة.</p>
+            </div>
+
+            <div style="margin-bottom: 24px; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h5 style="color: #c53030; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">🚫 التغلب على الإغراءات</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.7;">السوق مليء بالإغراءات التي تدفعك للانحراف عن خطتك. قد ترى فرصة تبدو ذهبية لكنها لا تتوافق مع معاييرك، أو قد تشعر بالرغبة في تعويض خسارة سابقة بصفقة متهورة. الانضباط هو ما يمنحك القوة لتقول "لا" لهذه الإغراءات والالتزام بما خططت له مسبقًا.</p>
+            </div>
+
+            <div style="padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h5 style="color: #276749; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">💪 بناء عادة الانضباط</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.7;">الانضباط ليس سمة فطرية، بل هو مهارة مكتسبة تتطلب الممارسة المستمرة. ابدأ بتحديد أهداف واضحة وقابلة للتحقيق، واحتفظ بسجل لصفقاتك لمراجعة أدائك وتحديد نقاط ضعفك. كلما التزمت بخطتك، كلما أصبح الانضباط عادة متأصلة في أسلوبك في التداول.</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 32px 0 20px 0; color: #2d3748; font-family: Georgia, serif;">إدارة المخاطر: حماية رأس المال أولاً وأخيراً</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الهدف الأول لأي متداول محترف ليس تحقيق أرباح ضخمة، بل حماية رأس ماله. إدارة المخاطر هي مجموعة القواعد والأساليب التي تستخدمها لتقليل الخسائر المحتملة وضمان بقائك في السوق على المدى الطويل.</p>
+
+          <div style="background-color: #fff5f5; border: 3px solid #fc8181; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 24px 0; color: #c53030; font-size: 22px; font-weight: bold; text-align: center;">🛡️ استراتيجيات أساسية لإدارة المخاطر</h4>
+            
+            <div style="margin-bottom: 28px;">
+              <div style="background-color: #fed7d7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h5 style="color: #742a2a; font-size: 20px; font-weight: bold; margin: 0 0 12px 0;">1️⃣ قاعدة الـ 1-2%</h5>
+                <p style="margin: 0; color: #742a2a; line-height: 1.7; font-weight: 500;">من أهم قواعد إدارة المخاطر هي ألا تخاطر أبدًا بأكثر من 1% إلى 2% من إجمالي رأس مال حسابك في أي صفقة واحدة. هذا يعني أنه حتى لو واجهت سلسلة من الصفقات الخاسرة، فلن يتعرض حسابك لخسائر كارثية، وستظل قادرًا على التداول والتعافي.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px;">
+              <div style="background-color: #fef5e7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h5 style="color: #7c2d12; font-size: 20px; font-weight: bold; margin: 0 0 12px 0;">2️⃣ تحديد حجم الصفقة (Position Sizing)</h5>
+                <p style="margin: 0; color: #7c2d12; line-height: 1.7; font-weight: 500;">قبل الدخول في أي صفقة، يجب أن تحدد حجمها المناسب بناءً على قاعدة الـ 1-2%. يتم حساب حجم الصفقة بناءً على رصيد حسابك، ونسبة المخاطرة التي حددتها، والمسافة بين سعر الدخول وسعر وقف الخسارة. هذا يضمن أن تكون المخاطرة في كل صفقة محسوبة ومسيطرًا عليها.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px;">
+              <div style="background-color: #e8f4fd; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h5 style="color: #1e40af; font-size: 20px; font-weight: bold; margin: 0 0 12px 0;">3️⃣ أوامر وقف الخسارة (Stop-Loss)</h5>
+                <p style="margin: 0; color: #1e3a8a; line-height: 1.7; font-weight: 500;">كما ذكرنا في المقال السابق، أمر وقف الخسارة هو أداة لا غنى عنها. يجب تحديد مستوى وقف الخسارة لكل صفقة قبل الدخول فيها. هذا المستوى يمثل النقطة التي تكون فيها فكرتك عن الصفقة خاطئة، والخروج عندها يمنع تفاقم الخسائر.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 28px;">
+              <div style="background-color: #f0fdf4; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <h5 style="color: #166534; font-size: 20px; font-weight: bold; margin: 0 0 12px 0;">4️⃣ أوامر جني الأرباح (Take-Profit)</h5>
+                <p style="margin: 0; color: #14532d; line-height: 1.7; font-weight: 500;">تمامًا كما يجب أن يكون لديك خطة للخروج من الصفقة الخاسرة، يجب أن يكون لديك هدف لجني الأرباح. أمر جني الأرباح يغلق صفقتك تلقائيًا عندما تصل إلى هدف الربح المحدد مسبقًا، مما يضمن تأمين أرباحك قبل أن ينعكس السوق ضدك.</p>
+              </div>
+            </div>
+
+            <div>
+              <div style="background-color: #faf5ff; padding: 16px; border-radius: 8px;">
+                <h5 style="color: #6b21a8; font-size: 20px; font-weight: bold; margin: 0 0 12px 0;">5️⃣ نسبة المخاطرة إلى العائد (Risk/Reward Ratio)</h5>
+                <p style="margin: 0; color: #581c87; line-height: 1.7; font-weight: 500;">قبل الدخول في أي صفقة، قم بتقييم نسبة المخاطرة إلى العائد المحتملة. القاعدة الجيدة هي البحث عن صفقات تكون فيها الأرباح المحتملة على الأقل ضعف الخسارة المحتملة (نسبة 1:2 أو أعلى). هذا يعني أنه حتى لو كانت نسبة نجاح صفقاتك 50% فقط، فإنك ستحقق ربحًا صافيًا على المدى الطويل.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #e6fffa; border: 2px solid #38b2ac; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 16px 0; color: #234e52; font-size: 22px; font-weight: bold; text-align: center;">⚖️ التكامل بين الانضباط وإدارة المخاطر</h4>
+            <p style="margin: 0; color: #2c5f62; line-height: 1.8; font-size: 17px; text-align: justify;">الانضباط وإدارة المخاطر يعملان معًا بشكل متكامل. فإدارة المخاطر تضع القواعد، والانضباط هو ما يضمن التزامك بهذه القواعد. عندما تلتزم بخطتك لإدارة المخاطر، فإنك تزيل القرارات العاطفية من المعادلة. لن تضطر إلى اتخاذ قرار متوتر بشأن وقت الخروج من صفقة خاسرة، لأن القاعدة التي وضعتها مسبقًا (أمر وقف الخسارة) ستتكفل بذلك.</p>
+          </div>
+
+          <div style="background-color: #fffbeb; border-right: 4px solid #f59e0b; padding: 24px; margin: 32px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 16px 0; color: #92400e; font-size: 20px; font-weight: bold;">💡 مثال عملي: كيف تعمل القواعد معاً</h4>
+            <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin-top: 16px;">
+              <p style="margin: 0 0 12px 0; color: #78350f; line-height: 1.7;"><strong>السيناريو:</strong> لديك حساب بقيمة 10,000 دولار</p>
+              <p style="margin: 0 0 12px 0; color: #78350f; line-height: 1.7;"><strong>قاعدة المخاطرة:</strong> لن تخاطر بأكثر من 1% = 100 دولار في الصفقة</p>
+              <p style="margin: 0 0 12px 0; color: #78350f; line-height: 1.7;"><strong>تحديد حجم الصفقة:</strong> إذا كان وقف الخسارة 50 نقطة، تحسب عدد العقود بحيث لا تتجاوز الخسارة 100 دولار</p>
+              <p style="margin: 0 0 12px 0; color: #78350f; line-height: 1.7;"><strong>نسبة المخاطرة/العائد:</strong> تستهدف ربح 200 دولار مقابل مخاطرة 100 دولار (نسبة 1:2)</p>
+              <p style="margin: 0; color: #78350f; line-height: 1.7; font-weight: bold;">النتيجة: حتى لو ربحت 40% فقط من صفقاتك، ستحقق ربحاً صافياً!</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الخاتمة: بناء أساس متين للنجاح</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">النجاح المستدام في التداول لا يأتي من البحث عن "الكأس المقدسة" أو استراتيجية سرية، بل من بناء أساس متين قائم على الانضباط وإدارة المخاطر. قد لا تكون هذه الجوانب هي الأكثر إثارة في عالم التداول، لكنها بالتأكيد الأكثر أهمية.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">من خلال وضع خطة تداول شاملة، والالتزام بها بانضباط صارم، وتطبيق قواعد حكيمة لإدارة المخاطر في كل صفقة، فإنك لا تحمي رأس مالك فحسب، بل تبني أيضًا العقلية والسلوكيات التي يتمتع بها المتداولون المحترفون. تذكر دائمًا، أن هدفك ليس فقط تحقيق الربح، بل البقاء في اللعبة لفترة طويلة بما يكفي لتحقيق النجاح.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"الانضباط يحولك من مقامر إلى متداول، وإدارة المخاطر تحولك من متداول إلى محترف. معاً، يبنيان طريقك نحو النجاح المستدام."</p>
+          </div>
+
+          <div style="background-color: #f0f9ff; border: 3px solid #3b82f6; border-radius: 15px; padding: 30px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #1e40af; font-size: 22px; font-weight: bold; text-align: center;">📊 خلاصة النقاط الأساسية</h4>
+            
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #dbeafe; padding: 16px; border-radius: 8px;">
+                <h5 style="color: #1e3a8a; margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">✅ الانضباط</h5>
+                <ul style="margin: 0; padding-right: 20px; color: #1e40af; line-height: 1.6;">
+                  <li>ضع خطة تداول واضحة وشاملة</li>
+                  <li>التزم بالخطة حتى في الظروف الصعبة</li>
+                  <li>ابنِ عادات الانضباط من خلال الممارسة المستمرة</li>
+                  <li>قل "لا" للإغراءات التي تخالف معاييرك</li>
+                </ul>
+              </div>
+
+              <div style="background-color: #fee2e2; padding: 16px; border-radius: 8px;">
+                <h5 style="color: #991b1b; margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">🛡️ إدارة المخاطر</h5>
+                <ul style="margin: 0; padding-right: 20px; color: #b91c1c; line-height: 1.6;">
+                  <li>لا تخاطر بأكثر من 1-2% من رأس المال في أي صفقة</li>
+                  <li>احسب حجم الصفقة بدقة قبل الدخول</li>
+                  <li>استخدم أوامر وقف الخسارة دائماً</li>
+                  <li>حدد أهداف ربح واقعية (نسبة 1:2 أو أعلى)</li>
+                  <li>الهدف الأول: حماية رأس المال، ثم تحقيق الأرباح</li>
+                </ul>
+              </div>
+
+              <div style="background-color: #dcfce7; padding: 16px; border-radius: 8px;">
+                <h5 style="color: #166534; margin: 0 0 8px 0; font-size: 18px; font-weight: bold;">🎯 التكامل</h5>
+                <ul style="margin: 0; padding-right: 20px; color: #15803d; line-height: 1.6;">
+                  <li>إدارة المخاطر تضع القواعد</li>
+                  <li>الانضباط يضمن الالتزام بالقواعد</li>
+                  <li>معاً يبنيان أساس النجاح المستدام</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="background-color: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 19px; font-weight: 600; line-height: 1.8;">🔑 تذكر: المتداول الذي يحمي رأس ماله اليوم، يبني ثروته غداً. ابدأ بالانضباط وإدارة المخاطر، والأرباح ستتبع.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 17) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">سيكولوجية التداول: كيف تسيطر على عقلك وتتقن الأسواق</h2>
+          
+          <h3 style="font-size: 24px; font-weight: bold; margin: 28px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">مقدمة: ساحة المعركة الحقيقية في التداول هي عقلك</h3>
+          
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">يعتقد الكثيرون أن النجاح في عالم التداول يعتمد فقط على التحليل الفني المتقن، أو اكتشاف الاستراتيجيات السحرية، أو حتى متابعة أخبار السوق لحظة بلحظة. لكن الحقيقة التي يدركها المحترفون هي أن التداول بنسبة 90% يعتمد على العقلية والنفسية، و10% فقط على المهارات التحليلية. عقلك هو ساحة المعركة الحقيقية؛ فإما أن يكون أعظم أصولك أو ألد أعدائك.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في هذا المقال، سنغوص في أعماق سيكولوجية التداول، ونكشف عن الدور الحاسم الذي تلعبه المشاعر في قراراتنا، وكيف يمكننا بناء عقلية متداول ناجح قادر على الإبحار في خضم تقلبات الأسواق بثقة وهدوء.</p>
+
+          <div style="background-color: #edf2f7; border-right: 4px solid #4299e1; padding: 24px; margin: 32px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #2c5282; font-size: 20px; font-weight: bold;">💡 نقطة جوهرية</h4>
+            <p style="margin: 0; color: #2d3748; line-height: 1.6; font-size: 18px;">"في التداول، التحليل الفني يخبرك متى تدخل، لكن علم النفس يخبرك متى تخرج، ومتى لا تدخل أصلاً."</p>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الأفعوانية العاطفية للتداول: الخوف والطمع والسيطرة</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">التداول هو نشاط مثير وممتع، لكنه يمكن أن يكون صعبًا من الناحية النفسية عندما تتحرك الأسواق ضدك. يعتبر الخوف والجشع من أكثر المشاعر شيوعًا وتأثيرًا على قرارات المتداولين. دعونا نحلل هذه المشاعر وتأثيرها:</p>
+
+          <div style="background-color: #fff5f5; border-right: 4px solid #f56565; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #c53030; font-size: 20px; font-weight: bold;">😨 الخوف</h4>
+            <p style="margin-bottom: 12px; color: #742a2a; line-height: 1.6;">يتجلى الخوف في أشكال متعددة. هناك "الخوف من فوات الفرصة" (FOMO)، الذي يدفعك للدخول في صفقات غير مدروسة لمجرد أن السوق يتحرك بسرعة. وهناك "الخوف من الخسارة"، الذي قد يجعلك تغلق صفقة رابحة مبكرًا جدًا، أو يمنعك من الدخول في صفقة جيدة من الأساس بسبب التردد.</p>
+          </div>
+
+          <div style="background-color: #fffff0; border-right: 4px solid #d69e2e; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #975a16; font-size: 20px; font-weight: bold;">💰 الطمع</h4>
+            <p style="margin: 0; color: #7c2d12; line-height: 1.6;">الطمع هو الرغبة الجامحة في تحقيق أرباح أكبر، مما يؤدي إلى اتخاذ قرارات متهورة. قد يدفعك الطمع إلى زيادة حجم صفقاتك بشكل مفرط، أو التمسك بصفقة رابحة لفترة أطول من اللازم أملًا في المزيد من الأرباح، مما قد يحول الربح إلى خسارة في لحظة.</p>
+          </div>
+
+          <div style="background-color: #f0fff4; border-right: 4px solid #48bb78; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #276749; font-size: 20px; font-weight: bold;">🎉 الأمل والنشوة</h4>
+            <p style="margin: 0; color: #22543d; line-height: 1.6;">عندما تسير الأمور على ما يرام، من السهل الوقوع في فخ النشوة والثقة المفرطة. هذا يمكن أن يؤدي إلى تجاهل قواعد إدارة المخاطر والشعور بأنك لا يمكن أن تخطئ، وهو ما يمهد الطريق لخسائر فادحة.</p>
+          </div>
+
+          <div style="background-color: #f7fafc; border-right: 4px solid #718096; padding: 20px; margin: 24px 0; border-radius: 8px;">
+            <h4 style="margin: 0 0 12px 0; color: #2d3748; font-size: 20px; font-weight: bold;">😔 اليأس والذعر</h4>
+            <p style="margin: 0; color: #1a202c; line-height: 1.6;">على الجانب الآخر، يمكن أن تؤدي سلسلة من الخسائر إلى الشعور باليأس والذعر. هذا قد يدفعك إلى "التداول الانتقامي"، حيث تحاول تعويض خسائرك بسرعة عن طريق اتخاذ قرارات عشوائية وعالية المخاطر، مما يفاقم الوضع سوءًا.</p>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">بناء عقلية المتداول الناجح: الانضباط والصبر والموضوعية</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">المتداول الناجح ليس من لا يشعر بهذه المشاعر، بل هو من تعلم كيفية إدارتها والتحكم فيها. تتشكل عقلية المتداول الناجح من الثقة بالنفس والموضوعية والانضباط. إليك بعض الركائز الأساسية لبناء هذه العقلية:</p>
+
+          <div style="background-color: #ebf8ff; border: 2px solid #4299e1; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #2c5282; font-size: 22px; font-weight: bold; text-align: center;">🧠 ركائز العقلية الناجحة</h4>
+            
+            <div style="margin-bottom: 20px;">
+              <h5 style="color: #2b6cb0; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">1️⃣ الوعي الذاتي</h5>
+              <p style="margin: 0; color: #2d3748; line-height: 1.6;">الخطوة الأولى هي التعرف على نقاط قوتك وضعفك العاطفية. احتفظ بـ "يوميات تداول" لا تسجل فيها فقط تفاصيل صفقاتك، بل أيضًا مشاعرك قبل وأثناء وبعد كل صفقة. سيساعدك هذا على تحديد الأنماط السلوكية العاطفية التي تؤثر على قراراتك.</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h5 style="color: #2b6cb0; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">2️⃣ قبول الخسارة كجزء من اللعبة</h5>
+              <p style="margin: 0; color: #2d3748; line-height: 1.6;">لا يوجد متداول يربح في كل صفقة. الخسارة جزء لا مفر منه من التداول. المتداول المحترف يتعامل مع الخسائر بذكاء وهدوء، ويتعلم منها بدلاً من السماح لها بالتأثير على قراراته المستقبلية.</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h5 style="color: #2b6cb0; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">3️⃣ التركيز على العملية وليس النتيجة</h5>
+              <p style="margin: 0; color: #2d3748; line-height: 1.6;">بدلاً من الهوس بكل ربح أو خسارة، ركز على الالتزام بخطة التداول الخاصة بك وتنفيذها بإتقان. إذا كانت خطتك سليمة ومبنية على تحليل جيد، فإن الأرباح ستأتي كنتيجة طبيعية على المدى الطويل.</p>
+            </div>
+
+            <div>
+              <h5 style="color: #2b6cb0; font-size: 18px; font-weight: bold; margin: 0 0 8px 0;">4️⃣ الصبر والانتظار</h5>
+              <p style="margin: 0; color: #2d3748; line-height: 1.6;">الصبر هو فضيلة أساسية في التداول. يجب أن تنتظر الفرص المثالية التي تتوافق مع استراتيجيتك، بدلاً من مطاردة كل حركة في السوق.</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">تقنيات عملية للسيطرة على مشاعرك</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">إلى جانب بناء العقلية الصحيحة، هناك تقنيات عملية يمكنك استخدامها لإبقاء مشاعرك تحت السيطرة:</p>
+
+          <div style="background-color: #f7fafc; padding: 24px; border-radius: 10px; margin: 24px 0;">
+            <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
+              <h5 style="color: #2d3748; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">📋 ضع خطة تداول واضحة والتزم بها</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.6;">خطة التداول هي خارطة طريقك. يجب أن تحدد بوضوح نقاط الدخول والخروج، وحجم الصفقة، وقواعد إدارة المخاطر. الالتزام بالخطة يمنعك من اتخاذ قرارات عشوائية بناءً على العواطف.</p>
+            </div>
+
+            <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
+              <h5 style="color: #2d3748; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">🛑 استخدم أوامر وقف الخسارة دائمًا</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.6;">أمر وقف الخسارة هو شبكة الأمان الخاصة بك. إنه يحدد مسبقًا الحد الأقصى للخسارة الذي أنت على استعداد لتحمله في أي صفقة، ويغلق الصفقة تلقائيًا إذا وصل السعر إلى هذا المستوى. هذا يحميك من الخسائر الكبيرة ويساعد على إزالة الجانب العاطفي من قرار إغلاق الصفقة الخاسرة.</p>
+            </div>
+
+            <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
+              <h5 style="color: #2d3748; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">⏸️ خذ فترات راحة منتظمة</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.6;">التداول المستمر يمكن أن يكون مرهقًا نفسيًا. ابتعد عن الشاشة بانتظام لتصفية ذهنك وتجنب الإرهاق الذي يمكن أن يؤدي إلى اتخاذ قرارات سيئة.</p>
+            </div>
+
+            <div>
+              <h5 style="color: #2d3748; font-size: 19px; font-weight: bold; margin: 0 0 12px 0;">🚫 لا تتداول عندما تكون متوترًا أو مشتتًا</h5>
+              <p style="margin: 0; color: #4a5568; line-height: 1.6;">حالتك الذهنية تؤثر بشكل مباشر على أدائك في التداول. تجنب التداول عندما تكون تحت ضغط أو تعاني من مشاكل شخصية، فهذا ليس الوقت المناسب لاتخاذ قرارات مالية مهمة.</p>
+            </div>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الخاتمة: رحلة مستمرة من التطور</h3>
+          
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">إتقان سيكولوجية التداول ليس وجهة تصل إليها، بل هو رحلة مستمرة من التعلم والتطور الذاتي. كل يوم في السوق هو فرصة جديدة لتتعلم المزيد عن نفسك وعن كيفية تفاعلك مع الربح والخسارة. من خلال فهم دور المشاعر، وبناء عقلية منضبطة، واستخدام تقنيات عملية للتحكم في النفس، يمكنك تحويل عقلك إلى أقوى أداة لديك وتحقيق النجاح المستدام في عالم التداول المثير والمليء بالتحديات.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">💎 الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"في التداول، العقل المنضبط أقوى من أي استراتيجية. السيطرة على المشاعر هي السلاح الحقيقي للمتداول الناجح."</p>
+          </div>
+
+          <div style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 12px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #856404; font-size: 22px; font-weight: bold; text-align: center;">📝 خلاصة النقاط الأساسية</h4>
+            <ul style="margin: 0; padding-right: 24px; color: #856404; line-height: 1.8; font-size: 16px;">
+              <li style="margin-bottom: 12px;"><strong>90% من التداول يعتمد على العقلية والنفسية</strong></li>
+              <li style="margin-bottom: 12px;"><strong>الخوف والطمع هما العدوان الأكبر للمتداول</strong></li>
+              <li style="margin-bottom: 12px;"><strong>قبول الخسارة جزء أساسي من النجاح</strong></li>
+              <li style="margin-bottom: 12px;"><strong>التركيز على العملية أهم من النتائج الفردية</strong></li>
+              <li style="margin-bottom: 12px;"><strong>الصبر والانضباط هما مفتاح النجاح المستدام</strong></li>
+              <li><strong>استخدام أدوات إدارة المخاطر يحميك من نفسك</strong></li>
+            </ul>
+          </div>
+        </div>
+      `;
+    } else if (postId === 16) {
       return `
         <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
           <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.6;">في عالم التداول، لا يوجد شعور يضاهي نشوة تحقيق ربح كبير. تلك اللحظة التي ترى فيها حسابك ينتعش، وتتأكد فيها من أن تحليلك كان صحيحاً، وأنك "فهمت السوق". إنها لحظة استحقاق، وراحة، وإحساس بالرضا. ولكن، تحت ستار هذا الشعور الجميل، يتربص القاتل الصامت: الرضا عن النفس (Complacency).</p>
@@ -1845,6 +2590,50 @@ const BlogPage: React.FC = () => {
 
   // Professional blog posts data
   const blogPosts: BlogPost[] = [
+    {
+      id: 20,
+      title: "عقلية المتداول المحترف: قهر التحيزات الذهنية وبلوغ ذروة الأداء",
+      excerpt: "من الكفاءة إلى التميز - اكتشف ما يفصل المتداول المتميز عن الكفؤ. تعلم كيف تتعرف على التحيزات المعرفية الخفية وتهزمها، وتتقن فن الصبر، وتبني عادات يومية تضعك في حالة ذروة الأداء مثل الرياضيين المحترفين.",
+      category: "التداول",
+      date: "2025-11-17",
+      readTime: "26 دقيقة قراءة",
+      imageUrl: "/blog images/blog 8.webp",
+      tags: ["التحيزات المعرفية", "ذروة الأداء", "الصبر", "عادات المتداول", "عربي"],
+      slug: "عقلية-المتداول-المحترف-قهر-التحيزات-الذهنية"
+    },
+    {
+      id: 19,
+      title: "كيف تبني خطة تداول صارمة وتستخدم سجل التداول لصقل مهاراتك",
+      excerpt: "من النظرية إلى الواقع المربح - اكتشف كيف تترجم المفاهيم الذهبية في التداول إلى أفعال ملموسة من خلال بناء خطة تداول شاملة واستخدام سجل التداول كمرآة صادقة تعكس أداءك وتكشف أسرار عقلك.",
+      category: "التداول",
+      date: "2025-11-17",
+      readTime: "24 دقيقة قراءة",
+      imageUrl: "/blog images/blog 7.webp",
+      tags: ["خطة التداول", "سجل التداول", "التطور المستمر", "تحليل الأداء", "عربي"],
+      slug: "كيف-تبني-خطة-تداول-صارمة-وتستخدم-سجل-التداول"
+    },
+    {
+      id: 18,
+      title: "الانضباط وإدارة المخاطر: الركائز الأساسية لنجاحك في التداول",
+      excerpt: "ما الذي يفصل بين المتداولين الهواة والمحترفين؟ الإجابة في الانضباط وإدارة المخاطر. اكتشف كيف تحول التداول من مقامرة عشوائية إلى عمل تجاري منظم ومستدام من خلال بناء أساس متين من الانضباط وحماية رأس المال.",
+      category: "التداول",
+      date: "2025-11-17",
+      readTime: "22 دقيقة قراءة",
+      imageUrl: "/blog images/blog 6.webp",
+      tags: ["الانضباط", "إدارة المخاطر", "حماية رأس المال", "خطة التداول", "عربي"],
+      slug: "الانضباط-وادارة-المخاطر-الركائز-الاساسية-للنجاح"
+    },
+    {
+      id: 17,
+      title: "ساحة المعركة الحقيقية في التداول هي عقلك",
+      excerpt: "يعتقد الكثيرون أن النجاح في عالم التداول يعتمد فقط على التحليل الفني المتقن، لكن الحقيقة أن التداول بنسبة 90% يعتمد على العقلية والنفسية. اكتشف كيف تسيطر على عقلك وتتقن الأسواق من خلال فهم سيكولوجية التداول.",
+      category: "التداول",
+      date: "2025-11-17",
+      readTime: "20 دقيقة قراءة",
+      imageUrl: "/blog images/blog 5.webp",
+      tags: ["سيكولوجية التداول", "العقلية", "الخوف والطمع", "الانضباط الذهني", "عربي"],
+      slug: "ساحة-المعركة-الحقيقية-في-التداول-هي-عقلك"
+    },
     {
       id: 16,
       title: "القاتل الصامت: كيف يدمر الرضا عن النفس بعد ربح كبير انضباطك في إدارة المخاطر",

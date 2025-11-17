@@ -85,7 +85,7 @@ const HomePage: React.FC = () => {
                 to="/summaries"
                 className="glass-button cursor-pointer relative rounded-full pointer-events-auto z-30 outline-none focus:outline-none inline-flex items-center"
               >
-                <span className="button-text relative block select-none font-bold text-neutral-800 tracking-tight px-6 py-3.5 flex items-center gap-2" style={{ fontSize: '24px', fontFamily: "'Scheherazade New', 'Amiri', serif" }}>
+                <span className="button-text relative block select-none font-bold text-neutral-800 tracking-tight px-6 py-3.5 flex items-center gap-2 arabic-btn" style={{ fontSize: '24px' }}>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
