@@ -2284,7 +2284,7 @@ const SummaryDetailPage: React.FC = () => {
               ) : book.id === 'black-rednecks-and-white-liberals' ? (
                 <>
                   <a 
-                    href="https://www.example49.com"
+                    href="https://amzn.to/3LBV0Cm"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -2296,7 +2296,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://www.example50.com"
+                    href="https://amzn.to/48hjvgJ"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2308,7 +2308,7 @@ const SummaryDetailPage: React.FC = () => {
                   </a>
 
                   <a 
-                    href="https://www.example51.com"
+                    href="https://amzn.to/43VSfCf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
