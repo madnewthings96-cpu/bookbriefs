@@ -130,6 +130,16 @@
     text-align: right;
   }
 
+  /* Arabic-specific button style using Amiri */
+  .arabic-btn {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    font-size: 1.125rem; /* ~18px */
+    line-height: 1.2;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body.rtl .prose {
     direction: rtl;
     text-align: right;
