@@ -10,7 +10,6 @@ import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import MobileBottomNav from './components/MobileBottomNav';
 import HomePage from './pages/HomePage';
 import SummariesPage from './pages/SummariesPage';
 import SummaryDetailPage from './pages/SummaryDetailPage';
@@ -27,8 +26,6 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 import LLMChatPage from './pages/LLMChatPage';
 import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
-import MerchPage from './pages/MerchPage';
-import CommunityPage from './pages/CommunityPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -338,7 +335,7 @@ const AppContent: React.FC = () => {
       <ScrollToTop />
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
-        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 pt-8 pb-32 md:pb-12">
+        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
@@ -353,8 +350,6 @@ const AppContent: React.FC = () => {
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/chat" element={<LLMChatPage />} />
-            <Route path="/community" element={<CommunityPage />} />
-            <Route path="/merch" element={<MerchPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />
@@ -382,7 +377,6 @@ const AppContent: React.FC = () => {
           </Routes>
         </main>
         <Footer />
-        <MobileBottomNav />
       </div>
     </BrowserRouter>
   );
