@@ -7,8 +7,17 @@ import { bookSummaryTranslations } from '../translations/bookSummaries';
 const MostReadBooks: React.FC = () => {
   const { getBookTitle, getBookAuthor, currentLanguage } = useLanguage();
 
-  // Get top 15 books (you can customize this logic based on actual read counts)
-  const mostReadBooks = BOOKS.slice(0, 15);
+  // Specific books to display
+  const featuredBookIds = [
+    'atomic-habits',
+    'the-4-hour-workweek',
+    'trading-in-the-zone',
+    'thinking-fast-and-slow',
+    'marketwizards',
+    'thedisciplinedtrader'
+  ];
+
+  const mostReadBooks = BOOKS.filter(book => featuredBookIds.includes(book.id));
 
   // Get book description from translations
   const getBookDescription = (bookId: string): string => {
@@ -25,7 +34,7 @@ const MostReadBooks: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
       <div className="mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 tracking-tight">
+        <h2 className="text-xl md:text-2xl font-normal text-gray-900 mb-2 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
           MOST READ THIS WEEK
         </h2>
       </div>
