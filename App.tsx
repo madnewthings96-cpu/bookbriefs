@@ -11,6 +11,7 @@ import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
 import { BooksProvider } from './contexts/BooksContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MobileBottomNav from './components/MobileBottomNav';
 import HomePage from './pages/HomePage';
 import SummariesPage from './pages/SummariesPage';
 import SummaryDetailPage from './pages/SummaryDetailPage';
@@ -379,6 +380,7 @@ const AppContent: React.FC = () => {
             <Route path="/terms-of-use" element={<TermsOfUsePage />} />
           </Routes>
         </main>
+        <MobileBottomNav />
         <Footer />
       </div>
     </BrowserRouter>
