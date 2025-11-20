@@ -8,7 +8,8 @@
     "build": "npm run sitemap && npm run sitemap:arabic && vite build",
     "preview": "vite preview",
     "sitemap": "node generate-sitemap.js",
-    "sitemap:arabic": "node generate-arabic-sitemap.js"
+    "sitemap:arabic": "node generate-arabic-sitemap.js",
+    "sync-library": "tsx scripts/sync-library.ts"
   },
   "dependencies": {
     "@google/genai": "^1.18.0",

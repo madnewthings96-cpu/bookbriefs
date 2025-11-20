@@ -705,6 +705,14 @@ export const TESTIMONIALS = [
 ];
 export const BOOK_SUMMARIES: BookSummary[] = [
   {
+    id: 'how-i-made-2000000-in-the-stock-market',
+    title: 'How I Made $2,000,000 in the Stock Market',
+    author: 'Nicolas Darvas',
+    coverImageUrl: '/images/how i made $2,000,000 in the stock market.jpg',
+    category: 'Finance',
+    summary: '', // Summary is now in Firestore
+  },
+  {
     id: 'the-4-hour-workweek',
     title: "The 4-Hour Workweek",
     author: "Timothy Ferriss",

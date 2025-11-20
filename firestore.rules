@@ -12,6 +12,11 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    // Helper function to check if user is admin (replace with your Firebase Auth UID)
+    function isAdmin() {
+      return isAuthenticated() && request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2';
+    }
+    
     // Users collection - users can only read/write their own data
     match /users/{userId} {
       allow read: if isOwner(userId);
@@ -36,10 +41,10 @@ service cloud.firestore {
       allow write: if false; // Controlled via Firebase Console or Admin SDK
     }
     
-    // Books collection - public read, no write (controlled by admin)
+    // Books collection - public read, admin write
     match /books/{bookId} {
       allow read: if true;
-      allow write: if false; // Controlled via Firebase Console or Admin SDK only
+      allow write: if isAdmin(); // Only admin can add/update/delete books
     }
     
     // User favorites - users can only access their own favorites
