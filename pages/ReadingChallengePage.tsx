@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useReadingChallenge } from '../contexts/ReadingChallengeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { BOOKS } from '../constants';
+import { useBooks } from '../contexts/BooksContext';
 
 const ReadingChallengePage: React.FC = () => {
   const { challenge, loading, setGoal, deleteGoal, progress, isBookRead, markBookAsRead, unmarkBookAsRead } = useReadingChallenge();
   const { isAuthenticated } = useAuth();
+  const { books } = useBooks();
   const [goalInput, setGoalInput] = useState('');
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -50,8 +51,8 @@ const ReadingChallengePage: React.FC = () => {
     }
   };
 
-  const readBooks = BOOKS.filter(book => isBookRead(book.id));
-  const unreadBooks = BOOKS.filter(book => !isBookRead(book.id));
+  const readBooks = books.filter(book => isBookRead(book.id));
+  const unreadBooks = books.filter(book => !isBookRead(book.id));
 
   if (!isAuthenticated) {
     return (

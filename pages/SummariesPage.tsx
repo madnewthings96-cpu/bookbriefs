@@ -1,12 +1,15 @@
 
 import React, { useState } from 'react';
-import { BOOKS, BOOK_SUMMARIES } from '../constants';
+import { BOOK_SUMMARIES } from '../constants';
 import BookCard from '../components/BookCard';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
+import { useBooks } from '../contexts/BooksContext';
+import Spinner from '../components/Spinner';
 
 const SummariesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { books, loading } = useBooks();
 
   useSEO({
     title: 'Book Summaries - Discover Insights from Top Business & Self-Help Books | BookBriefs',
@@ -20,7 +23,7 @@ const SummariesPage: React.FC = () => {
   };
 
   // Only show books that have summaries available
-  const booksWithSummaries = BOOKS.filter(book =>
+  const booksWithSummaries = books.filter(book =>
     BOOK_SUMMARIES.some(summary => summary.id === book.id)
   );
 
@@ -28,6 +31,14 @@ const SummariesPage: React.FC = () => {
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.author.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

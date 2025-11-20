@@ -36,6 +36,12 @@ service cloud.firestore {
       allow write: if false; // Controlled via Firebase Console or Admin SDK
     }
     
+    // Books collection - public read, no write (controlled by admin)
+    match /books/{bookId} {
+      allow read: if true;
+      allow write: if false; // Controlled via Firebase Console or Admin SDK only
+    }
+    
     // User favorites - users can only access their own favorites
     match /favorites/{userId} {
       allow read, write: if isOwner(userId);

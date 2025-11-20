@@ -1,6 +1,6 @@
 import { bookSummaryTranslations } from '../translations/bookSummaries';
 import { Language } from '../contexts/LanguageContext';
-import { BOOKS } from '../constants';
+import { Book } from '../types';
 
 export interface SearchResult {
   id: string;
@@ -19,15 +19,15 @@ const getBooksForLanguage = (language: Language): { [key: string]: any } => {
   return books;
 };
 
-export const searchBooks = (query: string, language: Language): SearchResult[] => {
+export const searchBooks = (query: string, language: Language, books: Book[]): SearchResult[] => {
   const searchQuery = query.toLowerCase().trim();
   if (!searchQuery) return [];
 
-  const books = getBooksForLanguage(language);
+  const translatedBooks = getBooksForLanguage(language);
   const results: SearchResult[] = [];
 
   // First, search in book titles and authors from constants
-  BOOKS.forEach((book) => {
+  books.forEach((book) => {
     const titleMatch = book.title.toLowerCase().includes(searchQuery);
     const authorMatch = book.author.toLowerCase().includes(searchQuery);
     
@@ -45,7 +45,7 @@ export const searchBooks = (query: string, language: Language): SearchResult[] =
   });
 
   // Then search in summaries and takeaways
-  Object.entries(books).forEach(([bookId, bookData]) => {
+  Object.entries(translatedBooks).forEach(([bookId, bookData]) => {
     const { summary, keyTakeaways } = bookData;
     
     // Search in summary
@@ -58,7 +58,7 @@ export const searchBooks = (query: string, language: Language): SearchResult[] =
         const end = Math.min(summary.length, index + 100);
         const description = summary.slice(start, end).trim() + '...';
 
-        const bookInfo = BOOKS.find(b => b.id === bookId);
+        const bookInfo = books.find(b => b.id === bookId);
         results.push({
           id: bookId,
           title: bookInfo ? bookInfo.title : formatBookTitle(bookId),
@@ -75,7 +75,7 @@ export const searchBooks = (query: string, language: Language): SearchResult[] =
       );
       
       if (matchingTakeaway && !results.find(r => r.id === bookId)) {
-        const bookInfo = BOOKS.find(b => b.id === bookId);
+        const bookInfo = books.find(b => b.id === bookId);
         results.push({
           id: bookId,
           title: bookInfo ? bookInfo.title : formatBookTitle(bookId),

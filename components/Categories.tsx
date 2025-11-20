@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BOOKS } from '../constants';
+import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
 // Map category strings to category IDs
@@ -48,16 +48,17 @@ const categories = [
 
 const Categories: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { books } = useBooks();
   const { getBookTitle, getBookAuthor } = useLanguage();
 
   // Filter books by selected category
   const filteredBooks = selectedCategory
-    ? BOOKS.filter(book => getCategoryId(book.category) === selectedCategory)
+    ? books.filter(book => getCategoryId(book.category) === selectedCategory)
     : [];
 
   // Get sample book images for each category
   const getCategoryBookImages = (categoryId: string) => {
-    const categoryBooks = BOOKS.filter(book => getCategoryId(book.category) === categoryId);
+    const categoryBooks = books.filter(book => getCategoryId(book.category) === categoryId);
     return categoryBooks.slice(0, 3).map(book => book.coverImageUrl);
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { BOOKS, BOOK_SUMMARIES } from '../constants';
+import { BOOK_SUMMARIES } from '../constants';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -19,6 +19,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
+import { useBooks } from '../contexts/BooksContext';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 
@@ -27,6 +28,7 @@ const SummaryDetailPage: React.FC = () => {
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
+  const { books, getBookById, loading: booksLoading } = useBooks();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,11 +39,11 @@ const SummaryDetailPage: React.FC = () => {
     if (!idOrSlug) return undefined;
     
     // First, try to find book by ID directly
-    const bookById = BOOKS.find(b => b.id === idOrSlug);
+    const bookById = getBookById(idOrSlug);
     if (bookById) return idOrSlug;
     
     // If not found, try to find by Arabic slug
-    const bookBySlug = BOOKS.find(b => b.arabicSlug === idOrSlug);
+    const bookBySlug = books.find(b => b.arabicSlug === idOrSlug);
     return bookBySlug?.id;
   };
 
@@ -109,7 +111,10 @@ const SummaryDetailPage: React.FC = () => {
   }, [currentLanguage, t]);
 
   useEffect(() => {
-    const currentBook = BOOKS.find((b) => b.id === bookId);
+    // Wait for books to load before trying to find the book
+    if (books.length === 0) return;
+    
+    const currentBook = getBookById(bookId || '');
     setBook(currentBook);
     if (currentBook) {
       fetchSummary(currentBook);
@@ -145,7 +150,7 @@ const SummaryDetailPage: React.FC = () => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, fetchSummary]);
+  }, [bookId, books, getBookById, fetchSummary]);
 
   const handleToggleSpeech = () => {
     if (!summaryData) return;
@@ -167,6 +172,15 @@ const SummaryDetailPage: React.FC = () => {
       setIsSpeaking(true);
     }
   };
+
+  // Show loading spinner while books are being fetched from Firestore
+  if (booksLoading || (loading && !book)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   if (!book && !loading) {
     return (
@@ -2989,7 +3003,7 @@ const SummaryDetailPage: React.FC = () => {
         <YouMayAlsoLike 
           currentBookId={book.id}
           currentBookCategory={book.category}
-          books={BOOKS}
+          books={books}
           maxBooks={8}
         />
       )}

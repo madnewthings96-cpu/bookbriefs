@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BOOKS } from '../constants';
+import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { bookSummaryTranslations } from '../translations/bookSummaries';
 
 const MostReadBooks: React.FC = () => {
   const { getBookTitle, getBookAuthor, currentLanguage } = useLanguage();
+  const { books } = useBooks();
 
   // Specific books to display
   const featuredBookIds = [
@@ -17,7 +18,7 @@ const MostReadBooks: React.FC = () => {
     'thedisciplinedtrader'
   ];
 
-  const mostReadBooks = BOOKS.filter(book => featuredBookIds.includes(book.id));
+  const mostReadBooks = books.filter(book => featuredBookIds.includes(book.id));
 
   // Get book description from translations
   const getBookDescription = (bookId: string): string => {

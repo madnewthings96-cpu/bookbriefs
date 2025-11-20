@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
+import { useBooks } from '../contexts/BooksContext';
 import LanguageSelector from './LanguageSelector';
 import SearchResults from './SearchResults';
 import UserMenu from './UserMenu';
@@ -23,11 +24,12 @@ const Header: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { t, language } = useLanguage();
   const { isReaderMode } = useReaderMode();
+  const { books } = useBooks();
 
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      const results = searchBooks(searchQuery, language);
+      const results = searchBooks(searchQuery, language, books);
       if (results.length > 0) {
         navigate(results[0].path);
         setSearchQuery('');
@@ -49,14 +51,14 @@ const Header: React.FC = () => {
     // Set new timeout for debounced search
     searchTimeoutRef.current = setTimeout(() => {
       if (query.trim()) {
-        const results = searchBooks(query, language);
+        const results = searchBooks(query, language, books);
         setSearchResults(results);
       } else {
         setSearchResults([]);
       }
       setIsSearching(false);
     }, 300);
-  }, [language]);
+  }, [language, books]);
 
   // Handle keyboard shortcut for search
   useEffect(() => {

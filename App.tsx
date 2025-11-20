@@ -8,6 +8,7 @@ import { PersonalNotesProvider } from './contexts/PersonalNotesContext';
 import { UserProgressProvider } from './contexts/UserProgressContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ReadingChallengeProvider } from './contexts/ReadingChallengeContext';
+import { BooksProvider } from './contexts/BooksContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -307,21 +308,23 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 const App: React.FC = () => {
   return (
     <FirebaseProvider>
-      <LanguageProvider>
-        <AuthProvider>
-          <FavoritesProvider>
-            <ReadingChallengeProvider>
-              <UserProgressProvider>
-                <ReaderModeProvider>
-                  <PersonalNotesProvider>
-                    <AppContent />
-                  </PersonalNotesProvider>
-                </ReaderModeProvider>
-              </UserProgressProvider>
-            </ReadingChallengeProvider>
-          </FavoritesProvider>
-        </AuthProvider>
-      </LanguageProvider>
+      <BooksProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <FavoritesProvider>
+              <ReadingChallengeProvider>
+                <UserProgressProvider>
+                  <ReaderModeProvider>
+                    <PersonalNotesProvider>
+                      <AppContent />
+                    </PersonalNotesProvider>
+                  </ReaderModeProvider>
+                </UserProgressProvider>
+              </ReadingChallengeProvider>
+            </FavoritesProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </BooksProvider>
     </FirebaseProvider>
   );
 };

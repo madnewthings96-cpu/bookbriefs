@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
 import { useFavorites } from '../contexts/FavoritesContext';
-import { BOOKS } from '../constants';
+import { useBooks } from '../contexts/BooksContext';
 import FavoriteButton from '../components/FavoriteButton';
 
 const UserProfilePage: React.FC = () => {
@@ -13,6 +13,7 @@ const UserProfilePage: React.FC = () => {
   const { user } = useAuth();
   const { userStats, bookProgress, updateBookProgress, getBookProgress } = useUserProgress();
   const { favorites } = useFavorites();
+  const { books } = useBooks();
 
   // User data with Firebase user info
   const userName = user?.email?.split('@')[0] || "Reader";
@@ -21,7 +22,7 @@ const UserProfilePage: React.FC = () => {
   const [startReadingBooks, setStartReadingBooks] = useState<any[]>([]);
   
   // All available books for start reading
-  const allStartReadingBooks = BOOKS.map(book => ({
+  const allStartReadingBooks = books.map(book => ({
     id: book.id,
     title: book.title,
     author: book.author,
@@ -93,7 +94,7 @@ const UserProfilePage: React.FC = () => {
 
   const handleBookClick = (bookId: string) => {
     // Find the book by ID
-    const book = BOOKS.find(b => b.id === bookId);
+    const book = books.find(b => b.id === bookId);
     if (!book) return;
     
     // Update progress when user clicks on a book
@@ -110,7 +111,7 @@ const UserProfilePage: React.FC = () => {
   };
 
   // Get favorite books
-  const favoriteBooks = BOOKS.filter(book => favorites.includes(book.id));
+  const favoriteBooks = books.filter(book => favorites.includes(book.id));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
