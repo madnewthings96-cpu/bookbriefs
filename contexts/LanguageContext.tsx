@@ -157,6 +157,7 @@ const translations = {
       'the-simple-path-to-wealth': 'The Simple Path to Wealth',
       'basic-economics': 'Basic Economics',
       'black-rednecks-and-white-liberals': 'Black Rednecks and White Liberals',
+      'how-to-trade-in-stocks': 'How To Trade in Stocks',
     },
     bookAuthors: {
       'atomic-habits': 'James Clear',
@@ -214,6 +215,7 @@ const translations = {
       'the-simple-path-to-wealth': 'J.L. Collins',
       'basic-economics': 'Thomas Sowell',
       'black-rednecks-and-white-liberals': 'Thomas Sowell',
+      'how-to-trade-in-stocks': 'Jesse Livermore',
     },
   },
 };

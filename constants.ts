@@ -641,6 +641,17 @@ export const BOOKS: Book[] = [
     pageCount: 372,
     arabicSlug: 'ملخص-كتاب-المتسكعون-السود-والليبراليون-البيض',
   },
+  {
+    id: 'how-to-trade-in-stocks',
+    title: 'How To Trade in Stocks',
+    author: 'Jesse Livermore',
+    category: 'Finance',
+    coverImageUrl: '/images/how to trade in stocks.jpg',
+    rating: 4.8,
+    publicationYear: 1940,
+    pageCount: 164,
+    arabicSlug: 'ملخص-كتاب-كيف-تتداول-في-الأسهم',
+  },
 ];
 
 export const BROKERS: Broker[] = [
@@ -12998,6 +13009,206 @@ The book does not offer easy solutions. It suggests that the path to equality is
       "Empiricism vs. Ideology (Data Over Narrative): Must look at 'what happened' (data) rather than 'what should have happened' (ideology)—German minorities succeeding in Russia or black students succeeding in 1920s DC are uncomfortable facts for modern narratives but essential for understanding how human capital actually works",
       "Strong Culture Overcomes Barriers (Jews/Japanese Case): Jews and Japanese Americans succeeded despite severe discrimination—proves strong culture can overcome barriers; conversely, weak culture (Redneck, modern underclass) will fail even in absence of discrimination; internal values stronger predictor than external barriers",
       "Personal Responsibility at Cultural Scale (No Easy Solutions): Path to equality not through political agitation or 'white guilt'—requires rigorous, often painful process of cultural change and accumulation of human capital; demand for personal responsibility raised to level of cultural responsibility; shifts locus of control from oppressor to individual/culture"
+    ],
+    isPremium: false,
+  },
+  {
+    id: 'how-to-trade-in-stocks',
+    title: 'How To Trade in Stocks',
+    author: 'Jesse Livermore',
+    coverImageUrl: '/images/how to trade in stocks.jpg',
+    category: 'Finance',
+    summary: `# Executive Summary & Context
+
+## The Legend: The Boy Plunger
+
+To understand the text, one must understand the author. Jesse Livermore was not merely a trader; he was the singularity of the speculative world in the early 20th century. Known as the "Boy Plunger" for his ability to read tape at a glance in the bucket shops of Boston, and later as the "Great Bear of Wall Street" for his massive short positions during the crash of 1929, Livermore accumulated and lost multi-million dollar fortunes (equivalent to billions today) four distinct times.
+
+It is crucial to distinguish this work, **How to Trade in Stocks** (published in 1940), from **Reminiscences of a Stock Operator** (published in 1923). Reminiscences, written by Edwin Lefèvre, is the romanticized biography—the movie script of Livermore's life. **How to Trade in Stocks**, written by Livermore himself shortly before his tragic suicide, is the textbook. It is the technical manual stripping away the romance to reveal the cold, hard mechanics of his methodology.
+
+## The Thesis: Speculation as a Business
+
+Livermore's central thesis is aggressive yet conservative: **Speculation is a business, not a gamble**. He argues that the greatest enemy of the investor is not the market, but the **"human element"**—the emotional trinity of Hope, Fear, and Greed.
+
+He posits that successful trading requires the same dedication, record-keeping, and hours of labor as a medical or legal practice. If you treat the market like a casino, it will treat you like a gambler (and take your money). If you treat it like a business, calculating risk and managing inventory (positions), it can yield a fortune.
+
+## Value Proposition: The Bible of Trend Trading
+
+Why does a book from 1940 matter in the age of Algorithms? Because while technology changes, **human psychology does not**. The market is simply the collective reflection of human hope and fear. Livermore's identification of **Pivotal Points** and the **Line of Least Resistance** formed the bedrock of modern trend following. Every breakout trader, every momentum algorithm, and every risk management stop-loss protocol can trace its lineage back to the principles outlined in this manifesto.
+
+# The Core Philosophy: The Livermore Mental Framework
+
+Before analyzing the technical rules, we must adopt the Livermore mindset. He operated on a top-down philosophy that prioritized **timing and patience** above all else.
+
+## The Challenge of Speculation: "Time" is the Fourth Dimension
+
+Livermore famously stated, **"There is a time to go long, a time to go short, and a time to go fishing."** Most amateurs feel the need to be in the market every day to feel like they are "working." Livermore argued that all time is not the right time to play. The market spends the majority of its time in "noise"—aimless fluctuations that lack a decided trend. The professional waits for the market to declare its hand. Patience is not just a virtue; it is a skill. **The money is not made in the buying or the selling, but in the waiting.**
+
+## Emotional Discipline: The Human Element
+
+Livermore viewed the trader's psyche as a dangerous liability.
+
+- **Greed**: Causes traders to overtrade or hold positions too long, hoping for the "last eighth" of a point.
+- **Fear**: Causes traders to sell too early or paralysis in pulling the trigger on a valid entry.
+- **Hope**: The most dangerous of all. When a trade goes against a professional, they cut it (Fear of loss). When a trade goes against an amateur, they hope it will come back. Livermore teaches that **hope has no place in the mathematics of the market**.
+
+## The Top-Down Approach
+
+Livermore never looked at a stock in isolation. His workflow was strictly hierarchical:
+
+1. **The Broad Market**: Is the general tide rising (Bull) or falling (Bear)? A stock rarely bucks the general trend.
+2. **The Industry Group**: If the market is bullish, which sector is leading? (e.g., Steel, Rails, or in modern terms, Tech, AI).
+3. **The Sister Stock**: Watch the two leaders in that industry. If Steel is moving, U.S. Steel and Bethlehem Steel should confirm each other's moves.
+4. **The Individual Stock**: Only then do you select the specific vehicle for the trade.
+
+## The Line of Least Resistance
+
+This is the cornerstone of his directional theory. **Prices, like water, move along the Line of Least Resistance.**
+
+- If buying pressure exceeds selling pressure, the line is **up**.
+- If selling pressure exceeds buying pressure, the line is **down**.
+
+**The Lesson**: Never argue with the tape. If the price is going up, the fundamental reasons don't matter immediately. The fact that it is going up is the only data point that matters for the trade. Do not short a stock because it "seems too high" or buy one because it "seems too low." Follow the line.
+
+# Chapter-by-Chapter Deep Dive
+
+## Chapter 1: The Challenge of Speculation
+
+**The Core Lesson**: Speculation requires a singular focus. Livermore opens by asserting that the game of speculation is the "most uniformly fascinating game in the world," but it is not for the "stupid, the mentally lazy, the person of inferior emotional balance, or the get-rich-quick adventurer."
+
+He emphasizes that **you cannot bet on every fluctuation**. The desire to profit daily is responsible for more losses than any other factor. He introduces the concept of the **Minor vs. Major movement**. The minor movements are unpredictable (noise). The major movements are inevitable (trend). The speculator's job is to ignore the minor and capture the major.
+
+## Chapter 2: When Does a Stock Act Right?
+
+**The Core Lesson**: Price confirmation and the "New High." Livermore challenges the old adage "Buy Low, Sell High." Instead, his philosophy is effectively **"Buy High, Sell Higher."**
+
+He explains that a stock "acts right" when it **breaks through a resistance level with volume**. In modern terms, we call this a **Breakout**. He warns against buying a stock on a pullback (buying the dip) unless the trend is confirmed. When a stock makes a new historical high, it is not "too expensive"; it is strong. There is no supply (bag holders) overhead to sell into the rally. This is the safest time to buy.
+
+## Chapter 3: Follow the Leaders
+
+**The Core Lesson**: Concentration over Diversification. Livermore despised the idea of a "diversified portfolio" for speculation. He believed you should **"keep your eggs in one basket and watch the basket."**
+
+**The Rule**: Trade the market leaders. If you cannot make money in the leading stocks (the active, high-volume favorites), you will not make money in the market as a whole.
+
+**The Logic**: Leaders move first and furthest. If the market turns, the leaders will signal the turn first. Avoid "bargain hunting" in laggard stocks that have failed to rise with the group. They are lagging for a reason.
+
+## Chapter 4: Money in Hand
+
+**The Core Lesson**: Handling profits and the "Impulse." Livermore touches on the necessity of **withdrawing funds**. He suggests that after a successful campaign, a speculator should withdraw **50% of the profits** and lock them away (cash, real estate, annuities).
+
+**Why?** The money in the broker's account does not feel "real" to the speculator. It feels like points in a video game. By physically removing it, you validate your work and protect yourself from the inevitable drawdown that follows a streak of hubris.
+
+## Chapter 5: The Pivotal Point
+
+**The Core Lesson**: Timing the entry perfectly. This is arguably the most critical technical chapter. Livermore did not use charts in the traditional sense; he watched price action for specific psychological triggers called **Pivotal Points**.
+
+### Reversal Pivotal Points
+
+A psychological level where a stock, having moved in one direction for a long time, exhausts itself and turns.
+
+- **Identification**: A stock makes a high, drops, rallies but fails to make a new high, and then breaks the previous low. This signals the trend has broken.
+
+### Continuation Pivotal Points
+
+A consolidation period during a trend.
+
+- **Identification**: A stock rises, then pauses (consolidates) for a few weeks, drifting sideways. This is the stock "digesting" the gains. When it wakes up and breaks out of this range, it is a **Continuation Pivotal Point**.
+
+**The Strategy**: You do not buy at the bottom. You buy at the Pivotal Point. This ensures you are entering exactly when the momentum is confirming your thesis. You are not guessing; you are hitching a ride on a moving train.
+
+## Chapter 6: The Million Dollar Mistake
+
+**The Core Lesson**: Money Management and Cutting Losses. Livermore confesses to his own failures to illustrate the danger of **Averaging Down**.
+
+- **The Definition**: Averaging down is buying more of a losing position to lower your average entry price.
+- **Livermore's Verdict**: This is the fastest way to bankruptcy. If you bought at $50 and it goes to $45, you are **wrong**. Why would you buy more? You are throwing good money after bad.
+
+**The 10% Rule**: Livermore adhered to a strict mechanical stop. If a position lost 10% of its value, he closed it automatically. No questions, no hope, no excuses. This preserves capital for the next opportunity.
+
+## Chapter 7: The Three Million Dollar Profit
+
+**The Core Lesson**: The art of **Pyramiding**. Contrasting the previous chapter, Livermore explains how to handle a winning trade through Pyramiding.
+
+**The Logic**: If you are right, you should bet more. But you must do it safely.
+
+**The Mechanics**:
+
+1. **The Probe**: Buy your first portion (e.g., 20% of intended size) at the Pivotal Point.
+2. **Confirmation**: If the price rises, you are right. Buy the next portion.
+3. **Completion**: As the price continues to rise, complete your position.
+
+**Crucial Note**: Each subsequent buy must be at a **higher price** than the last. You are "averaging up." This ensures you are always in profit on the total position.
+
+## Chapter 8: The Market Key
+
+**The Core Lesson**: Deciphering the Code. Livermore introduces his specific method of recording prices to filter out the noise. He argues that standard ticker tape is too noisy. You need a **filter** to see the true trend. This leads into the final section of the book.
+
+# The Technical Methodology: The Market Key
+
+Many summaries neglect this section because it is dense and mathematical, yet it is the physical manifestation of Livermore's genius. It is a precursor to **Point and Figure** or **Renko charting**.
+
+## The Logic of the Grid
+
+Livermore used a notebook with columns. He did not record every price change. He only recorded prices that were **significant enough** to warrant attention.
+
+- **The Filter**: He would wait for a stock to move a specific number of points (e.g., 6 points) before recording it. This eliminated the "wiggles" of day trading.
+- **Black vs. Red**: He used Black ink for uptrends and Red ink for downtrends.
+
+## The Columns
+
+- **Secondary Rally**: A short-term bounce in a downtrend.
+- **Natural Reaction**: A short-term dip in an uptrend.
+- **Upward Trend**: When the price breaks above the previous high.
+- **Downward Trend**: When the price breaks below the previous low.
+
+## Interpreting the Signals
+
+The "Key" was watching how the price transitioned between these columns.
+
+If a stock is in an **Upward Trend**, experiences a **Natural Reaction** (dip), and then rallies but **fails to exceed the previous high** number in the Upward Trend column, and subsequently **falls below the low** of the Reaction... a **Sell Signal** is generated.
+
+This mechanical filtering removed emotion. The ink doesn't lie. Either the number is written in the column, or it isn't. This forced Livermore to acknowledge the trend change even if his "gut" felt bullish.
+
+# Synthesis & Modern Application
+
+## Livermore vs. Algorithms
+
+In the modern era of High-Frequency Trading (HFT) and Algos, does Livermore still apply? **Absolutely**. While HFTs trade in microseconds, they create "noise." Livermore's method was specifically designed to ignore noise. The macro-moves of institutions (The Smart Money) accumulating or distributing shares still take days, weeks, or months.
+
+- **Pivotal Points** are now seen as "Support/Resistance Flips" or "Breakout Levels."
+- **Pyramiding** is now called "Scaling In."
+- **The 10% Rule** is standard **Risk Management**.
+
+## Final Verdict
+
+**How to Trade in Stocks** is not a book about how to predict the future. It is a book about **how to react to the present**. Livermore teaches us that the market is a mechanism of truth.
+
+- **For the Beginner**: It provides the cardinal rules of survival (Stop Losses).
+- **For the Expert**: It provides the blueprint for massive wealth accumulation (Pyramiding and Sitting Tight).
+
+To read this book is to accept that you know nothing, and that the market knows everything. As Livermore wrote, **"Markets are never wrong – opinions often are."** This guide serves as your roadmap to abandoning opinion and embracing the truth of price.`,
+    keyTakeaways: [
+      "Speculation is a Business, Not a Gamble (Central Thesis): Successful trading requires same dedication, record-keeping, and labor hours as medical/legal practice—greatest enemy is not market but 'human element' (Hope, Fear, Greed); if you treat market like casino, it treats you like gambler and takes your money; if you treat it like business (calculating risk, managing positions), it can yield fortune",
+      "Time to Go Long, Short, or Fishing (Patience as Skill): Market spends majority of time in 'noise'—aimless fluctuations lacking decided trend; professional waits for market to declare its hand; most amateurs feel need to be in market daily to feel like they're 'working'; money is not made in buying or selling, but in the waiting—all time is not the right time to play",
+      "Hope Has No Place in Mathematics (Emotional Discipline): When trade goes against professional, they cut it (fear of loss); when trade goes against amateur, they hope it will come back—this is most dangerous emotion; Greed causes overtrading/holding too long for 'last eighth'; Fear causes selling too early or paralysis on valid entry",
+      "Top-Down Hierarchical Workflow (Never Trade in Isolation): 1) Broad Market: Is general tide rising (Bull) or falling (Bear)?—stock rarely bucks general trend; 2) Industry Group: If market bullish, which sector leading (Steel/Rails/Tech/AI)?; 3) Sister Stock: Watch two leaders in industry for confirmation; 4) Individual Stock: Only then select specific vehicle for trade",
+      "Line of Least Resistance (Water Analogy): Prices, like water, move along line of least resistance—if buying pressure exceeds selling, line is up; if selling exceeds buying, line is down; never argue with tape; if price going up, fundamental reasons don't matter immediately; fact that it's going up is only data point for trade; don't short because 'seems too high' or buy because 'seems too low'",
+      "Ignore Minor, Capture Major (Noise vs. Trend): Cannot bet on every fluctuation—desire to profit daily responsible for more losses than any other factor; minor movements are unpredictable (noise); major movements are inevitable (trend); speculator's job is to ignore minor and capture major; speculation is 'most uniformly fascinating game in world' but not for 'stupid, mentally lazy, inferior emotional balance, or get-rich-quick adventurer'",
+      "Buy High, Sell Higher (Reversal of Common Wisdom): Stock 'acts right' when breaks through resistance level with volume (Breakout in modern terms)—when makes new historical high, is not 'too expensive'; it is strong; no supply (bag holders) overhead to sell into rally; this is safest time to buy; warns against buying pullback (buying dip) unless trend confirmed",
+      "Follow Leaders, Not Laggards (Concentration Over Diversification): Despised 'diversified portfolio' for speculation—'keep eggs in one basket and watch basket'; if cannot make money in leading stocks (active, high-volume favorites), will not make money in market as whole; leaders move first and furthest; if market turns, leaders signal turn first; avoid bargain hunting in laggard stocks that failed to rise with group—lagging for reason",
+      "Withdraw 50% of Profits (Money in Hand Rule): After successful campaign, withdraw 50% of profits and lock away (cash, real estate, annuities)—money in broker's account doesn't feel 'real'; feels like points in video game; by physically removing it, validate your work and protect from inevitable drawdown that follows streak of hubris",
+      "Pivotal Points: Timing Entry Perfectly (The Key Technical Concept): Reversal Pivotal Points—stock makes high, drops, rallies but fails to make new high, then breaks previous low (trend broken); Continuation Pivotal Points—stock rises, pauses/consolidates for weeks (digesting gains), then breaks out of range; you don't buy at bottom; you buy at Pivotal Point when momentum confirming thesis—hitching ride on moving train, not guessing",
+      "Never Average Down (Million Dollar Mistake): Averaging down is buying more of losing position to lower average entry price—Livermore's verdict: fastest way to bankruptcy; if bought at $50 and goes to $45, you are WRONG—why buy more? Throwing good money after bad; preserves capital for next opportunity",
+      "The 10% Rule (Mechanical Stop-Loss): If position loses 10% of value, close it automatically—no questions, no hope, no excuses; this strict mechanical stop is cardinal rule of survival; prevents catastrophic losses and preserves capital for when you are right",
+      "Pyramid Winners, Not Losers (Averaging Up Strategy): If you are right, bet more—but safely; 1) The Probe: Buy first portion (20% of intended size) at Pivotal Point; 2) Confirmation: If price rises, buy next portion; 3) Completion: As price continues rising, complete position; CRUCIAL: Each subsequent buy at HIGHER price than last (averaging up)—ensures always in profit on total position",
+      "The Market Key: Filter Out Noise (Precursor to Point & Figure): Did not record every price change—only recorded prices significant enough (e.g., 6-point moves); Black ink for uptrends, Red for downtrends; four columns: Secondary Rally (bounce in downtrend), Natural Reaction (dip in uptrend), Upward Trend (breaks above previous high), Downward Trend (breaks below previous low); mechanical filtering removed emotion—ink doesn't lie",
+      "Trend Reversal Signal (The Grid's Power): If stock in Upward Trend, experiences Natural Reaction, rallies but FAILS to exceed previous high in Upward Trend column, then falls below low of Reaction—SELL SIGNAL generated; forced Livermore to acknowledge trend change even if 'gut' felt bullish; either number is written in column or it isn't—no room for opinion",
+      "Markets Never Wrong, Opinions Often Are (React to Present, Not Predict Future): Market is mechanism of truth—must abandon opinion and embrace truth of price; not about predicting future, about reacting to present; while HFT/Algos trade in microseconds creating noise, macro-moves of institutions (Smart Money) accumulating/distributing shares still take days/weeks/months; Livermore's method designed to ignore noise",
+      "Modern Translation (Livermore's Legacy): Pivotal Points are now 'Support/Resistance Flips' or 'Breakout Levels'; Pyramiding is now 'Scaling In'; 10% Rule is standard Risk Management; every breakout trader, momentum algorithm, and stop-loss protocol traces lineage back to these principles; human psychology unchanged despite technology changes",
+      "Reminiscences vs. How To Trade (Two Different Books): Reminiscences of Stock Operator (1923, by Edwin Lefèvre) is romanticized biography—the movie script; How to Trade in Stocks (1940, by Livermore himself shortly before suicide) is the textbook—technical manual stripping romance to reveal cold, hard mechanics; former is story, latter is system",
+      "The Boy Plunger to Great Bear (Context of Author): Jesse Livermore accumulated and lost multi-million dollar fortunes (equivalent to billions today) four distinct times—known for ability to read tape at glance in Boston bucket shops; massive short positions during 1929 crash; not merely trader but 'singularity of speculative world' in early 20th century",
+      "Speculation Not for Everyone (The Filter): Not for 'stupid, mentally lazy, person of inferior emotional balance, or get-rich-quick adventurer'—requires singular focus, discipline, emotional control; most uniformly fascinating game but demands same professionalism as medicine or law; amateurs feel need to be in market every day; professionals wait for right moment even if means weeks/months on sidelines",
+      "Sister Stock Confirmation (Industry Leadership Validation): Within leading industry group, watch two leaders for mutual confirmation—if Steel moving, U.S. Steel and Bethlehem Steel should confirm each other's moves; if one breaks out but other doesn't, suspect false signal; true trend shows up across entire leading group simultaneously; isolation is red flag"
     ],
     isPremium: false,
   },
