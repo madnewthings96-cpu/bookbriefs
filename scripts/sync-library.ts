@@ -141,6 +141,12 @@ async function syncBook(book: BookDefinition, forceUpdate: boolean = false): Pro
     // Prepare book data for Firestore
     const bookData = {
       ...book,
+      // Add lowercase fields for case-insensitive searching
+      titleLowerCase: book.title.toLowerCase(),
+      authorLowerCase: book.author.toLowerCase(),
+      categoryLowerCase: book.category.toLowerCase(),
+      // Add ratingsCount if not present (default format)
+      ratingsCount: book.ratingsCount || `${Math.floor(book.rating * 100)}K`,
       searchTerms: generateSearchTerms(book),
       updatedAt: new Date().toISOString(),
       createdAt: exists ? existingDoc.data()?.createdAt : new Date().toISOString()

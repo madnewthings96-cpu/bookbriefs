@@ -21,7 +21,8 @@ export interface BookDefinition {
       author: string;
     };
   };
-  // Optional fields added by sync script
+  // Optional fields
+  ratingsCount?: string;
   createdAt?: string;
   updatedAt?: string;
   searchTerms?: string[];
