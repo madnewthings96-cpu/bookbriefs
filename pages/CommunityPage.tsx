@@ -58,7 +58,7 @@ interface Channel {
 }
 
 const CommunityPage: React.FC = () => {
-  const { currentUser } = useFirebase();
+  const { currentUser, loading: authLoading } = useFirebase();
   const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -233,6 +233,15 @@ const CommunityPage: React.FC = () => {
   );
 
   const currentChannel = channels.find(c => c.id === selectedChannel);
+
+  // Show loading spinner while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-4 md:py-8">

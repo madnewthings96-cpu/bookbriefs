@@ -67,7 +67,10 @@ const MerchPage: React.FC = () => {
         setError(null);
       } catch (err) {
         console.error('Failed to fetch products:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load products. Please check your API configuration.');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load products. Please check your API configuration.';
+        setError(errorMessage);
+        // Set loading to false even on error so page doesn't stay blank
+        setProducts([]);
       } finally {
         setLoading(false);
       }
