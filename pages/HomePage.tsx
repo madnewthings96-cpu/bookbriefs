@@ -8,7 +8,7 @@ import { RainbowButton } from '../components/RainbowButton';
 
 // Lazy load heavy components
 const Testimonials = lazy(() => import('../components/Testimonials'));
-const Categories = lazy(() => import('../components/Categories'));
+const MostReadBooks = lazy(() => import('../components/MostReadBooks'));
 
 const HomePage: React.FC = () => {
   useSEO({
@@ -142,10 +142,10 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* Most Read Books Section */}
       <section className="py-8 bg-gray-50">
         <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div></div>}>
-          <Categories />
+          <MostReadBooks />
         </Suspense>
       </section>
 
