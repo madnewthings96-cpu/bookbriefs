@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { BOOK_SUMMARIES } from '../constants';
 import BookCard from '../components/BookCard';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
@@ -22,12 +21,8 @@ const SummariesPage: React.FC = () => {
     setSearchQuery(event.target.value);
   };
 
-  // Only show books that have summaries available
-  const booksWithSummaries = books.filter(book =>
-    BOOK_SUMMARIES.some(summary => summary.id === book.id)
-  );
-
-  const filteredBooks = booksWithSummaries.filter(book =>
+  // Show all books from Firestore - trust the database as the source of truth
+  const filteredBooks = books.filter(book =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.author.toLowerCase().includes(searchQuery.toLowerCase())
   );
