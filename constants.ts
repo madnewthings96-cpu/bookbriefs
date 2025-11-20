@@ -710,7 +710,29 @@ export const BOOK_SUMMARIES: BookSummary[] = [
     author: 'Nicolas Darvas',
     coverImageUrl: '/images/how i made $2,000,000 in the stock market.jpg',
     category: 'Finance',
-    summary: '', // Summary is now in Firestore
+    summary: 'Full summary loaded from Firestore', // Placeholder - actual content in Firestore
+    keyTakeaways: [
+      "**From Dancer to $2M Trader**: Nicolas Darvas, a professional dancer with no Wall Street connections, transformed $36,000 into over $2 million in 18 months using a disciplined, systematic approach developed while touring the world.",
+      "**The Techno-Fundamentalist Approach**: Darvas combined fundamental analysis (seeking companies in growing industries with strong earnings) with technical analysis (price and volume patterns), a revolutionary approach in the 1950s that remains effective today.",
+      "**The Lucky Fool Syndrome**: Early success from blind luck often leads to overconfidence and devastating losses. Darvas candidly shares how mistaking chance for skill nearly wiped out his capital, emphasizing the need for a reproducible system over intuition.",
+      "**Box Theory Fundamentals**: Stock prices move in defined ranges ('boxes') with clear resistance (top) and support (bottom) levels. A box is confirmed when prices can't break through these levels for at least three consecutive days.",
+      "**Breakout Criteria**: Valid breakouts require three elements: (1) price closing above the box top for three consecutive days, (2) volume 2-3x normal levels, and (3) formation of a new, higher box. Without these confirmations, breakouts typically fail.",
+      "**Volume is the Catalyst**: Price movement without volume is meaningless; volume confirms genuine buying pressure from informed institutional investors. Darvas rejected price moves on low volume as retail noise.",
+      "**Riding Rising Boxes**: The real profits come from holding positions through multiple box breakouts. Texas Instruments climbed through four consecutive boxes ($94→$171, an 82% gain) while other traders captured only fragments by jumping in and out.",
+      "**Automatic Stop-Loss System**: Place initial stops 5-10% below entry (or just below box bottom), then trail stops upward below each new box. This system limits losses, locks in profits, and eliminates emotional decision-making.",
+      "**Geographic Advantage**: Being physically distant from Wall Street (touring in Asia, Europe) prevented Darvas from reacting to daily noise and emotional contagion, forcing focus on bigger trends—a lesson in the power of deliberate disconnection.",
+      "**Pyramiding Winners**: Add to positions that are already profitable after confirming new box breakouts, not to losing positions. This multiplies gains on proven trends while avoiding the trap of averaging down on losers.",
+      "**Never Act on Tips**: Every time Darvas followed tips or expert advice, he lost money. Success came only when he relied on his own systematic observations of price and volume behavior.",
+      "**The Market is Always Right**: If a position is losing money, the market is sending a signal—listen to it. Pride and hope destroy traders who refuse to accept when they're wrong.",
+      "**Patience Over Action**: Wait weeks or months for perfect setups rather than forcing trades out of boredom. Darvas was comfortable holding large cash positions while waiting for high-probability opportunities.",
+      "**Position Sizing**: Never commit more than 10-20% of capital to any single position, regardless of how compelling the opportunity. Combined with 5-10% stop losses, this limited maximum loss per trade to 1-2% of total capital.",
+      "**Market Timing Matters**: Trade only when the overall market trend is up. During sustained downturns, move entirely to cash. Fighting the general market direction is like swimming against a rip current.",
+      "**Psychological Mastery**: The real battle is internal—against fear, greed, hope, and pride. Darvas's system removed emotion by making decisions (entry, exit, position size) in advance based on objective criteria.",
+      "**Learning from Losses**: Keep detailed records of every trade and systematically analyze mistakes. Darvas identified patterns in his errors and eliminated each category through specific rule changes.",
+      "**Capital Asymmetry**: A 50% loss requires a 100% gain to recover. This mathematical reality makes capital preservation through risk management the foundation of successful trading, not maximizing gains.",
+      "**Simplicity Works**: The Box Theory's power lies in its simplicity. Many traders fail from overcomplicated systems with too many indicators. Simple methods, executed with discipline, produce extraordinary results.",
+      "**Independence of Thought**: Darvas succeeded precisely because he didn't follow the crowd or defer to Wall Street experts. He developed his own methods through careful observation and testing—traders must think for themselves."
+    ]
   },
   {
     id: 'the-4-hour-workweek',

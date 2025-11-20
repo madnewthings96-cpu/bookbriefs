@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { BOOK_SUMMARIES } from '../constants';
+import { BOOKS, BOOK_SUMMARIES } from '../constants';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -19,16 +19,16 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
-import { useBooks } from '../contexts/BooksContext';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
+import { doc, getDoc } from 'firebase/firestore';
+import { getDbInstance } from '../firebase';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated } = useAuth();
   const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
-  const { books, getBookById, loading: booksLoading } = useBooks();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,11 +39,11 @@ const SummaryDetailPage: React.FC = () => {
     if (!idOrSlug) return undefined;
     
     // First, try to find book by ID directly
-    const bookById = getBookById(idOrSlug);
+    const bookById = BOOKS.find(b => b.id === idOrSlug);
     if (bookById) return idOrSlug;
     
     // If not found, try to find by Arabic slug
-    const bookBySlug = books.find(b => b.arabicSlug === idOrSlug);
+    const bookBySlug = BOOKS.find(b => b.arabicSlug === idOrSlug);
     return bookBySlug?.id;
   };
 
@@ -72,7 +72,7 @@ const SummaryDetailPage: React.FC = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
 
 
-  const fetchSummary = useCallback((currentBook: Book) => {
+  const fetchSummary = useCallback(async (currentBook: Book) => {
     setLoading(true);
     setError(null);
     
@@ -87,20 +87,42 @@ const SummaryDetailPage: React.FC = () => {
       });
       setLoading(false);
     } else {
-      // Fallback to original English summary
+      // Try to get from constants.ts first
       const bookSummary = BOOK_SUMMARIES.find(summary => summary.id === currentBook.id);
       
-      if (bookSummary) {
+      if (bookSummary && bookSummary.summary && bookSummary.summary.length > 100 && !bookSummary.summary.includes('Full summary loaded from Firestore')) {
+        // Use summary from constants.ts if it's complete
         setSummaryData({
           summary: bookSummary.summary,
           keyTakeaways: bookSummary.keyTakeaways
         });
         setLoading(false);
       } else {
+        // Load from Firestore if summary is placeholder or missing
+        try {
+          const db = getDbInstance();
+          const bookRef = doc(db, 'books', currentBook.id);
+          const bookDoc = await getDoc(bookRef);
+          
+          if (bookDoc.exists()) {
+            const firestoreData = bookDoc.data();
+            if (firestoreData.summary && firestoreData.keyTakeaways) {
+              setSummaryData({
+                summary: firestoreData.summary,
+                keyTakeaways: firestoreData.keyTakeaways
+              });
+              setLoading(false);
+              return;
+            }
+          }
+        } catch (err) {
+          console.error('Error loading from Firestore:', err);
+        }
+        
         // Final fallback: show placeholder
         setSummaryData({
           summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
-          keyTakeaways: [
+          keyTakeaways: bookSummary?.keyTakeaways || [
             t('summaryInDevelopment') || "Summary in development", 
             t('checkBackSoon') || "Check back soon for detailed content"
           ]
@@ -111,10 +133,7 @@ const SummaryDetailPage: React.FC = () => {
   }, [currentLanguage, t]);
 
   useEffect(() => {
-    // Wait for books to load before trying to find the book
-    if (books.length === 0) return;
-    
-    const currentBook = getBookById(bookId || '');
+    const currentBook = BOOKS.find((b) => b.id === bookId);
     setBook(currentBook);
     if (currentBook) {
       fetchSummary(currentBook);
@@ -150,7 +169,7 @@ const SummaryDetailPage: React.FC = () => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, books, getBookById, fetchSummary]);
+  }, [bookId, fetchSummary]);
 
   const handleToggleSpeech = () => {
     if (!summaryData) return;
@@ -172,15 +191,6 @@ const SummaryDetailPage: React.FC = () => {
       setIsSpeaking(true);
     }
   };
-
-  // Show loading spinner while books are being fetched from Firestore
-  if (booksLoading || (loading && !book)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  }
 
   if (!book && !loading) {
     return (
@@ -2371,44 +2381,6 @@ const SummaryDetailPage: React.FC = () => {
                     <span>Audible</span>
                   </a>
                 </>
-              ) : book.id === 'how-i-made-2000000-in-the-stock-market' ? (
-                <>
-                  <a 
-                    href="https://www.example55.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                  >
-                    <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <span>Amazon</span>
-                  </a>
-
-                  <a 
-                    href="https://www.example56.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                  >
-                    <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z"/>
-                    </svg>
-                    <span>Kindle</span>
-                  </a>
-
-                  <a 
-                    href="https://www.example57.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                  >
-                    <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
-                    </svg>
-                    <span>Audible</span>
-                  </a>
-                </>
               ) : book.id === 'the-psychology-of-money' ? (
                 <>
                   <a 
@@ -2902,10 +2874,6 @@ const SummaryDetailPage: React.FC = () => {
     if (book.id === 'how-to-trade-in-stocks') {
       window.open('/pdfs/how to trade in stocks.pdf', '_blank');
       return;
-    }
-    if (book.id === 'how-i-made-2000000-in-the-stock-market') {
-      window.open('/pdfs/how i made $2,000,000 in the stock market.pdf', '_blank');
-      return;
     }                      // For other books, generate PDF dynamically
                       // Lazy load jsPDF only when needed (saves 385KB from initial bundle!)
                       if (!summaryData) return;
@@ -3045,7 +3013,7 @@ const SummaryDetailPage: React.FC = () => {
         <YouMayAlsoLike 
           currentBookId={book.id}
           currentBookCategory={book.category}
-          books={books}
+          books={BOOKS}
           maxBooks={8}
         />
       )}
