@@ -73,8 +73,7 @@ const PipValueCalculator: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-md hover:bg-orange-600 transition-all duration-300"
-          style={{ backgroundColor: '#FF7F50' }}
+          className="calculator-button w-full px-6 py-3.5 text-base shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-200"
         >
           Calculate Pip Value
         </button>

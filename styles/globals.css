@@ -140,6 +140,52 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Premium gradient button for calculators */
+  .calculator-button {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: linear-gradient(120deg, #ffb347 0%, #ff7f50 40%, #ff5f6d 100%);
+    border: none;
+    border-radius: 999px;
+    box-shadow:
+      0 20px 35px rgba(255, 127, 80, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    position: relative;
+    overflow: hidden;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .calculator-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.1));
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 400ms ease, opacity 200ms ease;
+  }
+
+  .calculator-button:hover,
+  .calculator-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow:
+      0 25px 40px rgba(255, 95, 98, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .calculator-button:hover::after,
+  .calculator-button:focus-visible::after {
+    transform: translateX(120%);
+    opacity: 1;
+  }
+
+  .calculator-button:active {
+    transform: translateY(0);
+    box-shadow: 0 15px 30px rgba(255, 95, 98, 0.3);
+  }
+
   body.rtl .prose {
     direction: rtl;
     text-align: right;
