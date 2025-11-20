@@ -24,14 +24,28 @@ const PipValueCalculator: React.FC = () => {
     }
 
     // Calculate pip value based on currency pair
-    let calculatedValue;
+    let pipValuePerPip;
     if (currencyPair === 'XAU/USD') {
-      // For gold, 1 pip = $1 per oz, and standard lot is 100 oz
-      calculatedValue = size * 100 * pipsCount;
+      // For gold (XAU/USD):
+      // 1 pip = $0.01 movement in price
+      // 1 standard lot = 100 oz
+      // Pip value per lot = 100 oz × $0.01 = $1 per pip per lot
+      pipValuePerPip = size * 1; // $1 per pip per lot
+    } else if (currencyPair === 'USD/JPY') {
+      // For JPY pairs, 1 pip = 0.01 (not 0.0001)
+      // 1 standard lot = 100,000 units
+      // Pip value = (0.01 / exchange rate) × lot size × 100,000
+      // Simplified: approximately $9.17 per pip for 1 lot (varies with price)
+      pipValuePerPip = size * 10; // Approximation
     } else {
-      // For regular currency pairs, 1 pip = $10 per standard lot
-      calculatedValue = size * 10 * pipsCount;
+      // For regular currency pairs (EUR/USD, GBP/USD, etc.)
+      // 1 pip = 0.0001 movement
+      // 1 standard lot = 100,000 units
+      // Pip value = 0.0001 × 100,000 = $10 per pip per lot
+      pipValuePerPip = size * 10;
     }
+    
+    const calculatedValue = pipValuePerPip * pipsCount;
     
     let symbol = '';
     if (accountCurrency.toUpperCase() === 'USD') symbol = '$';
@@ -60,8 +74,13 @@ const PipValueCalculator: React.FC = () => {
           </select>
         </div>
         <div>
-          <label htmlFor="pips" className={formLabelStyle}>Pips</label>
+          <label htmlFor="pips" className={formLabelStyle}>
+            {currencyPair === 'XAU/USD' ? 'Points/Pips' : 'Pips'}
+          </label>
           <input type="number" id="pips" value={pips} onChange={e => setPips(e.target.value)} className={formInputStyle} placeholder="e.g., 10" step="0.1" />
+          {currencyPair === 'XAU/USD' && (
+            <p className="text-xs text-gray-500 mt-1">For gold: 1 point = $0.01 movement (e.g., from 2000.00 to 2000.10 = 10 points)</p>
+          )}
         </div>
         <div>
           <label htmlFor="positionSize" className={formLabelStyle}>Position Size (in lots)</label>
