@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, Calculator, Binoculars, Newspaper, Sparkles } from 'lucide-react';
+import { Home, BookOpen, Calculator, Newspaper, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 
@@ -18,7 +18,6 @@ const MobileBottomNav: React.FC = () => {
     { to: '/', label: t('home') || 'Home', icon: Home },
     { to: '/summaries', label: t('summaries') || 'Summaries', icon: BookOpen },
     { to: '/calculators', label: t('calculators') || 'Calculators', icon: Calculator },
-    { to: '/community', label: t('community') || 'Community', icon: Binoculars },
     { to: '/news', label: t('news') || 'News', icon: Newspaper },
   ];
 
