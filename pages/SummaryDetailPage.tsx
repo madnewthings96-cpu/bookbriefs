@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { BOOKS, BOOK_SUMMARIES } from '../constants';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -40,17 +39,9 @@ const SummaryDetailPage: React.FC = () => {
   const resolveBookId = useCallback((idOrSlug: string | undefined): string | undefined => {
     if (!idOrSlug) return undefined;
 
-    // First, try to find book by ID directly in constants
-    const bookById = BOOKS.find(b => b.id === idOrSlug);
-    if (bookById) return idOrSlug;
-
     // Try to find by ID in Firestore books
     const firestoreBookById = books.find(b => b.id === idOrSlug);
     if (firestoreBookById) return idOrSlug;
-
-    // If not found, try to find by Arabic slug in constants
-    const bookBySlug = BOOKS.find(b => b.arabicSlug === idOrSlug);
-    if (bookBySlug) return bookBySlug.id;
 
     // Try to find by Arabic slug in Firestore books
     const firestoreBookBySlug = books.find(b => b.arabicSlug === idOrSlug);
@@ -100,48 +91,36 @@ const SummaryDetailPage: React.FC = () => {
       });
       setLoading(false);
     } else {
-      // Try to get from constants.ts first
-      const bookSummary = BOOK_SUMMARIES.find(summary => summary.id === currentBook.id);
+      // Load from Firestore
+      try {
+        const db = getDbInstance();
+        const bookRef = doc(db, 'books', currentBook.id);
+        const bookDoc = await getDoc(bookRef);
 
-      if (bookSummary && bookSummary.summary && bookSummary.summary.length > 100 && !bookSummary.summary.includes('Full summary loaded from Firestore')) {
-        // Use summary from constants.ts if it's complete
-        setSummaryData({
-          summary: bookSummary.summary,
-          keyTakeaways: bookSummary.keyTakeaways
-        });
-        setLoading(false);
-      } else {
-        // Load from Firestore if summary is placeholder or missing
-        try {
-          const db = getDbInstance();
-          const bookRef = doc(db, 'books', currentBook.id);
-          const bookDoc = await getDoc(bookRef);
-
-          if (bookDoc.exists()) {
-            const firestoreData = bookDoc.data();
-            if (firestoreData.summary && firestoreData.keyTakeaways) {
-              setSummaryData({
-                summary: firestoreData.summary,
-                keyTakeaways: firestoreData.keyTakeaways
-              });
-              setLoading(false);
-              return;
-            }
+        if (bookDoc.exists()) {
+          const firestoreData = bookDoc.data();
+          if (firestoreData.summary && firestoreData.keyTakeaways) {
+            setSummaryData({
+              summary: firestoreData.summary,
+              keyTakeaways: firestoreData.keyTakeaways
+            });
+            setLoading(false);
+            return;
           }
-        } catch (err) {
-          console.error('Error loading from Firestore:', err);
         }
-
-        // Final fallback: show placeholder
-        setSummaryData({
-          summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
-          keyTakeaways: bookSummary?.keyTakeaways || [
-            t('summaryInDevelopment') || "Summary in development",
-            t('checkBackSoon') || "Check back soon for detailed content"
-          ]
-        });
-        setLoading(false);
+      } catch (err) {
+        console.error('Error loading from Firestore:', err);
       }
+
+      // Final fallback: show placeholder
+      setSummaryData({
+        summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
+        keyTakeaways: [
+          t('summaryInDevelopment') || "Summary in development",
+          t('checkBackSoon') || "Check back soon for detailed content"
+        ]
+      });
+      setLoading(false);
     }
   }, [currentLanguage, t]);
 
@@ -149,7 +128,7 @@ const SummaryDetailPage: React.FC = () => {
     // Wait for books to load if they are loading
     if (booksLoading && books.length === 0) return;
 
-    const currentBook = BOOKS.find((b) => b.id === bookId) || books.find((b) => b.id === bookId);
+    const currentBook = books.find((b) => b.id === bookId);
     setBook(currentBook);
     if (currentBook) {
       fetchSummary(currentBook);
@@ -3072,7 +3051,7 @@ const SummaryDetailPage: React.FC = () => {
           <YouMayAlsoLike
             currentBookId={book.id}
             currentBookCategory={book.category}
-            books={books.length > 0 ? books : BOOKS}
+            books={books}
             maxBooks={8}
           />
         )
