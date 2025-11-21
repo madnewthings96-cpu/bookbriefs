@@ -11,13 +11,16 @@ interface BookCardProps {
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const { getBookTitle, getBookAuthor } = useLanguage();
-  
-  const translatedTitle = getBookTitle(book.id);
-  const translatedAuthor = getBookAuthor(book.id);
-  
+
+  const titleFromContext = getBookTitle(book.id);
+  const authorFromContext = getBookAuthor(book.id);
+
+  const translatedTitle = titleFromContext === book.id ? book.title : titleFromContext;
+  const translatedAuthor = authorFromContext === book.id ? book.author : authorFromContext;
+
   // Use Arabic slug if available, otherwise use English ID
   const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
-  
+
   return (
     <Link to={bookUrl} className="block group">
       <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
@@ -39,7 +42,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             {translatedTitle}
           </h3>
           <p className="text-xs text-gray-600 line-clamp-1 mb-2">{translatedAuthor}</p>
-          
+
           {/* Rating */}
           {book.rating && (
             <div className="flex items-center gap-1 mb-2">
@@ -47,9 +50,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <svg
                     key={star}
-                    className={`w-3 h-3 ${
-                      star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                    }`}
+                    className={`w-3 h-3 ${star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                      }`}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -61,7 +63,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
               <span className="text-xs font-medium text-gray-700">{book.rating.toFixed(1)}</span>
             </div>
           )}
-          
+
           <div className="mt-2 flex items-center">
             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
               Summary

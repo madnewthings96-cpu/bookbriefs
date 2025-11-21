@@ -10,11 +10,11 @@ interface YouMayAlsoLikeProps {
   maxBooks?: number;
 }
 
-const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({ 
-  currentBookId, 
+const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
+  currentBookId,
   currentBookCategory,
-  books, 
-  maxBooks = 8 
+  books,
+  maxBooks = 8
 }) => {
   const { getBookTitle, getBookAuthor, t } = useLanguage();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -25,16 +25,16 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
   // Smart recommendations: prioritize books from the same category
   const recommendedBooks = React.useMemo(() => {
     const filteredBooks = books.filter(book => book.id !== currentBookId);
-    
+
     if (currentBookCategory) {
       // Get books from same category first
       const sameCategory = filteredBooks.filter(book => book.category === currentBookCategory);
       const otherBooks = filteredBooks.filter(book => book.category !== currentBookCategory);
-      
+
       // Combine: same category first, then others
       return [...sameCategory, ...otherBooks].slice(0, maxBooks);
     }
-    
+
     return filteredBooks.slice(0, maxBooks);
   }, [books, currentBookId, currentBookCategory, maxBooks]);
 
@@ -49,10 +49,10 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 300;
-      const newScrollLeft = direction === 'left' 
+      const newScrollLeft = direction === 'left'
         ? scrollContainerRef.current.scrollLeft - scrollAmount
         : scrollContainerRef.current.scrollLeft + scrollAmount;
-      
+
       scrollContainerRef.current.scrollTo({
         left: newScrollLeft,
         behavior: 'smooth'
@@ -132,6 +132,12 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
             {recommendedBooks.map((book) => {
               const isLiked = likedBooks.has(book.id);
               const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+
+              const titleFromContext = getBookTitle(book.id);
+              const authorFromContext = getBookAuthor(book.id);
+              const displayTitle = titleFromContext === book.id ? book.title : titleFromContext;
+              const displayAuthor = authorFromContext === book.id ? book.author : authorFromContext;
+
               return (
                 <Link
                   key={book.id}
@@ -143,10 +149,10 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
                   <div className="relative mb-3 rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
                     <img
                       src={book.coverImageUrl}
-                      alt={`Cover of ${getBookTitle(book.id)}`}
+                      alt={`Cover of ${displayTitle}`}
                       className="w-full h-[240px] sm:h-[270px] object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    
+
                     {/* Like Button */}
                     <button
                       onClick={(e) => toggleLike(book.id, e)}
@@ -154,9 +160,8 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
                       aria-label={isLiked ? 'Unlike' : 'Like'}
                     >
                       <svg
-                        className={`w-5 h-5 transition-colors duration-200 ${
-                          isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'
-                        }`}
+                        className={`w-5 h-5 transition-colors duration-200 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                          }`}
                         fill={isLiked ? 'currentColor' : 'none'}
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -169,12 +174,12 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
                   {/* Book Info */}
                   <div className="space-y-1">
                     <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors duration-200">
-                      {getBookTitle(book.id)}
+                      {displayTitle}
                     </h3>
                     <p className="text-xs text-gray-600 line-clamp-1 mb-1">
-                      by {getBookAuthor(book.id)}
+                      by {displayAuthor}
                     </p>
-                    
+
                     {/* Rating */}
                     {book.rating && (
                       <div className="flex items-center gap-1">
@@ -182,9 +187,8 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
                           {[1, 2, 3, 4, 5].map((star) => (
                             <svg
                               key={star}
-                              className={`w-3 h-3 ${
-                                star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                              }`}
+                              className={`w-3 h-3 ${star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                }`}
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20"
                               fill="currentColor"
