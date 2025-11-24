@@ -138,7 +138,7 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       clearTimeout(timeoutId); // Clear timeout since auth resolved
       setCurrentUser(user);
-      
+
       if (user) {
         try {
           await loadUserData(user);
@@ -149,7 +149,7 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
       } else {
         setUserData(null);
       }
-      
+
       setLoading(false);
     }, (error) => {
       // Error callback for auth state changes
@@ -218,7 +218,7 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     try {
       const userDocRef = doc(db, 'users', currentUser.uid);
       const updatedPreferences = { ...userData.preferences, ...preferences };
-      
+
       await updateDoc(userDocRef, {
         preferences: updatedPreferences
       });
@@ -380,6 +380,22 @@ const AppContent: React.FC = () => {
             <Route path="/terms-of-use" element={<TermsOfUsePage />} />
           </Routes>
         </main>
+
+        {/* Telegram Floating Icon */}
+        <a
+          href="https://t.me/MadMarkets"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden md:block fixed bottom-8 right-8 z-50 transition-transform hover:scale-110"
+          aria-label="Join our Telegram channel"
+        >
+          <img
+            src="/telegram icon.png"
+            alt="Telegram"
+            className="w-16 h-16 drop-shadow-lg"
+          />
+        </a>
+
         <MobileBottomNav />
         <Footer />
       </div>
