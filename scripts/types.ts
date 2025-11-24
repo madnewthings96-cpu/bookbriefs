@@ -22,6 +22,11 @@ export interface BookDefinition {
     };
   };
   // Optional fields
+  amazonUrl?: string;
+  kindleUrl?: string;
+  audibleUrl?: string;
+  arabicPdfUrl?: string;
+  arabicCoverImageUrl?: string;
   ratingsCount?: string;
   createdAt?: string;
   updatedAt?: string;

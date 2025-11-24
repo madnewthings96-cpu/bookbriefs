@@ -9,6 +9,11 @@ export interface Book {
   publicationYear?: number;
   pageCount?: number;
   arabicSlug?: string;
+  amazonUrl?: string;
+  kindleUrl?: string;
+  audibleUrl?: string;
+  arabicPdfUrl?: string;
+  arabicCoverImageUrl?: string;
 }
 
 export interface Review {
