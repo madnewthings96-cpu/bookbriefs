@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'Mastering Trading Psychology',
     author: 'Andrew Aziz & Mike Baer',
     category: 'Trading',
-    coverImageUrl: '/images/master trading psychology.jpg',
+    coverImageUrl: '/images/mastering-trading-psychology.jpg',
     rating: 4.8,
     publicationYear: 2020,
     pageCount: 410,
@@ -14,8 +14,6 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/44nWdU3',
     kindleUrl: 'https://amzn.to/3Mij2SW',
     audibleUrl: 'https://amzn.to/4oZqh0T',
-    arabicPdfUrl: '/pdfs/mastering trading psychology.pdf',
-    arabicCoverImageUrl: '/images/master trading psychology.jpg',
     summary: `# Introduction: The Hidden 90% of Trading
 
 Most aspiring traders spend years hunting for the "Holy Grail"—the perfect indicator, the unbreakable algorithm, or the secret chart pattern. In this comprehensive study guide, we dissect the argument presented by Aziz and Baer: that the "Holy Grail" does not exist on a chart. It exists between your ears.

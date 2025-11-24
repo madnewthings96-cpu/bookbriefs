@@ -3090,6 +3090,22 @@ const SummaryDetailPage: React.FC = () => {
             {bookId && (
               <BookReviews bookId={bookId} />
             )}
+
+            {/* Ko-fi Support Section */}
+            <div className="mt-8 flex justify-center">
+              <a
+                href="https://ko-fi.com/ta7leel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block transition-transform hover:scale-110 active:scale-95"
+              >
+                <img
+                  src="/ko-fi icon.webp"
+                  alt="Support us on Ko-fi"
+                  className="h-12 w-auto"
+                />
+              </a>
+            </div>
           </article>
         )}
 
