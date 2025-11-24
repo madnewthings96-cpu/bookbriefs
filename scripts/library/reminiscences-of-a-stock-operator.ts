@@ -10,7 +10,10 @@ export const book: BookDefinition = {
     publicationYear: 1923,
     pageCount: 299,
     arabicSlug: 'مذكرات-مضارب',
-    isPremium: true,
+    isPremium: false,
+    amazonUrl: 'https://amzn.to/3Mj2gTI',
+    kindleUrl: 'https://amzn.to/4pikAvb',
+    audibleUrl: 'https://amzn.to/47YcQbk',
     summary: `# Executive Summary
 
 "Reminiscences of a Stock Operator" is widely regarded as the most important investment book ever written. First published in 1923 by Edwin Lefèvre, it is a thinly veiled biography of Jesse Livermore, one of the greatest stock market speculators in history. The book chronicles the life of "Larry Livingston" from his early days as a "boy plunger" in bucket shops to his emergence as a dominant force on Wall Street who made and lost millions of dollars multiple times.
