@@ -35,17 +35,18 @@ const useSEO = ({
     // Set document title
     document.title = title;
 
+
     // Helper function to set meta tag
     const setMetaTag = (property: string, content: string, isProperty = false) => {
       const attribute = isProperty ? 'property' : 'name';
       let element = document.querySelector(`meta[${attribute}="${property}"]`);
-      
+
       if (!element) {
         element = document.createElement('meta');
         element.setAttribute(attribute, property);
         document.head.appendChild(element);
       }
-      
+
       element.setAttribute('content', content);
     };
 
@@ -53,7 +54,7 @@ const useSEO = ({
     setMetaTag('description', description);
     if (keywords) setMetaTag('keywords', keywords);
     setMetaTag('author', author || 'BookBriefs');
-    
+
     // Robots meta
     if (noindex) {
       setMetaTag('robots', 'noindex, nofollow');
@@ -110,7 +111,7 @@ const useSEO = ({
       { code: 'ar-EG', label: 'Arabic (Egypt)' },
       { code: 'x-default', label: 'Default' }
     ];
-    
+
     languages.forEach(({ code }) => {
       let alternateLangLink = document.querySelector(`link[hreflang="${code}"]`) as HTMLLinkElement;
       if (!alternateLangLink) {
@@ -121,10 +122,10 @@ const useSEO = ({
       }
       alternateLangLink.href = code === 'x-default' ? currentUrl : `${currentUrl}${currentUrl.includes('?') ? '&' : '?'}lang=${code}`;
     });
-    
+
     // Add Arabic-specific meta tags
     setMetaTag('content-language', 'ar,en');
-    
+
     // Add geo-targeting for MENA region
     setMetaTag('geo.region', 'AE;SA;EG;QA;KW;BH;OM;JO;LB');
     setMetaTag('geo.placename', 'Dubai, UAE');

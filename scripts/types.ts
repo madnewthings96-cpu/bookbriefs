@@ -6,7 +6,7 @@ export interface BookDefinition {
   id: string;
   title: string;
   author: string;
-  category: 'Finance' | 'Business' | 'Self-Help' | 'Trading' | 'Psychology' | 'Biography' | 'Economics' | 'Sociology' | 'Leadership';
+  category: 'Finance' | 'Business' | 'Self-Help' | 'Trading' | 'Psychology' | 'Biography' | 'Economics' | 'Sociology' | 'Leadership' | 'Science Fiction';
   coverImageUrl: string;
   rating: number;
   publicationYear: number;
