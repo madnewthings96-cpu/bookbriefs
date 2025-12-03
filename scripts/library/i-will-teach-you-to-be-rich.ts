@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Ramit Sethi',
     category: 'Finance',
     coverImageUrl: '/images/i will teach you to be rich.jpg',
-    rating: 4.8,
+    rating: 4.2,
     publicationYear: 2019,
     pageCount: 352,
     arabicSlug: 'سأعلمك-كيف-تكون-غنياً',

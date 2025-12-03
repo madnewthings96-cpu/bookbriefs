@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'T. Harv Eker',
     category: 'Finance',
     coverImageUrl: '/images/secrets of the millionaire mind.jpg',
-    rating: 4.8,
+    rating: 4.22,
     publicationYear: 2005,
     pageCount: 210,
     arabicSlug: 'أسرار-عقل-المليونير',

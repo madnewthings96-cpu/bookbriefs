@@ -56,6 +56,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg opacity-50 -z-10"></div>
             <h2
               className={`text-3xl md:text-4xl font-bold leading-tight tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${rtl ? 'text-right pr-5 border-r-4' : 'text-left pl-5 border-l-4'} border-indigo-500 py-3`}
+              style={{ fontFamily: "'Playfair Display', serif" }}
             >
               {parseInlineMarkdown(h2[1])}
             </h2>
@@ -69,6 +70,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           <h1
             key={`h1-${elements.length}`}
             className={`text-4xl md:text-5xl font-extrabold mt-8 mb-5 leading-tight tracking-tight text-gray-900 ${rtl ? 'text-right' : 'text-left'}`}
+            style={{ fontFamily: "'Playfair Display', serif" }}
           >
             {parseInlineMarkdown(h1[1])}
           </h1>
@@ -84,6 +86,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg opacity-50 -z-10"></div>
             <h2
               className={`text-3xl font-bold leading-tight tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${rtl ? 'text-right pr-5 border-r-4' : 'text-left pl-5 border-l-4'} border-indigo-500 py-3`}
+              style={{ fontFamily: "'Playfair Display', serif" }}
             >
               {headingText}
             </h2>

@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Andrew Aziz & Mike Baer',
     category: 'Trading',
     coverImageUrl: '/images/mastering trading psychology.jpg',
-    rating: 4.8,
+    rating: 4.3,
     publicationYear: 2020,
     pageCount: 410,
     arabicSlug: 'إتقان-سيكولوجية-التداول',

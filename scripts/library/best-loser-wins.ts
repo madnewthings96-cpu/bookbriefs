@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Tom Hougaard',
     category: 'Trading',
     coverImageUrl: '/images/best loser wins.jpg',
-    rating: 4.8,
+    rating: 4.50,
     publicationYear: 2022,
     pageCount: 250,
     arabicSlug: 'أفضل-خاسر-يفوز',

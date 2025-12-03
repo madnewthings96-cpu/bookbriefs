@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Bruce Greenwald & Judd Kahn',
     category: 'Business',
     coverImageUrl: '/images/competition demystified.jpg',
-    rating: 4.8,
+    rating: 4.31,
     publicationYear: 2005,
     pageCount: 416,
     arabicSlug: 'المنافسة-منزوعة-الغموض',

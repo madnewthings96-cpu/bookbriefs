@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Mike Bellafiore',
     category: 'Trading',
     coverImageUrl: '/images/one good trade.jpg',
-    rating: 4.8,
+    rating: 4.01,
     publicationYear: 2010,
     pageCount: 368,
     arabicSlug: 'صفقة-واحدة-جيدة',

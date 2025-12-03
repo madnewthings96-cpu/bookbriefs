@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Robert Greene',
     category: 'Leadership',
     coverImageUrl: '/images/power.jpg',
-    rating: 4.7,
+    rating: 4.09,
     publicationYear: 1998,
     pageCount: 452,
     arabicSlug: 'قوانين-القوة-48',

@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Andrew Aziz',
     category: 'Trading',
     coverImageUrl: '/images/how to day trade fo a living.png',
-    rating: 4.8,
+    rating: 4.09,
     publicationYear: 2016,
     pageCount: 360,
     arabicSlug: 'كيف-تتداول-يومياً-من-أجل-لقمة-العيش',

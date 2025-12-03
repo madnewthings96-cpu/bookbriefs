@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'John P. Kotter',
     category: 'Leadership',
     coverImageUrl: '/images/leading change.jpg',
-    rating: 4.8,
+    rating: 4.03,
     publicationYear: 1996,
     pageCount: 208,
     arabicSlug: 'قيادة-التغيير',

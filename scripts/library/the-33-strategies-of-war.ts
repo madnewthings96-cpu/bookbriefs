@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Robert Greene',
     category: 'Leadership',
     coverImageUrl: '/images/the 33 strategies of war.jpg',
-    rating: 4.8,
+    rating: 4.23,
     publicationYear: 2006,
     pageCount: 496,
     arabicSlug: 'استراتيجيات-الحرب-33',

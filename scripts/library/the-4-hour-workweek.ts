@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Timothy Ferriss',
     category: 'Business',
     coverImageUrl: '/images/the 4 hour workweek.jpg',
-    rating: 4.5,
+    rating: 3.91,
     publicationYear: 2007,
     pageCount: 308,
     arabicSlug: 'أعمل-أربع-ساعات-فقط-في-الأسبوع',

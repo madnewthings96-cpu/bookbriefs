@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Elvin Turner',
     category: 'Business',
     coverImageUrl: '/images/zombie.jpg',
-    rating: 4.7,
+    rating: 4.29,
     publicationYear: 2020,
     pageCount: 304,
     arabicSlug: 'كن-أقل-زومبي',

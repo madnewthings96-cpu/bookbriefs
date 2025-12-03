@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Edwin Lefèvre',
     category: 'Trading',
     coverImageUrl: '/images/reminiscenes of a stock operator.webp',
-    rating: 4.8,
+    rating: 4.18,
     publicationYear: 1923,
     pageCount: 299,
     arabicSlug: 'مذكرات-مضارب',

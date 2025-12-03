@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Lyn Alden',
     category: 'Economics',
     coverImageUrl: '/images/broken money.jpg',
-    rating: 4.9,
+    rating: 4.62,
     publicationYear: 2023,
     pageCount: 538,
     arabicSlug: 'المال-المكسور',

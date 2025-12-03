@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'David Goggins',
     category: 'Self-Help',
     coverImageUrl: "/images/can't hurt me.jpg",
-    rating: 4.9,
+    rating: 4.3,
     publicationYear: 2018,
     pageCount: 364,
     arabicSlug: 'لا-يمكنك-إيذائي',

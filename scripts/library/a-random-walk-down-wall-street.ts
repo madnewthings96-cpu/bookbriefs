@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Burton G. Malkiel',
     category: 'Finance',
     coverImageUrl: '/images/a random walk down wall street.jpg',
-    rating: 4.80,
+    rating: 4.14,
     publicationYear: 2000,
     pageCount: 704,
     arabicSlug: 'نزهة-عشوائية-في-وول-ستريت',

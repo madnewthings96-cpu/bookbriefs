@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Andy Weir',
     category: 'Science Fiction',
     coverImageUrl: '/images/hail mary.jpg',
-    rating: 4.9,
+    rating: 4.5,
     publicationYear: 2021,
     pageCount: 496,
     arabicSlug: 'مشروع-هيل-ماري',

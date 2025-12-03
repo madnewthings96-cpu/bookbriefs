@@ -6,7 +6,7 @@ export const book: BookDefinition = {
   author: 'Nicolas Darvas',
   category: 'Finance',
   coverImageUrl: '/images/how i made $2,000,000 in the stock market.jpg',
-  rating: 4.6,
+  rating: 4.23,
   publicationYear: 1960,
   pageCount: 242,
   arabicSlug: 'ملخص-كتاب-كيف-ربحت-2-مليون-في-سوق-الأسهم',

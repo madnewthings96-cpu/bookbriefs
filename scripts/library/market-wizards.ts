@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Jack D. Schwager',
     category: 'Trading',
     coverImageUrl: '/images/market wizards.png',
-    rating: 4.8,
+    rating: 4.27,
     publicationYear: 1989,
     pageCount: 480,
     arabicSlug: 'سحرة-السوق',

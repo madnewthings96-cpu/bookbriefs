@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Thomas Sowell',
     category: 'Economics',
     coverImageUrl: '/images/basic economics.jpg',
-    rating: 4.8,
+    rating: 4.37,
     publicationYear: 2000,
     pageCount: 704,
     arabicSlug: 'الاقتصاد-الأساسي',

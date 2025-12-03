@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Tony Robbins',
     category: 'Finance',
     coverImageUrl: '/images/money.jpg',
-    rating: 4.7,
+    rating: 4.00,
     publicationYear: 2014,
     pageCount: 688,
     arabicSlug: 'المال-إتقان-اللعبة',

@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Peter Lynch',
     category: 'Finance',
     coverImageUrl: '/images/one up on wall street.jpg',
-    rating: 4.8,
+    rating: 4.29,
     publicationYear: 1989,
     pageCount: 304,
     arabicSlug: 'تفوق-على-وول-ستريت',

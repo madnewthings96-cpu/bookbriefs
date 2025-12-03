@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Jesse Livermore',
     category: 'Trading',
     coverImageUrl: '/images/how to trade in stocks.jpg',
-    rating: 4.8,
+    rating: 4.21,
     publicationYear: 1940,
     pageCount: 112,
     arabicSlug: 'كيف-تتداول-في-الأسهم',

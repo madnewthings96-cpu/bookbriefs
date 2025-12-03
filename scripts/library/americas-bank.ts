@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Roger Lowenstein',
     category: 'History',
     coverImageUrl: '/images/americas bank.jpg',
-    rating: 4.6,
+    rating: 3.82,
     publicationYear: 2015,
     pageCount: 368,
     arabicSlug: 'بنك-أمريكا',

@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Tim S. Grover',
     category: 'Psychology',
     coverImageUrl: '/images/relentless.jpg',
-    rating: 4.7,
+    rating: 3.96,
     publicationYear: 2013,
     pageCount: 272,
     arabicSlug: 'بلا-هوادة',

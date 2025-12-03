@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Thomas Sowell',
     category: 'Sociology',
     coverImageUrl: '/images/black rednecks and white liberals.jpg',
-    rating: 4.8,
+    rating: 4.37,
     publicationYear: 2005,
     pageCount: 372,
     arabicSlug: 'السود-الريفيون-والليبراليون-البيض',

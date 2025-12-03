@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Robert B. Cialdini',
     category: 'Psychology',
     coverImageUrl: '/images/influence.jpg',
-    rating: 4.8,
+    rating: 4.21,
     publicationYear: 1984,
     pageCount: 320,
     arabicSlug: 'التأثير-علم-نفس-الإقناع',

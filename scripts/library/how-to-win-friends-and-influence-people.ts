@@ -6,7 +6,7 @@ export const book: BookDefinition = {
     author: 'Dale Carnegie',
     category: 'Self-Help',
     coverImageUrl: '/images/how to win friends and influence people.webp',
-    rating: 4.8,
+    rating: 4.22,
     publicationYear: 1936,
     pageCount: 288,
     arabicSlug: 'كيف-تكسب-الأصدقاء-وتؤثر-في-الناس',

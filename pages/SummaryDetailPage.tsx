@@ -330,17 +330,29 @@ const SummaryDetailPage: React.FC = () => {
                 )}
 
                 {book.arabicPdfUrl && (
-                  <a
-                    href={book.arabicPdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-green-400 text-sm"
-                  >
-                    <svg className="w-4 h-4 text-green-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span>الكتاب بالعربية</span>
-                  </a>
+                  isAuthenticated ? (
+                    <a
+                      href={book.arabicPdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-green-400 text-sm"
+                    >
+                      <svg className="w-4 h-4 text-green-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>الكتاب بالعربية</span>
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => setShowSignUpModal(true)}
+                      className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-green-400 text-sm"
+                    >
+                      <svg className="w-4 h-4 text-green-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>الكتاب بالعربية</span>
+                    </button>
+                  )
                 )}
 
                 {/* Fallback for existing hardcoded books if no dynamic links are present */}
@@ -2601,19 +2613,44 @@ const SummaryDetailPage: React.FC = () => {
                 )}
               </div>
               <div className="lg:col-span-3">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 sm:p-4 shadow-sm border border-blue-100">
-                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 flex items-center" style={{ color: '#2F4F4F' }}>
-                    <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                    {t('keyTakeaways') || 'Key Takeaways'}
+                <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-5 sm:p-6 shadow-lg border border-indigo-100/50 relative overflow-hidden">
+                  {/* Decorative background elements */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-3xl -z-10"></div>
+                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-3xl -z-10"></div>
+                  
+                  <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6 flex items-center">
+                    <div className="p-2 sm:p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mr-3 shadow-lg shadow-indigo-500/30">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      {t('keyTakeaways') || 'Key Takeaways'}
+                    </span>
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                    {summaryData.keyTakeaways.map((takeaway, index) => (
-                      <div key={index} className="bg-white rounded-lg p-3 shadow-sm border-l-4 border-blue-500">
-                        <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{takeaway}</p>
-                      </div>
-                    ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {summaryData.keyTakeaways.map((takeaway, index) => {
+                      // Remove markdown asterisks from takeaways
+                      const cleanTakeaway = takeaway.replace(/\*\*/g, '').replace(/^\*\s*/, '').replace(/\*/g, '');
+                      return (
+                        <div 
+                          key={index} 
+                          className="group bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border border-white/50 hover:border-indigo-200 hover:-translate-y-1 relative overflow-hidden"
+                        >
+                          {/* Hover gradient overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-purple-50/0 group-hover:from-indigo-50/50 group-hover:to-purple-50/50 transition-all duration-300 rounded-xl"></div>
+                          
+                          {/* Number badge */}
+                          <div className="absolute -top-1 -left-1 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-br-xl rounded-tl-lg flex items-center justify-center shadow-lg">
+                            <span className="text-white text-xs font-bold">{index + 1}</span>
+                          </div>
+                          
+                          <div className="relative z-10 pl-5 pt-1">
+                            <p className="text-sm sm:text-base text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors duration-300">{cleanTakeaway}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
