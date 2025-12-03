@@ -21,8 +21,8 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       elements.push(
         <p
           key={`p-${elements.length}`}
-          className={`text-gray-800 leading-relaxed md:leading-loose mb-5 text-sm sm:text-base ${rtl ? 'text-right' : 'text-left'}`}
-          style={rtl ? { textAlign: 'justify', textJustify: 'inter-word' } : undefined}
+          className={`text-gray-700 leading-loose mb-6 text-base sm:text-lg font-light tracking-wide ${rtl ? 'text-right' : 'text-left'}`}
+          style={rtl ? { textAlign: 'justify', textJustify: 'inter-word', lineHeight: '1.9' } : { lineHeight: '1.9' }}
         >
           {parseInlineMarkdown(paragraph)}
         </p>
@@ -41,9 +41,10 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         elements.push(
           <h3
             key={`h3-${elements.length}`}
-            className={`text-2xl md:text-3xl font-semibold mt-8 mb-4 leading-snug tracking-tight text-gray-900 ${rtl ? 'text-right' : 'text-left'}`}
+            className={`text-2xl md:text-3xl font-semibold mt-10 mb-5 leading-snug tracking-tight text-gray-800 ${rtl ? 'text-right' : 'text-left'} relative inline-block`}
           >
             {parseInlineMarkdown(h3[1])}
+            <div className="absolute bottom-0 left-0 w-1/3 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
           </h3>
         );
         i++; continue;
@@ -51,12 +52,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       const h2 = /^##\s+(.+)/.exec(trimmed);
       if (h2) {
         elements.push(
-          <h2
-            key={`h2-${elements.length}`}
-            className={`text-3xl md:text-4xl font-bold mt-10 mb-6 leading-snug tracking-tight text-gray-900 ${rtl ? 'text-right pr-3 border-r-4' : 'text-left pl-3 border-l-4'} border-indigo-500`}
-          >
-            {parseInlineMarkdown(h2[1])}
-          </h2>
+          <div key={`h2-wrapper-${elements.length}`} className="relative mt-12 mb-8">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg opacity-50 -z-10"></div>
+            <h2
+              className={`text-3xl md:text-4xl font-bold leading-tight tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${rtl ? 'text-right pr-5 border-r-4' : 'text-left pl-5 border-l-4'} border-indigo-500 py-3`}
+            >
+              {parseInlineMarkdown(h2[1])}
+            </h2>
+          </div>
         );
         i++; continue;
       }
@@ -77,12 +80,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       if (trimmed.startsWith('**') && trimmed.endsWith('**') && trimmed.split('**').length === 3) {
         const headingText = trimmed.slice(2, -2);
         elements.push(
-          <h2
-            key={`b2-${elements.length}`}
-            className={`text-3xl font-bold mb-6 mt-8 first:mt-0 leading-snug tracking-tight text-gray-900 ${rtl ? 'text-right pr-3 border-r-4' : 'text-left pl-3 border-l-4'} border-indigo-500`}
-          >
-            {headingText}
-          </h2>
+          <div key={`b2-wrapper-${elements.length}`} className="relative mt-12 mb-8 first:mt-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg opacity-50 -z-10"></div>
+            <h2
+              className={`text-3xl font-bold leading-tight tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ${rtl ? 'text-right pr-5 border-r-4' : 'text-left pl-5 border-l-4'} border-indigo-500 py-3`}
+            >
+              {headingText}
+            </h2>
+          </div>
         );
         i++; continue;
       }
@@ -95,14 +100,16 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           const m = /^(\d+)\.\s+(.+)/.exec(li);
           if (!m) break;
           items.push(
-            <li key={`ol-${i}`} className={rtl ? 'mr-6' : 'ml-6'}>{parseInlineMarkdown(m[2])}</li>
+            <li key={`ol-${i}`} className={`${rtl ? 'mr-8' : 'ml-8'} text-gray-700 leading-relaxed hover:text-indigo-700 transition-colors duration-200`}>
+              {parseInlineMarkdown(m[2])}
+            </li>
           );
           i++;
         }
         elements.push(
           <ol
             key={`ol-${elements.length}`}
-            className={`list-decimal list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800 text-sm sm:text-base`}
+            className={`list-decimal ${rtl ? 'pr-8' : 'pl-8'} space-y-3 mb-8 text-base sm:text-lg font-light marker:text-indigo-600 marker:font-semibold`}
           >
             {items}
           </ol>
@@ -118,14 +125,16 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           const m = /^[-*]\s+(.+)/.exec(li);
           if (!m) break;
           items.push(
-            <li key={`ul-${i}`} className={rtl ? 'mr-6' : 'ml-6'}>{parseInlineMarkdown(m[1])}</li>
+            <li key={`ul-${i}`} className={`${rtl ? 'mr-8' : 'ml-8'} text-gray-700 leading-relaxed hover:text-indigo-700 transition-colors duration-200`}>
+              {parseInlineMarkdown(m[1])}
+            </li>
           );
           i++;
         }
         elements.push(
           <ul
             key={`ul-${elements.length}`}
-            className={`list-disc list-inside ${rtl ? 'pr-6' : 'pl-6'} space-y-2 mb-6 text-gray-800 text-sm sm:text-base`}
+            className={`list-disc ${rtl ? 'pr-8' : 'pl-8'} space-y-3 mb-8 text-base sm:text-lg font-light marker:text-indigo-600 marker:font-semibold`}
           >
             {items}
           </ul>
@@ -158,7 +167,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         return (
-          <strong key={index} className="font-semibold text-gray-800">
+          <strong key={index} className="font-bold text-gray-900 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             {part.slice(2, -2)}
           </strong>
         );

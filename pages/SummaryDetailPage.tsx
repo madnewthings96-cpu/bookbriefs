@@ -3075,9 +3075,9 @@ const SummaryDetailPage: React.FC = () => {
                   )}
                 </div>
               </div>
-              <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-gray-50 to-white rounded-lg">
-                <div className="prose prose-sm sm:prose max-w-none">
-                  <div className="space-y-3 sm:space-y-4 text-gray-700 leading-relaxed text-sm sm:text-base">
+              <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-br from-slate-50 via-white to-blue-50 rounded-xl shadow-inner">
+                <div className="prose prose-lg max-w-none">
+                  <div className="space-y-4 sm:space-y-6">
                     <HighlightableText bookId={bookId || ''}>
                       <MarkdownRenderer content={summaryData.summary} />
                     </HighlightableText>
