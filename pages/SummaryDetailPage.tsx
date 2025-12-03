@@ -586,44 +586,6 @@ const SummaryDetailPage: React.FC = () => {
                           <span>Audible</span>
                         </a>
                       </>
-                    ) : book.id === 'thementalgameoftrading' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/46Qkmof"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/3IJ7IOF"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/470yzO1"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
                     ) : book.id === 'best-loser-wins' ? (
                       <>
                         <a
@@ -1156,44 +1118,6 @@ const SummaryDetailPage: React.FC = () => {
                           <span>Audible</span>
                         </a>
                       </>
-                    ) : book.id === 'therichestmaninbabylon' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/4om40tm"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/437t5Qs"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4nRPf1w"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
                     ) : book.id === 'the33strategiesofwar' ? (
                       <>
                         <a
@@ -1412,44 +1336,6 @@ const SummaryDetailPage: React.FC = () => {
 
                         <a
                           href="https://amzn.to/3JcUee1"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
-                    ) : book.id === 'thelawsofhumannature' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/476eW7s"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/3W0KCpE"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/471422B"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1802,44 +1688,6 @@ const SummaryDetailPage: React.FC = () => {
                           <span>Audible</span>
                         </a>
                       </>
-                    ) : book.id === 'the-playbook' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/49MqwHE"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4oGdvnQ"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4oGdvnQ"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
                     ) : book.id === 'the-chatgpt-millionaire' ? (
                       <>
                         <a
@@ -1868,44 +1716,6 @@ const SummaryDetailPage: React.FC = () => {
 
                         <a
                           href="https://amzn.to/4oyH5LI"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
-                    ) : book.id === 'the-miracle-morning' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/4oIwOwm"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/3WpP4yv"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/43J3Xjd"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2486,44 +2296,6 @@ const SummaryDetailPage: React.FC = () => {
                           <span>Audible</span>
                         </a>
                       </>
-                    ) : book.id === 'the-psychology-of-money' ? (
-                      <>
-                        <a
-                          href="https://amzn.to/4oyOdrp"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                          <span>Amazon</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4hXn0fJ"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/49NceGJ"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
-                        </a>
-                      </>
                     ) : book.id === 'one-up-on-wall-street' ? (
                       <>
                         <a
@@ -2689,7 +2461,7 @@ const SummaryDetailPage: React.FC = () => {
                         }
 
                         // For The Mental Game of Trading, open the actual PDF file
-                        if (book.id === 'thementalgameoftrading') {
+                        if (book.id === 'the-mental-game-of-trading') {
                           window.open('/pdfs/the mental game of trading.pdf', '_blank');
                           return;
                         }
@@ -2815,7 +2587,7 @@ const SummaryDetailPage: React.FC = () => {
                         }
 
                         // For The Laws of Human Nature, open the actual PDF file
-                        if (book.id === 'thelawsofhumannature') {
+                        if (book.id === 'the-laws-of-human-nature') {
                           window.open('/pdfs/the laws of human nature.pdf', '_blank');
                           return;
                         }
