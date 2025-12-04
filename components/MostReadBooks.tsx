@@ -15,7 +15,7 @@ const MostReadBooks: React.FC = () => {
     'trading-in-the-zone',
     'thinking-fast-and-slow',
     'marketwizards',
-    'thedisciplinedtrader'
+    'the-disciplined-trader'
   ];
 
   const mostReadBooks = books.filter(book => featuredBookIds.includes(book.id));
