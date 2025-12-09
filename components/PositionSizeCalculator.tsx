@@ -98,7 +98,8 @@ const PositionSizeCalculator: React.FC = () => {
             <h2 className="text-2xl font-bold text-center mb-2" style={{ color: '#2F4F4F' }}>
                 Position Size Calculator
             </h2>
-             <p className="text-center text-gray-600 mb-6">Determine the appropriate trade size based on your risk tolerance.</p>
+             <p className="text-center text-gray-600 mb-2">Determine the appropriate trade size based on your risk tolerance.</p>
+             <p className="text-center text-gray-600 mb-6" dir="rtl">إذا كنت تتداول الذهب، يرجى وضع النقاط (Points) بدلاً من (Pips) وشكراً.</p>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
