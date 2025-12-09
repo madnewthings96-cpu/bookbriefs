@@ -8,9 +8,12 @@ interface PositionSizeResult {
     accountCurrency: string;
 }
 
+type RiskType = 'percentage' | 'monetary';
+
 const PositionSizeCalculator: React.FC = () => {
     const [accountBalance, setAccountBalance] = useState('10000');
-    const [riskPercentage, setRiskPercentage] = useState('1');
+    const [riskType, setRiskType] = useState<RiskType>('percentage');
+    const [riskValue, setRiskValue] = useState('1');
     const [stopLossPips, setStopLossPips] = useState('20');
     const [currencyPair, setCurrencyPair] = useState('EUR/USD');
     const [accountCurrency, setAccountCurrency] = useState('USD');
@@ -21,40 +24,51 @@ const PositionSizeCalculator: React.FC = () => {
         e.preventDefault();
 
         const balance = parseFloat(accountBalance);
-        const risk = parseFloat(riskPercentage);
+        const riskInput = parseFloat(riskValue);
         const sl = parseFloat(stopLossPips);
         const price = parseFloat(marketPrice);
 
-        if (isNaN(balance) || isNaN(risk) || isNaN(sl) || balance <= 0 || risk <= 0 || sl <= 0) {
-            alert("Please enter valid positive numbers for balance, risk, and stop loss.");
+        if (riskType === 'percentage' && (isNaN(balance) || balance <= 0)) {
+            alert("Please enter a valid positive account balance for percentage-based risk.");
+            return;
+        }
+
+        if (isNaN(riskInput) || isNaN(sl) || riskInput <= 0 || sl <= 0) {
+            alert("Please enter valid positive numbers for risk and stop loss.");
             return;
         }
         
-        const riskAmount = balance * (risk / 100);
+        // Calculate risk amount based on type
+        const riskAmount = riskType === 'percentage' 
+            ? balance * (riskInput / 100) 
+            : riskInput;
 
         let pipValue = 0;
         const [baseCurrency, quoteCurrency] = currencyPair.split('/');
         let pipSize, lotSize;
         
         if (currencyPair === 'XAU/USD') {
-            pipSize = 0.01; // For gold, 1 pip = 0.01
-            lotSize = 100; // Gold standard lot is 100 oz
+            // For XAU/USD (Gold):
+            // 1 standard lot = 100 oz
+            // 1 point = $0.01 price movement
+            // Pip value = 100 oz × $0.01 = $1 per point per standard lot
+            pipValue = 1; // $1 per point for 1 standard lot
         } else {
             pipSize = currencyPair.includes('JPY') ? 0.01 : 0.0001;
             lotSize = 100000; // Standard currency lot
-        }
 
-        if (quoteCurrency === accountCurrency) {
-            pipValue = pipSize * lotSize / 1; // Simplified for direct pairs
-        } else if (baseCurrency === accountCurrency) {
-            if (isNaN(price) || price <= 0) {
-                alert(`Please enter a valid current market price for the ${currencyPair} pair to calculate the pip value correctly.`);
+            if (quoteCurrency === accountCurrency) {
+                pipValue = pipSize * lotSize; // Simplified for direct pairs
+            } else if (baseCurrency === accountCurrency) {
+                if (isNaN(price) || price <= 0) {
+                    alert(`Please enter a valid current market price for the ${currencyPair} pair to calculate the pip value correctly.`);
+                    return;
+                }
+                pipValue = (pipSize * lotSize) / price;
+            } else {
+                alert(`Cross-currency calculation for ${currencyPair} with an account in ${accountCurrency} is not supported in this simplified version.`);
                 return;
             }
-            pipValue = (pipSize * lotSize) / price;
-        } else {
-             alert(`Cross-currency calculation for ${currencyPair} with an account in ${accountCurrency} is not supported in this simplified version.`);
-             return;
         }
         
         if (pipValue <= 0) {
@@ -101,27 +115,67 @@ const PositionSizeCalculator: React.FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label htmlFor="riskPercentage" className={formLabelStyle}>Risk Percentage (%)</label>
-                        <input type="number" id="riskPercentage" value={riskPercentage} onChange={e => setRiskPercentage(e.target.value)} className={formInputStyle} placeholder="e.g., 1" />
+                        <label className={formLabelStyle}>Risk Type</label>
+                        <div className="flex rounded-md overflow-hidden border border-gray-300">
+                            <button
+                                type="button"
+                                onClick={() => setRiskType('percentage')}
+                                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                                    riskType === 'percentage' 
+                                        ? 'bg-orange-500 text-white' 
+                                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                                }`}
+                            >
+                                Percentage (%)
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setRiskType('monetary')}
+                                className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${
+                                    riskType === 'monetary' 
+                                        ? 'bg-orange-500 text-white' 
+                                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                                }`}
+                            >
+                                Monetary ($)
+                            </button>
+                        </div>
                     </div>
                     <div>
-                        <label htmlFor="stopLoss" className={formLabelStyle}>Stop Loss (pips) or (points) for XAUUSD</label>
-                        <input type="number" id="stopLoss" value={stopLossPips} onChange={e => setStopLossPips(e.target.value)} className={formInputStyle} placeholder="e.g., 20" />
+                        <label htmlFor="riskValue" className={formLabelStyle}>
+                            {riskType === 'percentage' ? 'Risk Percentage (%)' : 'Risk Amount ($)'}
+                        </label>
+                        <input 
+                            type="number" 
+                            id="riskValue" 
+                            value={riskValue} 
+                            onChange={e => setRiskValue(e.target.value)} 
+                            className={formInputStyle} 
+                            placeholder={riskType === 'percentage' ? 'e.g., 1' : 'e.g., 100'} 
+                            step={riskType === 'percentage' ? '0.1' : '1'}
+                        />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="stopLoss" className={formLabelStyle}>Stop Loss (pips) or (points) for XAUUSD</label>
+                        <input type="number" id="stopLoss" value={stopLossPips} onChange={e => setStopLossPips(e.target.value)} className={formInputStyle} placeholder="e.g., 20" />
+                    </div>
                     <div>
                       <label htmlFor="posCurrencyPair" className={formLabelStyle}>Currency Pair</label>
                       <select id="posCurrencyPair" value={currencyPair} onChange={e => setCurrencyPair(e.target.value)} className={formInputStyle}>
                           {currencyPairs.map(p => <option key={p} value={p}>{p}</option>)}
                       </select>
                     </div>
+                </div>
+
+                {currencyPair !== 'XAU/USD' && (
                     <div>
-                        <label htmlFor="marketPrice" className={formLabelStyle}>Market Price (optional)</label>
+                        <label htmlFor="marketPrice" className={formLabelStyle}>Market Price (optional for cross pairs)</label>
                         <input type="number" id="marketPrice" value={marketPrice} onChange={e => setMarketPrice(e.target.value)} className={formInputStyle} placeholder="e.g., 1.12345" step="0.00001" />
                     </div>
-                </div>
+                )}
 
                                 <button
                                     type="submit"
