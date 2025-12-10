@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.18.0",
+    "@google/generative-ai": "^0.24.1",
     "@paypal/react-paypal-js": "^8.9.2",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
