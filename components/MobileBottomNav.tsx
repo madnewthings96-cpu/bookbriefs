@@ -4,6 +4,42 @@ import { Home, BookOpen, Calculator, Newspaper, Sparkles, FileText } from 'lucid
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 
+// Iridescent bubble animation component
+const IridescentBubble: React.FC = () => (
+  <div className="absolute inset-0 overflow-hidden rounded-2xl">
+    {/* Animated iridescent bubble */}
+    <div className="absolute inset-[-20%] animate-bubble-morph">
+      <div 
+        className="absolute inset-0 animate-bubble-rotate"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 60% at 30% 40%, rgba(255, 100, 50, 0.9) 0%, transparent 50%),
+            radial-gradient(ellipse 70% 80% at 70% 60%, rgba(50, 150, 255, 0.9) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 70% at 50% 30%, rgba(255, 200, 100, 0.8) 0%, transparent 50%),
+            radial-gradient(ellipse 50% 60% at 40% 70%, rgba(150, 50, 255, 0.7) 0%, transparent 50%),
+            radial-gradient(ellipse 80% 50% at 60% 50%, rgba(50, 200, 150, 0.6) 0%, transparent 50%)
+          `,
+          filter: 'blur(8px) contrast(1.2) saturate(1.5)',
+        }}
+      />
+    </div>
+    {/* Glass overlay for depth */}
+    <div 
+      className="absolute inset-0 rounded-2xl"
+      style={{
+        background: 'radial-gradient(ellipse 100% 100% at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 60%)',
+      }}
+    />
+    {/* Inner glow ring */}
+    <div 
+      className="absolute inset-[2px] rounded-xl border border-white/20"
+      style={{
+        boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)',
+      }}
+    />
+  </div>
+);
+
 interface MobileNavItem {
   to: string;
   label: string;
@@ -57,12 +93,13 @@ const MobileBottomNav: React.FC = () => {
         </nav>
         <NavLink
           to="/chat"
-          className={`flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 text-white shadow-lg shadow-purple-500/40 flex items-center justify-center transition-transform duration-200 hover:scale-105 ${
-            isReaderMode ? '' : 'border border-white/10'
+          className={`relative flex-shrink-0 w-12 h-12 rounded-2xl text-white shadow-lg shadow-purple-500/40 flex items-center justify-center transition-transform duration-200 hover:scale-105 overflow-hidden ${
+            isReaderMode ? '' : ''
           }`}
           aria-label={t('aiChat') || 'AI Chat'}
         >
-          <Sparkles className="w-5 h-5" />
+          <IridescentBubble />
+          <Sparkles className="w-5 h-5 relative z-10 drop-shadow-lg" />
         </NavLink>
       </div>
     </div>

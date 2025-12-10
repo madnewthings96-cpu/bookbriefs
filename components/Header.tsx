@@ -198,6 +198,10 @@ const Header: React.FC = () => {
                   News
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                 </NavLink>
+                {/* <NavLink to="/merch" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                  Merch
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </NavLink> */}
               </nav>
             </div>
           </div>

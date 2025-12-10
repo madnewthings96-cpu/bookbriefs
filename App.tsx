@@ -28,6 +28,7 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 import LLMChatPage from './pages/LLMChatPage';
 import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
+import MerchPage from './pages/MerchPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -374,6 +375,7 @@ const AppContent: React.FC = () => {
                 <FeedbackPage />
               </ProtectedRoute>
             } />
+            {/* <Route path="/merch" element={<MerchPage />} /> */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
