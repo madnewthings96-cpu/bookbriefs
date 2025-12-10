@@ -52,6 +52,11 @@ const HomePage: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentFlashcard, setCurrentFlashcard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [booksPerMonth, setBooksPerMonth] = useState(5);
+
+  // Time calculations (average book = 4 hours, summary = 12 minutes)
+  const fullBookTime = booksPerMonth * 4;
+  const summaryTime = (booksPerMonth * 12) / 60; // Convert to hours
 
   // Get a diverse selection of books for the showcase
   const showcaseBooks = books.slice(0, 12);
@@ -329,7 +334,7 @@ const HomePage: React.FC = () => {
 
           {/* Bottom Row - 2 Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Card - Key Takeaways (with chart) */}
+            {/* Card - Time-Saver Calculator */}
             <div className="group relative bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl border border-gray-200 p-8 overflow-hidden hover:shadow-2xl hover:border-gray-300 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01]">
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 via-blue-50/0 to-blue-100/0 group-hover:from-blue-50/30 group-hover:via-blue-50/20 group-hover:to-blue-100/30 transition-all duration-700 pointer-events-none"></div>
@@ -337,58 +342,89 @@ const HomePage: React.FC = () => {
               {/* Glow effect on hover */}
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/0 via-blue-500/0 to-blue-400/0 group-hover:from-blue-400/20 group-hover:via-blue-500/20 group-hover:to-blue-400/20 rounded-2xl blur-xl transition-all duration-700 opacity-0 group-hover:opacity-100 -z-10"></div>
               
-              <div className="relative z-10 flex items-start gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-xl group-hover:shadow-blue-500/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                    <svg className="w-8 h-8 text-white transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-xl group-hover:shadow-blue-500/50 transition-all duration-500 group-hover:scale-110">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-500">
+                      How many books do you want to read?
+                    </h3>
+                    <p className="text-gray-500 text-sm">See your time savings in real-time</p>
                   </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-500">
-                    Key Takeaways
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    Get key insights from any book in minutes. Learn faster, remember longer.
-                  </p>
-                  
-                  {/* Enhanced Chart */}
-                  <div className="mt-6 pt-4 border-t border-gray-100 group-hover:border-blue-200 transition-colors duration-500">
-                    <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
-                      <span>Knowledge Retention</span>
-                      <span className="font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500">+90%</span>
-                    </div>
-                    <div className="h-20 flex items-end gap-1 bg-gradient-to-t from-gray-50 to-transparent rounded-lg p-2">
-                      {[40, 65, 45, 70, 55, 80, 60, 75, 50, 85, 70, 60, 90, 75, 65].map((height, i) => (
-                        <div
-                          key={i}
-                          className="flex-1 bg-gradient-to-t from-gray-300 to-gray-200 rounded-t transition-all duration-500 hover:from-blue-500 hover:to-blue-400 group-hover:shadow-lg"
-                          style={{ 
-                            height: `${height}%`,
-                            animation: `growBar 0.6s ease-out ${i * 0.05}s both`
-                          }}
-                        ></div>
-                      ))}
-                    </div>
+                
+                {/* Slider Section */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-3xl md:text-4xl font-bold text-blue-600">{booksPerMonth}</span>
+                    <span className="text-gray-500 text-sm">books / month</span>
                   </div>
                   
-                  {/* Feature badges */}
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full group-hover:bg-blue-100 group-hover:text-blue-700 transition-all duration-300">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                        <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
-                      </svg>
-                      Summarized
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full group-hover:bg-blue-100 group-hover:text-blue-700 transition-all duration-300">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                      </svg>
-                      Learn Fast
-                    </span>
+                  {/* Custom Slider */}
+                  <div className="relative">
+                    <input
+                      type="range"
+                      min="1"
+                      max="15"
+                      value={booksPerMonth}
+                      onChange={(e) => setBooksPerMonth(Number(e.target.value))}
+                      className="w-full h-3 bg-gray-200 rounded-full appearance-none cursor-pointer slider-thumb"
+                      style={{
+                        background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((booksPerMonth - 1) / 14) * 100}%, #e5e7eb ${((booksPerMonth - 1) / 14) * 100}%, #e5e7eb 100%)`
+                      }}
+                    />
+                    <div className="flex justify-between text-xs text-gray-400 mt-1">
+                      <span>1</span>
+                      <span>15</span>
+                    </div>
                   </div>
+                </div>
+                
+                {/* Time Comparison */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Full Books Time */}
+                  <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                      <span className="text-xs text-red-600 font-medium">Full Books</span>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-red-600">
+                      {fullBookTime} <span className="text-base font-normal">hrs</span>
+                    </div>
+                    <p className="text-xs text-red-500 mt-1">Traditional reading</p>
+                  </div>
+                  
+                  {/* Ta7leel Time */}
+                  <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <span className="text-xs text-green-600 font-medium">With Ta7leel</span>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-green-600">
+                      {summaryTime.toFixed(1)} <span className="text-base font-normal">hrs</span>
+                    </div>
+                    <p className="text-xs text-green-500 mt-1">Smart summaries</p>
+                  </div>
+                </div>
+                
+                {/* Savings Badge */}
+                <div className="mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl py-3 px-4">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="font-semibold">You save {(fullBookTime - summaryTime).toFixed(1)} hours!</span>
+                  <span className="text-blue-200 text-sm">({Math.round(((fullBookTime - summaryTime) / fullBookTime) * 100)}% faster)</span>
                 </div>
               </div>
             </div>
