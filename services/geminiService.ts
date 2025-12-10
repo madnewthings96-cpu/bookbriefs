@@ -2,7 +2,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { SummaryData } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+const ai = new GoogleGenAI({ apiKey });
 
 export const generateBookSummary = async (title: string, author: string): Promise<SummaryData> => {
   const prompt = `
@@ -53,7 +54,7 @@ export const generateBookSummary = async (title: string, author: string): Promis
   }
 };
 
-// Chat function for LLM Chat page
+// Chat function for LLM Chat page - Uses secure serverless function
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -61,46 +62,37 @@ interface ChatMessage {
 
 export const chatWithAI = async (message: string, history: ChatMessage[] = []): Promise<string> => {
   try {
-    // Build conversation history
-    const conversationHistory = history.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-    }));
-
-    // Add system context as the first message if history is empty
-    const systemContext = `You are a knowledgeable AI assistant specializing in trading, investing, books about finance and trading, and personal development. 
-    You provide helpful, accurate, and educational responses. You can:
-    - Explain trading strategies and concepts
-    - Recommend books on trading, investing, and business
-    - Summarize key ideas from popular finance and self-help books
-    - Provide insights on risk management and trading psychology
-    - Answer questions about technical and fundamental analysis
-    
-    Style guidelines:
-    - Use a few relevant emojis subtly throughout your responses to make them engaging (1-3 emojis per response)
-    - Place emojis naturally next to relevant concepts (e.g., 📈 for growth, 📚 for books, 💡 for ideas, ⚠️ for warnings, ✅ for tips)
-    - Don't overuse emojis - keep them professional and purposeful
-    
-    Always provide thoughtful, well-structured responses that help users learn and grow.`;
-
-    const prompt = history.length === 0 
-      ? `${systemContext}\n\nUser: ${message}`
-      : message;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: [
-        ...conversationHistory,
-        {
-          role: 'user',
-          parts: [{ text: prompt }]
-        }
-      ],
+    // Call secure serverless function (API key is server-side only)
+    const response = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, history }),
     });
 
-    return response.text.trim();
-  } catch (error) {
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Handle specific error types from serverless function
+      if (response.status === 429) {
+        throw new Error("API quota exceeded. Please try again later or check your API plan.");
+      }
+      if (response.status === 401) {
+        throw new Error("Invalid API key. Please check your configuration.");
+      }
+      throw new Error(data.error || "Failed to get response from AI.");
+    }
+
+    return data.response.trim();
+  } catch (error: any) {
     console.error("Error in chat:", error);
+    
+    // Re-throw if it's already a formatted error
+    if (error.message && !error.message.includes('fetch')) {
+      throw error;
+    }
+    
     throw new Error("Failed to get response from AI. Please try again.");
   }
 };
