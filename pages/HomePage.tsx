@@ -1,16 +1,71 @@
 
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TESTIMONIALS } from '../constants';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { RainbowButton } from '../components/RainbowButton';
+import { useBooks } from '../contexts/BooksContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 // Lazy load heavy components
 const Testimonials = lazy(() => import('../components/Testimonials'));
 const MostReadBooks = lazy(() => import('../components/MostReadBooks'));
 
+// Flashcard data
+const flashcards = [
+  {
+    quote: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+    author: "Aristotle",
+    book: "Atomic Habits",
+    backText: "Build small habits that compound over time. Focus on 1% improvements daily."
+  },
+  {
+    quote: "The way to get started is to quit talking and begin doing.",
+    author: "Walt Disney",
+    book: "The Psychology of Money",
+    backText: "Action beats planning. Start before you're ready and learn as you go."
+  },
+  {
+    quote: "Your time is limited, don't waste it living someone else's life.",
+    author: "Steve Jobs",
+    book: "Think and Grow Rich",
+    backText: "Follow your own path. Don't let others' opinions drown out your inner voice."
+  },
+  {
+    quote: "The only way to do great work is to love what you do.",
+    author: "Steve Jobs",
+    book: "So Good They Can't Ignore You",
+    backText: "Passion follows mastery. Get really good at something valuable first."
+  },
+  {
+    quote: "It is not the strongest that survive, but those most responsive to change.",
+    author: "Charles Darwin",
+    book: "Antifragile",
+    backText: "Embrace uncertainty. Build systems that get stronger from stress and volatility."
+  }
+];
+
 const HomePage: React.FC = () => {
+  const { books } = useBooks();
+  const { getBookTitle } = useLanguage();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [currentFlashcard, setCurrentFlashcard] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  // Get a diverse selection of books for the showcase
+  const showcaseBooks = books.slice(0, 12);
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 300;
+      carouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   useSEO({
     title: 'BookBriefs - Transform Your Learning with Powerful Book Summaries',
     description: 'Discover key insights from the world\'s greatest business and self-help books. Get comprehensive book summaries in minutes, not hours. Join thousands of learners today.',
@@ -152,10 +207,10 @@ const HomePage: React.FC = () => {
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-7xl">
-          {/* Top Row - Single Card */}
+          {/* Top Row - Library Showcase Card */}
           <div className="grid grid-cols-1 gap-6 mb-6">
-            {/* Card - Faster than light */}
-            <div className="group relative bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl border border-gray-200 p-8 overflow-hidden hover:shadow-2xl hover:border-gray-300 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01]">
+            {/* Card - Library Showcase */}
+            <div className="group relative bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl border border-gray-200 p-8 overflow-hidden hover:shadow-2xl hover:border-gray-300 transition-all duration-500">
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-orange-50/0 via-orange-50/0 to-orange-100/0 group-hover:from-orange-50/30 group-hover:via-orange-50/20 group-hover:to-orange-100/30 transition-all duration-700 pointer-events-none"></div>
               
@@ -163,113 +218,110 @@ const HomePage: React.FC = () => {
               <div className="absolute -inset-1 bg-gradient-to-r from-orange-400/0 via-orange-500/0 to-orange-400/0 group-hover:from-orange-400/20 group-hover:via-orange-500/20 group-hover:to-orange-400/20 rounded-2xl blur-xl transition-all duration-700 opacity-0 group-hover:opacity-100 -z-10"></div>
               
               <div className="relative z-10">
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-xs text-gray-600 mb-4">
-                    <span className="flex items-center gap-2">
-                      <span className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-600 shadow-lg shadow-orange-500/50"></span>
-                      </span>
-                      <span className="font-medium text-gray-700">Live Speed</span>
-                    </span>
-                    <span className="font-bold text-orange-600 text-sm bg-orange-50 px-3 py-1 rounded-full">14.34 mbps</span>
-                  </div>
-                  
-                  {/* Enhanced Chart */}
-                  <div className="h-20 bg-gradient-to-b from-gray-50 to-white rounded-xl p-4 border border-gray-100 group-hover:border-orange-200 transition-colors duration-500">
-                    <svg viewBox="0 0 200 60" className="w-full h-full" preserveAspectRatio="none">
-                      {/* Grid lines */}
-                      <line x1="0" y1="15" x2="200" y2="15" stroke="#f3f4f6" strokeWidth="0.5" />
-                      <line x1="0" y1="30" x2="200" y2="30" stroke="#f3f4f6" strokeWidth="0.5" />
-                      <line x1="0" y1="45" x2="200" y2="45" stroke="#f3f4f6" strokeWidth="0.5" />
-                      
-                      {/* Gradient fill under the line */}
-                      <defs>
-                        <linearGradient id="speedGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#f97316" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#f97316" stopOpacity="0.05" />
-                        </linearGradient>
-                      </defs>
-                      <polygon
-                        points="0,60 0,40 20,35 40,42 60,30 80,38 100,25 120,32 140,28 160,35 180,20 200,30 200,60"
-                        fill="url(#speedGradient)"
-                        className="transition-all duration-700"
-                      />
-                      
-                      {/* Main line with animation */}
-                      <polyline
-                        points="0,40 20,35 40,42 60,30 80,38 100,25 120,32 140,28 160,35 180,20 200,30"
-                        fill="none"
-                        stroke="#f97316"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="transition-all duration-500 group-hover:stroke-[3]"
-                        style={{
-                          strokeDasharray: '500',
-                          strokeDashoffset: '500',
-                          animation: 'drawLine 2s ease-out forwards'
-                        }}
-                      />
-                      
-                      {/* Animated dots at data points */}
-                      {[
-                        [0, 40], [20, 35], [40, 42], [60, 30], [80, 38], 
-                        [100, 25], [120, 32], [140, 28], [160, 35], [180, 20], [200, 30]
-                      ].map(([x, y], i) => (
-                        <circle
-                          key={i}
-                          cx={x}
-                          cy={y}
-                          r="0"
-                          fill="#f97316"
-                          className="group-hover:animate-pulse"
-                          style={{
-                            animation: `growDot 0.3s ease-out ${i * 0.1}s forwards`
-                          }}
-                        />
-                      ))}
-                    </svg>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:shadow-xl group-hover:shadow-orange-500/40 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                {/* Header with title and CTA */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:shadow-xl group-hover:shadow-orange-500/40 transition-all duration-500 group-hover:scale-110">
+                      <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
                     </div>
-                    <h3 className="text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors duration-500">
-                      Faster than light
-                    </h3>
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors duration-500">
+                        Explore 100+ Best-Sellers in Minutes
+                      </h3>
+                      <p className="text-gray-600 text-sm md:text-base mt-1">
+                        From Business to Psychology, access the world's best ideas instantly.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <p className="text-gray-600 leading-relaxed text-lg pl-15">
-                    Instant access to summaries. No waiting, no loading. Pure reading experience at lightning speed.
-                  </p>
-                  
-                  {/* Feature badges */}
-                  <div className="flex flex-wrap gap-2 pt-2 pl-15">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full group-hover:bg-orange-100 group-hover:text-orange-700 transition-colors duration-300">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Instant Load
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full group-hover:bg-orange-100 group-hover:text-orange-700 transition-colors duration-300">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Zero Buffering
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full group-hover:bg-orange-100 group-hover:text-orange-700 transition-colors duration-300">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Optimized
-                    </span>
+                  <Link 
+                    to="/books" 
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-xl hover:shadow-orange-500/40 hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-sm whitespace-nowrap"
+                  >
+                    Browse Library
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                </div>
+
+                {/* Book Carousel */}
+                <div className="relative">
+                  {/* Left scroll button */}
+                  <button 
+                    onClick={() => scrollCarousel('left')}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-300 border border-gray-200"
+                  >
+                    <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Carousel container */}
+                  <div 
+                    ref={carouselRef}
+                    className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-12 py-4"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {showcaseBooks.length > 0 ? (
+                      showcaseBooks.map((book) => (
+                        <Link 
+                          key={book.id} 
+                          to={book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`}
+                          className="flex-shrink-0 group/book"
+                        >
+                          <div className="w-28 md:w-32 transform hover:scale-105 hover:-translate-y-2 transition-all duration-300">
+                            <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-gray-100">
+                              <img
+                                src={book.coverImageUrl}
+                                alt={getBookTitle(book.id)}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            </div>
+                            <p className="mt-2 text-xs text-gray-600 line-clamp-1 text-center font-medium group-hover/book:text-orange-600 transition-colors">
+                              {getBookTitle(book.id)}
+                            </p>
+                          </div>
+                        </Link>
+                      ))
+                    ) : (
+                      // Placeholder book covers when no books loaded
+                      [...Array(8)].map((_, i) => (
+                        <div key={i} className="flex-shrink-0 w-28 md:w-32">
+                          <div className="aspect-[2/3] rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse shadow-md"></div>
+                          <div className="mt-2 h-3 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                      ))
+                    )}
                   </div>
+
+                  {/* Right scroll button */}
+                  <button 
+                    onClick={() => scrollCarousel('right')}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-300 border border-gray-200"
+                  >
+                    <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+
+                  {/* Fade edges */}
+                  <div className="absolute left-10 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
+                  <div className="absolute right-10 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+                </div>
+
+                {/* Category badges */}
+                <div className="flex flex-wrap gap-2 mt-4 justify-center">
+                  {['Business', 'Psychology', 'Self-Help', 'Finance', 'Leadership', 'Productivity'].map((category) => (
+                    <span 
+                      key={category}
+                      className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full hover:bg-orange-100 hover:text-orange-700 transition-colors duration-300 cursor-pointer"
+                    >
+                      {category}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -341,7 +393,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
 
-            {/* Card - Share & Learn Together */}
+            {/* Card - Smart Flashcards / Retain What You Read */}
             <div className="group relative bg-gradient-to-br from-white via-white to-gray-50 rounded-2xl border border-gray-200 p-8 overflow-hidden hover:shadow-2xl hover:border-gray-300 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.01]">
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-purple-50/0 via-purple-50/0 to-purple-100/0 group-hover:from-purple-50/30 group-hover:via-purple-50/20 group-hover:to-purple-100/30 transition-all duration-700 pointer-events-none"></div>
@@ -349,68 +401,172 @@ const HomePage: React.FC = () => {
               {/* Glow effect on hover */}
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-400/0 via-purple-500/0 to-purple-400/0 group-hover:from-purple-400/20 group-hover:via-purple-500/20 group-hover:to-purple-400/20 rounded-2xl blur-xl transition-all duration-700 opacity-0 group-hover:opacity-100 -z-10"></div>
               
-              <div className="relative z-10 flex items-start gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-xl group-hover:shadow-purple-500/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                    <svg className="w-8 h-8 text-white transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-xl group-hover:shadow-purple-500/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                      <svg className="w-8 h-8 text-white transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors duration-500">
+                      Retain What You Read
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-sm">
+                      Smart flashcards and quote highlights help you remember key insights forever.
+                    </p>
                   </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-500">
-                    Share & Learn Together
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-5">
-                    Share your favorite summaries with friends and build a community of readers.
-                  </p>
+                
+                {/* Interactive Flashcard Stack UI */}
+                <div className="relative h-52 mb-4">
+                  {/* Background cards (stack effect) */}
+                  <div className="absolute inset-x-4 top-4 h-40 bg-purple-100/50 rounded-xl transform rotate-2 transition-transform duration-500"></div>
+                  <div className="absolute inset-x-2 top-2 h-40 bg-purple-200/50 rounded-xl transform -rotate-1 transition-transform duration-500"></div>
                   
-                  {/* Enhanced User List */}
-                  <div className="flex flex-col gap-2">
-                    {[
-                      { name: 'Likeur', initials: 'L', color: 'from-purple-400 to-purple-600', delay: '0s' },
-                      { name: 'M. Irung', initials: 'MI', color: 'from-blue-400 to-blue-600', delay: '0.1s' },
-                      { name: 'B. Ng', initials: 'BN', color: 'from-orange-400 to-orange-600', delay: '0.2s' }
-                    ].map((user, i) => (
+                  {/* Main Flashcard - Flippable */}
+                  <div 
+                    className="absolute inset-0 cursor-pointer"
+                    style={{ perspective: '1000px' }}
+                    onClick={() => setIsFlipped(!isFlipped)}
+                  >
+                    <div 
+                      className="relative w-full h-full transition-transform duration-500"
+                      style={{ 
+                        transformStyle: 'preserve-3d',
+                        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+                      }}
+                    >
+                      {/* Front of card */}
                       <div 
-                        key={i}
-                        className="flex items-center gap-3 bg-white/50 group-hover:bg-white rounded-xl p-3 border border-gray-100 group-hover:border-purple-200 transition-all duration-500 hover:scale-105 hover:shadow-md cursor-pointer"
-                        style={{
-                          animation: `slideInRight 0.5s ease-out ${user.delay} both`
-                        }}
+                        className="absolute inset-0 bg-white rounded-xl shadow-lg border border-purple-100 p-5 hover:shadow-xl hover:border-purple-300 transition-shadow duration-300"
+                        style={{ backfaceVisibility: 'hidden' }}
                       >
-                        <div className={`relative w-10 h-10 rounded-full bg-gradient-to-br ${user.color} flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300`}>
-                          <span className="text-white text-sm font-bold">{user.initials}</span>
-                          <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
-                        </div>
-                        <div className="flex-1">
-                          <span className="text-sm font-semibold text-gray-900">{user.name}</span>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <svg className="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span className="text-xs text-gray-500">Active reader</span>
-                          </div>
-                        </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-purple-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        {/* Quote mark */}
+                        <svg className="w-6 h-6 text-purple-200 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                         </svg>
+                        
+                        {/* Quote text */}
+                        <p className="text-gray-800 font-medium text-sm leading-relaxed mb-2 line-clamp-3">
+                          <span className="relative inline">
+                            <span className="relative z-10">{flashcards[currentFlashcard].quote}</span>
+                            <span className="absolute bottom-0 left-0 w-full h-1.5 bg-yellow-300/60 -z-0"></span>
+                          </span>
+                        </p>
+                        
+                        {/* Source */}
+                        <div className="flex items-center justify-between mt-auto">
+                          <span className="text-xs text-purple-600 font-semibold">— {flashcards[currentFlashcard].author}</span>
+                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{flashcards[currentFlashcard].book}</span>
+                        </div>
+                        
+                        {/* Flip indicator */}
+                        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-purple-400">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>Tap to flip</span>
+                        </div>
                       </div>
+                      
+                      {/* Back of card */}
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-5 flex flex-col justify-center"
+                        style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                      >
+                        <div className="text-center">
+                          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                          </div>
+                          <p className="text-white font-medium text-sm leading-relaxed mb-2">Key Insight</p>
+                          <p className="text-white/90 text-xs leading-relaxed">{flashcards[currentFlashcard].backText}</p>
+                        </div>
+                        
+                        {/* Flip back indicator */}
+                        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-white/70">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>Tap to flip</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Card navigation dots & arrows */}
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsFlipped(false);
+                      setCurrentFlashcard((prev) => (prev === 0 ? flashcards.length - 1 : prev - 1));
+                    }}
+                    className="w-8 h-8 rounded-full bg-purple-100 hover:bg-purple-200 flex items-center justify-center transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <div className="flex gap-1.5">
+                    {flashcards.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsFlipped(false);
+                          setCurrentFlashcard(index);
+                        }}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentFlashcard 
+                            ? 'bg-purple-600 w-4' 
+                            : 'bg-purple-200 hover:bg-purple-300'
+                        }`}
+                      />
                     ))}
                   </div>
                   
-                  {/* Community Stats */}
-                  <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100 group-hover:border-purple-200 transition-colors duration-500">
-                    <div className="flex -space-x-2">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 border-2 border-white"></div>
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 border-2 border-white"></div>
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 border-2 border-white"></div>
-                      <div className="w-7 h-7 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center">
-                        <span className="text-xs font-semibold text-gray-600">+12</span>
-                      </div>
-                    </div>
-                    <span className="text-xs text-gray-500 font-medium">readers in your network</span>
-                  </div>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsFlipped(false);
+                      setCurrentFlashcard((prev) => (prev === flashcards.length - 1 ? 0 : prev + 1));
+                    }}
+                    className="w-8 h-8 rounded-full bg-purple-100 hover:bg-purple-200 flex items-center justify-center transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+                
+                {/* Feature badges */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-full group-hover:bg-purple-100 transition-colors duration-300">
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Spaced Repetition
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-full group-hover:bg-purple-100 transition-colors duration-300">
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Smart Highlights
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-full group-hover:bg-purple-100 transition-colors duration-300">
+                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    تحليل (Analysis)
+                  </span>
                 </div>
               </div>
             </div>
