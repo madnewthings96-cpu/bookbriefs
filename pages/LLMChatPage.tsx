@@ -228,12 +228,12 @@ const LLMChatPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-4 md:py-8 relative overflow-hidden">
+    <div className="min-h-screen py-4 md:py-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #aec3b0 0%, #fefae0 50%, #eff6e0 100%)' }}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob" style={{ backgroundColor: '#aec3b0' }}></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000" style={{ backgroundColor: '#fefae0' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000" style={{ backgroundColor: '#eff6e0' }}></div>
       </div>
 
       <div className="container mx-auto px-1 md:px-3 max-w-6xl relative z-10">
@@ -241,10 +241,10 @@ const LLMChatPage: React.FC = () => {
         <div className="text-center mb-6 md:mb-10 px-1 md:px-2 animate-fade-in">
           <div className="flex items-center justify-center mb-4 md:mb-5 group">
             <div className="relative">
-              <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-indigo-600 mr-3 md:mr-4 animate-pulse" />
-              <div className="absolute inset-0 blur-lg bg-indigo-400 opacity-30 animate-pulse"></div>
+              <Sparkles className="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 animate-pulse" style={{ color: '#6b8e6b' }} />
+              <div className="absolute inset-0 blur-lg opacity-30 animate-pulse" style={{ backgroundColor: '#aec3b0' }}></div>
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(90deg, #6b8e6b, #c9a227, #8b9e7a)' }}>
               AI Trading & Books
             </h1>
           </div>
@@ -261,20 +261,20 @@ const LLMChatPage: React.FC = () => {
               <div className="text-center text-gray-700 mt-10 md:mt-20 animate-fade-in-up">
                 <div className="flex justify-center gap-8 md:gap-12 mb-10">
                   <div className="text-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow">
-                      <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow" style={{ backgroundColor: '#aec3b0' }}>
+                      <img src="/icons/book.png" alt="Books" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     </div>
                     <p className="text-sm md:text-base font-semibold text-gray-800">Books</p>
                   </div>
                   <div className="text-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow">
-                      <TrendingUp className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow" style={{ backgroundColor: '#fefae0' }}>
+                      <img src="/icons/cartoon.png" alt="Trading" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     </div>
                     <p className="text-sm md:text-base font-semibold text-gray-800">Trading</p>
                   </div>
                   <div className="text-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow">
-                      <MessageSquare className="w-8 h-8 md:w-10 md:h-10 text-white" />
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:shadow-xl transition-shadow" style={{ backgroundColor: '#eff6e0' }}>
+                      <img src="/icons/bulb.png" alt="Insights" className="w-10 h-10 md:w-12 md:h-12 object-contain" />
                     </div>
                     <p className="text-sm md:text-base font-semibold text-gray-800">Insights</p>
                   </div>
@@ -431,22 +431,22 @@ const LLMChatPage: React.FC = () => {
         {/* Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-10 mx-1 md:mx-0">
           <div className="group bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:border-indigo-400">
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md">
-              <BookOpen className="w-6 h-6 md:w-7 md:h-7 text-white" />
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md" style={{ backgroundColor: '#aec3b0' }}>
+              <img src="/icons/book.png" alt="Books" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
             </div>
             <h3 className="text-gray-900 font-bold mb-2 text-base md:text-lg">Book Insights</h3>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">Get summaries and key takeaways from popular trading and business books</p>
           </div>
           <div className="group bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:border-green-400">
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md">
-              <TrendingUp className="w-6 h-6 md:w-7 md:h-7 text-white" />
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md" style={{ backgroundColor: '#fefae0' }}>
+              <img src="/icons/cartoon.png" alt="Trading" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
             </div>
             <h3 className="text-gray-900 font-bold mb-2 text-base md:text-lg">Trading Strategies</h3>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">Learn about different trading approaches and risk management techniques</p>
           </div>
           <div className="group bg-white/80 backdrop-blur-sm border-2 border-gray-200 rounded-2xl p-5 md:p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:border-purple-400">
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md">
-              <MessageSquare className="w-6 h-6 md:w-7 md:h-7 text-white" />
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md" style={{ backgroundColor: '#eff6e0' }}>
+              <img src="/icons/bulb.png" alt="Insights" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
             </div>
             <h3 className="text-gray-900 font-bold mb-2 text-base md:text-lg">Interactive Learning</h3>
             <p className="text-gray-600 text-sm md:text-base leading-relaxed">Ask questions and get personalized explanations tailored to your needs</p>
