@@ -4,6 +4,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { chatWithAI } from '../services/geminiService';
 import useSEO from '../hooks/useSEO';
+import SignUpPromptModal from '../components/SignUpPromptModal';
+
+const FREE_MESSAGE_LIMIT = 1;
 
 interface Message {
   id: string;
@@ -139,6 +142,8 @@ const LLMChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [freeMessagesUsed, setFreeMessagesUsed] = useState(0);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -172,6 +177,12 @@ const LLMChatPage: React.FC = () => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    // Check if user needs to sign up (not authenticated and already used free message)
+    if (!isAuthenticated && freeMessagesUsed >= FREE_MESSAGE_LIMIT) {
+      setShowSignUpModal(true);
+      return;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -182,6 +193,11 @@ const LLMChatPage: React.FC = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+
+    // Increment free messages used for non-authenticated users
+    if (!isAuthenticated) {
+      setFreeMessagesUsed((prev) => prev + 1);
+    }
 
     try {
       const response = await chatWithAI(input, messages.map(m => ({
@@ -453,6 +469,12 @@ const LLMChatPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Sign Up Modal */}
+      <SignUpPromptModal 
+        isOpen={showSignUpModal} 
+        onClose={() => setShowSignUpModal(false)} 
+      />
     </div>
   );
 };
