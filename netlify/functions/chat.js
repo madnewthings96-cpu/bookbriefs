@@ -1,7 +1,5 @@
 // Secure serverless function for Gemini AI chat
-// API key is stored securely in Netlify environment variables
-
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 
 exports.handler = async (event) => {
   // CORS headers
@@ -12,82 +10,71 @@ exports.handler = async (event) => {
     "Content-Type": "application/json",
   };
 
-  // Handle preflight requests
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 200, headers, body: "" };
   }
 
-  // Only allow POST requests
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: "Method not allowed" }),
-    };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   try {
-    // Get API key from server-side environment variable (secure)
     const apiKey = process.env.GEMINI_API_KEY_2 || process.env.GEMINI_API_KEY;
-    
-    if (!apiKey) {
-      console.error("GEMINI_API_KEY_2 not configured");
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: "API key not configured" }),
-      };
-    }
+    if (!apiKey) throw new Error("API_KEY_MISSING");
 
-    // Parse request body
     const { message, history = [] } = JSON.parse(event.body);
 
     if (!message) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: "Message is required" }),
-      };
+      return { statusCode: 400, headers, body: JSON.stringify({ error: "Message is required" }) };
     }
 
-    // Initialize Gemini
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    // System context for the AI
+    // 1. DEFINE SYSTEM CONTEXT (Your Persona)
     const systemContext = `You are a knowledgeable AI assistant specializing in trading, investing, books about finance and trading, and personal development. 
     You provide helpful, accurate, and educational responses. You can:
     - Explain trading strategies and concepts
     - Recommend books on trading, investing, and business
     - Summarize key ideas from popular finance and self-help books
-    - Provide insights on risk management and trading psychology
-    - Answer questions about technical and fundamental analysis
     
     Style guidelines:
-    - Use a few relevant emojis subtly throughout your responses to make them engaging (1-3 emojis per response)
-    - Place emojis naturally next to relevant concepts (e.g., 📈 for growth, 📚 for books, 💡 for ideas, ⚠️ for warnings, ✅ for tips)
-    - Don't overuse emojis - keep them professional and purposeful
-    
-    Always provide thoughtful, well-structured responses that help users learn and grow.`;
+    - Use a few relevant emojis subtly (1-3 per response)
+    - Place emojis naturally next to relevant concepts (📈, 📚, 💡, ⚠️, ✅)
+    - Keep it professional.`;
 
-    // Build conversation history for Gemini format
-    const chatHistory = history.map(msg => ({
+    // 2. INITIALIZE MODEL with System Instruction & Safety Settings
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash", // Stable & Fast. Use "gemini-2.0-flash-exp" if you want the newest.
+      systemInstruction: systemContext,
+      safetySettings: [
+        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH }, // Critical for Finance
+        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+      ]
+    });
+
+    // 3. PREPARE HISTORY (The Crash Fix)
+    // We convert the history to Gemini format.
+    // CRITICAL: We remove the LAST message from 'history' if it matches the current 'message'.
+    // This prevents sending the User message twice (once in history, once in sendMessage).
+    let pastHistory = history.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
     }));
 
-    // Start chat with history
+    // If the frontend sent the new message inside 'history', remove it so we don't duplicate it.
+    if (pastHistory.length > 0 && pastHistory[pastHistory.length - 1].role === 'user') {
+       // Simple check: assuming the last user message in history is the current one
+       pastHistory.pop(); 
+    }
+
+    // 4. START CHAT
     const chat = model.startChat({
-      history: chatHistory.length > 0 ? chatHistory : undefined,
+      history: pastHistory,
     });
 
-    // Prepare the prompt
-    const prompt = history.length === 0 
-      ? `${systemContext}\n\nUser: ${message}`
-      : message;
-
-    // Send message and get response
-    const result = await chat.sendMessage(prompt);
+    // 5. SEND MESSAGE
+    const result = await chat.sendMessage(message);
     const response = await result.response;
     const text = response.text();
 
@@ -98,34 +85,11 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error("Chat function error:", error);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-    
-    // Handle specific error types
-    if (error.message?.includes('429') || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
-      return {
-        statusCode: 429,
-        headers,
-        body: JSON.stringify({ error: "API quota exceeded. Please try again later." }),
-      };
-    }
-    
-    if (error.message?.includes('401') || error.message?.includes('API_KEY')) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: "Invalid API key configuration." }),
-      };
-    }
-
+    console.error("Chat Error:", error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ 
-        error: "Failed to get AI response. Please try again.",
-        details: error.message // Include error message for debugging
-      }),
+      body: JSON.stringify({ error: "Processing failed", details: error.message }),
     };
   }
 };
