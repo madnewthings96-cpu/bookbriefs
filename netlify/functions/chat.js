@@ -99,6 +99,8 @@ exports.handler = async (event) => {
 
   } catch (error) {
     console.error("Chat function error:", error);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
     
     // Handle specific error types
     if (error.message?.includes('429') || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
@@ -120,7 +122,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "Failed to get AI response. Please try again." }),
+      body: JSON.stringify({ 
+        error: "Failed to get AI response. Please try again.",
+        details: error.message // Include error message for debugging
+      }),
     };
   }
 };
