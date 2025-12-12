@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'The Miracle Equation',
     author: 'Hal Elrod',
     category: 'Self-Help',
-    coverImageUrl: '/images/the miracle equation.png',
+    coverImageUrl: '/images/the miracle equation.jpg',
     rating: 4.18,
     publicationYear: 2019,
     pageCount: 224,

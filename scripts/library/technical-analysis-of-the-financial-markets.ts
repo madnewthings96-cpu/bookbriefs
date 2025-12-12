@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'Technical Analysis of the Financial Markets',
     author: 'John J. Murphy',
     category: 'Trading',
-    coverImageUrl: '/images/technical analysis of the financial markets.png',
+    coverImageUrl: '/images/technical analysis of the financial markets.jpg',
     rating: 4.32,
     publicationYear: 1999,
     pageCount: 576,

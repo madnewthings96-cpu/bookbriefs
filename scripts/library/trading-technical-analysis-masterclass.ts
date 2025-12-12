@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'Trading: Technical Analysis Masterclass',
     author: 'Rolf Schlotmann',
     category: 'Trading',
-    coverImageUrl: '/images/trading technical analysis masterclass.png',
+    coverImageUrl: '/images/trading technical analysis masterclass.jpg',
     rating: 4.3,
     publicationYear: 2019,
     pageCount: 226,
