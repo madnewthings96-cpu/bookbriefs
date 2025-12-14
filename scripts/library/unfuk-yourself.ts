@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'Unfu*k Yourself',
     author: 'Gary John Bishop',
     category: 'Self-Help',
-    coverImageUrl: '/images/unfuk yourself.png',
+    coverImageUrl: '/images/unfuk yourself.jpg',
     rating: 4.12,
     publicationYear: 2017,
     pageCount: 224,
