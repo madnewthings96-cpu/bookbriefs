@@ -157,7 +157,7 @@ const LLMChatPage: React.FC = () => {
 
   // Suggested prompts
   const quickActions = [
-    { icon: BookOpen, label: 'Book Summary', prompt: 'Summarize "The Psychology of Money" by Morgan Housel' },
+    { icon: BookOpen, label: 'Book Summary', prompt: 'هل يمكنك تلخيص كتاب "سيكولوجية المال" لمورغان هاوسل؟' },
     { icon: TrendingUp, label: 'Trading Tips', prompt: 'What are the best trading strategies for beginners?' },
     { icon: Lightbulb, label: 'Investment Ideas', prompt: 'How should I start investing with $1000?' },
   ];
@@ -252,6 +252,10 @@ const LLMChatPage: React.FC = () => {
               How can I help you today?
             </p>
 
+            <p className="text-gray-400 text-sm -mt-8 mb-12 text-center" dir="rtl">
+              اسألني عن التداول، الكتب، أو المفاهيم المالية
+            </p>
+
             {/* Input Box */}
             <div className="w-full max-w-2xl mb-8">
               <div className="relative bg-white rounded-2xl shadow-sm border border-gray-200 hover:border-gray-300 transition-colors">
@@ -290,10 +294,6 @@ const LLMChatPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Arabic Subtitle */}
-            <p className="text-gray-400 text-sm mt-12 text-center" dir="rtl">
-              اسألني عن التداول، الكتب، أو المفاهيم المالية
-            </p>
           </div>
         ) : (
           /* Chat View */
