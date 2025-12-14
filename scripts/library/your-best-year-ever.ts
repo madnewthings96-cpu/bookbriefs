@@ -5,7 +5,7 @@ export const book: BookDefinition = {
     title: 'Your Best Year Ever',
     author: 'Michael Hyatt',
     category: 'Self-Help',
-    coverImageUrl: '/images/your best year ever.png',
+    coverImageUrl: '/images/your best year ever.jpg',
     rating: 4.25,
     publicationYear: 2018,
     pageCount: 272,
