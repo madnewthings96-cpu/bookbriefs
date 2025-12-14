@@ -1,5 +1,5 @@
-// Secure serverless function for Gemini AI chat
-const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
+// Secure serverless function for Groq AI chat
+// Uses Groq's OpenAI-compatible endpoint.
 
 exports.handler = async (event) => {
   // CORS headers
@@ -19,8 +19,14 @@ exports.handler = async (event) => {
   }
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY_2 || process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("API_KEY_MISSING");
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: "API key not configured" }),
+      };
+    }
 
     const { message, history = [] } = JSON.parse(event.body);
 
@@ -40,43 +46,56 @@ exports.handler = async (event) => {
     - Place emojis naturally next to relevant concepts (📈, 📚, 💡, ⚠️, ✅)
     - Keep it professional.`;
 
-    // 2. INITIALIZE MODEL with System Instruction & Safety Settings
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash-lite", // Fast and cost-effective
-      systemInstruction: systemContext,
-      safetySettings: [
-        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH }, // Critical for Finance
-        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-      ]
-    });
-
-    // 3. PREPARE HISTORY (The Crash Fix)
-    // We convert the history to Gemini format.
-    // CRITICAL: We remove the LAST message from 'history' if it matches the current 'message'.
-    // This prevents sending the User message twice (once in history, once in sendMessage).
-    let pastHistory = history.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-    }));
-
-    // If the frontend sent the new message inside 'history', remove it so we don't duplicate it.
-    if (pastHistory.length > 0 && pastHistory[pastHistory.length - 1].role === 'user') {
-       // Simple check: assuming the last user message in history is the current one
-       pastHistory.pop(); 
+    // Build OpenAI-style messages (Groq compatibility)
+    // Prevent sending the current user message twice if it appears as the last history item.
+    const cleanedHistory = Array.isArray(history) ? [...history] : [];
+    const last = cleanedHistory[cleanedHistory.length - 1];
+    if (last && last.role === 'user' && typeof last.content === 'string' && last.content.trim() === message.trim()) {
+      cleanedHistory.pop();
     }
 
-    // 4. START CHAT
-    const chat = model.startChat({
-      history: pastHistory,
+    const groqMessages = [
+      { role: 'system', content: systemContext },
+      ...cleanedHistory
+        .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+        .map(m => ({ role: m.role, content: m.content })),
+      { role: 'user', content: message },
+    ];
+
+    const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
+        messages: groqMessages,
+        temperature: 0.4,
+        max_tokens: 900,
+      }),
     });
 
-    // 5. SEND MESSAGE
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
+    const payload = await groqResponse.json().catch(() => null);
+
+    if (!groqResponse.ok) {
+      const details = payload?.error?.message || payload?.message || `HTTP ${groqResponse.status}`;
+      const statusCode = groqResponse.status === 429 ? 429 : groqResponse.status === 401 ? 401 : 500;
+      return {
+        statusCode,
+        headers,
+        body: JSON.stringify({ error: "Failed to get AI response", details }),
+      };
+    }
+
+    const text = payload?.choices?.[0]?.message?.content;
+    if (!text || typeof text !== 'string') {
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: "Invalid AI response" }),
+      };
+    }
 
     return {
       statusCode: 200,
