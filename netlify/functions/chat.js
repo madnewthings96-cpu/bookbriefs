@@ -43,7 +43,7 @@ exports.handler = async (event) => {
     // 2. INITIALIZE MODEL with System Instruction & Safety Settings
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash", // Stable & Fast. Use "gemini-2.0-flash-exp" if you want the newest.
+      model: "gemini-2.0-flash-lite", // Fast and cost-effective
       systemInstruction: systemContext,
       safetySettings: [
         { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
