@@ -239,7 +239,7 @@ const LLMChatPage: React.FC = () => {
           <div className="flex flex-col items-center justify-center min-h-[70vh]">
             {/* Logo/Icon */}
             <div className="mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg p-2">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#fdf0d5] to-[#ee9b00] flex items-center justify-center shadow-lg p-2">
                 <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-12 h-12 object-contain" />
               </div>
             </div>
@@ -318,7 +318,7 @@ const LLMChatPage: React.FC = () => {
                     ) : (
                       <div className="flex gap-4">
                         {/* AI Avatar */}
-                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center p-1">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#fdf0d5] to-[#ee9b00] flex items-center justify-center p-1">
                           <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-6 h-6 object-contain" />
                         </div>
                         {/* Response Content */}
@@ -335,7 +335,7 @@ const LLMChatPage: React.FC = () => {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center p-1">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#fdf0d5] to-[#ee9b00] flex items-center justify-center p-1">
                       <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-6 h-6 object-contain" />
                     </div>
                     <div className="flex items-center gap-1 pt-2">
