@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, RotateCcw, BookOpen, TrendingUp, Lightbulb, ArrowUp } from 'lucide-react';
+import { RotateCcw, BookOpen, TrendingUp, Lightbulb, ArrowUp } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { chatWithAI } from '../services/geminiService';
@@ -239,8 +239,8 @@ const LLMChatPage: React.FC = () => {
           <div className="flex flex-col items-center justify-center min-h-[70vh]">
             {/* Logo/Icon */}
             <div className="mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
-                <Sparkles className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg p-2">
+                <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-12 h-12 object-contain" />
               </div>
             </div>
 
@@ -318,8 +318,8 @@ const LLMChatPage: React.FC = () => {
                     ) : (
                       <div className="flex gap-4">
                         {/* AI Avatar */}
-                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                          <Sparkles className="w-4 h-4 text-white" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center p-1">
+                          <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-6 h-6 object-contain" />
                         </div>
                         {/* Response Content */}
                         <div className="flex-1 pt-1">
@@ -335,8 +335,8 @@ const LLMChatPage: React.FC = () => {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-white" />
+                    <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center p-1">
+                      <img src="/favicon/logo-white.png" alt="Ta7leel" className="w-6 h-6 object-contain" />
                     </div>
                     <div className="flex items-center gap-1 pt-2">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
