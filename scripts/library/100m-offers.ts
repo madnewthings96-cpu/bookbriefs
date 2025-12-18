@@ -1,27 +1,27 @@
 import { BookDefinition } from '../types.js';
 
 export const book: BookDefinition = {
-    id: '100m-offers',
-    title: "$100M Offers",
-    author: 'Alex Hormozi',
-    category: 'Business',
-    coverImageUrl: "/images/100m offers.jpg",
-    rating: 4.56,
-    ratingsCount: "17,000+",
-    publicationYear: 2021,
-    pageCount: 224,
-    arabicSlug: 'عروض-100-مليون-دولار',
-    isPremium: false,
-    amazonUrl: 'https://amzn.to/3MBR7xM',
-    kindleUrl: 'https://amzn.to/4aULOmT',
-    audibleUrl: 'https://amzn.to/4s9LjMc',
-    translations: {
-        en: {
-            title: "$100M Offers",
-            author: 'Alex Hormozi'
-        }
-    },
-    summary: `# Masterclass Summary: $100M Offers by Alex Hormozi
+   id: '100m-offers',
+   title: "$100M Offers",
+   author: 'Alex Hormozi',
+   category: 'Business',
+   coverImageUrl: "/images/100m offers.jpg",
+   rating: 4.56,
+   ratingsCount: "17,000+",
+   publicationYear: 2021,
+   pageCount: 224,
+   arabicSlug: 'عروض-100-مليون-دولار',
+   isPremium: false,
+   amazonUrl: 'https://amzn.to/3MBR7xM',
+   kindleUrl: 'https://amzn.to/4aULOmT',
+   audibleUrl: 'https://amzn.to/4s9LjMc',
+   translations: {
+      en: {
+         title: "$100M Offers",
+         author: 'Alex Hormozi'
+      }
+   },
+   summary: `# Masterclass Summary: $100M Offers by Alex Hormozi
 
 ## 1. Executive Thesis (The "Big Idea")
 
@@ -285,16 +285,16 @@ Make the offer logically irresistible.
 ## Final Masterclass Takeaway
 
 $100M Offers is not about getting more traffic; it is about converting the traffic you already have at a higher rate and a higher price point. By shifting the focus from "how can I get the customer to pay me" to "how can I provide so much value that the customer feels stupid saying no," you fundamentally alter the economics of your business. The Grand Slam Offer is the lever that allows you to outspend your competition, attract the best talent, and eventually, dominate your market.`,
-    keyTakeaways: [
-        "**The Grand Slam Offer**: Create an offer so good people feel stupid saying no. Make it incomparable to alternatives by stacking massive value.",
-        "**The Value Equation**: Value = (Dream Outcome × Perceived Likelihood) / (Time Delay × Effort). Maximize the top, minimize the bottom.",
-        "**Stop Competing on Price**: The race to the bottom is a death spiral. Create a 'Category of One' by selling transformations, not commodities.",
-        "**The Starving Crowd**: Find a market with massive pain, purchasing power, easy targeting, and growth. The right market makes selling effortless.",
-        "**Charge Premium Prices**: Higher prices attract better clients who are more committed. Low prices attract high-maintenance customers.",
-        "**Scarcity & Urgency**: Use limited quantity (scarcity) and limited time (urgency) to force immediate action. Always be 'sold out.'",
-        "**Stack Bonuses**: A single offer is easy to compare. A stack of bonuses creates a unique bundle that can't be price-shopped.",
-        "**Reverse the Risk**: Use guarantees to transfer risk from buyer to seller. A bold guarantee removes the primary barrier to purchase.",
-        "**The MAGIC Naming Formula**: Magnet + Avatar + Goal + Interval + Container. Turn 'Weight Loss Coaching' into 'The 6-Week Beach Body Blueprint for New Moms.'",
-        "**Deliver on Your Promise**: A great offer with a bad product is a scam. The offer gets them in; the product keeps them there."
-    ]
+   keyTakeaways: [
+      "**The Grand Slam Offer**: Create an offer so good people feel stupid saying no. Make it incomparable to alternatives by stacking massive value.",
+      "**The Value Equation**: Value = (Dream Outcome × Perceived Likelihood) / (Time Delay × Effort). Maximize the top, minimize the bottom.",
+      "**Stop Competing on Price**: The race to the bottom is a death spiral. Create a 'Category of One' by selling transformations, not commodities.",
+      "**The Starving Crowd**: Find a market with massive pain, purchasing power, easy targeting, and growth. The right market makes selling effortless.",
+      "**Charge Premium Prices**: Higher prices attract better clients who are more committed. Low prices attract high-maintenance customers.",
+      "**Scarcity & Urgency**: Use limited quantity (scarcity) and limited time (urgency) to force immediate action. Always be 'sold out.'",
+      "**Stack Bonuses**: A single offer is easy to compare. A stack of bonuses creates a unique bundle that can't be price-shopped.",
+      "**Reverse the Risk**: Use guarantees to transfer risk from buyer to seller. A bold guarantee removes the primary barrier to purchase.",
+      "**The MAGIC Naming Formula**: Magnet + Avatar + Goal + Interval + Container. Turn 'Weight Loss Coaching' into 'The 6-Week Beach Body Blueprint for New Moms.'",
+      "**Deliver on Your Promise**: A great offer with a bad product is a scam. The offer gets them in; the product keeps them there."
+   ]
 };
