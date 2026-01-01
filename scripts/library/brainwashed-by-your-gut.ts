@@ -4,7 +4,7 @@ export const book: BookDefinition = {
     id: 'brainwashed-by-your-gut',
     title: "Brainwashed by your Gut",
     author: 'Manjari Chandra',
-    category: 'Health',
+    category: 'Self-Help',
     coverImageUrl: "/images/brainwashed by your gut.jpg",
     rating: 3.8,
     ratingsCount: "50+",
@@ -15,6 +15,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/4poaPe2',
     kindleUrl: 'https://amzn.to/49crpHw',
     audibleUrl: 'https://amzn.to/4aGraqH',
+    arabicPdfUrl: '/pdfs/brainwashed by your gut.pdf',
     translations: {
         en: {
             title: "Brainwashed by your Gut",

@@ -14,6 +14,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/3YmwxDX',
     kindleUrl: 'https://amzn.to/4oRXuKC',
     audibleUrl: 'https://amzn.to/3XKP6Sd',
+    arabicPdfUrl: '/pdfs/technical analysis of the financial markets.pdf',
     translations: {
         en: {
             title: 'Technical Analysis of the Financial Markets',

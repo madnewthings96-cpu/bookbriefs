@@ -15,6 +15,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/4asjZlU',
     kindleUrl: 'https://amzn.to/49crpHw',
     audibleUrl: 'https://amzn.to/45qEdZI',
+    arabicPdfUrl: '/pdfs/the way of men.pdf',
     translations: {
         en: {
             title: "The Way of Men",

@@ -15,7 +15,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/4anNFAI',
     kindleUrl: 'https://amzn.to/3Yks6d7',
     audibleUrl: 'https://amzn.to/4qf2Twv',
-    // arabicPdfUrl: "", // No PDF URL provided
+    arabicPdfUrl: '/pdfs/signs.pdf',
     translations: {
         en: {
             title: "Signs",

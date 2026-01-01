@@ -15,6 +15,7 @@ export const book: BookDefinition = {
    amazonUrl: 'https://amzn.to/3MBR7xM',
    kindleUrl: 'https://amzn.to/4aULOmT',
    audibleUrl: 'https://amzn.to/4s9LjMc',
+   arabicPdfUrl: '/pdfs/$100m offers.pdf',
    translations: {
       en: {
          title: "$100M Offers",

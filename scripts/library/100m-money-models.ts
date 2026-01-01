@@ -15,6 +15,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/495rtZM',
     kindleUrl: 'https://amzn.to/4s4Wt4I',
     audibleUrl: 'https://amzn.to/49l1ChI',
+    arabicPdfUrl: '/pdfs/$100m money models.pdf',
     translations: {
         en: {
             title: "$100M Money Models",

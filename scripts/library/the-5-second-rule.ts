@@ -14,6 +14,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/3KPGIOn',
     kindleUrl: 'https://amzn.to/4pHLTz2',
     audibleUrl: 'https://amzn.to/4pDZCqE',
+    arabicPdfUrl: '/pdfs/the 5 second rule.pdf',
     translations: {
         en: {
             title: 'The 5 Second Rule',
