@@ -15,6 +15,7 @@ export const book: BookDefinition = {
     amazonUrl: 'https://amzn.to/3Lvsfr0',
     kindleUrl: 'https://amzn.to/3L536DF',
     audibleUrl: 'https://amzn.to/3LAUJ2I',
+    arabicPdfUrl: '/pdfs/the mountain is you.pdf',
     translations: {
         en: {
             title: "The Mountain is You",
