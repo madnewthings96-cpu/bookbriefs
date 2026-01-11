@@ -12,15 +12,28 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Helper function to check if user is admin (replace with your Firebase Auth UID)
+    // Helper function to check if user is admin
     function isAdmin() {
-      return isAuthenticated() && request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2';
+      return isAuthenticated() && (
+        request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2' || 
+        request.auth.token.email == 'belhalyt01@proton.me'
+      );
     }
     
     // Users collection - users can only read/write their own data
     match /users/{userId} {
       allow read: if isOwner(userId);
       allow write: if isOwner(userId);
+      
+      // User transactions - users can only access their own transactions
+      match /transactions/{transactionId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User goals - users can only access their own goals
+      match /goals/{goalId} {
+        allow read, write: if isOwner(userId);
+      }
     }
     
     // Feedback collection
@@ -28,11 +41,8 @@ service cloud.firestore {
       // Anyone can create feedback (authenticated or anonymous)
       allow create: if true;
       
-      // Only authenticated users can read feedback
-      allow read: if isAuthenticated();
-      
-      // Only authenticated users can update/delete feedback
-      allow update, delete: if isAuthenticated();
+      // Only admin can read/update/delete feedback
+      allow read, update, delete: if isAdmin();
     }
     
     // Book summaries - public read, no write (managed by admin)

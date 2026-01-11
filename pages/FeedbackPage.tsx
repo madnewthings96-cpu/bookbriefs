@@ -21,10 +21,20 @@ interface Feedback {
 const FeedbackPage: React.FC = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
   const [filter, setFilter] = useState<'all' | 'new' | 'reviewed' | 'resolved'>('all');
   const { user, isAuthenticated } = useAuth();
 
+  const ADMIN_EMAIL = 'belhalyt01@proton.me';
+
   useEffect(() => {
+    // Immediate client-side check for non-admins (optimization)
+    if (isAuthenticated && user && user.email !== ADMIN_EMAIL) {
+      setAccessDenied(true);
+      setLoading(false);
+      return;
+    }
+
     if (!isAuthenticated) {
       setLoading(false);
       return;
@@ -46,11 +56,14 @@ const FeedbackPage: React.FC = () => {
       setLoading(false);
     }, (error) => {
       console.error('Error fetching feedback:', error);
+      if (error.code === 'permission-denied') {
+        setAccessDenied(true);
+      }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   const updateFeedbackStatus = async (feedbackId: string, newStatus: 'new' | 'reviewed' | 'resolved') => {
     try {
@@ -96,9 +109,31 @@ const FeedbackPage: React.FC = () => {
     }
   };
 
-  const filteredFeedbacks = filter === 'all' 
-    ? feedbacks 
+  const filteredFeedbacks = filter === 'all'
+    ? feedbacks
     : feedbacks.filter(f => f.status === filter);
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="mb-6">
+            <svg className="w-20 h-20 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-6">You do not have permission to view user feedback.</p>
+          <Link
+            to="/"
+            className="inline-flex items-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors"
+          >
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
@@ -170,41 +205,37 @@ const FeedbackPage: React.FC = () => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filter === 'all'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'all'
                   ? 'bg-orange-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               All ({feedbacks.length})
             </button>
             <button
               onClick={() => setFilter('new')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filter === 'new'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'new'
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               New ({feedbacks.filter(f => f.status === 'new').length})
             </button>
             <button
               onClick={() => setFilter('reviewed')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filter === 'reviewed'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'reviewed'
                   ? 'bg-yellow-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               Reviewed ({feedbacks.filter(f => f.status === 'reviewed').length})
             </button>
             <button
               onClick={() => setFilter('resolved')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filter === 'resolved'
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 'resolved'
                   ? 'bg-green-500 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               Resolved ({feedbacks.filter(f => f.status === 'resolved').length})
             </button>
@@ -219,8 +250,8 @@ const FeedbackPage: React.FC = () => {
             </svg>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No Feedback Yet</h3>
             <p className="text-gray-600">
-              {filter === 'all' 
-                ? 'No feedback has been submitted yet.' 
+              {filter === 'all'
+                ? 'No feedback has been submitted yet.'
                 : `No ${filter} feedback found.`}
             </p>
           </div>

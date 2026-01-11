@@ -86,7 +86,7 @@ const Header: React.FC = () => {
       const scrolled = window.scrollY > 20;
       if (scrolled !== isScrolled) {
         setIsScrolled(scrolled);
-        
+
         // Toggle scrolled class on body for reader mode
         if (isReaderMode) {
           if (scrolled) {
@@ -108,18 +108,16 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isReaderMode 
-          ? 'bg-white/90 shadow-sm backdrop-blur-sm' 
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${isReaderMode
+          ? 'bg-white/90 shadow-sm backdrop-blur-sm'
           : isScrolled
             ? 'backdrop-blur-xl border-b border-white/10'
             : 'border-b border-white/10'
-      } ${
-        isReaderMode && isScrolled ? 'py-2' : 'py-0'
-      }`}
-      style={!isReaderMode ? { 
-        background: isScrolled 
+        } ${isReaderMode && isScrolled ? 'py-2' : 'py-0'
+        }`}
+      style={!isReaderMode ? {
+        background: isScrolled
           ? 'rgba(0, 0, 0, 0.8)'
           : 'rgba(0, 0, 0, 0.95)',
         boxShadow: isScrolled
@@ -132,9 +130,9 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <NavLink to="/" className="flex items-center">
-                <img 
-                  src="/images/logo-white.png" 
-                  alt="BookBriefs Logo" 
+                <img
+                  src="/images/logo-white.png"
+                  alt="BookBriefs Logo"
                   className="h-8 w-auto mr-2"
                   onError={(e) => {
                     // Fallback to text if image fails to load
@@ -145,32 +143,30 @@ const Header: React.FC = () => {
                   }}
                   onLoad={() => console.log('Logo loaded successfully')}
                 />
-                <span className={`text-2xl font-bold ${
-                  isReaderMode ? 'text-gray-900 dark:text-white' : 'text-white'
-                } logo-text`}>
+                <span className={`text-2xl font-bold ${isReaderMode ? 'text-gray-900 dark:text-white' : 'text-white'
+                  } logo-text`}>
                 </span>
               </NavLink>
             </div>
-            
+
             {/* Buy me a coffee button */}
             <div className="hidden sm:flex ml-4">
               <a
                 href="https://ko-fi.com/ta7leel"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                  isReaderMode 
-                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg' 
+                className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${isReaderMode
+                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
                     : 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
-                }`}
+                  }`}
                 aria-label="Buy me a coffee"
               >
-                <svg 
-                  className="w-4 h-4 mr-2" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className="w-4 h-4 mr-2"
+                  viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z" />
                 </svg>
                 <span className="hidden md:inline">Buy me a coffee</span>
                 <span className="md:hidden">☕</span>
@@ -198,6 +194,10 @@ const Header: React.FC = () => {
                   News
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                 </NavLink>
+                <NavLink to="/finance-tracker" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                  💰 Tracker
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </NavLink>
                 {/* <NavLink to="/merch" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
                   Merch
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
@@ -216,11 +216,10 @@ const Header: React.FC = () => {
                     setTimeout(() => searchInputRef.current?.focus(), 100);
                   }
                 }}
-                className={`flex items-center justify-center w-9 h-9 rounded-md transition-all duration-200 ${
-                  isReaderMode 
-                    ? 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800' 
+                className={`flex items-center justify-center w-9 h-9 rounded-md transition-all duration-200 ${isReaderMode
+                    ? 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800'
                     : 'hover:bg-white/10 text-gray-400 hover:text-white'
-                } ${isSearchExpanded ? 'bg-white/10 text-white' : ''}`}
+                  } ${isSearchExpanded ? 'bg-white/10 text-white' : ''}`}
                 aria-label="Toggle search"
               >
                 {isSearchExpanded ? (
@@ -235,13 +234,12 @@ const Header: React.FC = () => {
               </button>
 
               {/* Expandable Search Form - Now expands downward */}
-              <form 
-                onSubmit={handleSearch} 
-                className={`absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out z-50 ${
-                  isSearchExpanded 
-                    ? 'opacity-100 pointer-events-auto translate-y-0' 
+              <form
+                onSubmit={handleSearch}
+                className={`absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out z-50 ${isSearchExpanded
+                    ? 'opacity-100 pointer-events-auto translate-y-0'
                     : 'opacity-0 pointer-events-none -translate-y-2'
-                }`}
+                  }`}
               >
                 <div className="relative w-80">
                   {/* Search input with enhanced styling for dropdown */}
@@ -259,14 +257,13 @@ const Header: React.FC = () => {
                       }, 200);
                     }}
                     placeholder={t('Search') || 'Search books...'}
-                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg border transition-all duration-200 ${
-                      isReaderMode 
-                        ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500' 
+                    className={`w-full pl-10 pr-12 py-2.5 rounded-lg border transition-all duration-200 ${isReaderMode
+                        ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500'
                         : 'border-white/10 focus:border-white/20 bg-white/5 text-white placeholder-gray-400'
-                    } focus:outline-none focus:ring-1 focus:ring-white/20 shadow-lg backdrop-blur-sm
+                      } focus:outline-none focus:ring-1 focus:ring-white/20 shadow-lg backdrop-blur-sm
                     text-sm`}
                   />
-                  
+
                   {/* Search icon inside input */}
                   <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                     <svg className={`w-4 h-4 ${isReaderMode ? 'text-gray-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,24 +318,24 @@ const Header: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center">
-             <div className="hidden md:flex items-center space-x-3">
-                <div className="flex items-center">
-                  <LanguageSelector />
-                </div>
-                {!isAuthenticated && (
-                  <>
-                    <NavLink to="/login" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm font-medium">
-                        {t('login')}
-                    </NavLink>
-                    <NavLink
-                        to="/signup"
-                        className="text-white font-medium py-2 px-5 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm shadow-sm hover:shadow-md"
-                    >
-                        {t('signup')}
-                    </NavLink>
-                  </>
-                )}
-                <UserMenu />
+            <div className="hidden md:flex items-center space-x-3">
+              <div className="flex items-center">
+                <LanguageSelector />
+              </div>
+              {!isAuthenticated && (
+                <>
+                  <NavLink to="/login" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm font-medium">
+                    {t('login')}
+                  </NavLink>
+                  <NavLink
+                    to="/signup"
+                    className="text-white font-medium py-2 px-5 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm shadow-sm hover:shadow-md"
+                  >
+                    {t('signup')}
+                  </NavLink>
+                </>
+              )}
+              <UserMenu />
             </div>
             <div className="flex md:hidden">
               <button
@@ -411,6 +408,7 @@ const Header: React.FC = () => {
             <NavLink to="/chat" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>AI Chat</NavLink>
             <NavLink to="/calculators" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Calculators</NavLink>
             <NavLink to="/news" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>News</NavLink>
+            <NavLink to="/finance-tracker" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>💰 Tracker</NavLink>
             {/* Buy me a coffee button for mobile */}
             <div className="mt-4 px-2">
               <a
@@ -420,40 +418,40 @@ const Header: React.FC = () => {
                 className="flex items-center justify-center w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-md hover:shadow-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <svg 
-                  className="w-4 h-4 mr-2" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className="w-4 h-4 mr-2"
+                  viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z" />
                 </svg>
                 Buy me a coffee ☕
               </a>
             </div>
-            
+
             <div className="border-t border-white/10 mt-3 pt-3 space-y-1">
-                {isAuthenticated ? (
-                  <>
-                    <span className="text-gray-300 block px-3 py-2 text-sm">Welcome!</span>
-                    <NavLink to="/profile" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
-                    <NavLink to="/reading-challenge" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Reading Challenge</NavLink>
-                    <NavLink to="/downloads" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Downloads</NavLink>
-                    <button
-                      onClick={() => {
-                        logout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium w-full text-left transition-colors duration-200"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <NavLink to="/login" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Log In</NavLink>
-                    <NavLink to="/signup" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Sign Up</NavLink>
-                  </>
-                )}
+              {isAuthenticated ? (
+                <>
+                  <span className="text-gray-300 block px-3 py-2 text-sm">Welcome!</span>
+                  <NavLink to="/profile" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
+                  <NavLink to="/reading-challenge" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Reading Challenge</NavLink>
+                  <NavLink to="/downloads" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Downloads</NavLink>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium w-full text-left transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <NavLink to="/login" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Log In</NavLink>
+                  <NavLink to="/signup" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Sign Up</NavLink>
+                </>
+              )}
             </div>
           </div>
         </div>
