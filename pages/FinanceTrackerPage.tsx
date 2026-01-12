@@ -3,6 +3,7 @@ import { useFirebase } from '../App';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, Timestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import useSEO from '../hooks/useSEO';
+import ReceiptScanner from '../components/ReceiptScanner';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell
@@ -210,6 +211,37 @@ const FinanceTrackerPage: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
+    // Handle scanned receipt
+    const handleScanComplete = async (data: { date: string; amount: string; description: string; category: string }) => {
+        if (!currentUser) return;
+
+        try {
+            // Sanitize amount (replace comma with dot for international formats)
+            const cleanAmount = data.amount.replace(/,/g, '.');
+            const numericAmount = parseFloat(cleanAmount);
+
+            if (isNaN(numericAmount)) {
+                alert('Invalid amount format.');
+                return;
+            }
+
+            await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
+                date: data.date,
+                description: data.description || 'Scanned Receipt',
+                category: data.category || 'Other', // Default to 'Other' if not matching
+                amount: numericAmount,
+                type: 'expense',
+                createdAt: Timestamp.now(),
+            });
+
+            // Success feedback
+            // console.log('Transaction added successfully');
+        } catch (error: any) {
+            console.error('Error adding scanned transaction:', error);
+            alert(`Failed to save transaction: ${error.message}`);
+        }
+    };
+
     // Handle transaction form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -327,6 +359,7 @@ const FinanceTrackerPage: React.FC = () => {
                             </option>
                         ))}
                     </select>
+                    <ReceiptScanner onScanComplete={handleScanComplete} />
                     <button
                         onClick={() => setShowForm(true)}
                         className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
