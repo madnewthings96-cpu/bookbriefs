@@ -17,9 +17,10 @@ const NewsPage: React.FC = () => {
     script.src = 'https://www.tradays.com/c/js/widgets/calendar/widget.js?v=15';
     script.innerHTML = JSON.stringify({
       "width": 800,
-      "height": 1000,
+      "height": 600,
       "mode": "2",
-      "fw": "html"
+      "fw": "html",
+      "lang": "ar"
     });
 
     const container = document.getElementById('economicCalendarWidget');
@@ -67,7 +68,7 @@ const NewsPage: React.FC = () => {
 
             {/* Widget Container */}
             <div className="relative w-full overflow-hidden rounded-lg border border-gray-300 bg-white">
-              <div id="economicCalendarWidget" className="w-full h-[1000px]"></div>
+              <div id="economicCalendarWidget" className="w-full h-[600px]"></div>
               <div className="ecw-copyright text-center p-2 text-xs text-gray-500">
                 <a href="https://www.mql5.com/?utm_source=calendar.widget&utm_medium=link&utm_term=economic.calendar&utm_content=visit.mql5.calendar&utm_campaign=202.calendar.widget" rel="noopener nofollow" target="_blank" className="hover:underline text-blue-600">
                   MQL5 Algo Trading Community
