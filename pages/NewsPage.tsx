@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 
 const NewsPage: React.FC = () => {
@@ -8,6 +8,25 @@ const NewsPage: React.FC = () => {
     keywords: 'financial news, economic calendar, market news, trading news, forex news, stock market updates, economic events, market analysis',
     type: 'website',
   });
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.type = 'text/javascript';
+    script.setAttribute('data-type', 'calendar-widget');
+    script.src = 'https://www.tradays.com/c/js/widgets/calendar/widget.js?v=15';
+    script.innerHTML = JSON.stringify({
+      "width": 800,
+      "height": 1000,
+      "mode": "2",
+      "fw": "html"
+    });
+
+    const container = document.getElementById('economicCalendarWidget');
+    if (container) {
+      container.appendChild(script);
+    }
+  }, []);
 
   const brokers = [
     {
@@ -45,30 +64,14 @@ const NewsPage: React.FC = () => {
                 تتبع الأحداث الاقتصادية الرئيسية والإعلانات وإصدارات البيانات من الأسواق العالمية، قم بتغيير منطقتك الزمنية تحت.
               </p>
             </div>
-            
-            {/* Calendar iframe container */}
+
+            {/* Widget Container */}
             <div className="relative w-full overflow-hidden rounded-lg border border-gray-300 bg-white">
-              <div className="relative" style={{ paddingBottom: '560px', height: 0 }}>
-                <iframe 
-                  src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,12,4,5&calType=day&timeZone=15&lang=1" 
-                  className="absolute top-0 left-0 w-full h-full"
-                  style={{ border: 'none' }}
-                  allowTransparency={true}
-                  title="Economic Calendar"
-                />
-              </div>
-              <div className="p-3 bg-gray-50 border-t border-gray-200">
-                <p className="text-xs text-gray-600 text-center">
-                  Real Time Economic Calendar provided by{' '}
-                  <a 
-                    href="https://www.investing.com/" 
-                    rel="nofollow noopener noreferrer" 
-                    target="_blank"
-                    className="text-blue-600 hover:text-blue-800 font-semibold underline"
-                  >
-                    Investing.com
-                  </a>
-                </p>
+              <div id="economicCalendarWidget" className="w-full h-[1000px]"></div>
+              <div className="ecw-copyright text-center p-2 text-xs text-gray-500">
+                <a href="https://www.mql5.com/?utm_source=calendar.widget&utm_medium=link&utm_term=economic.calendar&utm_content=visit.mql5.calendar&utm_campaign=202.calendar.widget" rel="noopener nofollow" target="_blank" className="hover:underline text-blue-600">
+                  MQL5 Algo Trading Community
+                </a>
               </div>
             </div>
           </section>
@@ -86,7 +89,7 @@ const NewsPage: React.FC = () => {
                   Events marked with high importance can cause significant price movements
                 </p>
               </div>
-              
+
               <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
                 <div className="text-2xl mb-2">⏰</div>
                 <h4 className="font-semibold mb-2">Stay Prepared</h4>
@@ -94,7 +97,7 @@ const NewsPage: React.FC = () => {
                   Check the calendar daily to prepare your trading strategy ahead of time
                 </p>
               </div>
-              
+
               <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
                 <div className="text-2xl mb-2">🌍</div>
                 <h4 className="font-semibold mb-2">Global Events</h4>
@@ -114,14 +117,14 @@ const NewsPage: React.FC = () => {
             </h3>
             <div className="space-y-4">
               {brokers.map((broker, index) => (
-                <div 
+                <div
                   key={index}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     {broker.isImage ? (
-                      <img 
-                        src={broker.logo} 
+                      <img
+                        src={broker.logo}
                         alt={broker.name}
                         className="w-12 h-12 object-contain"
                       />
@@ -144,7 +147,7 @@ const NewsPage: React.FC = () => {
                 </div>
               ))}
             </div>
-            
+
             {/* Navigation Buttons */}
             <div className="flex gap-2 mt-4">
               <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
