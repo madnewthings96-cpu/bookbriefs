@@ -1,160 +1,94 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper function to check if user is authenticated
+    // Admin check function
+    function isAdmin() {
+      return request.auth != null && 
+             (request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2' || 
+              request.auth.token.email == 'belhalyt01@proton.me');
+    }
+
+    // Helper to check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Helper function to check if user owns the resource
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+
+    // Admins have full access to everything
+    match /{document=**} {
+      allow read, write: if isAdmin();
     }
-    
-    // Helper function to check if user is admin
-    function isAdmin() {
-      return isAuthenticated() && (
-        request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2' || 
-        request.auth.token.email == 'belhalyt01@proton.me'
-      );
-    }
-    
-    // Users collection - users can only read/write their own data
+
+    // Users collection
     match /users/{userId} {
-      allow read: if isOwner(userId);
-      allow write: if isOwner(userId);
+      allow read, write: if request.auth != null && request.auth.uid == userId;
       
-      // User transactions - users can only access their own transactions
-      match /transactions/{transactionId} {
-        allow read, write: if isOwner(userId);
-      }
-      
-      // User goals - users can only access their own goals
-      match /goals/{goalId} {
-        allow read, write: if isOwner(userId);
+      // Allow access to subcollections for the user
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
       }
     }
-    
+
     // Feedback collection
     match /feedback/{feedbackId} {
-      // Anyone can create feedback (authenticated or anonymous)
+      // Anyone can create feedback (even unauthenticated)
       allow create: if true;
-      
-      // Only admin can read/update/delete feedback
-      allow read, update, delete: if isAdmin();
+      // Only authenticated users can read
+      allow read: if isAuthenticated();
+      // Only authenticated users can update/delete
+      allow update, delete: if isAuthenticated();
     }
-    
-    // Book summaries - public read, no write (managed by admin)
-    match /summaries/{summaryId} {
+
+    // Reading Challenges
+    match /reading_challenges/{challengeId} {
       allow read: if true;
-      allow write: if false; // Controlled via Firebase Console or Admin SDK
+      allow create: if isAuthenticated() && 
+                   request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+                           resource.data.userId == request.auth.uid;
     }
-    
-    // Books collection - public read, admin write
+
+    // Community Messages (Chat)
+    match /communityMessages/{messageId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && 
+                   request.resource.data.userId == request.auth.uid;
+      
+      // Allow updating only specific fields (likes, replies) for community interaction
+      // OR allow full update if owner
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes', 'replies'])
+      );
+      
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Books collection (readable by everyone, writable only by admin)
     match /books/{bookId} {
       allow read: if true;
-      allow write: if isAdmin(); // Only admin can add/update/delete books
+      allow write: if isAdmin();
+    }
+
+    // Progress collection
+    match /progress/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // User favorites - users can only access their own favorites
+    // Favorites collection
     match /favorites/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // User notes - users can only access their own notes
+    // Notes collection
     match /notes/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // User highlights - users can only access their own highlights
+    // Highlights collection
     match /highlights/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-    
-    // Reading challenges - SECURED with field validation
-    match /reading_challenges/{challengeId} {
-      // Validate document structure and data types
-      function isValidChallenge() {
-        let data = request.resource.data;
-        return data.keys().hasAll(['year', 'goal', 'booksRead', 'createdAt', 'updatedAt']) &&
-               data.keys().hasOnly(['year', 'goal', 'booksRead', 'createdAt', 'updatedAt']) &&
-               data.year is int &&
-               data.year >= 2020 &&
-               data.year <= 2100 &&
-               data.goal is int &&
-               data.goal > 0 &&
-               data.goal <= 1000 &&
-               data.booksRead is list &&
-               data.booksRead.size() <= 1000 &&
-               data.createdAt is timestamp &&
-               data.updatedAt is timestamp;
-      }
-      
-      // Only allow access if authenticated and challengeId matches userId_year pattern
-      allow read: if isAuthenticated() && 
-                     challengeId.matches('^' + request.auth.uid + '_[0-9]+$');
-      
-      // On create: validate all fields and timestamps
-      allow create: if isAuthenticated() && 
-                      challengeId.matches('^' + request.auth.uid + '_[0-9]+$') &&
-                      isValidChallenge() &&
-                      request.resource.data.createdAt == request.time &&
-                      request.resource.data.updatedAt == request.time;
-      
-      // On update: validate fields and ensure only allowed fields are modified
-      allow update: if isAuthenticated() && 
-                      challengeId.matches('^' + request.auth.uid + '_[0-9]+$') &&
-                      isValidChallenge() &&
-                      request.resource.data.createdAt == resource.data.createdAt &&
-                      request.resource.data.updatedAt == request.time &&
-                      request.resource.data.year == resource.data.year;
-      
-      // On delete: only owner can delete
-      allow delete: if isAuthenticated() && 
-                      challengeId.matches('^' + request.auth.uid + '_[0-9]+$');
-    }
-    
-    // User progress - users can only access their own progress
-    match /user_progress/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-    
-    // Community messages - authenticated users can read and create, only owners can update/delete
-    match /communityMessages/{messageId} {
-      // Anyone can read messages (promotes engagement)
-      allow read: if true;
-      
-      // Validate message structure
-      function isValidMessage() {
-        let data = request.resource.data;
-        return data.keys().hasAll(['userId', 'userName', 'userEmail', 'content', 'channel', 'timestamp', 'likes', 'replies']) &&
-               data.content is string &&
-               data.content.size() > 0 &&
-               data.content.size() <= 2000 &&
-               data.channel is string &&
-               data.channel in ['general', 'books', 'trading', 'insights'] &&
-               data.likes is list &&
-               data.replies is int &&
-               data.replies >= 0;
-      }
-      
-      // Authenticated users can create messages
-      allow create: if isAuthenticated() && 
-                      isValidMessage() &&
-                      request.resource.data.userId == request.auth.uid;
-      
-      // Authenticated users can update messages (for likes feature)
-      allow update: if isAuthenticated();
-      
-      // Only message owner can delete their own messages
-      allow delete: if isAuthenticated() && 
-                      resource.data.userId == request.auth.uid;
-    }
-    
-    // Default deny all other collections
-    match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
