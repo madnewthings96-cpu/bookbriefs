@@ -22,7 +22,7 @@ export const book: BookDefinition = {
             author: 'David Goggins'
         }
     },
-    summary: \`# Never Finished: Unbreak Your Mind and Win the War Within - A Comprehensive Analysis
+    summary: `# Never Finished: Unbreak Your Mind and Win the War Within - A Comprehensive Analysis
 
 ## Introduction
 David Goggins emerged from his 2018 memoir "Can't Hurt Me" as one of the most polarizing and influential voices in the self-improvement space. A retired Navy SEAL, ultra-endurance athlete, and former Guinness World Record holder, Goggins built a reputation for his uncompromising approach to mental toughness and physical transformation. "Never Finished: Unbreak Your Mind and Win the War Within," released in 2023, isn't simply a sequel—it's a philosophical evolution that takes readers deeper into the mindset that has defined Goggins' extraordinary life.
@@ -142,7 +142,7 @@ The practical application involves recognizing different types of depletion (phy
 
 ### Critical Insights
 - **What Makes This Book Unique**: "Never Finished" stands apart from typical self-help literature through its unflinching honesty about the ongoing nature of personal development. While most books promise transformation through a specific program or set of steps, Goggins offers no such comfort. Instead, he presents a philosophy that demands perpetual effort with no finish line.
-- **How It Builds on "Can't Hurt Me"**: The evolution is evident in his treatment of suffering. "Can't Hurt Me" presented suffering as a tool for transformation—something to be sought out and conquered. "Never Finished" presents a more mature view: suffering as an inevitable companion on the journey of growth, neither to be glorified nor avoided, but to be engaged with strategically and wisely.\`,
+- **How It Builds on "Can't Hurt Me"**: The evolution is evident in his treatment of suffering. "Can't Hurt Me" presented suffering as a tool for transformation—something to be sought out and conquered. "Never Finished" presents a more mature view: suffering as an inevitable companion on the journey of growth, neither to be glorified nor avoided, but to be engaged with strategically and wisely.`,
     keyTakeaways: [
         "**The False Summit**: Achieving a goal is often just a ledge, not the peak. Complacency after success is dangerous. Always look for the next challenge.",
         "**The Mental Lab**: Treat your mind as a laboratory. Stress test your resolve by voluntarily entering uncomfortable situations to learn how you react.",
