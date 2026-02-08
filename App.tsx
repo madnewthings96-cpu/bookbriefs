@@ -30,6 +30,7 @@ import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MerchPage from './pages/MerchPage';
 import FinanceTrackerPage from './pages/FinanceTrackerPage';
+import TradingJournalPage from './pages/TradingJournalPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -380,6 +381,11 @@ const AppContent: React.FC = () => {
             <Route path="/finance-tracker" element={
               <ProtectedRoute>
                 <FinanceTrackerPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/trading-journal" element={
+              <ProtectedRoute>
+                <TradingJournalPage />
               </ProtectedRoute>
             } />
             <Route path="/login" element={<LoginPage />} />

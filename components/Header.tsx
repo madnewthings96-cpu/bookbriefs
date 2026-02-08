@@ -110,10 +110,10 @@ const Header: React.FC = () => {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isReaderMode
-          ? 'bg-white/90 shadow-sm backdrop-blur-sm'
-          : isScrolled
-            ? 'backdrop-blur-xl border-b border-white/10'
-            : 'border-b border-white/10'
+        ? 'bg-white/90 shadow-sm backdrop-blur-sm'
+        : isScrolled
+          ? 'backdrop-blur-xl border-b border-white/10'
+          : 'border-b border-white/10'
         } ${isReaderMode && isScrolled ? 'py-2' : 'py-0'
         }`}
       style={!isReaderMode ? {
@@ -156,8 +156,8 @@ const Header: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${isReaderMode
-                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
-                    : 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
+                  ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
+                  : 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-md hover:shadow-lg'
                   }`}
                 aria-label="Buy me a coffee"
               >
@@ -198,6 +198,10 @@ const Header: React.FC = () => {
                   💰 Tracker
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
                 </NavLink>
+                <NavLink to="/trading-journal" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
+                  Journal
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </NavLink>
                 {/* <NavLink to="/merch" className={linkStyle} style={({ isActive }) => isActive ? activeLinkStyle : undefined}>
                   Merch
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
@@ -217,8 +221,8 @@ const Header: React.FC = () => {
                   }
                 }}
                 className={`flex items-center justify-center w-9 h-9 rounded-md transition-all duration-200 ${isReaderMode
-                    ? 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800'
-                    : 'hover:bg-white/10 text-gray-400 hover:text-white'
+                  ? 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800'
+                  : 'hover:bg-white/10 text-gray-400 hover:text-white'
                   } ${isSearchExpanded ? 'bg-white/10 text-white' : ''}`}
                 aria-label="Toggle search"
               >
@@ -237,8 +241,8 @@ const Header: React.FC = () => {
               <form
                 onSubmit={handleSearch}
                 className={`absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-300 ease-in-out z-50 ${isSearchExpanded
-                    ? 'opacity-100 pointer-events-auto translate-y-0'
-                    : 'opacity-0 pointer-events-none -translate-y-2'
+                  ? 'opacity-100 pointer-events-auto translate-y-0'
+                  : 'opacity-0 pointer-events-none -translate-y-2'
                   }`}
               >
                 <div className="relative w-80">
@@ -258,8 +262,8 @@ const Header: React.FC = () => {
                     }}
                     placeholder={t('Search') || 'Search books...'}
                     className={`w-full pl-10 pr-12 py-2.5 rounded-lg border transition-all duration-200 ${isReaderMode
-                        ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500'
-                        : 'border-white/10 focus:border-white/20 bg-white/5 text-white placeholder-gray-400'
+                      ? 'border-gray-200 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-500'
+                      : 'border-white/10 focus:border-white/20 bg-white/5 text-white placeholder-gray-400'
                       } focus:outline-none focus:ring-1 focus:ring-white/20 shadow-lg backdrop-blur-sm
                     text-sm`}
                   />
@@ -409,6 +413,7 @@ const Header: React.FC = () => {
             <NavLink to="/calculators" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Calculators</NavLink>
             <NavLink to="/news" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>News</NavLink>
             <NavLink to="/finance-tracker" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>💰 Tracker</NavLink>
+            <NavLink to="/trading-journal" className="text-gray-300 hover:bg-white/5 hover:text-white block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" style={({ isActive }) => isActive ? activeLinkStyle : undefined} onClick={() => setIsMenuOpen(false)}>Journal</NavLink>
             {/* Buy me a coffee button for mobile */}
             <div className="mt-4 px-2">
               <a

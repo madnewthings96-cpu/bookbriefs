@@ -610,15 +610,144 @@ const HomePage: React.FC = () => {
           </Suspense>
         </section>
 
-        {/* Join Button Section */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto text-center">
-            <Link to="/signup">
-              <RainbowButton className="text-lg px-12 text-white">
-                Join
-              </RainbowButton>
-            </Link>
+        {/* Join Section with Book Images Background */}
+        <section className="relative py-24 md:py-32 overflow-hidden bg-gradient-to-b from-white via-gray-50 to-gray-100">
+          {/* Floating Book Images Background */}
+          <div className="absolute inset-0 opacity-30">
+            {/* Left side books */}
+            <img
+              src="/images/atomic-habits.jpg"
+              alt=""
+              className="absolute left-[2%] top-[15%] w-20 md:w-28 lg:w-32 rounded-lg shadow-2xl transform -rotate-12 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/the psychology of money.jpg"
+              alt=""
+              className="absolute left-[8%] top-[45%] w-24 md:w-32 lg:w-36 rounded-lg shadow-2xl transform rotate-6 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/rich dad poor dad.jpg"
+              alt=""
+              className="absolute left-[5%] bottom-[10%] w-20 md:w-28 lg:w-32 rounded-lg shadow-2xl transform -rotate-6 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/think and grow rich.jpg"
+              alt=""
+              className="absolute left-[18%] top-[25%] w-18 md:w-24 lg:w-28 rounded-lg shadow-2xl transform rotate-12 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/the alchemist.jpg"
+              alt=""
+              className="absolute left-[15%] bottom-[25%] w-22 md:w-28 lg:w-32 rounded-lg shadow-2xl transform -rotate-3 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+
+            {/* Right side books */}
+            <img
+              src="/images/can't hurt me.jpg"
+              alt=""
+              className="absolute right-[2%] top-[20%] w-20 md:w-28 lg:w-32 rounded-lg shadow-2xl transform rotate-12 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/sapiens.jpg"
+              alt=""
+              className="absolute right-[10%] top-[50%] w-24 md:w-32 lg:w-36 rounded-lg shadow-2xl transform -rotate-6 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/the subtle art.jpg"
+              alt=""
+              className="absolute right-[5%] bottom-[15%] w-20 md:w-28 lg:w-32 rounded-lg shadow-2xl transform rotate-6 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/trading-in-the-zone.jpg"
+              alt=""
+              className="absolute right-[18%] top-[30%] w-18 md:w-24 lg:w-28 rounded-lg shadow-2xl transform -rotate-12 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+            <img
+              src="/images/influence.jpg"
+              alt=""
+              className="absolute right-[15%] bottom-[30%] w-22 md:w-28 lg:w-32 rounded-lg shadow-2xl transform rotate-3 hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+            />
+
+            {/* Center scattered books (behind content, more subtle) */}
+            <img
+              src="/images/the intelligent investor.jpg"
+              alt=""
+              className="absolute left-[30%] top-[10%] w-16 md:w-20 lg:w-24 rounded-lg shadow-xl transform rotate-6 opacity-60"
+              loading="lazy"
+            />
+            <img
+              src="/images/best loser wins.jpg"
+              alt=""
+              className="absolute right-[28%] top-[8%] w-16 md:w-20 lg:w-24 rounded-lg shadow-xl transform -rotate-8 opacity-60"
+              loading="lazy"
+            />
+            <img
+              src="/images/relentless.jpg"
+              alt=""
+              className="absolute left-[35%] bottom-[8%] w-16 md:w-20 lg:w-24 rounded-lg shadow-xl transform -rotate-6 opacity-60"
+              loading="lazy"
+            />
+            <img
+              src="/images/one good trade.jpg"
+              alt=""
+              className="absolute right-[32%] bottom-[10%] w-16 md:w-20 lg:w-24 rounded-lg shadow-xl transform rotate-8 opacity-60"
+              loading="lazy"
+            />
           </div>
+
+          {/* Gradient Overlays for depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-100 via-transparent to-white/50 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-50/80 via-transparent to-gray-50/80 pointer-events-none"></div>
+
+          {/* Content */}
+          <div className="relative z-10 container mx-auto px-4 text-center">
+            {/* Logo Icon */}
+            <div className="flex justify-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <img
+                  src="/favicon/logo-white.png"
+                  alt="BookBriefs"
+                  className="w-10 h-10 object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Join The Readers
+            </h2>
+
+            {/* Subheading */}
+            <p className="text-gray-600 text-lg md:text-xl mb-10 max-w-md mx-auto">
+              Your entire reading journey, in one place.
+            </p>
+
+            {/* CTA Button */}
+            <Link
+              to="/signup"
+              className="inline-flex items-center justify-center px-10 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold text-lg rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 hover:from-orange-600 hover:to-orange-700"
+            >
+              Join
+            </Link>
+
+            {/* Early Access Text */}
+            <p className="mt-6 text-gray-500 text-sm">
+              You will be a part of the next early access cohort.
+            </p>
+          </div>
+
+          {/* Bottom Gradient Fade */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-100 to-transparent pointer-events-none"></div>
         </section>
       </div>
     </>

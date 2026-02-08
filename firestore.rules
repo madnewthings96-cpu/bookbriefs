@@ -23,21 +23,45 @@ service cloud.firestore {
     // Users collection
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // --- Security Rules for Subcollections ---
       
-      // Allow access to subcollections for the user
+      // Goals Collection
+      match /goals/{goalId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId &&
+                      // Basic validation
+                      request.resource.data.target is number &&
+                      request.resource.data.current is number &&
+                      request.resource.data.title is string &&
+                      request.resource.data.type in ['balance', 'winRate', 'behavior', 'streak'];
+      }
+
+      // Trades Collection
+      match /trades/{tradeId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null && request.auth.uid == userId &&
+                      // Basic validation
+                      request.resource.data.symbol is string &&
+                      request.resource.data.direction in ['LONG', 'SHORT'] &&
+                      request.resource.data.entryPrice is number &&
+                      request.resource.data.exitPrice is number &&
+                      request.resource.data.lotSize is number &&
+                      request.resource.data.pnl is number;
+      }
+      
+      // Allow general access to other subcollections (fallback)
       match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
     }
 
-    // Feedback collection
+    // Feedback collection - Secured
     match /feedback/{feedbackId} {
-      // Anyone can create feedback (even unauthenticated)
-      allow create: if true;
-      // Only authenticated users can read
-      allow read: if isAuthenticated();
-      // Only authenticated users can update/delete
-      allow update, delete: if isAuthenticated();
+      // Only authenticated users can create feedback
+      allow create: if isAuthenticated();
+      // Only authenticated users can read/update/delete
+      allow read, update, delete: if isAuthenticated();
     }
 
     // Reading Challenges
