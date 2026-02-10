@@ -38,6 +38,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
+import ExitIntentPopup from './components/ExitIntentPopup';
 
 // Firebase User Data Context
 interface UserData {
@@ -414,6 +415,7 @@ const AppContent: React.FC = () => {
         </a>
 
         <MobileBottomNav />
+        <ExitIntentPopup />
         <Footer />
       </div>
     </BrowserRouter>
