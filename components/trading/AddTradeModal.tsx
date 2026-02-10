@@ -39,6 +39,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     : new Date().toISOString().split('T')[0],
                 entryPrice: editingTrade.entryPrice.toString(),
                 exitPrice: editingTrade.exitPrice.toString(),
+                stopLoss: editingTrade.stopLoss?.toString() || '',
                 lotSize: editingTrade.lotSize.toString(),
                 setup: editingTrade.setup,
                 emotions: editingTrade.emotions,
@@ -151,8 +152,8 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         />
                     </div>
 
-                    {/* Entry & Exit Price Row */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Entry/Exit/Stop Loss Row */}
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">Entry Price</label>
                             <input
@@ -173,6 +174,18 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.exitPrice}
                                 onChange={(e) => setFormData({ ...formData, exitPrice: e.target.value })}
                                 placeholder="Exit Price"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Stop Loss</label>
+                            <input
+                                type="number"
+                                step="any"
+                                value={formData.stopLoss}
+                                onChange={(e) => setFormData({ ...formData, stopLoss: e.target.value })}
+                                placeholder="Stop Loss"
                                 className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                                 required
                             />

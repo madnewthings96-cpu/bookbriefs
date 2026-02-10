@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ReaderModeProvider } from './contexts/ReaderModeContext';
@@ -311,25 +312,27 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 // Main App Component
 const App: React.FC = () => {
   return (
-    <FirebaseProvider>
-      <BooksProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <FavoritesProvider>
-              <ReadingChallengeProvider>
-                <UserProgressProvider>
-                  <ReaderModeProvider>
-                    <PersonalNotesProvider>
-                      <AppContent />
-                    </PersonalNotesProvider>
-                  </ReaderModeProvider>
-                </UserProgressProvider>
-              </ReadingChallengeProvider>
-            </FavoritesProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </BooksProvider>
-    </FirebaseProvider>
+    <HelmetProvider>
+      <FirebaseProvider>
+        <BooksProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              <FavoritesProvider>
+                <ReadingChallengeProvider>
+                  <UserProgressProvider>
+                    <ReaderModeProvider>
+                      <PersonalNotesProvider>
+                        <AppContent />
+                      </PersonalNotesProvider>
+                    </ReaderModeProvider>
+                  </UserProgressProvider>
+                </ReadingChallengeProvider>
+              </FavoritesProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </BooksProvider>
+      </FirebaseProvider>
+    </HelmetProvider>
   );
 };
 

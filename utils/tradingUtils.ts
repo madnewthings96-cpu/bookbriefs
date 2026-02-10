@@ -9,8 +9,10 @@ export interface Trade {
     entryDate: Timestamp;
     entryPrice: number;
     exitPrice: number;
+    stopLoss: number;
     lotSize: number;
     pnl: number;
+    rr?: number; // R-Multiple
     status: 'WIN' | 'LOSS' | 'BE';
     setup: string;
     emotions: string;
@@ -25,6 +27,7 @@ export interface TradeFormData {
     entryDate: string;
     entryPrice: string;
     exitPrice: string;
+    stopLoss: string;
     lotSize: string;
     setup: string;
     emotions: string;
@@ -44,8 +47,17 @@ export interface TradingStats {
 
 export interface EquityPoint {
     date: string;
+    timestamp: number; // For accurate X-axis positioning
     cumulativePnL: number;
     tradeNumber: number;
+    trade?: Trade; // Reference to the trade for markers
+}
+
+export interface DrawdownPoint {
+    date: string;
+    timestamp: number; // For accurate X-axis positioning
+    drawdown: number; // Percentage from peak
+    drawdownValue: number; // Absolute value
 }
 
 // Goal types for tracking
@@ -71,6 +83,9 @@ export interface StreakInfo {
     message: string;
 }
 
+// Time range options
+export type TimeRange = '1D' | '1W' | '1M' | '3M' | '6M' | '1Y' | 'ALL';
+
 // Emotion/Psychology options for the dropdown
 export const EMOTION_OPTIONS = [
     'Disciplined',
@@ -87,38 +102,42 @@ export const EMOTION_OPTIONS = [
 ];
 
 // Common trading setups
+// Common trading setups
 export const SETUP_OPTIONS = [
-    'Support Bounce',
-    'Resistance Rejection',
+    'Support',
+    'Resistance',
     'Breakout',
-    'Trend Continuation',
     'News Trade',
     'Scalp',
 ];
 
 /**
  * Calculate P&L for a single trade
- * For forex/gold: (exit - entry) * lotSize * 100
  */
 export const calculatePnL = (
+    direction: 'LONG' | 'SHORT',
     entryPrice: number,
     exitPrice: number,
-    lotSize: number,
-    direction: 'LONG' | 'SHORT'
+    lotSize: number
 ): number => {
-    const pipMultiplier = 100; // For XAUUSD and similar
-    const rawPnL = (exitPrice - entryPrice) * lotSize * pipMultiplier;
-    return direction === 'SHORT' ? -rawPnL : rawPnL;
+    const priceChange = direction === 'LONG'
+        ? exitPrice - entryPrice
+        : entryPrice - exitPrice;
+
+    return priceChange * lotSize;
 };
 
 /**
  * Determine trade status based on P&L
  */
-export const determineStatus = (pnl: number): 'WIN' | 'LOSS' | 'BE' => {
+export const getTradeStatus = (pnl: number): 'WIN' | 'LOSS' | 'BE' => {
     if (pnl > 0) return 'WIN';
     if (pnl < 0) return 'LOSS';
     return 'BE';
 };
+
+// Alias for backwards compatibility
+export const determineStatus = getTradeStatus;
 
 /**
  * Calculate cumulative P&L array for the equity curve chart
@@ -128,6 +147,7 @@ export const calculateCumulativePnL = (trades: Trade[], startingBalance: number 
         // Return a single point for the starting balance if no trades
         return [{
             date: 'Start',
+            timestamp: Date.now(),
             cumulativePnL: startingBalance,
             tradeNumber: 0,
         }];
@@ -141,22 +161,36 @@ export const calculateCumulativePnL = (trades: Trade[], startingBalance: number 
     });
 
     let cumulative = startingBalance;
+
+    // Start point: 1 day before first trade or just use first trade time - slight offset
+    const firstTradeDate = sortedTrades[0].entryDate?.toDate?.() || new Date();
+    const startDate = new Date(firstTradeDate);
+    startDate.setDate(startDate.getDate() - 1);
+
     const points: EquityPoint[] = [{
         date: 'Start',
+        timestamp: startDate.getTime(),
         cumulativePnL: startingBalance,
         tradeNumber: 0,
     }];
 
     sortedTrades.forEach((trade, index) => {
         cumulative += trade.pnl;
-        const date = trade.entryDate?.toDate?.()
-            ? trade.entryDate.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-            : `Trade ${index + 1}`;
+        const entryDate = trade.entryDate?.toDate?.() || new Date();
+        const date = entryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        // Ensure strictly increasing timestamps if multiple trades on exact same millisecond (rare but possible)
+        let timestamp = entryDate.getTime();
+        if (points.length > 0 && timestamp <= points[points.length - 1].timestamp) {
+            timestamp = points[points.length - 1].timestamp + 1;
+        }
 
         points.push({
             date,
+            timestamp,
             cumulativePnL: Math.round(cumulative * 100) / 100,
             tradeNumber: index + 1,
+            trade, // Store reference for markers
         });
     });
 
@@ -225,14 +259,15 @@ export const formatCurrency = (amount: number, showSign: boolean = true): string
  * Get initial form data for adding a new trade
  */
 export const getInitialTradeFormData = (): TradeFormData => ({
-    symbol: 'XAUUSD',
+    symbol: '',
     direction: 'LONG',
     entryDate: new Date().toISOString().split('T')[0],
     entryPrice: '',
     exitPrice: '',
-    lotSize: '0.10',
+    stopLoss: '',
+    lotSize: '',
     setup: '',
-    emotions: 'Disciplined',
+    emotions: EMOTION_OPTIONS[0],
     notes: '',
     screenshotUrl: '',
 });
@@ -250,9 +285,17 @@ export const calculateStreak = (trades: Trade[]): StreakInfo => {
         b.entryDate.toMillis() - a.entryDate.toMillis()
     );
 
-    const firstStatus = sortedTrades[0].status;
-    if (firstStatus === 'BE') {
-        return { type: 'neutral', count: 0, message: 'Break-even trade. Keep going!' };
+    // Start from the most recent non-BE trade
+    let firstStatus: 'WIN' | 'LOSS' | null = null;
+    for (const trade of sortedTrades) {
+        if (trade.status !== 'BE') {
+            firstStatus = trade.status;
+            break;
+        }
+    }
+
+    if (!firstStatus) {
+        return { type: 'neutral', count: 0, message: 'No streak yet' };
     }
 
     let streak = 0;
@@ -273,4 +316,149 @@ export const calculateStreak = (trades: Trade[]): StreakInfo => {
         if (streak >= 3) return { type: 'loss', count: streak, message: `⚠️ ${streak} consecutive losses. Review your rules.` };
         return { type: 'loss', count: streak, message: `📉 ${streak} losing trade${streak > 1 ? 's' : ''}. Stay disciplined.` };
     }
+};
+
+/**
+ * Calculate drawdown from equity curve
+ * Returns array of drawdown points showing how far below peak equity
+ */
+export const calculateDrawdown = (equityPoints: EquityPoint[]): DrawdownPoint[] => {
+    if (equityPoints.length === 0) return [];
+
+    const drawdownPoints: DrawdownPoint[] = [];
+    let peak = equityPoints[0].cumulativePnL;
+
+    equityPoints.forEach((point) => {
+        const currentEquity = point.cumulativePnL;
+
+        // Update peak if we have new high
+        if (currentEquity > peak) {
+            peak = currentEquity;
+        }
+
+        // Calculate drawdown
+        const drawdownValue = peak - currentEquity;
+        const drawdownPercent = peak > 0 ? (drawdownValue / peak) * 100 : 0;
+
+        drawdownPoints.push({
+            date: point.date,
+            timestamp: point.timestamp,
+            drawdown: Math.round(drawdownPercent * 100) / 100,
+            drawdownValue: Math.round(drawdownValue * 100) / 100,
+        });
+    });
+
+    return drawdownPoints;
+};
+
+/**
+ * Filter equity points by time range
+ */
+export const filterEquityByTimeRange = (
+    equityPoints: EquityPoint[],
+    range: TimeRange
+): EquityPoint[] => {
+    if (range === 'ALL' || equityPoints.length === 0) {
+        return equityPoints;
+    }
+
+    const now = new Date();
+    let cutoffDate: Date;
+
+    switch (range) {
+        case '1D':
+            cutoffDate = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
+            break;
+        case '1W':
+            cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+        case '1M':
+            cutoffDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+            break;
+        case '3M':
+            cutoffDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+            break;
+        case '6M':
+            cutoffDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+            break;
+        case '1Y':
+            cutoffDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+            break;
+        default:
+            return equityPoints;
+    }
+
+    const cutoffTime = cutoffDate.getTime();
+
+    // Filter points, but always include the starting point if it falls within range OR just re-normalize?
+    // Actually, usually charts just show data within that range.
+    // If we cut off the start, we might start from a non-zero PnL relative to that range start.
+    // But equity curve usually shows absolute equity. So it's fine.
+
+    // Strategy: Include all points after cutoff. 
+    // And include the point just BEFORE cutoff as the "start" for continuity?
+
+    const filtered = equityPoints.filter((point) => point.timestamp >= cutoffTime);
+
+    // If no points in range, return at least the last known point or something
+    if (filtered.length === 0) {
+        return [equityPoints[equityPoints.length - 1]];
+    }
+
+    return filtered;
+};
+
+/**
+ * Generate benchmark data for comparison
+ * Creates a line showing expected growth at a given monthly return rate
+ */
+export const generateBenchmarkData = (
+    startingBalance: number,
+    startDate: Date,
+    endDate: Date,
+    monthlyReturnPercent: number = 3
+): EquityPoint[] => {
+    const points: EquityPoint[] = [];
+
+    // Calculate daily return rate from monthly target
+    // value * (1 + monthly)^months = value * (1 + daily)^days
+    // (1 + monthly) = (1 + daily)^30
+    // daily = (1 + monthly)^(1/30) - 1
+
+    const monthlyMultiplier = 1 + (monthlyReturnPercent / 100);
+    const dailyMultiplier = Math.pow(monthlyMultiplier, 1 / 30);
+
+    const current = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Ensure we cover the full range
+    if (end < current) { // Handle case where end date is same as start
+        end.setDate(end.getDate() + 1);
+    }
+
+    let balance = startingBalance;
+    let dayCount = 0;
+
+    // Add start point
+    points.push({
+        date: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        timestamp: current.getTime(),
+        cumulativePnL: balance,
+        tradeNumber: dayCount,
+    });
+
+    while (current < end) {
+        current.setDate(current.getDate() + 1);
+        dayCount++;
+        balance = balance * dailyMultiplier;
+
+        points.push({
+            date: current.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            timestamp: current.getTime(),
+            cumulativePnL: Math.round(balance * 100) / 100,
+            tradeNumber: dayCount,
+        });
+    }
+
+    return points;
 };

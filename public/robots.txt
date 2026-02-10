@@ -43,7 +43,6 @@ Crawl-delay: 2
 # Sitemaps
 Sitemap: https://ta7leel.site/sitemap.xml
 Sitemap: https://ta7leel.site/sitemap-ar.xml
-Sitemap: https://ta7leel.site/sitemap-en.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

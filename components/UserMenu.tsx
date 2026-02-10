@@ -53,20 +53,7 @@ const UserMenu: React.FC = () => {
 
           {/* Menu Items */}
           <div className="py-2">
-            {/* Buy Me a Coffee */}
-            <a
-              href="https://ko-fi.com/ta7leel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center px-4 py-3 hover:bg-white/5 transition-all duration-200 group"
-            >
-              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-orange-500/10 group-hover:bg-orange-500/20 transition-colors duration-200 mr-3">
-                <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-200 group-hover:text-white">Buy Me a Coffee</span>
-            </a>
+
 
             {/* Your Library */}
             {isAuthenticated && (
@@ -215,9 +202,9 @@ const UserMenu: React.FC = () => {
       )}
 
       {/* Feedback Modal */}
-      <FeedbackModal 
-        isOpen={isFeedbackModalOpen} 
-        onClose={() => setIsFeedbackModalOpen(false)} 
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
       />
     </div>
   );

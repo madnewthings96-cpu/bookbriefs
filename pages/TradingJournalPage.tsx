@@ -14,6 +14,8 @@ import StartingBalanceModal from '../components/trading/StartingBalanceModal';
 import StreakBanner from '../components/trading/StreakBanner';
 import GoalsSection from '../components/trading/GoalsSection';
 import AddGoalModal, { GoalFormData } from '../components/trading/AddGoalModal';
+import ConfirmDialog from '../components/ui/ConfirmDialog';
+import ExportReportModal from '../components/trading/ExportReportModal';
 
 // Utilities
 import {
@@ -25,7 +27,7 @@ import {
     calculateStreak,
     formatCurrency,
 } from '../utils/tradingUtils';
-import { BookOpen, Plus, Wallet, Edit2, Banknote, Percent, TrendingUp, Scale, Table2, Calendar, Target } from 'lucide-react';
+import { BookOpen, Plus, Wallet, Edit2, Banknote, Percent, TrendingUp, Scale, Table2, Calendar, Target, FileDown } from 'lucide-react';
 
 const TradingJournalPage: React.FC = () => {
     const { currentUser } = useFirebase();
@@ -38,6 +40,8 @@ const TradingJournalPage: React.FC = () => {
     const [viewMode, setViewMode] = useState<'table' | 'calendar'>('table');
     const [goals, setGoals] = useState<Goal[]>([]);
     const [showGoalModal, setShowGoalModal] = useState(false);
+    const [goalToDelete, setGoalToDelete] = useState<string | null>(null);
+    const [showExportModal, setShowExportModal] = useState(false);
 
     useSEO({
         title: 'Trading Journal - Ta7leel | BookBriefs',
@@ -63,6 +67,23 @@ const TradingJournalPage: React.FC = () => {
                 id: doc.id,
                 ...doc.data(),
             })) as Trade[];
+
+            // Client-side sort to ensure stable ordering
+            // 1. Sort by Entry Date (descending)
+            // 2. Sort by Created At (descending) for same-day trades
+            tradesData.sort((a, b) => {
+                const dateA = a.entryDate?.toMillis?.() || 0;
+                const dateB = b.entryDate?.toMillis?.() || 0;
+
+                if (dateA !== dateB) {
+                    return dateB - dateA;
+                }
+
+                const createdA = a.createdAt?.toMillis?.() || 0;
+                const createdB = b.createdAt?.toMillis?.() || 0;
+                return createdB - createdA;
+            });
+
             setTrades(tradesData);
             setIsLoading(false);
         }, (error) => {
@@ -140,14 +161,36 @@ const TradingJournalPage: React.FC = () => {
     ) => {
         if (!currentUser) return;
 
+        const entryPrice = parseFloat(formData.entryPrice);
+        const exitPrice = parseFloat(formData.exitPrice);
+        const stopLoss = formData.stopLoss ? parseFloat(formData.stopLoss) : 0;
+
+        // Calculate R-Multiple
+        let rr = 0;
+        if (stopLoss > 0 && entryPrice > 0) {
+            if (formData.direction === 'LONG') {
+                const risk = entryPrice - stopLoss;
+                if (risk !== 0) {
+                    rr = (exitPrice - entryPrice) / risk;
+                }
+            } else {
+                const risk = stopLoss - entryPrice;
+                if (risk !== 0) {
+                    rr = (entryPrice - exitPrice) / risk;
+                }
+            }
+        }
+
         const tradeData = {
             symbol: formData.symbol,
             direction: formData.direction,
             entryDate: Timestamp.fromDate(new Date(formData.entryDate)),
-            entryPrice: parseFloat(formData.entryPrice),
-            exitPrice: parseFloat(formData.exitPrice),
+            entryPrice,
+            exitPrice,
+            stopLoss,
             lotSize: parseFloat(formData.lotSize),
             pnl: calculatedPnL,
+            rr: parseFloat(rr.toFixed(2)),
             status,
             setup: formData.setup,
             emotions: formData.emotions,
@@ -233,14 +276,18 @@ const TradingJournalPage: React.FC = () => {
         }
     };
 
-    // Handle delete goal
-    const handleDeleteGoal = async (goalId: string) => {
-        if (!currentUser) return;
+    // Handle delete goal click
+    const handleDeleteGoal = (goalId: string) => {
+        setGoalToDelete(goalId);
+    };
 
-        if (!window.confirm('Are you sure you want to delete this goal?')) return;
+    // Confirm delete goal
+    const confirmDeleteGoal = async () => {
+        if (!currentUser || !goalToDelete) return;
 
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'goals', goalId));
+            await deleteDoc(doc(db, 'users', currentUser.uid, 'goals', goalToDelete));
+            setGoalToDelete(null);
         } catch (error) {
             console.error('Error deleting goal:', error);
             alert('Failed to delete goal.');
@@ -279,6 +326,13 @@ const TradingJournalPage: React.FC = () => {
                         <p className="text-gray-500 text-sm mt-1">Track, analyze, and master your trading</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setShowExportModal(true)}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors"
+                        >
+                            <FileDown className="w-5 h-5 text-gray-500" />
+                            Export
+                        </button>
                         <button
                             onClick={() => setShowGoalModal(true)}
                             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors"
@@ -380,7 +434,7 @@ const TradingJournalPage: React.FC = () => {
                 </div>
 
                 {/* Equity Curve */}
-                <EquityCurve data={equityCurveData} />
+                <EquityCurve data={equityCurveData} goals={goals} />
 
                 {/* View Toggle */}
                 <div className="flex justify-end">
@@ -466,6 +520,27 @@ const TradingJournalPage: React.FC = () => {
                 onClose={() => setShowGoalModal(false)}
                 onSave={handleSaveGoal}
                 currentBalance={currentBalance}
+            />
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={!!goalToDelete}
+                onClose={() => setGoalToDelete(null)}
+                onConfirm={confirmDeleteGoal}
+                title="Delete Goal"
+                message="Are you sure you want to delete this goal? This action cannot be undone."
+                confirmText="Delete Goal"
+                variant="danger"
+            />
+
+            {/* Export Report Modal */}
+            <ExportReportModal
+                isOpen={showExportModal}
+                onClose={() => setShowExportModal(false)}
+                trades={trades}
+                startingBalance={startingBalance}
+                currentBalance={currentBalance}
+                userEmail={currentUser?.email || undefined}
             />
         </div>
     );

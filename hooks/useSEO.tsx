@@ -14,10 +14,12 @@ interface SEOProps {
   noindex?: boolean;
 }
 
+const BASE_URL = 'https://ta7leel.site';
+
 const useSEO = ({
   title,
   description,
-  keywords = 'book summaries, business books, self-help books, book insights, learning, personal development',
+  keywords = 'book summaries, business books, self-help books, ملخصات كتب, كتب أعمال, تطوير ذاتي',
   image = '/images/og-default.jpg',
   type = 'website',
   author,
@@ -27,14 +29,16 @@ const useSEO = ({
   noindex = false,
 }: SEOProps) => {
   const location = useLocation();
-  const baseUrl = window.location.origin;
-  const currentUrl = canonical || `${baseUrl}${location.pathname}`;
-  const fullImageUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
+  const currentUrl = canonical || `${BASE_URL}${location.pathname}`;
+  const fullImageUrl = image.startsWith('http') ? image : `${BASE_URL}${image}`;
 
   useEffect(() => {
-    // Set document title
-    document.title = title;
+    // Track created elements for cleanup
+    const createdElements: HTMLElement[] = [];
 
+    // Set document title
+    const previousTitle = document.title;
+    document.title = title;
 
     // Helper function to set meta tag
     const setMetaTag = (property: string, content: string, isProperty = false) => {
@@ -45,6 +49,7 @@ const useSEO = ({
         element = document.createElement('meta');
         element.setAttribute(attribute, property);
         document.head.appendChild(element);
+        createdElements.push(element as HTMLElement);
       }
 
       element.setAttribute('content', content);
@@ -53,7 +58,7 @@ const useSEO = ({
     // Basic meta tags
     setMetaTag('description', description);
     if (keywords) setMetaTag('keywords', keywords);
-    setMetaTag('author', author || 'BookBriefs');
+    setMetaTag('author', author || 'تحليل - Ta7leel');
 
     // Robots meta
     if (noindex) {
@@ -70,17 +75,13 @@ const useSEO = ({
     setMetaTag('og:type', type, true);
     setMetaTag('og:site_name', 'تحليل - Ta7leel', true);
     setMetaTag('og:locale', 'ar_AE', true);
-    setMetaTag('og:locale:alternate', 'en_US', true);
-    setMetaTag('og:locale:alternate', 'ar_SA', true);
-    setMetaTag('og:locale:alternate', 'ar_EG', true);
 
     // Twitter Card tags
     setMetaTag('twitter:card', 'summary_large_image');
     setMetaTag('twitter:title', title);
     setMetaTag('twitter:description', description);
     setMetaTag('twitter:image', fullImageUrl);
-    setMetaTag('twitter:site', '@bookbriefs');
-    setMetaTag('twitter:creator', '@bookbriefs');
+    setMetaTag('twitter:site', '@ta7leel');
 
     // Article specific meta tags
     if (type === 'article' && publishedTime) {
@@ -95,6 +96,7 @@ const useSEO = ({
 
     // Set canonical link
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    const canonicalCreated = !canonicalLink;
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
       canonicalLink.rel = 'canonical';
@@ -102,34 +104,16 @@ const useSEO = ({
     }
     canonicalLink.href = currentUrl;
 
-    // Add language alternate tags for Arabic countries
-    const languages = [
-      { code: 'ar', label: 'Arabic' },
-      { code: 'en', label: 'English' },
-      { code: 'ar-AE', label: 'Arabic (UAE)' },
-      { code: 'ar-SA', label: 'Arabic (Saudi Arabia)' },
-      { code: 'ar-EG', label: 'Arabic (Egypt)' },
-      { code: 'x-default', label: 'Default' }
-    ];
-
-    languages.forEach(({ code }) => {
-      let alternateLangLink = document.querySelector(`link[hreflang="${code}"]`) as HTMLLinkElement;
-      if (!alternateLangLink) {
-        alternateLangLink = document.createElement('link');
-        alternateLangLink.rel = 'alternate';
-        alternateLangLink.hreflang = code;
-        document.head.appendChild(alternateLangLink);
+    // Cleanup function — remove dynamically created elements on unmount
+    return () => {
+      document.title = previousTitle;
+      createdElements.forEach((el) => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      });
+      if (canonicalCreated && canonicalLink.parentNode) {
+        canonicalLink.parentNode.removeChild(canonicalLink);
       }
-      alternateLangLink.href = code === 'x-default' ? currentUrl : `${currentUrl}${currentUrl.includes('?') ? '&' : '?'}lang=${code}`;
-    });
-
-    // Add Arabic-specific meta tags
-    setMetaTag('content-language', 'ar,en');
-
-    // Add geo-targeting for MENA region
-    setMetaTag('geo.region', 'AE;SA;EG;QA;KW;BH;OM;JO;LB');
-    setMetaTag('geo.placename', 'Dubai, UAE');
-
+    };
   }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, noindex]);
 };
 
