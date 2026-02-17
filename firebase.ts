@@ -15,11 +15,6 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-console.log('🔥 Firebase Config:', {
-  authDomain: firebaseConfig.authDomain,
-  projectId: firebaseConfig.projectId
-});
-
 // Check that the keys were loaded correctly from the .env.local file
 if (!firebaseConfig.apiKey) {
   console.warn("Firebase API key is missing. Using demo configuration. Make sure it's set in your .env.local file for production.");
