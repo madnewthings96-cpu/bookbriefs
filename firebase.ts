@@ -15,17 +15,22 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
+console.log('🔥 Firebase Config:', {
+  authDomain: firebaseConfig.authDomain,
+  projectId: firebaseConfig.projectId
+});
+
 // Check that the keys were loaded correctly from the .env.local file
 if (!firebaseConfig.apiKey) {
-    console.warn("Firebase API key is missing. Using demo configuration. Make sure it's set in your .env.local file for production.");
-    // Use demo Firebase config for development
-    firebaseConfig.apiKey = "demo-api-key";
-    firebaseConfig.authDomain = "demo.firebaseapp.com";
-    firebaseConfig.projectId = "demo-project";
-    firebaseConfig.storageBucket = "demo-project.appspot.com";
-    firebaseConfig.messagingSenderId = "123456789";
-    firebaseConfig.appId = "1:123456789:web:abcdef123456";
-    firebaseConfig.measurementId = "G-ABCDEFGHIJ";
+  console.warn("Firebase API key is missing. Using demo configuration. Make sure it's set in your .env.local file for production.");
+  // Use demo Firebase config for development
+  firebaseConfig.apiKey = "demo-api-key";
+  firebaseConfig.authDomain = "demo.firebaseapp.com";
+  firebaseConfig.projectId = "demo-project";
+  firebaseConfig.storageBucket = "demo-project.appspot.com";
+  firebaseConfig.messagingSenderId = "123456789";
+  firebaseConfig.appId = "1:123456789:web:abcdef123456";
+  firebaseConfig.measurementId = "G-ABCDEFGHIJ";
 }
 
 // CRITICAL: Defer Firebase initialization until after first paint
@@ -39,17 +44,17 @@ let isInitialized = false;
 // Initialize Firebase lazily - only when needed
 const initializeFirebase = () => {
   if (isInitialized) return;
-  
+
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
-  
+
   // Initialize and configure Google Auth Provider
   googleProvider = new GoogleAuthProvider();
   googleProvider.setCustomParameters({
     prompt: 'select_account'
   });
-  
+
   isInitialized = true;
 };
 
@@ -85,7 +90,7 @@ export const getGoogleProvider = () => {
 export const getAnalyticsInstance = () => {
   if (typeof window !== 'undefined' && !analytics) {
     if (!isInitialized) initializeFirebase();
-    
+
     // Only initialize analytics after user interaction (mobile optimization)
     const initAnalytics = () => {
       if (!analytics) {
@@ -94,7 +99,7 @@ export const getAnalyticsInstance = () => {
         console.log('📊 Firebase Analytics initialized');
       }
     };
-    
+
     // Wait for user interaction before loading analytics
     if (!analytics) {
       ['click', 'scroll', 'touchstart', 'keydown'].forEach(event => {

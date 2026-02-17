@@ -133,9 +133,10 @@ const ExitIntentPopup: React.FC = () => {
                         {/* Close Button */}
                         <button
                             onClick={() => setIsVisible(false)}
-                            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
+                            className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-gray-900/80 hover:bg-gray-900 transition-all text-white shadow-lg hover:shadow-xl hover:scale-110 cursor-pointer"
+                            aria-label="Close popup"
                         >
-                            <X size={20} />
+                            <X size={22} strokeWidth={2.5} />
                         </button>
 
                         {/* Image Section */}
