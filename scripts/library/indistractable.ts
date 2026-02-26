@@ -4,7 +4,7 @@ export const book: BookDefinition = {
     id: 'indistractable',
     title: "Indistractable: How to Control Your Attention and Choose Your Life",
     author: 'Nir Eyal',
-    category: 'Productivity',
+    category: 'Self-Help',
     coverImageUrl: "/images/indistractable.jpg",
     rating: 3.7,
     ratingsCount: "25,000+",
