@@ -12,7 +12,6 @@
     "sync-library": "tsx scripts/sync-library.ts"
   },
   "dependencies": {
-    "@google/genai": "^1.18.0",
     "@google/generative-ai": "^0.24.1",
     "@paypal/react-paypal-js": "^8.9.2",
     "@radix-ui/react-slot": "^1.2.4",

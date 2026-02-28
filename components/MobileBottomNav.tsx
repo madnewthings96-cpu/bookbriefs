@@ -9,7 +9,7 @@ const IridescentBubble: React.FC = () => (
   <div className="absolute inset-0 overflow-hidden rounded-2xl">
     {/* Animated iridescent bubble */}
     <div className="absolute inset-[-20%] animate-bubble-morph">
-      <div 
+      <div
         className="absolute inset-0 animate-bubble-rotate"
         style={{
           background: `
@@ -24,14 +24,14 @@ const IridescentBubble: React.FC = () => (
       />
     </div>
     {/* Glass overlay for depth */}
-    <div 
+    <div
       className="absolute inset-0 rounded-2xl"
       style={{
         background: 'radial-gradient(ellipse 100% 100% at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 60%)',
       }}
     />
     {/* Inner glow ring */}
-    <div 
+    <div
       className="absolute inset-[2px] rounded-xl border border-white/20"
       style={{
         boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)',
@@ -71,8 +71,7 @@ const MobileBottomNav: React.FC = () => {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center justify-center gap-2 px-2 py-2 rounded-2xl text-[11px] font-semibold uppercase tracking-wide transition-all duration-200 ${
-                  isActive ? `${activeStyles}` : `${inactiveStyles}`
+                `flex items-center justify-center gap-2 px-2 py-2 rounded-2xl text-[11px] font-semibold uppercase tracking-wide transition-all duration-200 ${isActive ? `${activeStyles}` : `${inactiveStyles}`
                 }`
               }
             >
@@ -80,9 +79,8 @@ const MobileBottomNav: React.FC = () => {
                 <>
                   <Icon className={`w-4 h-4 ${isActive ? '' : 'opacity-80'}`} />
                   <span
-                    className={`overflow-hidden whitespace-nowrap transition-all duration-200 ${
-                      isActive ? 'opacity-100 translate-x-0 max-w-[80px]' : 'opacity-0 -translate-x-1 max-w-0'
-                    }`}
+                    className={`overflow-hidden whitespace-nowrap transition-all duration-200 ${isActive ? 'opacity-100 translate-x-0 max-w-[80px]' : 'opacity-0 -translate-x-1 max-w-0'
+                      }`}
                   >
                     {label}
                   </span>
@@ -91,16 +89,7 @@ const MobileBottomNav: React.FC = () => {
             </NavLink>
           ))}
         </nav>
-        <NavLink
-          to="/chat"
-          className={`relative flex-shrink-0 w-12 h-12 rounded-2xl text-white shadow-lg shadow-purple-500/40 flex items-center justify-center transition-transform duration-200 hover:scale-105 overflow-hidden ${
-            isReaderMode ? '' : ''
-          }`}
-          aria-label={t('aiChat') || 'AI Chat'}
-        >
-          <IridescentBubble />
-          <Sparkles className="w-5 h-5 relative z-10 drop-shadow-lg" />
-        </NavLink>
+
       </div>
     </div>
   );

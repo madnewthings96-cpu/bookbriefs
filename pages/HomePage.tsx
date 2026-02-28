@@ -143,16 +143,53 @@ const HomePage: React.FC = () => {
               <div className="button-wrap relative z-10 rounded-full bg-transparent pointer-events-none">
                 <Link
                   to="/summaries"
-                  className="glass-button cursor-pointer relative rounded-full pointer-events-auto z-30 outline-none focus:outline-none inline-flex items-center"
+                  className="flower-btn relative pointer-events-auto z-30 outline-none focus:outline-none"
+                  style={{ textDecoration: 'none' }}
                 >
-                  <span className="button-text relative block select-none font-bold text-neutral-800 tracking-tight px-6 py-3.5 flex items-center gap-2 arabic-btn" style={{ fontSize: '24px' }}>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                    إقرأ
-                  </span>
-                  {/* Shine Effect */}
-                  <div className="button-shine"></div>
+                  <div className="flower-wrapper">
+                    <div className="flower-obj flower1">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-obj flower2">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-obj flower3">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-obj flower4">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-obj flower5">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-obj flower6">
+                      <div className="flower-petal flower-one"></div>
+                      <div className="flower-petal flower-two"></div>
+                      <div className="flower-petal flower-three"></div>
+                      <div className="flower-petal flower-four"></div>
+                    </div>
+                    <div className="flower-text flex items-center gap-2 arabic-btn font-bold">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                      إقرأ
+                    </div>
+                  </div>
                 </Link>
               </div>
             </div>

@@ -26,7 +26,7 @@ import UserProfilePage from './pages/UserProfilePage';
 import ReadingChallengePage from './pages/ReadingChallengePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
-import LLMChatPage from './pages/LLMChatPage';
+
 import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MerchPage from './pages/MerchPage';
@@ -360,7 +360,6 @@ const AppContent: React.FC = () => {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/chat" element={<LLMChatPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserProfilePage />

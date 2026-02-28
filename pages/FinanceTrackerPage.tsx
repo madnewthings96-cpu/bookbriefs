@@ -362,9 +362,9 @@ const FinanceTrackerPage: React.FC = () => {
                     <ReceiptScanner onScanComplete={handleScanComplete} />
                     <button
                         onClick={() => setShowForm(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
+                        className="uiverse-btn"
                     >
-                        ADD NEW <span className="text-lg">+</span>
+                        <span>ADD NEW <span className="text-base text-lg-adjust">+</span></span>
                     </button>
                 </div>
             </div>

@@ -24,7 +24,7 @@ const ReadingChallengePage: React.FC = () => {
 
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       await setGoal(goal);
       setShowGoalModal(false);
@@ -204,16 +204,14 @@ const ReadingChallengePage: React.FC = () => {
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {/* First Book Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 1 
-                      ? 'border-blue-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 1
+                      ? 'border-blue-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 1 
-                        ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 1
+                        ? 'bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 1 ? '📖' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">First Step</h4>
@@ -228,16 +226,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Getting Started Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 3 
-                      ? 'border-purple-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 3
+                      ? 'border-purple-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 3 
-                        ? 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 3
+                        ? 'bg-gradient-to-br from-purple-400 to-purple-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 3 ? '🌱' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Bookworm</h4>
@@ -252,16 +248,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Dedicated Reader Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 5 
-                      ? 'border-green-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 5
+                      ? 'border-green-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 5 
-                        ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 5
+                        ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 5 ? '📚' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Dedicated</h4>
@@ -276,16 +270,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Rising Star Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 10 
-                      ? 'border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 10
+                      ? 'border-yellow-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 10 
-                        ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 10
+                        ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 10 ? '⭐' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Rising Star</h4>
@@ -300,16 +292,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Scholar Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 20 
-                      ? 'border-indigo-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 20
+                      ? 'border-indigo-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 20 
-                        ? 'bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 20
+                        ? 'bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 20 ? '🎓' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Scholar</h4>
@@ -324,16 +314,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Master Reader Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 50 
-                      ? 'border-orange-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 50
+                      ? 'border-orange-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 50 
-                        ? 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 50
+                        ? 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 50 ? '🏆' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Master</h4>
@@ -348,16 +336,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Centurion Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.current >= 100 
-                      ? 'border-pink-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.current >= 100
+                      ? 'border-pink-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.current >= 100 
-                        ? 'bg-gradient-to-br from-pink-400 to-pink-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.current >= 100
+                        ? 'bg-gradient-to-br from-pink-400 to-pink-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.current >= 100 ? '👑' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Centurion</h4>
@@ -372,16 +358,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Goal Achieved Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.percentage >= 100 
-                      ? 'border-red-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.percentage >= 100
+                      ? 'border-red-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.percentage >= 100 
-                        ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.percentage >= 100
+                        ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.percentage >= 100 ? '🎯' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Goal Crusher</h4>
@@ -396,16 +380,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Early Bird Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.percentage >= 100 && new Date().getMonth() < 6
-                      ? 'border-teal-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.percentage >= 100 && new Date().getMonth() < 6
+                      ? 'border-teal-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.percentage >= 100 && new Date().getMonth() < 6
-                        ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.percentage >= 100 && new Date().getMonth() < 6
+                        ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.percentage >= 100 && new Date().getMonth() < 6 ? '🌅' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Early Bird</h4>
@@ -420,16 +402,14 @@ const ReadingChallengePage: React.FC = () => {
                   </div>
 
                   {/* Overachiever Badge */}
-                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${
-                    progress.percentage >= 150 
-                      ? 'border-cyan-400 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  <div className={`group relative bg-white rounded-xl p-4 border-2 transition-all duration-300 ${progress.percentage >= 150
+                      ? 'border-cyan-400 shadow-lg hover:shadow-xl hover:-translate-y-1'
                       : 'border-gray-200 opacity-50'
-                  }`}>
-                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${
-                      progress.percentage >= 150 
-                        ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-lg' 
-                        : 'bg-gray-100'
                     }`}>
+                    <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center text-3xl ${progress.percentage >= 150
+                        ? 'bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-lg'
+                        : 'bg-gray-100'
+                      }`}>
                       {progress.percentage >= 150 ? '🚀' : '🔒'}
                     </div>
                     <h4 className="text-sm font-bold text-center text-gray-900 mb-1">Overachiever</h4>
@@ -443,7 +423,7 @@ const ReadingChallengePage: React.FC = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Badge Progress Summary */}
                 <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
                   <div className="flex items-center justify-between">
@@ -487,26 +467,26 @@ const ReadingChallengePage: React.FC = () => {
                     return (
                       <div key={book.id} className="group relative">
                         <Link to={bookUrl}>
-                        <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
-                          <img
-                            src={book.coverImageUrl}
-                            alt={book.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      </Link>
-                      <button
-                        onClick={() => unmarkBookAsRead(book.id)}
-                        className="absolute top-2 right-2 w-8 h-8 bg-green-500 hover:bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-200"
-                        title="Mark as unread"
-                      >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-                  );
-                })}
+                          <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
+                            <img
+                              src={book.coverImageUrl}
+                              alt={book.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        </Link>
+                        <button
+                          onClick={() => unmarkBookAsRead(book.id)}
+                          className="absolute top-2 right-2 w-8 h-8 bg-green-500 hover:bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-200"
+                          title="Mark as unread"
+                        >
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -522,26 +502,26 @@ const ReadingChallengePage: React.FC = () => {
                   return (
                     <div key={book.id} className="group relative">
                       <Link to={bookUrl}>
-                      <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
-                        <img
-                          src={book.coverImageUrl}
-                          alt={book.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    </Link>
-                    <button
-                      onClick={() => markBookAsRead(book.id)}
-                      className="absolute top-2 right-2 w-8 h-8 bg-white hover:bg-green-500 text-gray-400 hover:text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-200"
-                      title="Mark as read"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                        <div className="aspect-[3/4] rounded-lg overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
+                          <img
+                            src={book.coverImageUrl}
+                            alt={book.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      </Link>
+                      <button
+                        onClick={() => markBookAsRead(book.id)}
+                        className="absolute top-2 right-2 w-8 h-8 bg-white hover:bg-green-500 text-gray-400 hover:text-white rounded-full flex items-center justify-center shadow-lg transition-colors duration-200"
+                        title="Mark as read"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -558,13 +538,13 @@ const ReadingChallengePage: React.FC = () => {
             <p className="text-gray-600 mb-6">
               How many books do you want to read in {currentYear}?
             </p>
-            
+
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
-            
+
             <input
               type="number"
               value={goalInput}
@@ -635,13 +615,13 @@ const ReadingChallengePage: React.FC = () => {
             <p className="text-gray-600 mb-6 text-center">
               This will permanently delete your {currentYear} reading challenge and all progress. This action cannot be undone.
             </p>
-            
+
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
-            
+
             <div className="flex space-x-3">
               <button
                 onClick={() => {
