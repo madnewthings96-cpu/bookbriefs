@@ -58,9 +58,9 @@ const MobileBottomNav: React.FC = () => {
     { to: '/news', label: t('news') || 'News', icon: Newspaper },
   ];
 
-  const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-gray-900/95 text-white shadow-[0_15px_35px_-15px_rgba(15,23,42,0.8)]';
-  const inactiveStyles = isReaderMode ? 'text-gray-400' : 'text-gray-400';
-  const activeStyles = isReaderMode ? 'bg-gray-900 text-white shadow-inner shadow-gray-900/30' : 'bg-white text-gray-900 shadow-inner shadow-gray-900/20';
+  const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-[#E7EBDF] text-gray-950 shadow-[0_15px_35px_-15px_rgba(71,85,62,0.45)]';
+  const inactiveStyles = isReaderMode ? 'text-gray-400' : 'text-gray-600';
+  const activeStyles = isReaderMode ? 'bg-gray-900 text-white shadow-inner shadow-gray-900/30' : 'bg-white text-gray-950 shadow-inner shadow-gray-900/15';
 
   return (
     <div className="md:hidden fixed bottom-4 left-0 right-0 px-4 z-50 pointer-events-none">
@@ -71,7 +71,7 @@ const MobileBottomNav: React.FC = () => {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center justify-center gap-2 px-2 py-2 rounded-2xl text-[11px] font-semibold uppercase tracking-wide transition-all duration-200 ${isActive ? `${activeStyles}` : `${inactiveStyles}`
+                `flex items-center justify-center gap-2 px-2 py-2 rounded-2xl text-[11px] font-semibold uppercase tracking-wide transition-[width,max-width,opacity,transform,background-color,color,box-shadow] duration-200 ${isActive ? `${activeStyles}` : `${inactiveStyles}`
                 }`
               }
             >
@@ -79,7 +79,7 @@ const MobileBottomNav: React.FC = () => {
                 <>
                   <Icon className={`w-4 h-4 ${isActive ? '' : 'opacity-80'}`} />
                   <span
-                    className={`overflow-hidden whitespace-nowrap transition-all duration-200 ${isActive ? 'opacity-100 translate-x-0 max-w-[80px]' : 'opacity-0 -translate-x-1 max-w-0'
+                    className={`overflow-hidden whitespace-nowrap transition-[max-width,opacity,transform] duration-200 ${isActive ? 'opacity-100 translate-x-0 max-w-[80px]' : 'opacity-0 -translate-x-1 max-w-0'
                       }`}
                   >
                     {label}

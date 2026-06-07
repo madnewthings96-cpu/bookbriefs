@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
@@ -13,7 +12,6 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,17 +34,11 @@ const LoginPage: React.FC = () => {
     try {
       // Sign in with Firebase Auth
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      
-      // Update the local auth context
-      const loginSuccess = await login(email.trim(), password);
-      if (loginSuccess) {
-        setSuccess('Login successful! Redirecting...');
-        setTimeout(() => {
-          navigate('/profile');
-        }, 1500);
-      } else {
-        setError('Authentication successful but login failed. Please try again.');
-      }
+
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1500);
     } catch (err: any) {
       console.error('Login error:', err);
       
@@ -90,25 +82,14 @@ const LoginPage: React.FC = () => {
 
     try {
       // Sign in with Google
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
+      await signInWithPopup(auth, googleProvider);
 
       // Show success message
       setSuccess('Login successful with Google! Redirecting...');
 
-      // Update the local auth context with Google user info
-      const loginSuccess = await login(
-        user.email || '',
-        '' // No password for Google auth
-      );
-
-      if (loginSuccess) {
-        setTimeout(() => {
-          navigate('/profile');
-        }, 1500);
-      } else {
-        setError('Google authentication successful but login failed. Please try again.');
-      }
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1500);
     } catch (err: any) {
       console.error('Google login error:', err);
       

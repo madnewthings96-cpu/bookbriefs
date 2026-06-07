@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
@@ -15,7 +14,6 @@ const SignUpPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,15 +56,9 @@ const SignUpPage: React.FC = () => {
       // Show success message
       setSuccess('Account created successfully! Redirecting...');
 
-      // Update the local auth context
-      const signupSuccess = await signup(name.trim(), email, password);
-      if (signupSuccess) {
-        setTimeout(() => {
-          navigate('/profile');
-        }, 1500);
-      } else {
-        setError('Account created but login failed. Please try logging in.');
-      }
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1500);
     } catch (err: any) {
       console.error('Sign up error:', err);
       console.error('Error code:', err.code);
@@ -107,26 +99,14 @@ const SignUpPage: React.FC = () => {
 
     try {
       // Sign up with Google
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
+      await signInWithPopup(auth, googleProvider);
 
       // Show success message
       setSuccess('Account created successfully with Google! Redirecting...');
 
-      // Update the local auth context with Google user info
-      const signupSuccess = await signup(
-        user.displayName || 'Google User',
-        user.email || '',
-        '' // No password for Google auth
-      );
-
-      if (signupSuccess) {
-        setTimeout(() => {
-          navigate('/profile');
-        }, 1500);
-      } else {
-        setError('Google account created but login failed. Please try logging in.');
-      }
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1500);
     } catch (err: any) {
       console.error('Google sign up error:', err);
       console.error('Error code:', err.code);

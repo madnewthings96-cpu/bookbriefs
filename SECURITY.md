@@ -13,9 +13,9 @@ The database now has comprehensive security rules:
 
 - **Users Collection**: Users can only read/write their own data
 - **Feedback Collection**: 
-  - Anyone can create feedback (to allow anonymous submissions)
-  - Only authenticated users can read feedback
-  - Only authenticated users can update/delete feedback
+  - Authenticated users can create feedback
+  - Only admins can read feedback
+  - Only admins can update/delete feedback
 - **Protected Collections**: favorites, notes, highlights, reading_challenges, user_progress
 - **Default Deny**: All other collections are denied by default
 
@@ -55,7 +55,7 @@ Protects against:
 **Status**: ✅ Implemented in `netlify.toml`
 
 Headers include:
-- `X-Frame-Options: DENY` - Prevents clickjacking
+- `X-Frame-Options: SAMEORIGIN` - Prevents third-party clickjacking while allowing same-origin embeds
 - `X-Content-Type-Options: nosniff` - Prevents MIME type sniffing
 - `X-XSS-Protection: 1; mode=block` - Legacy XSS protection
 - `Referrer-Policy: strict-origin-when-cross-origin` - Controls referrer info

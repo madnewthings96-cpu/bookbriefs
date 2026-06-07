@@ -1,296 +1,409 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  ArrowRight,
+  BookMarked,
+  BookOpen,
+  CheckCircle2,
+  Clock3,
+  Flame,
+  Heart,
+  Library,
+  Play,
+  RefreshCw,
+  Sparkles,
+  Trophy,
+} from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { useBooks } from '../contexts/BooksContext';
 import FavoriteButton from '../components/FavoriteButton';
+import { Book } from '../types';
+
+interface ShelfBook extends Book {
+  progress: number;
+  progressColor: string;
+}
+
+const PROGRESS_COLORS = [
+  'from-teal-500 to-cyan-500',
+  'from-violet-500 to-fuchsia-500',
+  'from-blue-500 to-indigo-500',
+  'from-orange-500 to-red-500',
+  'from-emerald-500 to-lime-500',
+  'from-rose-500 to-pink-500',
+];
+
+const FALLBACK_COVER =
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3Lm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+
+const RECOMMENDED_BOOK_IDS = [
+  'thinkandgrowrich',
+  'the-alchemist',
+  'rich-dad-poor-dad',
+  'the-four-agreements',
+  'educated',
+  'dune',
+];
+
+const getProgressColor = (bookId: string) => {
+  const index = bookId.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % PROGRESS_COLORS.length;
+  return PROGRESS_COLORS[index];
+};
+
+const formatMinutes = (minutes: number) => {
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return remainder ? `${hours}h ${remainder}m` : `${hours}h`;
+};
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+};
 
 const UserProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  const { getBookTitle } = useLanguage();
+  const { getBookTitle, getBookAuthor } = useLanguage();
   const { user } = useAuth();
   const { userStats, bookProgress, updateBookProgress, getBookProgress } = useUserProgress();
   const { favorites } = useFavorites();
   const { books } = useBooks();
+  const [startReadingBooks, setStartReadingBooks] = useState<ShelfBook[]>([]);
 
-  // User data with Firebase user info
-  const userName = user?.email?.split('@')[0] || "Reader";
-  
-  // State for start reading books
-  const [startReadingBooks, setStartReadingBooks] = useState<any[]>([]);
-  
-  // All available books for start reading
-  const allStartReadingBooks = books.map(book => ({
-    id: book.id,
-    title: book.title,
-    author: book.author,
-    coverUrl: book.coverImageUrl,
-    progressColor: ['bg-teal-600', 'bg-purple-600', 'bg-blue-600', 'bg-orange-600', 'bg-pink-600', 'bg-indigo-600'][Math.floor(Math.random() * 6)]
-  }));
-  
-  // Function to shuffle and get 6 random books
+  const userName = user?.name || user?.email?.split('@')[0] || 'Reader';
+  const completedCount = bookProgress.filter((progress) => progress.isCompleted || progress.progress >= 100).length;
+  const inProgress = bookProgress
+    .filter((progress) => progress.progress > 0 && progress.progress < 100)
+    .sort((a, b) => b.lastReadAt.getTime() - a.lastReadAt.getTime());
+
+  const getBookUrl = (book: Book) => `/summary/${book.arabicSlug || book.id}`;
+
+  const withProgress = (book: Book): ShelfBook => ({
+    ...book,
+    progress: getBookProgress(book.id)?.progress || 0,
+    progressColor: getProgressColor(book.id),
+  });
+
   const getRandomBooks = () => {
-    const shuffled = [...allStartReadingBooks].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 6).map(book => {
-      const progress = getBookProgress(book.id);
-      return {
-        ...book,
-        progress: progress?.progress || 0
-      };
-    });
+    const candidates = books
+      .filter((book) => !getBookProgress(book.id)?.isCompleted)
+      .sort(() => Math.random() - 0.5);
+    return candidates.slice(0, 6).map(withProgress);
   };
-  
-  // Initialize with random books
+
   useEffect(() => {
-    setStartReadingBooks(getRandomBooks());
-  }, []);
-  
-  // Refresh books function
+    if (books.length > 0 && startReadingBooks.length === 0) {
+      setStartReadingBooks(getRandomBooks());
+    }
+  }, [books.length, startReadingBooks.length]);
+
   const handleRefreshBooks = () => {
     setStartReadingBooks(getRandomBooks());
   };
 
-  // Recommended books - using actual book IDs
-  const recommendedBooks = [
-    {
-      id: "thinkandgrowrich",
-      title: "Think and Grow Rich",
-      author: "Napoleon Hill",
-      coverUrl: "/images/think and grow rich.jpg"
-    },
-    {
-      id: "the-alchemist",
-      title: "The Alchemist",
-      author: "Paulo Coelho",
-      coverUrl: "/images/the alchemist.jpg"
-    },
-    {
-      id: "rich-dad-poor-dad",
-      title: "Rich Dad Poor Dad",
-      author: "Robert T. Kiyosaki",
-      coverUrl: "/images/rich dad poor dad.jpg"
-    },
-    {
-      id: "the-four-agreements",
-      title: "The Four Agreements",
-      author: "Don Miguel Ruiz",
-      coverUrl: "/images/the four agreements.jpg"
-    },
-    {
-      id: "educated",
-      title: "Educated",
-      author: "Tara Westover",
-      coverUrl: "/images/educated.jpg"
-    },
-    {
-      id: "dune",
-      title: "Dune",
-      author: "Frank Herbert",
-      coverUrl: "/images/dune.jpg"
-    }
-  ];
-
   const handleBookClick = (bookId: string) => {
-    // Find the book by ID
-    const book = books.find(b => b.id === bookId);
+    const book = books.find((candidate) => candidate.id === bookId);
     if (!book) return;
-    
-    // Update progress when user clicks on a book
+
     const currentProgress = getBookProgress(bookId);
     if (!currentProgress || currentProgress.progress < 100) {
-      // If book hasn't been started or isn't completed, add some progress
       const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
       updateBookProgress(bookId, newProgress);
     }
-    
-    // Use Arabic slug if available, otherwise use English ID
-    const bookUrl = book.arabicSlug || bookId;
-    navigate(`/summary/${bookUrl}`);
+
+    navigate(getBookUrl(book));
   };
 
-  // Get favorite books
-  const favoriteBooks = books.filter(book => favorites.includes(book.id));
+  const favoriteBooks = useMemo(() => books.filter((book) => favorites.includes(book.id)), [books, favorites]);
+
+  const continueBooks = useMemo(() => {
+    const mapped = inProgress
+      .map((progress) => books.find((book) => book.id === progress.bookId))
+      .filter((book): book is Book => Boolean(book))
+      .map(withProgress);
+
+    return mapped.slice(0, 6);
+  }, [books, bookProgress]);
+
+  const recommendedBooks = useMemo(() => {
+    const byId = new Map(books.map((book) => [book.id, book]));
+    const recommended = RECOMMENDED_BOOK_IDS.map((id) => byId.get(id)).filter((book): book is Book => Boolean(book));
+    const fallback = books.filter((book) => !recommended.some((recommendedBook) => recommendedBook.id === book.id));
+    return [...recommended, ...fallback].slice(0, 6).map(withProgress);
+  }, [books, bookProgress]);
+
+  const primaryShelf = continueBooks.length > 0 ? continueBooks : startReadingBooks;
+  const primaryShelfTitle = continueBooks.length > 0 ? 'Continue Reading' : 'Start Reading';
+  const nextBook = primaryShelf[0] || recommendedBooks[0];
+
+  const stats = [
+    {
+      label: 'Books read',
+      value: String(Math.max(userStats.booksRead, completedCount)),
+      helper: 'Completed summaries',
+      icon: Trophy,
+      tone: 'bg-amber-50 text-amber-600',
+    },
+    {
+      label: 'Day streak',
+      value: String(userStats.dayStreak),
+      helper: 'Reading days',
+      icon: Flame,
+      tone: 'bg-orange-50 text-orange-600',
+    },
+    {
+      label: 'Reading time',
+      value: formatMinutes(userStats.totalReadingTime),
+      helper: 'Tracked locally',
+      icon: Clock3,
+      tone: 'bg-blue-50 text-blue-600',
+    },
+    {
+      label: 'Saved books',
+      value: String(favoriteBooks.length),
+      helper: 'Favorites',
+      icon: Heart,
+      tone: 'bg-rose-50 text-rose-600',
+    },
+  ];
+
+  const BookShelfCard = ({ book, compact = false }: { book: ShelfBook; compact?: boolean }) => {
+    const localizedTitle = getBookTitle(book.id);
+    const localizedAuthor = getBookAuthor(book.id);
+    const title = localizedTitle === book.id ? book.title : localizedTitle;
+    const author = localizedAuthor === book.id ? book.author : localizedAuthor;
+    const progress = Math.min(Math.max(book.progress, 0), 100);
+    const isComplete = progress >= 100;
+
+    return (
+      <button
+        type="button"
+        onClick={() => handleBookClick(book.id)}
+        className="group block w-full rounded-[18px] bg-white text-left shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] transition-[transform,box-shadow,background-color] duration-300 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(17,24,39,0.04),0_22px_48px_rgba(17,24,39,0.12)] focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-300/35 active:scale-[0.96]"
+      >
+        <div className="relative aspect-[3/4] overflow-hidden rounded-t-[18px] bg-gray-100 book-cover-outline">
+          <img
+            src={book.coverImageUrl}
+            alt={title}
+            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+            onError={(event) => {
+              event.currentTarget.src = FALLBACK_COVER;
+            }}
+          />
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-3 text-white">
+            <p className="line-clamp-2 text-sm font-bold leading-tight text-white">{title}</p>
+            <p className="mt-1 truncate text-xs text-white/75">{author}</p>
+          </div>
+          {isComplete && (
+            <div className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-1 text-xs font-bold text-white shadow-lg">
+              <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+              Done
+            </div>
+          )}
+        </div>
+        <div className={compact ? 'p-3' : 'p-4'}>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-gray-500 tabular-nums">
+              {progress === 0 ? 'Ready to start' : `${progress}% complete`}
+            </span>
+            <span className="inline-flex min-h-8 items-center gap-1 rounded-full bg-gray-950 px-2.5 py-1 text-xs font-bold text-white transition-colors duration-200 group-hover:bg-orange-600">
+              {progress === 0 ? <Play className="h-3 w-3" aria-hidden="true" /> : <ArrowRight className="h-3 w-3" aria-hidden="true" />}
+              {progress === 0 ? 'Start' : 'Read'}
+            </span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+            <div
+              className={`h-full rounded-full bg-gradient-to-r ${book.progressColor} transition-[width] duration-500`}
+              style={{ width: `${Math.max(progress, 3)}%` }}
+            />
+          </div>
+        </div>
+      </button>
+    );
+  };
+
+  const RecommendationCard = ({ book }: { book: ShelfBook }) => {
+    const localizedTitle = getBookTitle(book.id);
+    const localizedAuthor = getBookAuthor(book.id);
+    const title = localizedTitle === book.id ? book.title : localizedTitle;
+    const author = localizedAuthor === book.id ? book.author : localizedAuthor;
+
+    return (
+      <div className="group rounded-[18px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(17,24,39,0.04),0_22px_48px_rgba(17,24,39,0.12)]">
+        <button
+          type="button"
+          onClick={() => handleBookClick(book.id)}
+          className="block w-full text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-300/35"
+        >
+          <div className="relative aspect-[3/4] overflow-hidden rounded-t-[18px] bg-gray-100 book-cover-outline">
+            <img
+              src={book.coverImageUrl}
+              alt={title}
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+              onError={(event) => {
+                event.currentTarget.src = FALLBACK_COVER;
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-[opacity,background-color] duration-300 group-hover:bg-black/25 group-hover:opacity-100">
+              <span className="inline-flex min-h-10 items-center rounded-full bg-white px-4 py-2 text-sm font-bold text-gray-950 shadow-lg">
+                Read summary
+              </span>
+            </div>
+            <div className="absolute right-2 top-2 z-10" onClick={(event) => event.stopPropagation()}>
+              <FavoriteButton bookId={book.id} size="sm" />
+            </div>
+          </div>
+        </button>
+        <div className="p-4">
+          <h3 className="line-clamp-2 text-sm font-bold leading-snug text-gray-950 text-balance">{title}</h3>
+          <p className="mt-1 truncate text-xs text-gray-500">{author}</p>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Favorites Section */}
-        {favoriteBooks.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-                <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                </svg>
-                My Favorites
-              </h2>
-              <div className="hidden sm:flex items-center text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm border">
-                <span className="mr-2">❤️</span>
-                {favoriteBooks.length} {favoriteBooks.length === 1 ? 'book' : 'books'} saved
+    <div className="min-h-screen bg-[#F6F7F9] px-4 py-6 md:py-8">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <section className="overflow-hidden rounded-[28px] bg-[#E7EBDF] shadow-[0_1px_2px_rgba(17,24,39,0.05),0_22px_64px_rgba(71,85,62,0.16)]">
+          <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="p-6 text-gray-950 md:p-8 lg:p-10">
+              <div className="mb-8 inline-flex min-h-10 items-center gap-2 rounded-full bg-white/65 px-3 py-2 text-sm font-semibold text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.06),0_8px_22px_rgba(71,85,62,0.08)]">
+                <BookOpen className="h-4 w-4 text-orange-600" aria-hidden="true" />
+                Your reading home
+              </div>
+              <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-gray-950 text-balance md:text-5xl">
+                {getGreeting()}, {userName}
+              </h1>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-gray-700 text-pretty md:text-base">
+                Pick up where you left off, save the books that matter, and turn quick summaries into a steady reading habit.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => nextBook && handleBookClick(nextBook.id)}
+                  disabled={!nextBook}
+                  className="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-5 py-3 text-sm font-bold text-white shadow-[0_1px_2px_rgba(127,29,29,0.12),0_16px_34px_rgba(249,115,22,0.34)] transition-[transform,box-shadow,background-color] duration-200 hover:shadow-[0_1px_2px_rgba(127,29,29,0.12),0_20px_42px_rgba(249,115,22,0.42)] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Play className="h-4 w-4" aria-hidden="true" />
+                  {continueBooks.length > 0 ? 'Continue reading' : 'Start a summary'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/summaries')}
+                  className="pressable inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white/65 px-5 py-3 text-sm font-bold text-gray-950 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.06),0_8px_22px_rgba(71,85,62,0.08)] transition-[transform,background-color] duration-200 hover:bg-white"
+                >
+                  <Library className="h-4 w-4" aria-hidden="true" />
+                  Browse library
+                </button>
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {favoriteBooks.map((book) => (
-                <div 
-                  key={book.id} 
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100 group"
-                  onClick={() => handleBookClick(book.id)}
-                >
-                  <div className="relative overflow-hidden aspect-[3/4]">
-                    <img 
-                      src={book.coverImageUrl} 
-                      alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
-                      }}
-                    />
-                    {/* Favorite Button */}
-                    <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
-                      <FavoriteButton bookId={book.id} size="sm" />
+
+            <div className="bg-white/30 p-5 md:p-6 lg:p-8">
+              <div className="grid grid-cols-2 gap-3">
+                {stats.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.label} className="rounded-[20px] bg-white p-4 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_16px_36px_rgba(0,0,0,0.14)]">
+                      <div className="mb-4 flex items-center justify-between gap-2">
+                        <span className="text-xs font-semibold text-gray-500">{item.label}</span>
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-2xl ${item.tone}`}>
+                          <Icon className="h-4 w-4" aria-hidden="true" />
+                        </span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-950 tabular-nums">{item.value}</p>
+                      <p className="mt-1 text-xs text-gray-400">{item.helper}</p>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 text-white p-3">
-                      <h3 className="font-bold text-sm mb-0.5 truncate">{book.title}</h3>
-                      <p className="text-xs text-gray-200 truncate">{book.author}</p>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {favoriteBooks.length > 0 && (
+          <section className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div>
+                <h2 className="flex items-center gap-2 text-2xl font-bold text-gray-950 text-balance">
+                  <BookMarked className="h-6 w-6 text-rose-500" aria-hidden="true" />
+                  Favorites
+                </h2>
+                <p className="mt-1 text-sm text-gray-500 tabular-nums">{favoriteBooks.length} saved for later</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              {favoriteBooks.slice(0, 6).map((book) => (
+                <RecommendationCard key={book.id} book={withProgress(book)} />
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Start Reading Section */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">
-              {userStats.booksRead > 0 ? 'Continue Reading' : 'Start Reading'}
-            </h2>
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm border">
-                <span className="mr-2">💡</span>
-                Click on any book to make progress!
-              </div>
-              <button
-                onClick={handleRefreshBooks}
-                className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium"
-                title="Refresh books"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span className="hidden sm:inline">Refresh</span>
-              </button>
+        <section className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-950 text-balance">{primaryShelfTitle}</h2>
+              <p className="mt-1 text-sm text-gray-500">Click a book to add progress and open its summary.</p>
             </div>
+            <button
+              type="button"
+              onClick={handleRefreshBooks}
+              className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700 transition-[transform,background-color] duration-200 hover:bg-gray-200"
+            >
+              <RefreshCw className="h-4 w-4" aria-hidden="true" />
+              Refresh shelf
+            </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {startReadingBooks.map((book) => (
-              <div 
-                key={book.id} 
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100 group"
-                onClick={() => handleBookClick(book.id)}
-              >
-                <div className="relative overflow-hidden aspect-[3/4]">
-                  <img 
-                    src={book.coverUrl} 
-                    alt={book.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 text-white p-3">
-                    <h3 className="font-bold text-sm mb-0.5 truncate">{book.title}</h3>
-                    <p className="text-xs text-gray-200 truncate">{book.author}</p>
-                  </div>
-                </div>
-                <div className="p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-700">
-                      {book.progress === 0 ? 'Ready to start' : 
-                       book.progress === 100 ? 'Completed!' : 
-                       `${book.progress}%`}
-                    </span>
-                    <button 
-                      className={`text-xs font-medium px-2 py-1 rounded-full transition-all duration-200 ${
-                        book.progress === 100 
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-teal-600 text-white hover:bg-teal-700'
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBookClick(book.id);
-                      }}
-                    >
-                      {book.progress === 0 ? 'Start' : 
-                       book.progress === 100 ? '✓' : 
-                       'Continue'}
-                    </button>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                    <div 
-                      className={`${book.progressColor} h-1.5 rounded-full transition-all duration-500 ease-out`}
-                      style={{ width: `${Math.max(book.progress, 2)}%` }}
-                    ></div>
-                  </div>
-                  {book.progress > 0 && book.progress < 100 && (
-                    <div className="mt-1.5 text-xs text-gray-500">
-                      🔥 Keep going!
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+          {primaryShelf.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              {primaryShelf.map((book) => (
+                <BookShelfCard key={book.id} book={book} compact />
+              ))}
+            </div>
+          ) : (
+            <div className="flex min-h-[240px] flex-col items-center justify-center rounded-2xl bg-gray-50 px-6 text-center">
+              <Library className="mb-3 h-9 w-9 text-gray-300" aria-hidden="true" />
+              <p className="font-semibold text-gray-700">Your library is loading</p>
+              <p className="mt-1 text-sm text-gray-400">Books will appear here as soon as the catalog is ready.</p>
+            </div>
+          )}
+        </section>
 
-        {/* Recommended for You Section */}
-        <div>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Recommended for You</h2>
-            <div className="hidden sm:flex items-center text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm border">
-              <span className="mr-2">✨</span>
-              Curated just for you
+        <section className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="flex items-center gap-2 text-2xl font-bold text-gray-950 text-balance">
+                <Sparkles className="h-6 w-6 text-orange-500" aria-hidden="true" />
+                Recommended for You
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">A focused shelf to help you choose faster.</p>
             </div>
+            <button
+              type="button"
+              onClick={() => navigate('/summaries')}
+              className="hidden min-h-10 items-center gap-2 rounded-xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700 transition-[transform,background-color] duration-200 hover:bg-gray-200 active:scale-[0.96] sm:inline-flex"
+            >
+              View all
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {recommendedBooks.map((book) => (
-              <div 
-                key={book.id} 
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100 group"
-                onClick={() => handleBookClick(book.id)}
-              >
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  <img 
-                    src={book.coverUrl} 
-                    alt={book.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-95 group-hover:scale-100">
-                      <button className="bg-white text-teal-600 px-4 py-2 rounded-full text-sm font-bold hover:bg-teal-50 border-2 border-teal-600 shadow-lg">
-                        Read Summary
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-sm text-gray-900 truncate mb-1">
-                    {book.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 truncate">{book.author}</p>
-                </div>
-              </div>
+              <RecommendationCard key={book.id} book={book} />
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

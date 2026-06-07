@@ -29,7 +29,6 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 
 import DownloadsPage from './pages/DownloadsPage';
 import FeedbackPage from './pages/FeedbackPage';
-import MerchPage from './pages/MerchPage';
 import FinanceTrackerPage from './pages/FinanceTrackerPage';
 import TradingJournalPage from './pages/TradingJournalPage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -380,7 +379,6 @@ const AppContent: React.FC = () => {
                 <FeedbackPage />
               </ProtectedRoute>
             } />
-            {/* <Route path="/merch" element={<MerchPage />} /> */}
             <Route path="/finance-tracker" element={
               <ProtectedRoute>
                 <FinanceTrackerPage />

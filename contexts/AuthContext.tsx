@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from 'firebase/auth';
+import { auth } from '../firebase';
 
 interface User {
   id: string;
@@ -29,45 +37,48 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    // Check localStorage for existing user session
-    const savedUser = localStorage.getItem('bookbriefs_user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    return onAuthStateChanged(auth, (firebaseUser) => {
+      if (!firebaseUser) {
+        setUser(null);
+        return;
+      }
+
+      setUser({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+      });
+    });
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call - replace with real authentication
-    if (email && password) {
-      const userData: User = {
-        id: '1',
-        email: email,
-        name: email.split('@')[0]
-      };
-      setUser(userData);
-      localStorage.setItem('bookbriefs_user', JSON.stringify(userData));
+    try {
+      await signInWithEmailAndPassword(auth, email.trim(), password);
       return true;
+    } catch (error) {
+      console.error('Login failed:', error);
+      return false;
     }
-    return false;
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Simulate API call - replace with real authentication
-    if (name && email && password) {
-      const userData: User = {
-        id: '1',
-        email: email,
-        name: name
-      };
-      setUser(userData);
-      localStorage.setItem('bookbriefs_user', JSON.stringify(userData));
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      await updateProfile(credential.user, { displayName: name.trim() });
       return true;
+    } catch (error) {
+      console.error('Signup failed:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('bookbriefs_user');
+    signOut(auth).catch((error) => {
+      console.error('Logout failed:', error);
+    });
   };
 
   const value: AuthContextType = {

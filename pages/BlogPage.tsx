@@ -47,7 +47,376 @@ const BlogPage: React.FC = () => {
   };
 
   const getFullContent = (postId: number): string => {
-    if (postId === 20) {
+    if (postId === 23) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">بيركشاير هاثاواي ونسخة بافيت من يانكيز 1927: فريق المدراء الذي صنع آلة الثروة</h2>
+
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">عندما أراد وارن بافيت أن يصف مجموعة مدراء بيركشاير هاثاواي في رسالته السنوية لعام 1989، لم يستخدم لغة الشركات المعتادة. اختار تشبيهاً رياضياً قوياً: فريق نيويورك يانكيز لعام 1927، أحد أعظم فرق البيسبول في التاريخ. الفكرة لم تكن مجرد مجاملة، بل درس استثماري عميق عن قيمة البشر داخل الأعمال.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">فريق يانكيز 1927 اشتهر بتشكيلة مرعبة من اللاعبين، ضمت أسماء مثل بيب روث ولو غيريغ. وبالنسبة لبافيت، كانت بيركشاير تمتلك نسختها الخاصة من هذه التشكيلة: مدراء يديرون شركات مثل Borsheim’s وSee’s Candies وNebraska Furniture Mart وThe Buffalo News وFechheimer وScott Fetzer وWorld Book. شركات مختلفة، لكن القاسم المشترك بينها هو الإدارة الاستثنائية.</p>
+
+          <div style="background-color: #f3f4f6; border: 3px solid #374151; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 18px 0; color: #111827; font-size: 22px; font-weight: bold; text-align: center;">الفكرة المختصرة</h4>
+            <p style="margin: 0; color: #1f2937; font-size: 19px; line-height: 1.8; text-align: center; font-weight: 600;">بيركشاير لم تصبح عظيمة بسبب رأس المال فقط، بل لأنها جمعت أعمالاً قوية مع مدراء يحبون اللعبة ويعرفون كيف يسجلون النقاط.</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #374151; padding-bottom: 12px;">لماذا شبّه بافيت مدراءه بفريق أسطوري؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في رسالة 1989، وصف بافيت مجموعة من عمليات بيركشاير غير التأمينية بأنها تمتلك خصائص اقتصادية تتراوح من جيدة إلى ممتازة، ومدراء يتراوحون من ممتازين إلى ممتازين. والأهم أنه أشار إلى أن كثيراً من هؤلاء المدراء لا يحتاجون إلى العمل من أجل لقمة العيش؛ هم يأتون إلى الملعب لأنهم يحبون ضرب الكرات البعيدة.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هذه العبارة تكشف جوهر ثقافة بيركشاير. بافيت لا يريد مديراً يعمل لأنه مراقب من المكتب الرئيسي، بل يريد شخصاً يملك الدافع الداخلي. المدير العظيم لا يحتاج إلى عشر طبقات من الرقابة، لأنه يفهم العمل ويهتم به ويقيس نفسه بمعايير أعلى من أي تقرير إداري.</p>
+
+          <div style="background-color: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 26px; margin: 32px 0;">
+            <h4 style="margin: 0 0 16px 0; color: #1e40af; font-size: 22px; font-weight: bold; text-align: center;">معادلة بافيت في الإدارة</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">اشترِ عملاً اقتصادياته جيدة أو ممتازة</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">اتركه في يد مدير موهوب وصادق</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">خفف البيروقراطية إلى الحد الأدنى</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">دع رأس المال والتراكم يعملان لعقود</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #10b981; padding-bottom: 12px;">Borsheim’s: متجر مجوهرات بمنطق الحجم والثقة</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">Borsheim’s لم يكن مجرد متجر مجوهرات آخر. تحت قيادة آيك فريدمان، كان المتجر يستفيد من حجم ضخم في موقع واحد، ما سمح له بتشكيلة واسعة وتكاليف تشغيل منخفضة وأسعار أقل من المنافسين. كل عنصر كان يغذي الآخر: أسعار أفضل تجذب زبائن أكثر، والزحام يمنح المتجر قوة شراء أكبر، والقوة الشرائية تعزز الأسعار مرة أخرى.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">القصة التي يحبها بافيت عن فريدمان هي أنه أحضر بضائع ثمينة جداً إلى لقاء في سانتا في، ثم طمأن بافيت بحس فكاهي واحترافية عالية حول إجراءات الأمان. المغزى ليس الطرافة فقط، بل أن بيركشاير اشترت هذا العمل لأنها وثقت بالناس بقدر ما وثقت بالأرقام.</p>
+
+          <div style="background-color: #ecfdf5; border: 3px solid #10b981; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #065f46; font-size: 22px; font-weight: bold; text-align: center;">درس Borsheim’s</h4>
+            <p style="margin: 0; color: #047857; font-size: 18px; line-height: 1.8; text-align: center; font-weight: 600;">الميزة التنافسية لا تأتي دائماً من براءة اختراع. أحياناً تأتي من حجم محلي ذكي، تكاليف منخفضة، ثقة العملاء، ومدير يعرف كل تفصيلة في لعبته.</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #8b5cf6; padding-bottom: 12px;">See’s Candies: قوة العلامة التجارية عندما تُدار بعناية</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">See’s Candies كانت واحدة من أهم مدارس بافيت في فهم جودة الأعمال. ليست شركة تحتاج إلى رأس مال ضخم باستمرار، لكنها تملك ولاء عملاء وسعراً عاطفياً وقوة علامة تجارية. في 1989، تحدث بافيت عن دور الإعلان الجيد في دعم مبيعات See’s، لكنه ركز أيضاً على الإدارة اليومية التي تجعل العميل يخرج سعيداً.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">تشاك هاغنز، مدير See’s، لم يكن مجرد مدير أرقام. كان حاضراً في تفاصيل الإنتاج والمبيعات والخدمة. هذا النوع من الإدارة يحافظ على المعنى الحقيقي للعلامة التجارية. العلامة ليست الشعار، بل التجربة المتكررة التي تجعل العميل يعود بثقة.</p>
+
+          <div style="background-color: #faf5ff; border: 3px solid #8b5cf6; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #6b21a8; font-size: 22px; font-weight: bold; text-align: center;">درس See’s Candies</h4>
+            <ul style="margin: 0; padding-right: 24px; color: #581c87; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 10px;">العلامة القوية تسمح بهوامش أفضل إذا حافظت على الجودة.</li>
+              <li style="margin-bottom: 10px;">الإعلان مفيد عندما يدعم حقيقة موجودة، لا عندما يحاول إخفاء ضعف المنتج.</li>
+              <li>الشركة الممتازة تحتاج إلى مدير يحمي ثقافتها اليومية، لا إلى مدير بعيد عن التفاصيل.</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #f59e0b; padding-bottom: 12px;">Nebraska Furniture Mart: عبقرية السيدة B وفلسفة السعر المنخفض</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">روز بلومكين، المعروفة باسم Mrs. B، أسست Nebraska Furniture Mart بمبلغ صغير وبنت واحدة من أنجح شركات الأثاث في أمريكا. قصة 1989 تضمنت خلافها مع بعض أفراد العائلة حول قسم السجاد وخروجها من الشركة، لكنها في سن السادسة والتسعين بدأت مشروعاً جديداً في الأثاث والسجاد وعملت سبعة أيام في الأسبوع.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">بالنسبة للمستثمر، الدرس ليس فقط في شخصيتها الخارقة، بل في نموذج العمل نفسه: تشكيلة واسعة، تكاليف منخفضة، شراء ذكي، هوامش إجمالية أقل من المنافسين، وخدمة شخصية. هذا مزيج يصنع دائرة قوة تشبه ما رأيناه في Borsheim’s.</p>
+
+          <div style="background-color: #fffbeb; border: 3px solid #f59e0b; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #92400e; font-size: 22px; font-weight: bold; text-align: center;">وصفة NFM وBorsheim’s</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">عمق واتساع كبيران في البضائع داخل موقع قوي</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">تكاليف تشغيل منخفضة مقارنة بالمنافسين</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">قوة شراء ناتجة عن الحجم</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">أسعار جذابة وخدمة شخصية تبني الثقة</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #ef4444; padding-bottom: 12px;">The Buffalo News: عمق المنتج قبل الأرباح السريعة</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">The Buffalo News كان مثالاً على أن جودة المنتج الإعلامي يمكن أن تصنع اقتصاديات قوية. في رسالة 1989، أشار بافيت إلى ارتفاع اختراق الصحيفة للأسر المحلية، وإلى ارتفاع مساحة الأخبار داخل الجريدة، وإلى سجل أرباح قوي. الفكرة أن الجريدة التي تقدم محتوى مفيداً وموثوقاً تصبح منصة إعلانية أقوى.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هذا الدرس لا يخص الصحف فقط. أي عمل يملك ثقة الجمهور يملك أصلًا ثميناً. لكن الثقة لا تُشترى مرة واحدة؛ تُبنى بتكرار الجودة. لذلك كان بافيت يقدّر المدير الذي يعرف المنتج والعملاء والتوزيع والتفاصيل التشغيلية، لا المدير الذي ينظر فقط إلى هامش الربح النهائي.</p>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif;">ماذا نتعلم من تشكيلة بيركشاير؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الدرس الأكبر من نسخة بيركشاير من يانكيز 1927 هو أن الشركة القابضة العظيمة لا تُبنى فقط بشراء أصول رخيصة. تُبنى بشراء أعمال جيدة، ثم ترك أشخاص استثنائيين يديرونها ضمن ثقافة تمنحهم الحرية وتطلب منهم النزاهة والنتائج طويلة الأمد.</p>
+
+          <div style="background-color: #f0f9ff; border: 3px solid #0ea5e9; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #075985; font-size: 22px; font-weight: bold; text-align: center;">خطة تطبيق للمستثمر الفردي</h4>
+            <ol style="margin: 0; padding-right: 24px; color: #0c4a6e; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 12px;"><strong>ادرس الإدارة كما تدرس الأرقام:</strong> من يدير الشركة؟ هل لديه سجل في تخصيص رأس المال؟ هل يتصرف كمالك؟</li>
+              <li style="margin-bottom: 12px;"><strong>ابحث عن دوائر القوة:</strong> هل الحجم يخفض التكاليف؟ هل الثقة تزيد المبيعات؟ هل العلامة تسمح بهوامش أفضل؟</li>
+              <li style="margin-bottom: 12px;"><strong>قيّم الثقافة:</strong> هل الشركة تهتم بالتفاصيل اليومية التي لا تظهر فوراً في القوائم المالية؟</li>
+              <li style="margin-bottom: 12px;"><strong>لا تبالغ في دور المكتب الرئيسي:</strong> أفضل الأعمال تحتاج إلى حرية مسؤولة، لا إلى إدارة مركزية تخنقها.</li>
+              <li><strong>فكر كمالك طويل الأجل:</strong> اسأل هل تريد امتلاك هذا العمل مع هذا الفريق لسنوات، لا هل سيرتفع السهم هذا الشهر.</li>
+            </ol>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الخلاصة: رأس المال يحتاج إلى لاعبين عظماء</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">تشبيه بافيت بفريق يانكيز 1927 ليس مجرد صورة جميلة. إنه تذكير بأن الاستثمار في الشركات هو في النهاية استثمار في أنظمة بشرية. المال مهم، والميزة الاقتصادية مهمة، لكن المدير الذي يحب عمله ويفهمه بعمق يمكن أن يحول العمل الجيد إلى آلة تراكم استثنائية.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"الأعمال العظيمة تحتاج إلى اقتصاديات قوية، لكن الفرق الحقيقي يظهر عندما يقودها أشخاص يلعبون لأنهم يحبون تسجيل النقاط."</p>
+          </div>
+
+          <div style="background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600; line-height: 1.8;">ملاحظة: هذا المقال تعليمي ولا يمثل توصية بشراء أو بيع أسهم بيركشاير هاثاواي أو أي شركة أخرى. الهدف هو فهم مبادئ الإدارة وجودة الأعمال.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 22) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">فرانسوا روشون وفن الاستثمار: حين تلتقي الأرقام بالحكم البشري</h2>
+
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">هناك مستثمرون يتحدثون عن السوق كأنه معادلة رياضية باردة، وهناك من يراه مسرحاً للعاطفة والمبالغة والفرص. فرانسوا روشون يقف في منطقة نادرة بين الاثنين: مهندس بعقلية تحليلية، لكنه يرى الاستثمار فناً يحتاج إلى حكم وخيال وصبر، لا إلى أرقام فقط.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">روشون هو مؤسس Giverny Capital في مونتريال، وأحد المستثمرين الكنديين الذين بنوا سجلهم بهدوء بعيداً عن ضجيج وول ستريت. منذ تأسيس الشركة عام 1998، اشتهر بأسلوب يقوم على امتلاك عدد محدود من الشركات الممتازة لفترات طويلة، مع تركيز واضح على جودة الإدارة، وقوة نموذج العمل، والقدرة على النمو بتوازن.</p>
+
+          <div style="background-color: #eff6ff; border: 3px solid #3b82f6; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 18px 0; color: #1e40af; font-size: 22px; font-weight: bold; text-align: center;">الفكرة المركزية</h4>
+            <p style="margin: 0; color: #1e3a8a; font-size: 19px; line-height: 1.8; text-align: center; font-weight: 600;">الاستثمار عند روشون ليس اختيار أسهم رخيصة فقط، بل اختيار أعمال عظيمة يقودها أشخاص مميزون، ثم منح الزمن فرصة ليكشف قيمتها.</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #3b82f6; padding-bottom: 12px;">من الهندسة إلى الاستثمار: ميزة العقل المنطقي</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">قبل أن يصبح مدير أموال، درس روشون الهندسة وعمل كباحث ومهندس في كندا. هذه الخلفية أعطته احتراماً للأرقام والمنطق والسببية. لكنه اكتشف لاحقاً كتابات بنجامين غراهام، وارن بافيت، بيتر لينش، وغيرهم من كبار المستثمرين، فبدأ ينظر إلى الشركات كما ينظر المهندس إلى نظام معقد: ما مصادر القوة؟ أين نقاط الضعف؟ ما الذي يمكن أن يفشل؟ وما الذي يمكن أن يستمر؟</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">لكن روشون تعلّم أيضاً أن الاستثمار لا يشبه المختبر. في العلم، تريد دليلاً شبه كامل قبل الحكم. في السوق، الانتظار حتى تكتمل كل الحقائق يعني غالباً أن الفرصة اختفت. لذلك يصبح الحكم البشري جزءاً أساسياً من العملية: تجمع الحقائق، تفهم الاحتمالات، ثم تتخذ قراراً مع إدراك أن الخطأ جزء من اللعبة.</p>
+
+          <div style="background-color: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 12px; padding: 26px; margin: 32px 0;">
+            <h4 style="margin: 0 0 16px 0; color: #075985; font-size: 22px; font-weight: bold; text-align: center;">درس المهندس المستثمر</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #e0f2fe; padding: 18px; border-radius: 8px; color: #0c4a6e; font-weight: 600;">الأرقام ضرورية لفهم الواقع، لكنها لا تكفي وحدها للتنبؤ بالمستقبل.</div>
+              <div style="background-color: #e0f2fe; padding: 18px; border-radius: 8px; color: #0c4a6e; font-weight: 600;">التحليل الجيد يقلل الأخطاء، لكنه لا يلغي عدم اليقين.</div>
+              <div style="background-color: #e0f2fe; padding: 18px; border-radius: 8px; color: #0c4a6e; font-weight: 600;">المستثمر الناجح لا يحتاج أن يكون مصيباً دائماً، بل أن تكون قراراته الكبيرة صحيحة بما يكفي.</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #10b981; padding-bottom: 12px;">Giverny Capital: الاستثمار باسم فني</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">اختار روشون اسم Giverny تيمناً بالقرية الفرنسية المرتبطة بالرسام كلود مونيه. الاسم ليس تفصيلاً عابراً؛ فهو يعكس اهتمامه بالفن، ونظرته إلى الاستثمار كعملية تجمع بين الانضباط والحس الجمالي. كما أن مونيه لم يرسم لوحاته بضربة واحدة، لا يبني المستثمر الجيد محفظته بقرار سريع واحد.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">فلسفة Giverny بسيطة في ظاهرها: امتلك شركات ممتازة على المدى الطويل. لكن التطبيق صعب، لأن السوق يغريك كل يوم بالتبديل والمقارنة والقلق. لذلك يؤكد روشون على التفكير المستقل، التواضع، ومراجعة الأخطاء بانتظام. لا يركز على أن تربح أكثر من الآخرين في كل ربع سنة، بل على تحسين العملية التي تمنحك نتائج جيدة عبر عقود.</p>
+
+          <div style="background-color: #ecfdf5; border: 3px solid #10b981; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #065f46; font-size: 22px; font-weight: bold; text-align: center;">ثقافة Giverny في أربع كلمات</h4>
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #10b981;">
+                <h5 style="color: #047857; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">العقلانية</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">لا تسمح لضجيج السوق، أو أداء الآخرين، أو عناوين الأخبار بأن تحدد قراراتك.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #14b8a6;">
+                <h5 style="color: #0f766e; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">الصبر</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">الشركات العظيمة تحتاج سنوات حتى تظهر قوتها كاملة في الأرباح والقيمة السوقية.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #06b6d4;">
+                <h5 style="color: #0e7490; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">التواضع</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">السوق قادر دائماً على إذلال من يعتقد أنه فهم كل شيء. التواضع يحمي العملية من الثقة الزائدة.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #3b82f6;">
+                <h5 style="color: #1e40af; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">المراجعة</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">كل خطأ هو فرصة لتحسين معايير الاختيار وفهم طبيعة الأعمال بشكل أعمق.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #8b5cf6; padding-bottom: 12px;">كيف يختار روشون الشركات؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">لا يبحث روشون عن شركات عادية بسعر رخيص فقط. هدفه هو العثور على أعمال ذات جودة عالية يمكنها مضاعفة قيمتها بمرور الوقت. في إطار Giverny، ينظر الفريق عادة إلى أفق يقارب خمس سنوات، ويبحث عن شراء الشركة بسعر أقل بكثير من القيمة المتوقعة لاحقاً. الفكرة هي أن يكون العائد المتوقع كبيراً بما يكفي ليعوض الانتظار والمخاطر.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">من المعايير المهمة لديه قوة العائد على حقوق الملكية، نمو ربحية السهم، انخفاض المديونية مقارنة بالأرباح، وضوح نموذج العمل، والقدرة على الحفاظ على ميزة تنافسية. لكنه لا يتوقف عند الأرقام. يريد أيضاً شركة تقود سوقها، وتملك منتجاً أو خدمة يصعب استبدالها، وتعمل في مجال لا يعتمد كلياً على دورة اقتصادية قاسية.</p>
+
+          <div style="background-color: #faf5ff; border: 3px solid #8b5cf6; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #6b21a8; font-size: 22px; font-weight: bold; text-align: center;">قائمة فحص جودة الشركة</h4>
+            <ul style="margin: 0; padding-right: 24px; color: #581c87; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 10px;">هل تحقق الشركة عائداً مرتفعاً ومستداماً على رأس المال؟</li>
+              <li style="margin-bottom: 10px;">هل تنمو الأرباح لكل سهم بمعدل صحي عبر سنوات؟</li>
+              <li style="margin-bottom: 10px;">هل المديونية تحت السيطرة ولا تهدد مرونة العمل؟</li>
+              <li style="margin-bottom: 10px;">هل تملك الشركة ميزة تنافسية مفهومة وليست مجرد قصة تسويقية؟</li>
+              <li>هل السعر الحالي يترك مجالاً لعائد جيد خلال خمس سنوات تقريباً؟</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #f59e0b; padding-bottom: 12px;">الإدارة: المهارة وحدها لا تكفي</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">من أقوى أفكار روشون أن الإدارة الجيدة يجب أن تكون ماهرة وشغوفة في الوقت نفسه. المدير التنفيذي البارع رقمياً لكنه غير مهتم ببناء شيء عظيم قد ينجح لفترة قصيرة، لكنه لا يصنع غالباً ثقافة طويلة الأمد. لذلك يبحث روشون عن قادة لديهم رؤية، واهتمام حقيقي بالعمل، ورغبة في بناء شركة أفضل لا مجرد تحسين نتيجة الربع القادم.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">كما يهتم بمبدأ "skin in the game"، أي أن يكون لدى الإدارة ملكية معتبرة في الشركة. عندما يملك القادة جزءاً حقيقياً من العمل، تصبح قراراتهم أقرب إلى قرارات المالك لا الموظف المؤقت. هذا لا يضمن النجاح، لكنه يجعل الحوافز أكثر اتساقاً مع المساهمين.</p>
+
+          <div style="background-color: #fffbeb; border: 3px solid #f59e0b; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #92400e; font-size: 22px; font-weight: bold; text-align: center;">أسئلة عن الإدارة قبل الشراء</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">هل يتحدث المديرون كمالكين أم كمسوقين للسهم؟</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">هل قراراتهم التاريخية رفعت قيمة الشركة أم بددت رأس المال؟</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">هل يملكون حصة شخصية كافية تجعلهم يشعرون بنتائج قراراتهم؟</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #78350f; line-height: 1.7;">هل لديهم رؤية تتجاوز إرضاء السوق في الربع القادم؟</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #ef4444; padding-bottom: 12px;">لماذا يقول إن الاستثمار فن؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">الفن في الاستثمار لا يعني الحدس العشوائي أو تجاهل الأرقام. عند روشون، الفن هو القدرة على الحكم على عناصر يصعب قياسها بدقة: جودة الثقافة، عمق الميزة التنافسية، قدرة الإدارة على التكيف، واستدامة الطلب على المنتج. هذه أمور تظهر جزئياً في الأرقام، لكنها لا تختزل فيها.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هنا تلتقي المدرسة العلمية بالمدرسة الفنية. العلم يمنحك أدوات القياس، والفن يمنحك القدرة على الحكم عندما تكون الصورة ناقصة. المستثمر الذي يعتمد على العلم وحده قد يشتري شركات تبدو جميلة في الجداول لكنها ضعيفة في الواقع. والمستثمر الذي يعتمد على الفن وحده قد يقع في حب قصص جذابة لا تدعمها الأرقام.</p>
+
+          <div style="background-color: #fef2f2; border: 3px solid #ef4444; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #991b1b; font-size: 22px; font-weight: bold; text-align: center;">التوازن الصحيح</h4>
+            <p style="margin: 0; color: #7f1d1d; font-size: 18px; line-height: 1.8; text-align: center; font-weight: 600;">الأرقام تمنعك من الانخداع بالقصة، والقصة الجيدة تساعدك على فهم معنى الأرقام. الاستثمار الممتاز يحتاج الاثنين معاً.</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif;">ماذا يتعلم المستثمر العربي من فرانسوا روشون؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">أهم ما في قصة روشون أنها لا تعتمد على أسرار معقدة. لا توجد معادلة سحرية ولا توقعات يومية للسوق. هناك عملية واضحة: ابحث عن شركة عالية الجودة، افهم إدارتها وحوافزها، ادفع سعراً معقولاً، ثم كن صبوراً بما يكفي حتى تظهر قوة العمل في النتائج.</p>
+
+          <div style="background-color: #f0f9ff; border: 3px solid #0ea5e9; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #075985; font-size: 22px; font-weight: bold; text-align: center;">خطة تطبيق عملية</h4>
+            <ol style="margin: 0; padding-right: 24px; color: #0c4a6e; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 12px;"><strong>ابدأ بالجودة لا السعر:</strong> السهم الرخيص في شركة سيئة قد يكون فخاً، أما الشركة الممتازة بسعر عادل فقد تكون فرصة طويلة الأمد.</li>
+              <li style="margin-bottom: 12px;"><strong>ادرس الإدارة:</strong> اقرأ رسائل المساهمين، قرارات تخصيص رأس المال، ونسبة ملكية الإدارة.</li>
+              <li style="margin-bottom: 12px;"><strong>فكر في خمس سنوات:</strong> اسأل أين يمكن أن تكون أرباح الشركة وقيمتها بعد عدة سنوات، لا أين سيذهب السهم الأسبوع القادم.</li>
+              <li style="margin-bottom: 12px;"><strong>راجع أخطاءك:</strong> لا تكتف بخسارة المال؛ استخرج منها قاعدة جديدة تحسن عمليتك.</li>
+              <li><strong>حافظ على التواضع:</strong> حتى أفضل المستثمرين يخطئون. المهم أن تبقى العملية أقوى من غرورك.</li>
+            </ol>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الخلاصة: الاستثمار كحرفة طويلة الأمد</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">فرانسوا روشون يعلّمنا أن الاستثمار ليس سباق ذكاء قصير، بل حرفة تتطور بالملاحظة والمراجعة والصبر. تحتاج إلى عقل يحترم الأرقام، وعين ترى جودة العمل، ونفس قادرة على تحمل فترات لا يكافئك فيها السوق فوراً.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"الأرقام تخبرك بما حدث، والفن يساعدك على الحكم على ما يمكن أن يحدث. المستثمر الجيد يحتاج الاثنين."</p>
+          </div>
+
+          <div style="background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600; line-height: 1.8;">ملاحظة: هذا المقال تعليمي ولا يمثل توصية بشراء أو بيع أي ورقة مالية. استخدم أفكار روشون كإطار لفهم جودة الأعمال وإدارة المخاطر.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 21) {
+      return `
+        <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
+          <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">موهنيش بابراي: كيف حوّل استنساخ أفضل الأفكار إلى فلسفة استثمارية قوية</h2>
+
+          <p style="font-size: 20px; font-weight: 400; margin-bottom: 24px; color: #555; line-height: 1.8; text-align: justify;">في عالم الاستثمار، يحب كثيرون الظهور بمظهر العبقري صاحب الأفكار الأصلية. موهنيش بابراي اختار طريقاً مختلفاً تماماً: أن يتعلم من الأفضل، أن ينسخ المبادئ التي أثبتت نجاحها، ثم أن يطبقها بانضباط شديد. هذه البساطة هي ما جعلت قصته مهمة لكل مستثمر يريد فهماً عملياً للاستثمار القيمي بعيداً عن الضجيج.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">ولد بابراي في مومباي عام 1964، وانتقل لاحقاً إلى الولايات المتحدة، ودرس هندسة الحاسوب في جامعة كليمسون. لكنه لم يشتهر كمهندس، بل كمستثمر قيمي بنى طريقته على دراسة وارن بافيت وتشارلي منغر وبنجامين غراهام. الفكرة المركزية عنده ليست أن تكون أذكى من السوق كل يوم، بل أن تنتظر الفرص النادرة التي تكون فيها الاحتمالات لصالحك بوضوح.</p>
+
+          <div style="background-color: #fff7ed; border: 3px solid #f97316; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 18px 0; color: #9a3412; font-size: 22px; font-weight: bold; text-align: center;">الفكرة المختصرة</h4>
+            <p style="margin: 0; color: #7c2d12; font-size: 19px; line-height: 1.8; text-align: center; font-weight: 600;">بابراي لا يحاول اختراع لعبة جديدة. هو يبحث عن قواعد لعبة رابحة، يدرسها بعمق، ثم يلعبها بصبر وتركيز.</p>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #f97316; padding-bottom: 12px;">البداية: لحظة اكتشاف قوة التراكم</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في منتصف التسعينيات، كان بابراي قد جمع رأس مال جيداً من عمله في مجال التقنية. ثم قرأ عن سجل وارن بافيت الاستثنائي مع بيركشاير هاثاواي، ولاحظ ما يمكن أن تفعله العوائد المركبة عندما تستمر لعقود. لم تكن الفكرة مجرد أرباح سنوية، بل آلة زمنية مالية: كل سنة جيدة تزيد قوة السنة التي تليها.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هنا بدأ السؤال الذي غيّر مساره: إذا كانت مبادئ بافيت ومنغر منشورة في رسائل سنوية وكتب ومحاضرات، فلماذا لا يدرسها بجدية ويطبقها؟ هذه العقلية حولت الاستثمار عنده من نشاط جانبي إلى لعبة طويلة المدى، لعبة هدفها مضاعفة رأس المال عبر قرارات قليلة لكن محسوبة.</p>
+
+          <div style="background-color: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 26px; margin: 32px 0;">
+            <h4 style="margin: 0 0 16px 0; color: #1e40af; font-size: 22px; font-weight: bold; text-align: center;">معادلة بابراي العملية</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">ادرس المستثمرين العظماء بعمق</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">استخرج المبادئ القابلة للتطبيق</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">انتظر فرصاً قليلة بخصم واضح عن القيمة</div>
+              <div style="background-color: #dbeafe; padding: 18px; border-radius: 8px; color: #1e3a8a; font-weight: 600;">اترك التراكم يعمل بصمت</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #10b981; padding-bottom: 12px;">الاستنساخ الذكي: ليس تقليداً أعمى</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">أشهر ما يميز بابراي أنه لا يخجل من فكرة "الاستنساخ". لكنه لا يقصد نسخ الأسهم نفسها دون فهم، بل نسخ المبادئ: هامش الأمان، التركيز، الصبر، قراءة التقارير، وتجنب القرارات التي لا تملك فيها ميزة واضحة. الفرق كبير بين من يقلد النتيجة ومن يفهم العملية التي صنعت النتيجة.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في الاستثمار، الأصالة ليست دائماً ميزة. أحياناً تكون الميزة الحقيقية هي التواضع: أن تعترف بأن هناك من سبقك، وأن تختصر سنوات من التجربة بدراسة أخطائهم ونجاحاتهم. بابراي أخذ هذا المبدأ إلى أقصى حد، فتعلم من بافيت ومنغر في الاستثمار، ومن رواد آخرين في إدارة الوقت والعمل الخيري وبناء السمعة.</p>
+
+          <div style="background-color: #ecfdf5; border: 3px solid #10b981; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #065f46; font-size: 22px; font-weight: bold; text-align: center;">ما الذي ينسخه بابراي فعلاً؟</h4>
+            <div style="display: grid; gap: 16px;">
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #10b981;">
+                <h5 style="color: #047857; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">1. التفكير كمالك عمل</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">السهم ليس رقماً يتحرك على الشاشة فقط، بل حصة في شركة لها إدارة وتدفقات نقدية ومزايا تنافسية ومخاطر.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #14b8a6;">
+                <h5 style="color: #0f766e; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">2. هامش الأمان</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">لا يكفي أن تكون الشركة جيدة. يجب أن يكون السعر أقل بوضوح من القيمة التي تقدرها، لأن المستقبل لا يمنح ضمانات.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #06b6d4;">
+                <h5 style="color: #0e7490; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">3. المحفظة المركزة</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">عندما تكون الفكرة قوية ومدروسة، لا يحتاج المستثمر إلى عشرات المراكز الصغيرة التي يعرف عنها القليل. التركيز يزيد أثر القرارات الصحيحة، لكنه يتطلب بحثاً أعمق وانضباطاً أعلى.</p>
+              </div>
+
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 10px; border-right: 5px solid #3b82f6;">
+                <h5 style="color: #1e40af; font-size: 19px; font-weight: bold; margin: 0 0 10px 0;">4. قلة الحركة</h5>
+                <p style="margin: 0; color: #4a5568; line-height: 1.7;">الربح الكبير لا يأتي من كثرة البيع والشراء، بل من امتلاك فكرة صحيحة بسعر مناسب وترك الوقت يعمل.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #8b5cf6; padding-bottom: 12px;">فلسفة داندو: مخاطرة قليلة، عائد كبير</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">في كتابه "The Dhandho Investor"، يشرح بابراي فلسفة داندو المستوحاة من روح ريادة الأعمال الهندية: ابحث عن مواقف تكون فيها الخسارة المحتملة محدودة، بينما يكون العائد المحتمل كبيراً. العبارة الشائعة المرتبطة بهذه الفلسفة هي: إذا ربحت أربح كثيراً، وإذا خسرت لا أخسر كثيراً.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هذا لا يعني أن الاستثمار بلا مخاطر. بل يعني أن المستثمر الذكي لا يدخل الصفقة إلا بعد أن يفهم ما يمكن أن يسير بشكل خاطئ، ويقارن ذلك بما يمكن أن يحدث إذا كان تحليله صحيحاً. الاستثمار هنا يشبه إدارة الاحتمالات، لا مطاردة القصص الجميلة.</p>
+
+          <div style="background-color: #faf5ff; border: 3px solid #8b5cf6; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #6b21a8; font-size: 22px; font-weight: bold; text-align: center;">أسئلة داندو قبل أي استثمار</h4>
+            <ul style="margin: 0; padding-right: 24px; color: #581c87; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 10px;">هل أفهم هذا العمل بما يكفي لأقدّر قيمته؟</li>
+              <li style="margin-bottom: 10px;">ما الخسارة الواقعية إذا كنت مخطئاً؟</li>
+              <li style="margin-bottom: 10px;">هل السعر الحالي يمنحني هامش أمان واضحاً؟</li>
+              <li style="margin-bottom: 10px;">هل أملك الشجاعة للانتظار إذا لم يعترف السوق بالقيمة بسرعة؟</li>
+              <li>هل هذه فرصة نادرة فعلاً أم مجرد رغبة في فعل شيء؟</li>
+            </ul>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #ef4444; padding-bottom: 12px;">العلاقة مع بافيت ومنغر: دراسة قبل الصداقة</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">ارتبط اسم بابراي ببافيت ومنغر كثيراً، لكنه لم يبدأ قريباً منهما. بدأ قارئاً ومراقباً، يذهب إلى اجتماعات بيركشاير السنوية، ويدرس رسائل المساهمين، ويحاول فهم المنطق خلف القرارات. مع الوقت، تطورت العلاقة الشخصية، لكن الأهم للمستثمر الفردي هو أن بابراي استفاد من الحكمة المنشورة والمتاحة للجميع قبل أي علاقة خاصة.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">هذا درس مهم: كثير من أفضل مصادر التعلم لا تحتاج إلى وصول خاص. رسائل بافيت، كتب غراهام، محاضرات منغر، وتقارير الشركات كلها متاحة. المشكلة ليست نقص المعلومات، بل نقص الصبر والقدرة على تحويل المعرفة إلى سلوك يومي.</p>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif; border-bottom: 3px solid #f59e0b; padding-bottom: 12px;">صناديق بابراي: تركيز وصبر ونتائج متقلبة</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">أسس بابراي صناديق Pabrai Investment Funds عام 1999، مستلهماً هيكل شراكات بافيت القديمة. اشتهرت هذه الصناديق بتركيزها العالي وبحثها عن الشركات المقومة بأقل من قيمتها. وتشير بعض التقارير إلى أن أداء الصندوق بين 2000 و2018 كان قوياً جداً مقارنة بمؤشر S&amp;P 500، لكن المهم أن نفهم أن هذا النوع من الاستثمار لا يتحرك في خط مستقيم.</p>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">المحفظة المركزة يمكن أن تبدو عبقرية في فترات ومؤلمة في فترات أخرى. لذلك لا يمكن فصل فلسفة بابراي عن قدرته على تحمل التذبذب. من لا يستطيع نفسياً رؤية محفظته تتراجع لفترة، لن يستفيد من فكرة الصبر حتى لو فهمها نظرياً.</p>
+
+          <div style="background-color: #fef2f2; border: 3px solid #ef4444; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 20px 0; color: #991b1b; font-size: 22px; font-weight: bold; text-align: center;">الجانب الصعب من أسلوب بابراي</h4>
+            <div style="display: grid; gap: 14px;">
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #7f1d1d; line-height: 1.7;">التركيز يضخم الأخطاء كما يضخم النجاحات.</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #7f1d1d; line-height: 1.7;">الانتظار يبدو سهلاً في الكتب وصعباً عندما يتحرك السوق ضدك.</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #7f1d1d; line-height: 1.7;">هامش الأمان تقدير بشري، وليس رقماً مقدساً لا يخطئ.</div>
+              <div style="background-color: #ffffff; padding: 18px; border-radius: 8px; color: #7f1d1d; line-height: 1.7;">نسخ المبادئ مفيد، أما نسخ الصفقات دون فهم فقد يكون خطيراً.</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 26px; font-weight: bold; margin: 40px 0 20px 0; color: #2d3748; font-family: Georgia, serif;">ماذا يتعلم المستثمر العربي من موهنيش بابراي؟</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">قصة بابراي ليست دعوة لأن تشتري ما يشتريه، ولا أن تضع كل أموالك في عدد قليل من الأسهم. الدرس الحقيقي أعمق: الاستثمار الناجح يحتاج إلى نظام تفكير. تحتاج إلى دائرة كفاءة واضحة، وإلى طريقة لتقدير القيمة، وإلى قواعد تمنعك من مطاردة كل خبر أو سهم صاعد.</p>
+
+          <div style="background-color: #f0f9ff; border: 3px solid #0ea5e9; border-radius: 14px; padding: 28px; margin: 32px 0;">
+            <h4 style="margin: 0 0 22px 0; color: #075985; font-size: 22px; font-weight: bold; text-align: center;">خطة تطبيق من 5 خطوات</h4>
+            <ol style="margin: 0; padding-right: 24px; color: #0c4a6e; line-height: 1.9; font-size: 17px;">
+              <li style="margin-bottom: 12px;"><strong>اختر دائرة كفاءتك:</strong> لا تبدأ بالشركات المعقدة. ابدأ بما تفهم منتجاته وعملاءه ومصادر أرباحه.</li>
+              <li style="margin-bottom: 12px;"><strong>اقرأ التقارير السنوية:</strong> لا تعتمد على العناوين أو التغريدات. اقرأ الأرقام وكلام الإدارة والمخاطر.</li>
+              <li style="margin-bottom: 12px;"><strong>قدّر القيمة بتحفظ:</strong> استخدم افتراضات معقولة، ثم اطلب خصماً واضحاً قبل الشراء.</li>
+              <li style="margin-bottom: 12px;"><strong>اكتب سبب الشراء:</strong> إذا لم تستطع تلخيص الفكرة في صفحة واحدة، فأنت غالباً لا تفهمها بما يكفي.</li>
+              <li><strong>راجع السلوك لا السعر فقط:</strong> اسأل نفسك هل التزمت بالعملية أم تصرفت بسبب الخوف والطمع؟</li>
+            </ol>
+          </div>
+
+          <h3 style="font-size: 24px; font-weight: bold; margin: 32px 0 16px 0; color: #2d3748; font-family: Georgia, serif;">الخلاصة: العب اللعبة الطويلة</h3>
+
+          <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.8; text-align: justify;">موهنيش بابراي يذكّرنا بأن الاستثمار لا يحتاج دائماً إلى تعقيد. تحتاج إلى تعلم عميق، تواضع أمام من سبقوك، صبر طويل، واستعداد لقول "لا" لمعظم الفرص. في عالم يكافئ الحركة السريعة ظاهرياً، يبني المستثمر القيمي ميزته من الهدوء والانتظار.</p>
+
+          <div style="background-color: #d4edda; border-right: 4px solid #28a745; padding: 25px; margin: 30px 0; border-radius: 12px; text-align: center;">
+            <h3 style="font-size: 24px; font-weight: bold; margin: 0 0 15px 0; color: #155724;">الحكمة الذهبية</h3>
+            <p style="margin: 0; color: #155724; font-size: 18px; font-style: italic; line-height: 1.8;">"لا تربح لأنك تملك أفكاراً كثيرة، بل لأنك تملك أفكاراً قليلة صحيحة، وتمنحها الوقت الكافي."</p>
+          </div>
+
+          <div style="background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 32px 0; text-align: center;">
+            <p style="margin: 0; color: #92400e; font-size: 18px; font-weight: 600; line-height: 1.8;">ملاحظة: هذا المقال تعليمي ولا يمثل توصية بشراء أو بيع أي ورقة مالية. استخدم مبادئ بابراي كإطار تفكير، لا كقائمة صفقات جاهزة.</p>
+          </div>
+        </div>
+      `;
+    } else if (postId === 20) {
       return `
         <div class="article-body" style="font-family: Georgia, serif; line-height: 1.7; color: #333; direction: rtl; text-align: right;">
           <h2 style="font-size: 32px; font-weight: bold; margin: 32px 0 24px 0; color: #1a202c; font-family: Georgia, serif; text-align: center;">عقلية المتداول المحترف: قهر التحيزات الذهنية وبلوغ ذروة الأداء</h2>
@@ -2590,6 +2959,39 @@ const BlogPage: React.FC = () => {
 
   // Professional blog posts data
   const blogPosts: BlogPost[] = [
+    {
+      id: 23,
+      title: "بيركشاير هاثاواي ونسخة بافيت من يانكيز 1927",
+      excerpt: "في رسالة 1989، شبّه وارن بافيت مدراء بيركشاير بفريق نيويورك يانكيز الأسطوري لعام 1927. تعرّف على ما تكشفه قصص Borsheim’s وSee’s وNebraska Furniture Mart عن قوة الإدارة والثقافة وجودة الأعمال.",
+      category: "الاستثمار",
+      date: "2026-06-07",
+      readTime: "18 دقيقة قراءة",
+      imageUrl: "/blog images/berkshire-yankees.png",
+      tags: ["بيركشاير هاثاواي", "وارن بافيت", "جودة الإدارة", "See’s Candies", "عربي"],
+      slug: "بيركشاير-هاثاواي-يانكيز-1927"
+    },
+    {
+      id: 22,
+      title: "فرانسوا روشون وفن الاستثمار: كيف تختار شركات عظيمة لعقود",
+      excerpt: "اكتشف فلسفة فرانسوا روشون، مؤسس Giverny Capital، في الجمع بين العلم والفن داخل الاستثمار: جودة الإدارة، الملكية الشخصية، العائد على رأس المال، والصبر على الشركات الممتازة.",
+      category: "الاستثمار",
+      date: "2026-06-07",
+      readTime: "17 دقيقة قراءة",
+      imageUrl: "/blog images/francois-rochon.png",
+      tags: ["فرانسوا روشون", "الاستثمار القيمي", "Giverny Capital", "جودة الشركات", "عربي"],
+      slug: "فرانسوا-روشون-فن-الاستثمار"
+    },
+    {
+      id: 21,
+      title: "موهنيش بابراي: استنساخ وصفة بافيت لبناء ثروة بهدوء",
+      excerpt: "قصة موهنيش بابراي تكشف قوة الاستثمار القيمي عندما يجتمع التواضع الفكري مع الصبر والتركيز. تعرّف على فلسفة داندو، هامش الأمان، ولماذا يرى بابراي أن نسخ المبادئ الناجحة قد يكون ميزة لا عيباً.",
+      category: "الاستثمار",
+      date: "2026-06-05",
+      readTime: "18 دقيقة قراءة",
+      imageUrl: "/blog images/mohnish-pabrai.png",
+      tags: ["موهنيش بابراي", "الاستثمار القيمي", "وارن بافيت", "داندو", "عربي"],
+      slug: "موهنيش-بابراي-استنساخ-وصفة-بافيت"
+    },
     {
       id: 20,
       title: "عقلية المتداول المحترف: قهر التحيزات الذهنية وبلوغ ذروة الأداء",

@@ -28,70 +28,40 @@ if (!firebaseConfig.apiKey) {
   firebaseConfig.measurementId = "G-ABCDEFGHIJ";
 }
 
-// CRITICAL: Defer Firebase initialization until after first paint
-let app: any;
-let auth: any;
-let db: any;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 let analytics: any;
-let googleProvider: any;
-let isInitialized = false;
 
-// Initialize Firebase lazily - only when needed
-const initializeFirebase = () => {
-  if (isInitialized) return;
-
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-
-  // Initialize and configure Google Auth Provider
-  googleProvider = new GoogleAuthProvider();
-  googleProvider.setCustomParameters({
-    prompt: 'select_account'
-  });
-
-  isInitialized = true;
-};
-
-// Initialize Firebase after the page has loaded (non-blocking)
-if (typeof window !== 'undefined') {
-  // Wait for page to be interactive before initializing
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(initializeFirebase, 0);
-  } else {
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(initializeFirebase, 0);
-    });
-  }
-}
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 // Lazy getters with auto-initialization
 export const getAuthInstance = () => {
-  if (!isInitialized) initializeFirebase();
   return auth;
 };
 
 export const getDbInstance = () => {
-  if (!isInitialized) initializeFirebase();
   return db;
 };
 
 export const getGoogleProvider = () => {
-  if (!isInitialized) initializeFirebase();
   return googleProvider;
 };
 
 // Initialize Firebase Analytics lazily (only when user interacts)
 export const getAnalyticsInstance = () => {
   if (typeof window !== 'undefined' && !analytics) {
-    if (!isInitialized) initializeFirebase();
-
     // Only initialize analytics after user interaction (mobile optimization)
     const initAnalytics = () => {
       if (!analytics) {
-        const { getAnalytics } = require('firebase/analytics');
-        analytics = getAnalytics(app);
-        console.log('📊 Firebase Analytics initialized');
+        try {
+          analytics = getAnalytics(app);
+        } catch (error) {
+          console.warn('Firebase Analytics unavailable:', error);
+        }
       }
     };
 
@@ -107,5 +77,4 @@ export const getAnalyticsInstance = () => {
   return analytics;
 };
 
-// Legacy exports for backward compatibility - these will auto-initialize when accessed
 export { auth, db, googleProvider, analytics };

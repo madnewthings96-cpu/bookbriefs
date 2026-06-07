@@ -18,6 +18,7 @@ Disallow: /profile
 Disallow: /reading-challenge
 Disallow: /downloads
 Disallow: /feedback
+Disallow: /pdfs/
 Disallow: /*?*utm_source=
 Disallow: /*?*utm_medium=
 Disallow: /*?*utm_campaign=

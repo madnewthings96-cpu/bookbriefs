@@ -96,6 +96,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
       } else {
         // Create new challenge
         await setDoc(challengeRef, {
+          userId: user.id,
           year: currentYear,
           goal,
           booksRead: [],

@@ -49,13 +49,18 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     setError('');
 
     try {
+      if (!user) {
+        setError('Please sign in to submit feedback.');
+        return;
+      }
+
       // Save feedback to Firestore
       const feedbackRef = collection(db, 'feedback');
       await addDoc(feedbackRef, {
         message: feedback.trim(),
-        userId: user?.id || 'anonymous',
-        userEmail: user?.email || 'anonymous',
-        userName: user?.name || 'Anonymous User',
+        userId: user.id,
+        userEmail: user.email,
+        userName: user.name,
         timestamp: serverTimestamp(),
         page: window.location.pathname,
         userAgent: navigator.userAgent,

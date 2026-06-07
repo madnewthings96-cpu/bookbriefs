@@ -22,11 +22,11 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
 
   return (
-    <Link to={bookUrl} className="block group">
-      <div className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200">
-        <div className="aspect-[3/4] overflow-hidden relative">
+    <Link to={bookUrl} className="block group focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-300/35 rounded-[18px]">
+      <div className="bg-white rounded-[18px] polished-surface overflow-hidden">
+        <div className="aspect-[3/4] overflow-hidden relative rounded-t-[18px] book-cover-outline">
           <img
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
             src={book.coverImageUrl}
             alt={`Cover of ${translatedTitle}`}
             loading="lazy"
@@ -38,10 +38,10 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           </div>
         </div>
         <div className="p-3">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors duration-300">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-orange-600 transition-colors duration-300 text-balance">
             {translatedTitle}
           </h3>
-          <p className="text-xs text-gray-600 line-clamp-1 mb-2">{translatedAuthor}</p>
+          <p className="text-xs text-gray-600 line-clamp-1 mb-2 text-pretty">{translatedAuthor}</p>
 
           {/* Rating */}
           {book.rating && (
@@ -60,12 +60,12 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
                   </svg>
                 ))}
               </div>
-              <span className="text-xs font-medium text-gray-700">{book.rating.toFixed(1)}</span>
+              <span className="text-xs font-medium text-gray-700 tabular-nums">{book.rating.toFixed(1)}</span>
             </div>
           )}
 
           <div className="mt-2 flex items-center">
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.12)]">
               Summary
             </span>
           </div>

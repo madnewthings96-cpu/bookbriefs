@@ -5,6 +5,19 @@ import { db } from '../firebase';
 import useSEO from '../hooks/useSEO';
 import ReceiptScanner from '../components/ReceiptScanner';
 import {
+    ArrowDownRight,
+    ArrowUpRight,
+    CalendarDays,
+    Download,
+    Plus,
+    ReceiptText,
+    Target,
+    Trash2,
+    TrendingDown,
+    TrendingUp,
+    WalletCards,
+} from 'lucide-react';
+import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell
 } from 'recharts';
@@ -36,6 +49,21 @@ const CATEGORIES = {
 
 const PIE_COLORS = ['#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280'];
 const GOAL_EMOJIS = ['🚗', '🏖️', '🏠', '💻', '📱', '🎓', '💍', '🎸', '🏋️', '✈️'];
+
+const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+    }).format(value);
+
+const formatCompactCurrency = (value: number) =>
+    new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        notation: 'compact',
+        maximumFractionDigits: 1,
+    }).format(value);
 
 const FinanceTrackerPage: React.FC = () => {
     const { currentUser } = useFirebase();
@@ -174,6 +202,27 @@ const FinanceTrackerPage: React.FC = () => {
         transactions.forEach((t) => months.add(t.date.substring(0, 7)));
         return Array.from(months).sort().reverse();
     }, [transactions]);
+
+    const savingsRate = useMemo(() => {
+        if (stats.totalIncome <= 0) return 0;
+        return Math.round((stats.balance / stats.totalIncome) * 100);
+    }, [stats.balance, stats.totalIncome]);
+
+    const periodLabel = useMemo(() => {
+        if (selectedMonth === 'all') return 'All time';
+        return new Date(`${selectedMonth}-01`).toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric',
+        });
+    }, [selectedMonth]);
+
+    const topExpenseCategory = pieChartData[0]?.name || 'No category yet';
+    const totalGoalProgress = useMemo(() => {
+        if (goals.length === 0) return 0;
+        const targetTotal = goals.reduce((sum, goal) => sum + goal.targetAmount, 0);
+        const currentTotal = goals.reduce((sum, goal) => sum + goal.currentAmount, 0);
+        return targetTotal > 0 ? Math.min(Math.round((currentTotal / targetTotal) * 100), 100) : 0;
+    }, [goals]);
 
     // Export CSV
     const handleExportCSV = () => {
@@ -342,162 +391,241 @@ const FinanceTrackerPage: React.FC = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-6 space-y-6" style={{ fontFamily: "'Manrope', sans-serif" }}>
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-                <div className="flex items-center gap-3">
-                    <select
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-400 bg-white"
-                    >
-                        <option value="all">All Time</option>
-                        {availableMonths.map((month) => (
-                            <option key={month} value={month}>
-                                {new Date(month + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-                            </option>
-                        ))}
-                    </select>
-                    <ReceiptScanner onScanComplete={handleScanComplete} />
-                    <button
-                        onClick={() => setShowForm(true)}
-                        className="uiverse-btn"
-                    >
-                        <span>ADD NEW <span className="text-base text-lg-adjust">+</span></span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                {/* Bar Chart - Accounts */}
-                <div className="lg:col-span-3 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Accounts</h2>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <BarChart data={monthlyChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
-                            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} tickFormatter={(v) => v >= 1000 ? `${v / 1000}K` : v} />
-                            <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} contentStyle={{ borderRadius: '8px', border: '1px solid #E5E7EB' }} />
-                            <Legend wrapperStyle={{ paddingTop: '10px' }} />
-                            <Bar dataKey="Income" fill="#1F2937" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="Expenses" fill="#F59E0B" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
+        <div className="min-h-screen bg-[#F6F7F9] px-4 py-6 md:py-8" style={{ fontFamily: "'Manrope', sans-serif" }}>
+            <div className="mx-auto max-w-7xl space-y-6">
+                {/* Header */}
+                <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <div className="mb-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_26px_rgba(17,24,39,0.06)]">
+                            <CalendarDays className="h-4 w-4 text-orange-500" aria-hidden="true" />
+                            <span>{periodLabel}</span>
+                        </div>
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">Finance tracker</h1>
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 text-pretty">
+                            Track spending, scan receipts, and keep goals visible without leaving your reading workflow.
+                        </p>
+                    </div>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <select
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            className="min-h-10 rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[box-shadow,background-color] duration-200 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                        >
+                            <option value="all">All Time</option>
+                            {availableMonths.map((month) => (
+                                <option key={month} value={month}>
+                                    {new Date(month + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                                </option>
+                            ))}
+                        </select>
+                        <ReceiptScanner
+                            onScanComplete={handleScanComplete}
+                            className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-gray-50"
+                            label="Scan receipt"
+                        />
+                        <button
+                            onClick={() => setShowForm(true)}
+                            className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 text-sm font-bold text-white shadow-[0_1px_2px_rgba(127,29,29,0.12),0_14px_30px_rgba(249,115,22,0.26)] transition-[transform,box-shadow,background-color] duration-200 hover:shadow-[0_1px_2px_rgba(127,29,29,0.12),0_18px_36px_rgba(249,115,22,0.32)]"
+                        >
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            Add transaction
+                        </button>
+                    </div>
                 </div>
 
-                {/* Pie Chart - Expenses by Category */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Expenses by category</h2>
-                    {pieChartData.length > 0 ? (
-                        <>
-                            <ResponsiveContainer width="100%" height={200}>
-                                <PieChart>
-                                    <Pie
-                                        data={pieChartData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={80}
-                                        paddingAngle={2}
-                                        dataKey="value"
-                                    >
-                                        {pieChartData.map((_, index) => (
-                                            <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                            <div className="text-center -mt-24 mb-16">
-                                <p className="text-2xl font-bold text-gray-800">${stats.totalExpenses.toLocaleString()}</p>
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-[24px] bg-[#E7EBDF] p-5 text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_18px_44px_rgba(71,85,62,0.14)]">
+                        <div className="mb-5 flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700">Net balance</span>
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/65 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.06)]">
+                                <WalletCards className="h-5 w-5 text-gray-800" aria-hidden="true" />
+                            </span>
+                        </div>
+                        <p className={`text-3xl font-bold tabular-nums ${stats.balance < 0 ? 'text-red-600' : 'text-gray-950'}`}>
+                            {formatCurrency(stats.balance)}
+                        </p>
+                        <p className="mt-2 text-xs text-gray-600">Income minus expenses for {periodLabel.toLowerCase()}.</p>
+                    </div>
+
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
+                        <div className="mb-5 flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-500">Income</span>
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                                <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                        </div>
+                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalIncome)}</p>
+                        <p className="mt-2 text-xs text-gray-400">{filteredTransactions.filter((t) => t.type === 'income').length} income entries</p>
+                    </div>
+
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
+                        <div className="mb-5 flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-500">Expenses</span>
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
+                                <ArrowDownRight className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                        </div>
+                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalExpenses)}</p>
+                        <p className="mt-2 text-xs text-gray-400">{topExpenseCategory}</p>
+                    </div>
+
+                    <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
+                        <div className="mb-5 flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-500">Savings rate</span>
+                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                                <TrendingUp className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                        </div>
+                        <p className={`text-3xl font-bold tabular-nums ${savingsRate < 0 ? 'text-red-600' : 'text-gray-950'}`}>{savingsRate}%</p>
+                        <p className="mt-2 text-xs text-gray-400">{filteredTransactions.length} transactions tracked</p>
+                    </div>
+                </div>
+
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+                    <div className="lg:col-span-3 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+                        <div className="mb-5 flex items-start justify-between gap-4">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">Cashflow</h2>
+                                <p className="mt-1 text-sm text-gray-500">Income and expenses across the last 12 months.</p>
                             </div>
-                            <div className="flex flex-wrap gap-3 justify-center text-xs">
-                                {pieChartData.map((item, index) => (
-                                    <div key={item.name} className="flex items-center gap-1.5">
-                                        <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
-                                        <span className="text-gray-600">{item.name}</span>
+                            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-500 tabular-nums">
+                                {formatCompactCurrency(stats.balance)}
+                            </span>
+                        </div>
+                        <ResponsiveContainer width="100%" height={290}>
+                            <BarChart data={monthlyChartData} margin={{ top: 8, right: 16, left: 0, bottom: 6 }}>
+                                <CartesianGrid strokeDasharray="4 6" vertical={false} stroke="#E5E7EB" />
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} tickFormatter={(v) => v >= 1000 ? `${v / 1000}K` : v} />
+                                <Tooltip formatter={(value: number) => [formatCurrency(value), '']} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
+                                <Legend wrapperStyle={{ paddingTop: '12px' }} />
+                                <Bar dataKey="Income" fill="#111827" radius={[8, 8, 0, 0]} />
+                                <Bar dataKey="Expenses" fill="#F97316" radius={[8, 8, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    <div className="lg:col-span-2 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+                        <div className="mb-5 flex items-start justify-between gap-4">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">Spending mix</h2>
+                                <p className="mt-1 text-sm text-gray-500">Top categories for the selected period.</p>
+                            </div>
+                            <TrendingDown className="h-5 w-5 text-orange-500" aria-hidden="true" />
+                        </div>
+                        {pieChartData.length > 0 ? (
+                            <>
+                                <div className="relative">
+                                    <ResponsiveContainer width="100%" height={220}>
+                                        <PieChart>
+                                            <Pie
+                                                data={pieChartData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={64}
+                                                outerRadius={88}
+                                                paddingAngle={3}
+                                                dataKey="value"
+                                            >
+                                                {pieChartData.map((_, index) => (
+                                                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                        <div className="text-center">
+                                            <p className="text-xs font-medium text-gray-400">Spent</p>
+                                            <p className="text-xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalExpenses)}</p>
+                                        </div>
                                     </div>
-                                ))}
+                                </div>
+                                <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                                    {pieChartData.map((item, index) => (
+                                        <div key={item.name} className="flex min-h-9 items-center gap-2 rounded-xl bg-gray-50 px-3 py-2">
+                                            <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
+                                            <span className="truncate text-gray-600">{item.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex min-h-[250px] flex-col items-center justify-center rounded-2xl bg-gray-50 px-6 text-center">
+                                <ReceiptText className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
+                                <p className="font-semibold text-gray-700">No expense data yet</p>
+                                <p className="mt-1 text-sm text-gray-400">Add or scan an expense to see your category mix.</p>
                             </div>
-                        </>
-                    ) : (
-                        <div className="flex items-center justify-center h-48 text-gray-400">No expense data</div>
-                    )}
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {/* Summary Cards + Transactions Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Left Column - Stats & Goals */}
-                <div className="lg:col-span-1 space-y-6">
-                    {/* Income Card */}
-                    <div className="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
-                        <p className="text-gray-500 text-sm">Incomes</p>
-                        <p className="text-3xl font-bold text-gray-800 mt-1">${stats.totalIncome.toLocaleString()}</p>
-                        <p className="text-gray-400 text-xs mt-1">amount of income</p>
-                    </div>
-                    {/* Expenses Card */}
-                    <div className="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
-                        <p className="text-gray-500 text-sm">Expenses</p>
-                        <p className="text-3xl font-bold text-gray-800 mt-1">${stats.totalExpenses.toLocaleString()}</p>
-                        <p className="text-gray-400 text-xs mt-1">amount of expenses</p>
-                    </div>
-                    {/* Goals Section */}
-                    <div className="bg-white rounded-2xl shadow-lg p-5 border border-gray-100">
-                        <div className="flex items-center justify-between mb-3">
-                            <p className="text-gray-500 text-sm font-medium">Goals</p>
+                {/* Goals + Transactions Row */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    <div className="lg:col-span-4 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+                        <div className="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">Goals</h2>
+                                <p className="mt-1 text-sm text-gray-500 tabular-nums">{totalGoalProgress}% funded overall</p>
+                            </div>
                             <button
                                 onClick={() => setShowGoalForm(true)}
-                                className="text-xs text-orange-500 font-medium border border-orange-200 px-2 py-1 rounded-md hover:bg-orange-50"
+                                className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-orange-50 px-3 py-2 text-xs font-bold text-orange-700 transition-[transform,background-color] duration-200 hover:bg-orange-100"
                             >
-                                NEW GOAL +
+                                <Target className="h-4 w-4" aria-hidden="true" />
+                                New goal
                             </button>
                         </div>
-                        <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                        <div className="space-y-3">
                             {goals.length === 0 ? (
-                                <p className="text-gray-400 text-center py-4 text-sm">No goals yet</p>
+                                <div className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl bg-gray-50 px-6 text-center">
+                                    <Target className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
+                                    <p className="font-semibold text-gray-700">No goals yet</p>
+                                    <p className="mt-1 text-sm text-gray-400">Create a savings target and track progress alongside your spending.</p>
+                                </div>
                             ) : (
                                 goals.map((goal) => {
                                     const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
                                     return (
-                                        <div key={goal.id} className="p-3 bg-gray-50 rounded-lg group relative">
+                                        <div key={goal.id} className="group relative rounded-2xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
                                             <button
                                                 onClick={() => handleDeleteGoal(goal.id)}
-                                                className="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="pressable absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 opacity-0 transition-[opacity,transform,color,background-color] duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+                                                aria-label={`Delete ${goal.name}`}
                                             >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                <Trash2 className="h-4 w-4" aria-hidden="true" />
                                             </button>
-                                            <div className="flex justify-between items-start">
+                                            <div className="flex items-start justify-between gap-4 pr-8">
                                                 <div>
-                                                    <p className="font-medium text-gray-800 text-sm">{goal.emoji} {goal.name}</p>
-                                                    <p className="text-xs text-gray-400">Target: {goal.targetDate ? new Date(goal.targetDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'No date'}</p>
+                                                    <p className="font-semibold text-gray-900">{goal.emoji} {goal.name}</p>
+                                                    <p className="mt-1 text-xs text-gray-400">Target: {goal.targetDate ? new Date(goal.targetDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'No date'}</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-xs text-gray-500">Collected <span className="font-semibold text-gray-800">{goal.currentAmount.toLocaleString()}$</span></p>
-                                                    <p className="text-xs text-gray-400">Target: {goal.targetAmount.toLocaleString()}$</p>
+                                                    <p className="text-sm font-bold text-gray-900 tabular-nums">{formatCurrency(goal.currentAmount)}</p>
+                                                    <p className="text-xs text-gray-400 tabular-nums">of {formatCurrency(goal.targetAmount)}</p>
                                                 </div>
                                             </div>
-                                            <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-                                                <div className="bg-orange-500 h-1.5 rounded-full transition-all" style={{ width: `${Math.min(progress, 100)}%` }}></div>
+                                            <div className="mt-4 h-2 w-full rounded-full bg-gray-200">
+                                                <div className="h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-[width] duration-300" style={{ width: `${Math.min(progress, 100)}%` }} />
                                             </div>
                                             {addAmountGoalId === goal.id ? (
-                                                <div className="mt-2 flex gap-2">
+                                                <div className="mt-3 flex gap-2">
                                                     <input
                                                         type="number"
                                                         value={addAmount}
                                                         onChange={(e) => setAddAmount(e.target.value)}
                                                         placeholder="Amount"
-                                                        className="flex-1 px-2 py-1 border rounded text-xs"
+                                                        className="min-h-10 flex-1 rounded-xl bg-white px-3 py-2 text-sm shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
                                                     />
-                                                    <button onClick={() => handleAddToGoal(goal.id)} className="px-2 py-1 bg-green-500 text-white rounded text-xs">Add</button>
-                                                    <button onClick={() => setAddAmountGoalId(null)} className="px-2 py-1 bg-gray-200 rounded text-xs">Cancel</button>
+                                                    <button onClick={() => handleAddToGoal(goal.id)} className="pressable min-h-10 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition-[transform,background-color] duration-200">Add</button>
+                                                    <button onClick={() => setAddAmountGoalId(null)} className="pressable min-h-10 rounded-xl bg-white px-3 py-2 text-xs font-bold text-gray-600 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] transition-[transform,background-color] duration-200">Cancel</button>
                                                 </div>
                                             ) : (
                                                 <button
                                                     onClick={() => setAddAmountGoalId(goal.id)}
-                                                    className="mt-2 text-xs text-orange-500 hover:underline"
+                                                    className="pressable mt-3 min-h-10 rounded-xl px-3 py-2 text-sm font-semibold text-orange-600 transition-[transform,background-color] duration-200 hover:bg-orange-50"
                                                 >
                                                     + Add funds
                                                 </button>
@@ -508,76 +636,88 @@ const FinanceTrackerPage: React.FC = () => {
                             )}
                         </div>
                     </div>
-                </div>
 
-                {/* Right Column - Transactions Table */}
-                <div className="lg:col-span-3 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-lg font-semibold text-gray-800">Recent transactions</h2>
-                            <p className="text-gray-400 text-xs">All your transactions are recorded</p>
+                    <div className="lg:col-span-8 overflow-hidden rounded-[24px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
+                        <div className="flex items-center justify-between gap-4 px-5 py-5 md:px-6">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">Recent transactions</h2>
+                                <p className="mt-1 text-sm text-gray-500 tabular-nums">{filteredTransactions.length} entries for {periodLabel.toLowerCase()}</p>
+                            </div>
+                            <button
+                                onClick={handleExportCSV}
+                                className="pressable flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-500 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-800"
+                                aria-label="Export CSV"
+                            >
+                                <Download className="h-4 w-4" aria-hidden="true" />
+                            </button>
                         </div>
-                        <button onClick={handleExportCSV} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        </button>
-                    </div>
-                    {isLoading ? (
-                        <div className="p-8 text-center">
-                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500 mx-auto"></div>
-                        </div>
-                    ) : filteredTransactions.length === 0 ? (
-                        <div className="p-8 text-center text-gray-400">No transactions found.</div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                                <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left">Transactions</th>
-                                        <th className="px-6 py-3 text-left hidden sm:table-cell">Transaction date</th>
-                                        <th className="px-6 py-3 text-left hidden md:table-cell">Category</th>
-                                        <th className="px-6 py-3 text-left hidden lg:table-cell">Status</th>
-                                        <th className="px-6 py-3 text-right">Amount</th>
-                                        <th className="px-2 py-3"></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {filteredTransactions.slice(0, 10).map((txn) => (
-                                        <tr key={txn.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 font-medium text-gray-800">{txn.description}</td>
-                                            <td className="px-6 py-4 text-gray-500 hidden sm:table-cell">{new Date(txn.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                                            <td className="px-6 py-4 text-gray-500 hidden md:table-cell">{txn.category}</td>
-                                            <td className="px-6 py-4 hidden lg:table-cell"><span className="text-emerald-500 font-medium">Success</span></td>
-                                            <td className={`px-6 py-4 text-right font-semibold ${txn.type === 'income' ? 'text-emerald-500' : 'text-gray-800'}`}>
-                                                {txn.type === 'income' ? '+' : '-'}{txn.amount.toLocaleString()}$
-                                            </td>
-                                            <td className="px-2 py-4">
-                                                <button onClick={() => handleDelete(txn.id)} className="text-gray-300 hover:text-red-500">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                </button>
-                                            </td>
+                        {isLoading ? (
+                            <div className="p-10 text-center">
+                                <div className="mx-auto h-10 w-10 animate-spin rounded-full border-b-2 border-orange-500"></div>
+                            </div>
+                        ) : filteredTransactions.length === 0 ? (
+                            <div className="flex min-h-[340px] flex-col items-center justify-center border-t border-gray-100 px-6 text-center">
+                                <ReceiptText className="mb-4 h-10 w-10 text-gray-300" aria-hidden="true" />
+                                <p className="text-lg font-semibold text-gray-800">No transactions yet</p>
+                                <p className="mt-2 max-w-sm text-sm text-gray-400">Start with one expense or income entry. Your charts and savings rate will update automatically.</p>
+                                <button
+                                    onClick={() => setShowForm(true)}
+                                    className="pressable mt-5 inline-flex min-h-10 items-center gap-2 rounded-xl bg-gray-950 px-4 py-2 text-sm font-bold text-white transition-[transform,background-color] duration-200 hover:bg-gray-800"
+                                >
+                                    <Plus className="h-4 w-4" aria-hidden="true" />
+                                    Add first transaction
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto border-t border-gray-100">
+                                <table className="w-full text-sm">
+                                    <thead className="bg-gray-50/80 text-xs uppercase tracking-wide text-gray-400">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left">Transaction</th>
+                                            <th className="hidden px-6 py-3 text-left sm:table-cell">Date</th>
+                                            <th className="hidden px-6 py-3 text-left md:table-cell">Category</th>
+                                            <th className="px-6 py-3 text-right">Amount</th>
+                                            <th className="px-3 py-3"></th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {filteredTransactions.slice(0, 10).map((txn) => (
+                                            <tr key={txn.id} className="transition-colors duration-200 hover:bg-gray-50/80">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={`flex h-10 w-10 items-center justify-center rounded-2xl ${txn.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                            {txn.type === 'income' ? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /> : <ArrowDownRight className="h-4 w-4" aria-hidden="true" />}
+                                                        </span>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900">{txn.description}</p>
+                                                            <p className="text-xs text-gray-400 sm:hidden">{new Date(txn.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="hidden px-6 py-4 text-gray-500 sm:table-cell">{new Date(txn.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                                                <td className="hidden px-6 py-4 md:table-cell">
+                                                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">{txn.category}</span>
+                                                </td>
+                                                <td className={`px-6 py-4 text-right font-bold tabular-nums ${txn.type === 'income' ? 'text-emerald-600' : 'text-gray-950'}`}>
+                                                    {txn.type === 'income' ? '+' : '-'}{formatCurrency(txn.amount)}
+                                                </td>
+                                                <td className="px-3 py-4">
+                                                    <button
+                                                        onClick={() => handleDelete(txn.id)}
+                                                        className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 transition-[transform,background-color,color] duration-200 hover:bg-red-50 hover:text-red-500"
+                                                        aria-label={`Delete ${txn.description}`}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-
-            {/* Ko-fi Support Button */}
-            <div className="mt-8 flex justify-center">
-                <a
-                    href="https://ko-fi.com/ta7leel"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block transition-transform hover:scale-110 active:scale-95"
-                >
-                    <img
-                        src="/ko-fi icon.webp"
-                        alt="Support us on Ko-fi"
-                        className="h-12 w-auto"
-                    />
-                </a>
             </div>
 
             {/* Add Transaction Modal */}
