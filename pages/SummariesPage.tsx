@@ -1,26 +1,36 @@
 
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import Spinner from '../components/Spinner';
+import { SITE_URL } from '../utils/seoConfig';
 
 const SummariesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
   const [selectedRating, setSelectedRating] = useState('');
+  const location = useLocation();
   const { books, loading } = useBooks();
   const { getBookTitle, getBookAuthor } = useLanguage();
+  const isArabicRoute = location.pathname.startsWith('/ar/');
 
   useSEO({
-    title: 'Book Summaries - Discover Insights from Top Business & Self-Help Books | BookBriefs',
-    description: 'Browse our collection of expertly curated book summaries. Get key insights from bestselling business, self-help, and productivity books in minutes.',
-    keywords: 'book summaries, business book summaries, self-help books, productivity books, book reviews, key takeaways, quick reads',
+    title: isArabicRoute
+      ? 'ملخصات كتب عربية وعالمية | تحليل'
+      : 'Book Summaries - Business, Trading, Finance & Self-Development | Ta7leel',
+    description: isArabicRoute
+      ? 'تصفح مكتبة تحليل لملخصات الكتب العربية والعالمية في الأعمال والتداول والاستثمار وتطوير الذات.'
+      : 'Browse practical book summaries from top business, trading, finance, psychology, and self-development books.',
+    keywords: isArabicRoute
+      ? 'ملخصات كتب, ملخصات كتب عربية, كتب تطوير الذات, كتب الاستثمار, كتب التداول'
+      : 'book summaries, business book summaries, trading book summaries, finance book summaries, self-help books',
     type: 'website',
+    canonical: `${SITE_URL}${location.pathname}`,
   });
 
   // Get unique genres and authors for filters

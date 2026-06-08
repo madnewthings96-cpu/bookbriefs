@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run sitemap && npm run sitemap:arabic && vite build",
+    "build": "npm run sitemap && vite build && npm run prerender:seo",
     "preview": "vite preview",
-    "sitemap": "node generate-sitemap.js",
-    "sitemap:arabic": "node generate-arabic-sitemap.js",
+    "sitemap": "tsx scripts/generate-seo-sitemaps.ts",
+    "sitemap:arabic": "tsx scripts/generate-seo-sitemaps.ts",
+    "prerender:seo": "tsx scripts/prerender-seo.ts",
     "sync-library": "tsx scripts/sync-library.ts"
   },
   "dependencies": {

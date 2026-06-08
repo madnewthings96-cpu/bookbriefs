@@ -16,6 +16,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import HomePage from './pages/HomePage';
 import SummariesPage from './pages/SummariesPage';
 import SummaryDetailPage from './pages/SummaryDetailPage';
+import CategoryPage from './pages/CategoryPage';
 import AboutPage from './pages/AboutPage';
 import CalculatorsPage from './pages/CalculatorsPage';
 import NewsPage from './pages/NewsPage';
@@ -349,6 +350,10 @@ const AppContent: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/summaries" element={<SummariesPage />} />
+            <Route path="/book-summaries" element={<SummariesPage />} />
+            <Route path="/ar/book-summaries" element={<SummariesPage />} />
+            <Route path="/categories/:categorySlug" element={<CategoryPage />} />
+            <Route path="/ar/categories/:categorySlug" element={<CategoryPage />} />
             <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/calculators" element={<CalculatorsPage />} />

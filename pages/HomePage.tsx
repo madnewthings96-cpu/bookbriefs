@@ -97,7 +97,7 @@ const HomePage: React.FC = () => {
                   loading="eager"
                 />
               </div>
-              <div className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/85 px-4 py-2 shadow-[0_1px_2px_rgba(17,24,39,0.06),0_12px_30px_rgba(17,24,39,0.08)]">
+              <div className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#E7EBDF] px-4 py-2 shadow-[inset_0_0_0_1px_rgba(71,85,62,0.08),0_1px_2px_rgba(17,24,39,0.06),0_12px_30px_rgba(71,85,62,0.12)]">
                 <div className="flex" aria-hidden="true">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg

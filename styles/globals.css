@@ -716,14 +716,12 @@ Link {
   padding: 0.75rem 1rem;
   border-radius: 24px;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.66)),
-    linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(15, 23, 42, 0.04));
+  background: #E7EBDF;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
-    inset 0 -12px 24px rgba(249, 115, 22, 0.06),
+    inset 0 0 0 1px rgba(71, 85, 62, 0.08),
+    inset 0 -12px 24px rgba(71, 85, 62, 0.06),
     0 1px 2px rgba(17, 24, 39, 0.06),
-    0 18px 46px rgba(17, 24, 39, 0.1);
+    0 18px 46px rgba(71, 85, 62, 0.14);
   animation:
     logo-enter 620ms cubic-bezier(0.2, 0, 0, 1) both,
     logo-breathe 7s cubic-bezier(0.45, 0, 0.55, 1) 900ms infinite;

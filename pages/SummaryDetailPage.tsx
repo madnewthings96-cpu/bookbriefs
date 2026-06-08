@@ -23,6 +23,7 @@ import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
+import { SITE_URL } from '../utils/seoConfig';
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
@@ -52,20 +53,32 @@ const SummaryDetailPage: React.FC = () => {
 
   const displayTitle = book ? (getBookTitle(book.id) === book.id ? book.title : getBookTitle(book.id)) : '';
   const displayAuthor = book ? (getBookAuthor(book.id) === book.id ? book.author : getBookAuthor(book.id)) : '';
+  const canonicalSlug = book ? (book.arabicSlug || book.id) : bookIdOrSlug;
+  const isArabicSlug = Boolean(book?.arabicSlug && bookIdOrSlug === book.arabicSlug) || /[\u0600-\u06FF]/.test(bookIdOrSlug || '');
+  const arabicDisplayTitle = book?.arabicSlug && /[\u0600-\u06FF]/.test(book.arabicSlug)
+    ? book.arabicSlug.replace(/-/g, ' ')
+    : displayTitle;
 
   // SEO for the current book
   useSEO({
     title: book
-      ? `${displayTitle} by ${displayAuthor} - Summary & Key Insights | BookBriefs`
-      : 'Book Summary | BookBriefs',
+      ? isArabicSlug
+        ? `ملخص كتاب ${arabicDisplayTitle}: أهم الأفكار والدروس | تحليل`
+        : `${displayTitle} Summary: Key Ideas & Takeaways | Ta7leel`
+      : 'Book Summary | Ta7leel',
     description: book
-      ? `Read the comprehensive summary of ${displayTitle} by ${displayAuthor}. Discover key takeaways, insights, and lessons from this ${book.category.toLowerCase()} book in minutes.`
-      : 'Discover book summaries and key insights.',
+      ? isArabicSlug
+        ? `اقرأ ملخص كتاب ${arabicDisplayTitle} مع أهم الأفكار والدروس العملية والنقاط الرئيسية في دقائق.`
+        : `Read the practical summary of ${displayTitle} by ${displayAuthor}. Discover key takeaways, insights, and lessons from this ${book.category.toLowerCase()} book in minutes.`
+      : 'Discover practical book summaries and key insights.',
     keywords: book
-      ? `${displayTitle}, ${displayAuthor}, book summary, key takeaways, ${book.category}, book insights, book review`
+      ? isArabicSlug
+        ? `ملخص كتاب ${arabicDisplayTitle}, ${displayTitle}, ${displayAuthor}, ملخصات كتب, ${book.category}, أهم الأفكار`
+        : `${displayTitle} summary, ${displayTitle} key takeaways, ${displayAuthor}, ${book.category} book summary, book insights`
       : 'book summary, book insights',
     image: book?.coverImageUrl || '/images/og-default.jpg',
     type: 'book',
+    canonical: canonicalSlug ? `${SITE_URL}/summary/${canonicalSlug}` : undefined,
   });
 
   const [isSpeaking, setIsSpeaking] = useState(false);
