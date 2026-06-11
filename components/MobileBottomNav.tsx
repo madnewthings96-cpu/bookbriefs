@@ -58,7 +58,7 @@ const MobileBottomNav: React.FC = () => {
     { to: '/news', label: t('news') || 'News', icon: Newspaper },
   ];
 
-  const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-[#E7EBDF] text-gray-950 shadow-[0_15px_35px_-15px_rgba(71,85,62,0.45)]';
+  const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-[#e5d8c7] text-gray-950 shadow-[0_15px_35px_-15px_rgba(89,69,45,0.45)]';
   const inactiveStyles = isReaderMode ? 'text-gray-400' : 'text-gray-600';
   const activeStyles = isReaderMode ? 'bg-gray-900 text-white shadow-inner shadow-gray-900/30' : 'bg-white text-gray-950 shadow-inner shadow-gray-900/15';
 

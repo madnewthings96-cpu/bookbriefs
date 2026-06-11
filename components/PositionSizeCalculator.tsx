@@ -235,7 +235,7 @@ const PositionSizeCalculator: React.FC = () => {
                                 type="button"
                                 onClick={() => setRiskType('percentage')}
                                 className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${riskType === 'percentage'
-                                        ? 'bg-orange-500 text-white'
+                                        ? 'bg-[#a75d37] text-white'
                                         : 'bg-white text-gray-700 hover:bg-gray-50'
                                     }`}
                             >
@@ -245,7 +245,7 @@ const PositionSizeCalculator: React.FC = () => {
                                 type="button"
                                 onClick={() => setRiskType('monetary')}
                                 className={`flex-1 px-3 py-2 text-sm font-medium transition-colors ${riskType === 'monetary'
-                                        ? 'bg-orange-500 text-white'
+                                        ? 'bg-[#a75d37] text-white'
                                         : 'bg-white text-gray-700 hover:bg-gray-50'
                                     }`}
                             >
@@ -326,11 +326,11 @@ const PositionSizeCalculator: React.FC = () => {
                             <p className="text-sm text-gray-600 font-semibold">Standard Lots</p>
                         </div>
                         <div>
-                            <p className="font-bold text-lg" style={{ color: '#FF7F50' }}>{result.miniLots.toFixed(2)}</p>
+                            <p className="font-bold text-lg" style={{ color: '#a75d37' }}>{result.miniLots.toFixed(2)}</p>
                             <p className="text-sm text-gray-600">Mini Lots</p>
                         </div>
                         <div>
-                            <p className="font-bold text-lg" style={{ color: '#FF7F50' }}>{result.microLots.toFixed(2)}</p>
+                            <p className="font-bold text-lg" style={{ color: '#a75d37' }}>{result.microLots.toFixed(2)}</p>
                             <p className="text-sm text-gray-600">Micro Lots</p>
                         </div>
                     </div>

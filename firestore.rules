@@ -15,6 +15,36 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isValidReadingChallenge(data) {
+      return data.keys().hasOnly([
+               'userId',
+               'year',
+               'goal',
+               'booksRead',
+               'createdAt',
+               'updatedAt'
+             ]) &&
+             data.keys().hasAll([
+               'userId',
+               'year',
+               'goal',
+               'booksRead',
+               'createdAt',
+               'updatedAt'
+             ]) &&
+             data.userId == request.auth.uid &&
+             data.year is int &&
+             data.year >= 2020 &&
+             data.year <= 2100 &&
+             data.goal is int &&
+             data.goal > 0 &&
+             data.goal <= 1000 &&
+             data.booksRead is list &&
+             data.booksRead.size() <= 1000 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
     // Admins have full access to everything
     match /{document=**} {
       allow read, write: if isAdmin();
@@ -102,10 +132,16 @@ service cloud.firestore {
     match /reading_challenges/{challengeId} {
       allow read: if true;
       allow create: if isAuthenticated() &&
-                   request.resource.data.userId == request.auth.uid;
+                   isValidReadingChallenge(request.resource.data) &&
+                   request.resource.data.createdAt == request.time &&
+                   request.resource.data.updatedAt == request.time;
       allow update: if isAuthenticated() &&
                     resource.data.userId == request.auth.uid &&
-                    request.resource.data.userId == request.auth.uid;
+                    isValidReadingChallenge(request.resource.data) &&
+                    request.resource.data.userId == resource.data.userId &&
+                    request.resource.data.year == resource.data.year &&
+                    request.resource.data.createdAt == resource.data.createdAt &&
+                    request.resource.data.updatedAt == request.time;
       allow delete: if isAuthenticated() &&
                     resource.data.userId == request.auth.uid;
     }

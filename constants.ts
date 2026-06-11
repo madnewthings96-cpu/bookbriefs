@@ -2,16 +2,7 @@ import { Book, Broker, Testimonial, BookSummary, Review } from './types';
 
 export const BOOKS: Book[] = [];
 
-export const BROKERS: Broker[] = [
-  {
-    name: 'OctaFX',
-    logoUrl: '/images/octa 50.png',
-    minDeposit: 100,
-    commission: 0.0,
-    eurUsdSpread: 1.0,
-    liveAccountUrl: 'https://octa.click/bzsDkbL9lRw?ib=29552482',
-  },
-];
+export const BROKERS: Broker[] = [];
 
 export const TESTIMONIALS = [
   {

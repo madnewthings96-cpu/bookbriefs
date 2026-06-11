@@ -29,16 +29,6 @@ const NewsPage: React.FC = () => {
     }
   }, []);
 
-  const brokers = [
-    {
-      name: 'OctaFX',
-      logo: '/images/octa 50.png',
-      url: 'https://octa.click/bzsDkbL9lRw?ib=29552482',
-      description: 'ECN Forex Broker',
-      isImage: true
-    }
-  ];
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Page Header */}
@@ -52,9 +42,8 @@ const NewsPage: React.FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left Column - Calendar and Info */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="space-y-6">
+        <div className="space-y-6">
           {/* Economic Calendar Widget */}
           <section id="calendar" className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <div className="mb-4">
@@ -110,56 +99,6 @@ const NewsPage: React.FC = () => {
           </section>
         </div>
 
-        {/* Right Column - Brokers */}
-        <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 sticky top-4">
-            <h3 className="text-xl font-bold mb-4" style={{ color: '#2F4F4F' }}>
-              Best brokers in your location
-            </h3>
-            <div className="space-y-4">
-              {brokers.map((broker, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    {broker.isImage ? (
-                      <img
-                        src={broker.logo}
-                        alt={broker.name}
-                        className="w-12 h-12 object-contain"
-                      />
-                    ) : (
-                      <div className="text-3xl">{broker.logo}</div>
-                    )}
-                    <div className="flex-1">
-                      <h4 className="font-bold text-lg">{broker.name}</h4>
-                      <p className="text-xs text-gray-600">{broker.description}</p>
-                    </div>
-                  </div>
-                  <a
-                    href={broker.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors duration-200"
-                  >
-                    Open Account
-                  </a>
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex gap-2 mt-4">
-              <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
-                ← Previous
-              </button>
-              <button className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors">
-                Next →
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

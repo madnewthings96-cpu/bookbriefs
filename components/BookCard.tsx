@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { BookOpen, Clock3, Star } from 'lucide-react';
 import { Book } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import FavoriteButton from './FavoriteButton';
@@ -22,51 +23,47 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
 
   return (
-    <Link to={bookUrl} className="block group focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-300/35 rounded-[18px]">
-      <div className="bg-white rounded-[18px] polished-surface overflow-hidden">
-        <div className="aspect-[3/4] overflow-hidden relative rounded-t-[18px] book-cover-outline">
+    <Link to={bookUrl} className="group block rounded-[18px] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#a75d37]/25">
+      <div className="overflow-hidden rounded-[18px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.05),0_14px_30px_rgba(89,69,45,0.08)] ring-1 ring-[#eadfce] transition-[transform,box-shadow,ring-color] duration-300 hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(17,24,39,0.05),0_22px_44px_rgba(89,69,45,0.14)] hover:ring-[#d7c7b3]">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-t-[18px] bg-[#f7f0e6] book-cover-outline">
           <img
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
+            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             src={book.coverImageUrl}
             alt={`Cover of ${translatedTitle}`}
             loading="lazy"
             decoding="async"
           />
-          {/* Favorite Button */}
+          <div className="absolute left-2 top-2 z-10 inline-flex min-h-7 items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-[11px] font-black text-[#7a4a31] shadow-[0_8px_18px_rgba(17,24,39,0.12)] backdrop-blur">
+            <Clock3 className="h-3 w-3" aria-hidden="true" />
+            10 min
+          </div>
           <div className="absolute top-2 right-2 z-10">
             <FavoriteButton bookId={book.id} size="sm" />
           </div>
         </div>
-        <div className="p-3">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight group-hover:text-orange-600 transition-colors duration-300 text-balance">
+        <div className="p-3.5">
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.08em] text-[#a75d37]">
+            <BookOpen className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">{book.category || 'Summary'}</span>
+          </div>
+          <h3 className="mb-1 line-clamp-2 min-h-[2.25rem] text-sm font-black leading-tight text-gray-950 transition-colors duration-300 group-hover:text-[#a75d37] text-balance">
             {translatedTitle}
           </h3>
-          <p className="text-xs text-gray-600 line-clamp-1 mb-2 text-pretty">{translatedAuthor}</p>
+          <p className="mb-3 line-clamp-1 text-xs font-medium text-[#6d6256] text-pretty">{translatedAuthor}</p>
 
-          {/* Rating */}
-          {book.rating && (
-            <div className="flex items-center gap-1 mb-2">
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
-                    key={star}
-                    className={`w-3 h-3 ${star <= Math.round(book.rating!) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                      }`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-xs font-medium text-gray-700 tabular-nums">{book.rating.toFixed(1)}</span>
-            </div>
-          )}
-
-          <div className="mt-2 flex items-center">
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.12)]">
-              Summary
+          <div className="flex items-center justify-between gap-2 border-t border-[#f0e6d8] pt-3">
+            {book.rating ? (
+              <span className="inline-flex min-h-7 items-center gap-1 rounded-full bg-[#fff7e8] px-2.5 py-1 text-xs font-black text-[#7a4a31] shadow-[inset_0_0_0_1px_rgba(167,93,55,0.12)] tabular-nums">
+                <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-hidden="true" />
+                {book.rating.toFixed(1)}
+              </span>
+            ) : (
+              <span className="inline-flex min-h-7 items-center rounded-full bg-[#f7f0e6] px-2.5 py-1 text-xs font-black text-[#7a4a31]">
+                Brief
+              </span>
+            )}
+            <span className="text-xs font-black text-[#a75d37] transition-transform duration-300 group-hover:translate-x-0.5">
+              Read
             </span>
           </div>
         </div>

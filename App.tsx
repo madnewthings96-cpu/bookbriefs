@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
@@ -13,55 +13,36 @@ import { BooksProvider } from './contexts/BooksContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
-import HomePage from './pages/HomePage';
-import SummariesPage from './pages/SummariesPage';
-import SummaryDetailPage from './pages/SummaryDetailPage';
-import CategoryPage from './pages/CategoryPage';
-import AboutPage from './pages/AboutPage';
-import CalculatorsPage from './pages/CalculatorsPage';
-import NewsPage from './pages/NewsPage';
-import BlogPage from './pages/BlogPage';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
-import UserProfilePage from './pages/UserProfilePage';
-import ReadingChallengePage from './pages/ReadingChallengePage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TermsOfUsePage from './pages/TermsOfUsePage';
-
-import DownloadsPage from './pages/DownloadsPage';
-import FeedbackPage from './pages/FeedbackPage';
-import FinanceTrackerPage from './pages/FinanceTrackerPage';
-import TradingJournalPage from './pages/TradingJournalPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
-import ExitIntentPopup from './components/ExitIntentPopup';
 
-// Firebase User Data Context
-interface UserData {
-  favorites: string[];
-  preferences: {
-    theme: 'light' | 'dark';
-    language: string;
-    readerMode: boolean;
-  };
-  notes: Record<string, any[]>;
-  highlights: Record<string, any[]>;
-}
+const HomePage = lazy(() => import('./pages/HomePage'));
+const SummariesPage = lazy(() => import('./pages/SummariesPage'));
+const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
+const NewsPage = lazy(() => import('./pages/NewsPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignUpPage = lazy(() => import('./pages/SignUpPage'));
+const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
+const ReadingChallengePage = lazy(() => import('./pages/ReadingChallengePage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfUsePage = lazy(() => import('./pages/TermsOfUsePage'));
+const DownloadsPage = lazy(() => import('./pages/DownloadsPage'));
+const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
+const FinanceTrackerPage = lazy(() => import('./pages/FinanceTrackerPage'));
+const TradingJournalPage = lazy(() => import('./pages/TradingJournalPage'));
+const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'));
 
 interface FirebaseContextType {
   currentUser: User | null;
-  userData: UserData | null;
   loading: boolean;
-  addToFavorites: (bookId: string) => Promise<void>;
-  removeFromFavorites: (bookId: string) => Promise<void>;
-  isFavorite: (bookId: string) => boolean;
-  updateUserPreferences: (preferences: Partial<UserData['preferences']>) => Promise<void>;
-  saveUserNote: (bookId: string, note: any) => Promise<void>;
-  saveUserHighlight: (bookId: string, highlight: any) => Promise<void>;
 }
 
 const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
@@ -77,46 +58,23 @@ export const useFirebase = () => {
 // Firebase Provider Component
 const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize user data structure
-  const createInitialUserData = (): UserData => ({
-    favorites: [],
-    preferences: {
-      theme: 'light',
-      language: 'en',
-      readerMode: false,
-    },
-    notes: {},
-    highlights: {},
-  });
-
-  // Load user data from Firestore
-  const loadUserData = async (user: User) => {
+  const ensureUserDocument = async (user: User) => {
     try {
       const userDocRef = doc(db, 'users', user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
-      if (userDocSnap.exists()) {
-        const data = userDocSnap.data() as UserData;
-        setUserData(data);
-      } else {
-        // Create new user document with initial data
-        const initialData = createInitialUserData();
+      if (!userDocSnap.exists()) {
         await setDoc(userDocRef, {
-          ...initialData,
           email: user.email,
           displayName: user.displayName,
           createdAt: new Date(),
           lastLogin: new Date(),
         });
-        setUserData(initialData);
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
-      // Set default data if loading fails
-      setUserData(createInitialUserData());
+      console.error('Error ensuring user document:', error);
     }
   };
 
@@ -146,13 +104,11 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
 
       if (user) {
         try {
-          await loadUserData(user);
+          await ensureUserDocument(user);
           await updateLastLogin(user);
         } catch (error) {
-          console.error('Error loading user data:', error);
+          console.error('Error preparing user data:', error);
         }
-      } else {
-        setUserData(null);
       }
 
       setLoading(false);
@@ -169,138 +125,9 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     };
   }, []);
 
-  // Add book to favorites
-  const addToFavorites = async (bookId: string) => {
-    if (!currentUser || !userData) return;
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userDocRef, {
-        favorites: arrayUnion(bookId)
-      });
-
-      // Update local state
-      setUserData(prev => prev ? {
-        ...prev,
-        favorites: [...prev.favorites, bookId]
-      } : null);
-    } catch (error) {
-      console.error('Error adding to favorites:', error);
-      throw error;
-    }
-  };
-
-  // Remove book from favorites
-  const removeFromFavorites = async (bookId: string) => {
-    if (!currentUser || !userData) return;
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userDocRef, {
-        favorites: arrayRemove(bookId)
-      });
-
-      // Update local state
-      setUserData(prev => prev ? {
-        ...prev,
-        favorites: prev.favorites.filter(fav => fav !== bookId)
-      } : null);
-    } catch (error) {
-      console.error('Error removing from favorites:', error);
-      throw error;
-    }
-  };
-
-  // Check if book is favorite
-  const isFavorite = (bookId: string): boolean => {
-    return userData?.favorites.includes(bookId) || false;
-  };
-
-  // Update user preferences
-  const updateUserPreferences = async (preferences: Partial<UserData['preferences']>) => {
-    if (!currentUser || !userData) return;
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const updatedPreferences = { ...userData.preferences, ...preferences };
-
-      await updateDoc(userDocRef, {
-        preferences: updatedPreferences
-      });
-
-      // Update local state
-      setUserData(prev => prev ? {
-        ...prev,
-        preferences: updatedPreferences
-      } : null);
-    } catch (error) {
-      console.error('Error updating preferences:', error);
-      throw error;
-    }
-  };
-
-  // Save user note
-  const saveUserNote = async (bookId: string, note: any) => {
-    if (!currentUser || !userData) return;
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const updatedNotes = {
-        ...userData.notes,
-        [bookId]: [...(userData.notes[bookId] || []), { ...note, id: Date.now(), createdAt: new Date() }]
-      };
-
-      await updateDoc(userDocRef, {
-        notes: updatedNotes
-      });
-
-      // Update local state
-      setUserData(prev => prev ? {
-        ...prev,
-        notes: updatedNotes
-      } : null);
-    } catch (error) {
-      console.error('Error saving note:', error);
-      throw error;
-    }
-  };
-
-  // Save user highlight
-  const saveUserHighlight = async (bookId: string, highlight: any) => {
-    if (!currentUser || !userData) return;
-
-    try {
-      const userDocRef = doc(db, 'users', currentUser.uid);
-      const updatedHighlights = {
-        ...userData.highlights,
-        [bookId]: [...(userData.highlights[bookId] || []), { ...highlight, id: Date.now(), createdAt: new Date() }]
-      };
-
-      await updateDoc(userDocRef, {
-        highlights: updatedHighlights
-      });
-
-      // Update local state
-      setUserData(prev => prev ? {
-        ...prev,
-        highlights: updatedHighlights
-      } : null);
-    } catch (error) {
-      console.error('Error saving highlight:', error);
-      throw error;
-    }
-  };
-
   const value: FirebaseContextType = {
     currentUser,
-    userData,
     loading,
-    addToFavorites,
-    removeFromFavorites,
-    isFavorite,
-    updateUserPreferences,
-    saveUserNote,
-    saveUserHighlight,
   };
 
   return (
@@ -347,58 +174,60 @@ const AppContent: React.FC = () => {
       <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
         <Header />
         <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/summaries" element={<SummariesPage />} />
-            <Route path="/book-summaries" element={<SummariesPage />} />
-            <Route path="/ar/book-summaries" element={<SummariesPage />} />
-            <Route path="/categories/:categorySlug" element={<CategoryPage />} />
-            <Route path="/ar/categories/:categorySlug" element={<CategoryPage />} />
-            <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/calculators" element={<CalculatorsPage />} />
-            <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
-            <Route path="/calculators/position-size" element={<CalculatorsPage />} />
-            <Route path="/calculators/fire" element={<CalculatorsPage />} />
-            <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <UserProfilePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/reading-challenge" element={
-              <ProtectedRoute>
-                <ReadingChallengePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/downloads" element={
-              <ProtectedRoute>
-                <DownloadsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/feedback" element={
-              <ProtectedRoute>
-                <FeedbackPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/finance-tracker" element={
-              <ProtectedRoute>
-                <FinanceTrackerPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/trading-journal" element={
-              <ProtectedRoute>
-                <TradingJournalPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms-of-use" element={<TermsOfUsePage />} />
-          </Routes>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/summaries" element={<SummariesPage />} />
+              <Route path="/book-summaries" element={<SummariesPage />} />
+              <Route path="/ar/book-summaries" element={<SummariesPage />} />
+              <Route path="/categories/:categorySlug" element={<CategoryPage />} />
+              <Route path="/ar/categories/:categorySlug" element={<CategoryPage />} />
+              <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/calculators" element={<CalculatorsPage />} />
+              <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
+              <Route path="/calculators/position-size" element={<CalculatorsPage />} />
+              <Route path="/calculators/fire" element={<CalculatorsPage />} />
+              <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
+              <Route path="/news" element={<NewsPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogPage />} />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <UserProfilePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/reading-challenge" element={
+                <ProtectedRoute>
+                  <ReadingChallengePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/downloads" element={
+                <ProtectedRoute>
+                  <DownloadsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/feedback" element={
+                <ProtectedRoute>
+                  <FeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/finance-tracker" element={
+                <ProtectedRoute>
+                  <FinanceTrackerPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/trading-journal" element={
+                <ProtectedRoute>
+                  <TradingJournalPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms-of-use" element={<TermsOfUsePage />} />
+            </Routes>
+          </Suspense>
         </main>
 
         {/* Telegram Floating Icon */}
@@ -417,7 +246,9 @@ const AppContent: React.FC = () => {
         </a>
 
         <MobileBottomNav />
-        <ExitIntentPopup />
+        <Suspense fallback={null}>
+          <ExitIntentPopup />
+        </Suspense>
         <Footer />
       </div>
     </BrowserRouter>

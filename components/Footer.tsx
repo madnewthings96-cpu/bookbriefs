@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[#E7EBDF] text-gray-950">
+    <footer className="bg-[#e5d8c7] text-gray-950">
       <div className="mx-auto max-w-7xl">
         <section className="px-5 py-12 text-center sm:px-8 sm:py-16 lg:py-20">
           <h2 className="mx-auto max-w-2xl text-4xl font-bold leading-[0.95] tracking-tight text-gray-950 text-balance sm:text-5xl md:text-6xl">

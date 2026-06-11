@@ -19,6 +19,11 @@ const getBooksForLanguage = (language: Language): { [key: string]: any } => {
   return books;
 };
 
+const getSummaryPath = (bookId: string, books: Book[]): string => {
+  const book = books.find((item) => item.id === bookId);
+  return `/summary/${book?.arabicSlug || bookId}`;
+};
+
 export const searchBooks = (query: string, language: Language, books: Book[]): SearchResult[] => {
   const searchQuery = query.toLowerCase().trim();
   if (!searchQuery) return [];
@@ -38,7 +43,7 @@ export const searchBooks = (query: string, language: Language, books: Book[]): S
           id: book.id,
           title: book.title,
           description: `by ${book.author} - ${book.category}`,
-          path: `/summaries/${book.id}`
+          path: getSummaryPath(book.id, books)
         });
       }
     }
@@ -63,7 +68,7 @@ export const searchBooks = (query: string, language: Language, books: Book[]): S
           id: bookId,
           title: bookInfo ? bookInfo.title : formatBookTitle(bookId),
           description,
-          path: `/summaries/${bookId}`
+          path: getSummaryPath(bookId, books)
         });
       }
     }
@@ -80,7 +85,7 @@ export const searchBooks = (query: string, language: Language, books: Book[]): S
           id: bookId,
           title: bookInfo ? bookInfo.title : formatBookTitle(bookId),
           description: matchingTakeaway,
-          path: `/summaries/${bookId}`
+          path: getSummaryPath(bookId, books)
         });
       }
     }
