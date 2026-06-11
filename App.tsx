@@ -230,21 +230,6 @@ const AppContent: React.FC = () => {
           </Suspense>
         </main>
 
-        {/* Telegram Floating Icon */}
-        <a
-          href="https://t.me/MadMarkets"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:block fixed bottom-8 right-8 z-50 transition-transform hover:scale-110"
-          aria-label="Join our Telegram channel"
-        >
-          <img
-            src="/telegram icon.png"
-            alt="Telegram"
-            className="w-16 h-16 drop-shadow-lg"
-          />
-        </a>
-
         <MobileBottomNav />
         <Suspense fallback={null}>
           <ExitIntentPopup />

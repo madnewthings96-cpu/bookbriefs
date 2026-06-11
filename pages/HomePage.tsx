@@ -155,9 +155,9 @@ const HomePage: React.FC = () => {
               <div className="relative min-h-[270px] sm:min-h-[360px] lg:min-h-[470px]">
                 <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e5d8c7]/80 blur-3xl md:h-[420px] md:w-[420px]" aria-hidden="true" />
                 <img
-                  src="/images/bookbriefs-reading-companion.png"
-                  alt="BookBriefs reading companion"
-                  className="relative z-10 mx-auto h-auto w-full max-w-[460px] select-none rounded-[28px] shadow-[0_24px_54px_rgba(89,69,45,0.14)] ring-1 ring-[#dccfbd]"
+                  src="/images/girl-books-home.png"
+                  alt="Girl surrounded by books"
+                  className="relative z-10 mx-auto h-auto w-full max-w-[460px] select-none drop-shadow-[0_24px_44px_rgba(89,69,45,0.18)]"
                   loading="eager"
                   decoding="async"
                 />

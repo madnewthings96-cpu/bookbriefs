@@ -3238,21 +3238,21 @@ const BlogPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fffaf3]">
 
       {/* Enhanced Blog Posts Grid */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 px-4 bg-gradient-to-b from-[#f7f0e6] to-[#fffaf3]">
         <div className="container mx-auto max-w-7xl">
           {/* Featured Post (First Post) */}
           {filteredPosts.length > 0 && (
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: '#2F4F4F' }}>Featured Article</h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
+                <h2 className="text-3xl font-bold mb-2" style={{ color: '#453c31' }}>Featured Article</h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-[#a75d37] to-[#e5d8c7] mx-auto rounded-full"></div>
               </div>
               
               <article 
-                className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer group max-w-4xl mx-auto"
+                className="bg-white rounded-2xl shadow-xl ring-1 ring-[#eadfce] overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer group max-w-4xl mx-auto"
                 onClick={() => openPostModal(filteredPosts[0])}
               >
                 <div className="md:flex">
@@ -3266,7 +3266,7 @@ const BlogPage: React.FC = () => {
                     <div className="absolute top-4 left-4">
                       <span 
                         className="px-3 py-1 text-sm font-semibold text-white rounded-full shadow-lg"
-                        style={{ backgroundColor: '#FF7F50' }}
+                        style={{ backgroundColor: '#a75d37' }}
                       >
                         {filteredPosts[0].category}
                       </span>
@@ -3274,17 +3274,17 @@ const BlogPage: React.FC = () => {
                   </div>
                   
                   <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                    <div className="flex items-center text-sm text-gray-500 mb-4">
+                    <div className="flex items-center text-sm text-[#7a6f62] mb-4">
                       <span className="font-medium">{formatDate(filteredPosts[0].date)}</span>
                       <span className="mx-3">•</span>
                       <span>{filteredPosts[0].readTime}</span>
                     </div>
                     
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-orange-500 transition-colors" style={{ color: '#2F4F4F' }}>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-[#a75d37] transition-colors" style={{ color: '#453c31' }}>
                       {filteredPosts[0].title}
                     </h3>
                     
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-[#675b4d] mb-6 leading-relaxed">
                       {filteredPosts[0].excerpt}
                     </p>
                     
@@ -3292,7 +3292,7 @@ const BlogPage: React.FC = () => {
                       {filteredPosts[0].tags.map((tag) => (
                         <span 
                           key={tag}
-                          className="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full font-medium hover:bg-gray-200 transition-colors"
+                          className="px-3 py-1 text-xs bg-[#f7f0e6] text-[#453c31] rounded-full font-medium hover:bg-[#e5d8c7] transition-colors"
                         >
                           #{tag}
                         </span>
@@ -3300,7 +3300,7 @@ const BlogPage: React.FC = () => {
                     </div>
                     
                     <button 
-                      className="inline-flex items-center text-orange-500 font-semibold hover:text-orange-600 transition-colors group"
+                      className="inline-flex items-center text-[#a75d37] font-semibold hover:text-[#8f4f2f] transition-colors group"
                       onClick={(e) => {
                         e.stopPropagation();
                         openPostModal(filteredPosts[0]);
@@ -3321,15 +3321,15 @@ const BlogPage: React.FC = () => {
           {filteredPosts.length > 1 && (
             <div>
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: '#2F4F4F' }}>Latest Articles</h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
+                <h2 className="text-3xl font-bold mb-2" style={{ color: '#453c31' }}>Latest Articles</h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-[#a75d37] to-[#e5d8c7] mx-auto rounded-full"></div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredPosts.slice(1).map((post) => (
                   <article 
                     key={post.id} 
-                    className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group transform hover:-translate-y-1"
+                    className="bg-white rounded-xl shadow-lg ring-1 ring-[#eadfce] overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group transform hover:-translate-y-1"
                     onClick={() => openPostModal(post)}
                   >
                     <div className="relative overflow-hidden">
@@ -3342,7 +3342,7 @@ const BlogPage: React.FC = () => {
                       <div className="absolute top-3 left-3">
                         <span 
                           className="px-3 py-1 text-xs font-semibold text-white rounded-full shadow-md"
-                          style={{ backgroundColor: '#FF7F50' }}
+                          style={{ backgroundColor: '#a75d37' }}
                         >
                           {post.category}
                         </span>
@@ -3350,17 +3350,17 @@ const BlogPage: React.FC = () => {
                     </div>
                     
                     <div className="p-6">
-                      <div className="flex items-center text-sm text-gray-500 mb-3">
+                      <div className="flex items-center text-sm text-[#7a6f62] mb-3">
                         <span className="font-medium">{formatDate(post.date)}</span>
                         <span className="mx-2">•</span>
                         <span>{post.readTime}</span>
                       </div>
                       
-                      <h3 className="text-lg font-bold mb-3 line-clamp-2 group-hover:text-orange-500 transition-colors leading-tight" style={{ color: '#2F4F4F' }}>
+                      <h3 className="text-lg font-bold mb-3 line-clamp-2 group-hover:text-[#a75d37] transition-colors leading-tight" style={{ color: '#453c31' }}>
                         {post.title}
                       </h3>
                       
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                      <p className="text-[#675b4d] text-sm mb-4 line-clamp-3 leading-relaxed">
                         {post.excerpt}
                       </p>
                       
@@ -3368,7 +3368,7 @@ const BlogPage: React.FC = () => {
                         {post.tags.slice(0, 2).map((tag) => (
                           <span 
                             key={tag}
-                            className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full font-medium"
+                            className="px-2 py-1 text-xs bg-[#f7f0e6] text-[#675b4d] rounded-full font-medium"
                           >
                             #{tag}
                           </span>
@@ -3376,7 +3376,7 @@ const BlogPage: React.FC = () => {
                       </div>
                       
                       <button 
-                        className="inline-flex items-center text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors group"
+                        className="inline-flex items-center text-[#a75d37] font-semibold text-sm hover:text-[#8f4f2f] transition-colors group"
                         onClick={(e) => {
                           e.stopPropagation();
                           openPostModal(post);
@@ -3397,33 +3397,33 @@ const BlogPage: React.FC = () => {
           
         {filteredPosts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No posts found in this category.</p>
+            <p className="text-[#7a6f62] text-lg">No posts found in this category.</p>
           </div>
         )}
       </section>
 
       {/* Blog Post Modal - WSJ Style */}
       {isModalOpen && selectedPost && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#fffaf3]">
           <div className="min-h-screen">
             {/* Header Navigation Bar */}
-            <div className="sticky top-0 bg-white border-b border-gray-300 z-20 shadow-sm">
+            <div className="sticky top-0 bg-white border-b border-[#eadfce] z-20 shadow-sm">
               <div className="max-w-6xl mx-auto px-4 py-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <h1 className="text-xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
+                    <h1 className="text-xl font-bold text-[#453c31]" style={{ fontFamily: 'Georgia, serif' }}>
                       BookBriefs
                     </h1>
-                    <div className="h-4 w-px bg-gray-300"></div>
-                    <span className="text-sm text-gray-600 font-medium">
+                    <div className="h-4 w-px bg-[#e5d8c7]"></div>
+                    <span className="text-sm text-[#675b4d] font-medium">
                       {selectedPost.category}
                     </span>
                   </div>
                   <button
                     onClick={closePostModal}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-2 hover:bg-[#f7f0e6] rounded-full transition-colors"
                   >
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#675b4d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -3435,12 +3435,12 @@ const BlogPage: React.FC = () => {
             <div className="max-w-4xl mx-auto px-4 py-8">
               {/* Article Header */}
               <header className="mb-8">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4" 
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#453c31] leading-tight mb-4" 
                     style={{ fontFamily: 'Georgia, serif' }}>
                   {selectedPost.title}
                 </h1>
                 
-                <div className="flex items-center text-sm text-gray-600 mb-6 space-x-4">
+                <div className="flex items-center text-sm text-[#675b4d] mb-6 space-x-4">
                   <span className="font-medium">Published {formatDate(selectedPost.date)}</span>
                   <span>•</span>
                   <span>{selectedPost.readTime}</span>
@@ -3450,7 +3450,7 @@ const BlogPage: React.FC = () => {
                   {selectedPost.tags.map((tag) => (
                     <span 
                       key={tag}
-                      className="px-3 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium uppercase tracking-wide"
+                      className="px-3 py-1 text-xs bg-[#f7f0e6] text-[#a75d37] border border-[#e5d8c7] rounded font-medium uppercase tracking-wide"
                     >
                       {tag}
                     </span>
@@ -3489,11 +3489,11 @@ const BlogPage: React.FC = () => {
 
               {/* Buy Me a Coffee Button */}
               <div className="mt-12 mb-12 text-center">
-                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-8">
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: '#2F4F4F', fontFamily: 'Georgia, serif' }}>
+                <div className="bg-gradient-to-r from-[#f7f0e6] to-[#fffaf3] border border-[#eadfce] rounded-lg p-8">
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: '#453c31', fontFamily: 'Georgia, serif' }}>
                     Enjoyed this article?
                   </h3>
-                  <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                  <p className="text-[#675b4d] mb-6 max-w-2xl mx-auto">
                     If you found this content valuable, consider supporting our work by buying us a coffee. 
                     Your support helps us create more quality content!
                   </p>
@@ -3502,7 +3502,7 @@ const BlogPage: React.FC = () => {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-8 py-4 rounded-full font-bold text-white transition-all duration-300 hover:opacity-90 hover:scale-105 shadow-lg text-lg"
-                    style={{ backgroundColor: '#fa9128' }}
+                    style={{ backgroundColor: '#a75d37' }}
                   >
                     <svg 
                       className="w-6 h-6 mr-3" 
@@ -3517,8 +3517,8 @@ const BlogPage: React.FC = () => {
               </div>
 
               {/* Related Articles */}
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'Georgia, serif' }}>
+              <div className="mt-12 pt-8 border-t border-[#eadfce]">
+                <h3 className="text-2xl font-bold text-[#453c31] mb-6" style={{ fontFamily: 'Georgia, serif' }}>
                   More from BookBriefs
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -3544,12 +3544,12 @@ const BlogPage: React.FC = () => {
                           />
                         </picture>
                         <div className="flex-1">
-                          <h4 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-1" 
+                          <h4 className="text-sm font-bold text-[#453c31] group-hover:text-[#a75d37] transition-colors line-clamp-2 mb-1" 
                               style={{ fontFamily: 'Georgia, serif' }}>
                             {post.title}
                           </h4>
-                          <p className="text-xs text-gray-600 mb-1">{formatDate(post.date)}</p>
-                          <p className="text-xs text-gray-500 line-clamp-2">{post.excerpt}</p>
+                          <p className="text-xs text-[#675b4d] mb-1">{formatDate(post.date)}</p>
+                          <p className="text-xs text-[#7a6f62] line-clamp-2">{post.excerpt}</p>
                         </div>
                       </div>
                     </div>

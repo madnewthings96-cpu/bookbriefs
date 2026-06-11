@@ -398,15 +398,15 @@ const AnimatedForm = memo(function AnimatedForm({
 
   return (
     <section className='max-md:w-full flex flex-col gap-4 w-96 mx-auto'>
-      <BoxReveal boxColor='#FF7F50' duration={0.3}>
-        <h2 className='font-bold text-3xl text-neutral-800 dark:text-neutral-200 text-center'>
+      <BoxReveal boxColor='#FF7F50' duration={0.3} width='100%'>
+        <h2 className='w-full font-bold text-3xl text-neutral-800 dark:text-neutral-200 text-center'>
           {header}
         </h2>
       </BoxReveal>
 
       {subHeader && (
-        <BoxReveal boxColor='#FF7F50' duration={0.3} className='pb-2'>
-          <p className='text-neutral-600 text-sm max-w-sm dark:text-neutral-300 text-center mx-auto'>
+        <BoxReveal boxColor='#FF7F50' duration={0.3} width='100%' className='pb-2'>
+          <p className='w-full text-neutral-600 text-sm max-w-sm dark:text-neutral-300 text-center mx-auto'>
             {subHeader}
           </p>
         </BoxReveal>
@@ -597,8 +597,8 @@ const AuthTabs = memo(function AuthTabs({
   success,
 }: AuthTabsProps) {
   return (
-    <div className='flex max-lg:justify-center w-full md:w-auto'>
-      <div className='w-full lg:w-1/2 h-[100dvh] flex flex-col justify-center items-center max-lg:px-[10%]'>
+    <div className='flex flex-1 min-w-0 justify-center w-full'>
+      <div className='w-full h-[100dvh] flex flex-col justify-center items-center px-6 sm:px-10 lg:pl-20 lg:pr-12 xl:pl-28 xl:pr-16'>
         <AnimatedForm
           {...formFields}
           fieldPerRow={1}
