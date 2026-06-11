@@ -171,7 +171,7 @@ const SummariesPage: React.FC = () => {
             <div className="relative min-h-[360px] lg:min-h-[500px]">
               <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e5d8c7]/80 blur-3xl md:h-[460px] md:w-[460px]" aria-hidden="true" />
               <img
-                src="/images/cat-reading-summaries.png"
+                src="/images/cat reading new.webp"
                 alt="Cat reading a book"
                 className="relative z-10 mx-auto h-auto w-full max-w-[470px] select-none drop-shadow-[0_24px_44px_rgba(89,69,45,0.18)]"
                 loading="eager"

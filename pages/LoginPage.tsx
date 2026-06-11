@@ -126,7 +126,7 @@ const LoginPage: React.FC = () => {
       {/* Left Side - Brand Image Display (Hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#f0dcc0]">
         <img
-          src="/images/join-login.png"
+          src="/images/join login new.webp"
           alt="Ta7leel login artwork"
           className="h-full w-full object-cover object-center outline outline-1 outline-black/10"
         />

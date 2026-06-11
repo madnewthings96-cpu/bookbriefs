@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
-import { AuthTabs, TechOrbitDisplay, Ripple } from '../components/AnimatedAuthComponents';
+import { AuthTabs } from '../components/AnimatedAuthComponents';
 
 const SignUpPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -146,55 +146,15 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const iconConfigs = [
-    {
-      duration: 20,
-      delay: 0,
-      radius: 80,
-      path: true,
-      reverse: false,
-      component: () => <img src="/icons/notebook.png" alt="Notebook" className="w-8 h-8" />,
-    },
-    {
-      duration: 25,
-      delay: 5,
-      radius: 140,
-      path: true,
-      reverse: true,
-      component: () => <img src="/icons/latte-art.png" alt="Latte" className="w-10 h-10" />,
-    },
-    {
-      duration: 30,
-      delay: 10,
-      radius: 200,
-      path: true,
-      reverse: false,
-      component: () => <img src="/icons/hand.png" alt="Hand" className="w-12 h-12" />,
-    },
-    {
-      duration: 22,
-      delay: 2,
-      radius: 110,
-      path: false,
-      reverse: true,
-      component: () => <img src="/icons/doodle.png" alt="Doodle" className="w-8 h-8" />,
-    },
-    {
-      duration: 28,
-      delay: 8,
-      radius: 170,
-      path: false,
-      reverse: false,
-      component: () => <img src="/icons/friendship.png" alt="Friends" className="w-10 h-10" />,
-    },
-  ];
-
   return (
     <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Left Side - Orbiting Icons Display (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center bg-white">
-        <Ripple />
-        <TechOrbitDisplay iconsArray={iconConfigs} text="BookBriefs" />
+      {/* Left Side - Brand Image Display (Hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#f0dcc0]">
+        <img
+          src="/images/join login new.webp"
+          alt="Ta7leel sign up artwork"
+          className="h-full w-full object-cover object-center outline outline-1 outline-black/10"
+        />
       </div>
 
       {/* Right Side - Sign Up Form */}
