@@ -189,6 +189,10 @@ const AppContent: React.FC = () => {
               <Route path="/calculators/position-size" element={<CalculatorsPage />} />
               <Route path="/calculators/fire" element={<CalculatorsPage />} />
               <Route path="/calculators/compound-interest" element={<CalculatorsPage />} />
+              <Route path="/ar/tools/pip-value-calculator" element={<CalculatorsPage />} />
+              <Route path="/ar/tools/position-size-calculator" element={<CalculatorsPage />} />
+              <Route path="/ar/tools/fire-calculator" element={<CalculatorsPage />} />
+              <Route path="/ar/tools/compound-interest-calculator" element={<CalculatorsPage />} />
               <Route path="/news" element={<NewsPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPage />} />

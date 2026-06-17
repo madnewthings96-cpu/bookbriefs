@@ -59,12 +59,23 @@ async function main() {
     { path: '/about', changefreq: 'monthly', priority: '0.6' },
     { path: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
     { path: '/terms-of-use', changefreq: 'yearly', priority: '0.3' },
-    ...CALCULATOR_ROUTES.map((route) => ({
-      path: route.path,
-      changefreq: 'monthly' as const,
-      priority: route.path === '/calculators' ? '0.8' : '0.7',
-    })),
   ];
+
+  const englishCalculatorRoutes: SitemapUrl[] = CALCULATOR_ROUTES
+    .filter((route) => route.language === 'en')
+    .map((route) => ({
+      path: route.path,
+      changefreq: 'monthly',
+      priority: route.path === '/calculators' ? '0.8' : '0.75',
+    }));
+
+  const arabicCalculatorRoutes: SitemapUrl[] = CALCULATOR_ROUTES
+    .filter((route) => route.language === 'ar')
+    .map((route) => ({
+      path: route.path,
+      changefreq: 'monthly',
+      priority: '0.75',
+    }));
 
   const englishCategoryRoutes: SitemapUrl[] = CATEGORY_HUBS.map((category) => ({
     path: `/categories/${category.slug}`,
@@ -74,6 +85,7 @@ async function main() {
 
   const arabicCategoryRoutes: SitemapUrl[] = [
     { path: '/ar/book-summaries', changefreq: 'daily', priority: '0.9' },
+    ...arabicCalculatorRoutes,
     ...CATEGORY_HUBS.map((category) => ({
       path: `/ar/categories/${category.slug}`,
       changefreq: 'weekly' as const,
@@ -87,7 +99,7 @@ async function main() {
     priority: book.category === 'Trading' || book.category === 'Finance' ? '0.85' : '0.8',
   }));
 
-  const englishRoutes = [...baseRoutes, ...englishCategoryRoutes];
+  const englishRoutes = [...baseRoutes, ...englishCalculatorRoutes, ...englishCategoryRoutes];
   const arabicRoutes = [...arabicCategoryRoutes, ...bookRoutes];
   const allRoutes = [...englishRoutes, ...arabicRoutes];
 
@@ -103,4 +115,3 @@ main().catch((error) => {
   console.error('Failed to generate SEO sitemaps:', error);
   process.exit(1);
 });
-

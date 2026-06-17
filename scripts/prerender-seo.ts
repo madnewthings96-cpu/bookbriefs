@@ -340,35 +340,108 @@ function summariesLandingPage(books: BookDefinition[], arabic: boolean, pathName
 }
 
 function calculatorPage(route: (typeof CALCULATOR_ROUTES)[number]): PrerenderPage {
-  const title = `${route.title} | Ta7leel`;
-  const body = `    <main class="seo-prerender mx-auto max-w-4xl px-4 py-10">
+  const body = `    <main class="seo-prerender mx-auto max-w-5xl px-4 py-10" dir="${route.language === 'ar' ? 'rtl' : 'ltr'}">
       <section>
-        <h1 class="text-4xl font-bold text-gray-950">${escapeHtml(route.title)}</h1>
-        <p class="mt-4 max-w-3xl text-lg leading-8 text-gray-700">${escapeHtml(route.description)}</p>
-        <p class="mt-6 text-gray-700">Use this free tool alongside Ta7leel book summaries to apply finance and trading concepts with clearer numbers.</p>
+        <p class="text-sm font-bold uppercase tracking-wide text-orange-700">${escapeHtml(route.eyebrow)}</p>
+        <h1 class="mt-3 text-4xl font-bold text-gray-950">${escapeHtml(route.h1)}</h1>
+        <p class="mt-4 max-w-3xl text-lg leading-8 text-gray-700">${escapeHtml(route.intro)}</p>
+        <p class="mt-4 max-w-3xl text-gray-700">${escapeHtml(route.description)}</p>
+        <p class="mt-6 rounded-xl bg-orange-50 p-4 font-semibold text-gray-900">${escapeHtml(route.formula)}</p>
+      </section>
+
+      <section class="mt-10 grid gap-6 md:grid-cols-2">
+        <article class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+          <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.exampleTitle)}</h2>
+          <p class="mt-3 leading-7 text-gray-700">${escapeHtml(route.example)}</p>
+        </article>
+        <article class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+          <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.mistakesTitle)}</h2>
+          <ul class="mt-3 list-disc space-y-2 ps-5 leading-7 text-gray-700">
+            ${route.mistakes.map((mistake) => `<li>${escapeHtml(mistake)}</li>`).join('\n            ')}
+          </ul>
+        </article>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.stepsTitle)}</h2>
+        <ol class="mt-4 grid gap-3 md:grid-cols-2">
+          ${route.steps
+            .map(
+              (step, index) => `<li class="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200"><strong>${index + 1}.</strong> ${escapeHtml(step)}</li>`
+            )
+            .join('\n          ')}
+        </ol>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.faqTitle)}</h2>
+        <div class="mt-4 space-y-4">
+          ${route.faqs
+            .map(
+              (faq) => `<article class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+            <h3 class="text-lg font-bold text-gray-950">${escapeHtml(faq.question)}</h3>
+            <p class="mt-2 leading-7 text-gray-700">${escapeHtml(faq.answer)}</p>
+          </article>`
+            )
+            .join('\n          ')}
+        </div>
+      </section>
+
+      <section class="mt-10 grid gap-6 md:grid-cols-2">
+        <article>
+          <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.relatedToolsTitle)}</h2>
+          <ul class="mt-4 space-y-2">
+            ${route.relatedTools
+              .map((tool) => `<li><a class="text-orange-700 underline" href="${escapeHtml(tool.path)}">${escapeHtml(tool.label)}</a></li>`)
+              .join('\n            ')}
+          </ul>
+        </article>
+        <article>
+          <h2 class="text-2xl font-bold text-gray-950">${escapeHtml(route.relatedSummariesTitle)}</h2>
+          <ul class="mt-4 space-y-2">
+            ${route.relatedSummaries
+              .map((summary) => `<li><a class="text-orange-700 underline" href="${escapeHtml(summary.path)}">${escapeHtml(summary.label)}</a></li>`)
+              .join('\n            ')}
+          </ul>
+        </article>
       </section>
     </main>`;
 
   return {
     path: route.path,
-    lang: 'en',
-    dir: 'ltr',
-    title,
+    lang: route.language,
+    dir: route.language === 'ar' ? 'rtl' : 'ltr',
+    title: route.title,
     description: truncateText(route.description, 155),
-    keywords: `${route.title}, trading calculator, finance calculator, Ta7leel`,
+    keywords: route.keywords,
     body,
     schema: [
       websiteSchema(),
       {
         '@context': 'https://schema.org',
         '@type': 'WebApplication',
-        name: route.title,
+        name: route.h1,
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Any',
         url: absoluteUrl(SITE_URL, route.path),
         description: route.description,
       },
-      breadcrumbSchema([{ name: 'Home', path: '/' }, { name: route.title, path: route.path }]),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: route.faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      },
+      breadcrumbSchema([
+        { name: route.language === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
+        { name: route.h1, path: route.path },
+      ]),
     ],
   };
 }
