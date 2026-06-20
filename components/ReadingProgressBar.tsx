@@ -8,7 +8,7 @@ const ReadingProgressBar: React.FC = () => {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight - windowHeight;
       const scrollTop = window.scrollY;
-      const progress = (scrollTop / documentHeight) * 100;
+      const progress = documentHeight > 0 ? (scrollTop / documentHeight) * 100 : 0;
       setProgress(Math.min(100, Math.max(0, progress)));
     };
 
@@ -22,13 +22,13 @@ const ReadingProgressBar: React.FC = () => {
   return (
     <div 
       className="fixed top-0 left-0 w-full h-1 z-50"
-      style={{ backgroundColor: 'rgba(47, 79, 79, 0.1)' }} // Dark slate gray with opacity
+      style={{ backgroundColor: 'rgba(36, 76, 71, 0.12)' }}
     >
       <div
         className="h-full transition-all duration-150 ease-out"
         style={{
           width: `${progress}%`,
-          backgroundColor: '#FF7F50', // Coral color
+          backgroundColor: '#FF7F50',
         }}
       />
     </div>

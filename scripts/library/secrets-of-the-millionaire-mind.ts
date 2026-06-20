@@ -28,7 +28,7 @@ export const book: BookDefinition = {
 
 ---
 
-# PART I: THE ROOT OF RESULTS (The Inner Game)
+## PART I: THE ROOT OF RESULTS (The Inner Game)
 Listen to me closely. You are about to enter a process of radical reconstruction. If you are not seeing the numbers you want in your bank account, stop looking at the results. You are staring at the fruit while ignoring the roots.
 
 **If you want to change the fruits, you have to change the roots.** If you want to change the visible, you must first change the invisible.
@@ -52,7 +52,7 @@ Your thoughts come from your **Money Blueprint**. Think of it like a thermostat.
 
 ---
 
-# PART II: THE 17 WEALTH FILES (Reprogramming the Core)
+## PART II: THE 17 WEALTH FILES (Reprogramming the Core)
 We are now going to install 17 new software patches into your brain.
 
 ## 1. Rich people believe "I create my life." Poor people believe "Life happens to me."
@@ -126,7 +126,7 @@ We are now going to install 17 new software patches into your brain.
 
 ---
 
-# PART III: THE OUTER GAME (Financial Management System)
+## PART III: THE OUTER GAME (Financial Management System)
 We have reset your internal thermostat. Now, we must build the external infrastructure.
 
 ## The 6 Jars Money Management System
@@ -140,7 +140,7 @@ You must split your income into separate accounts every single time you receive 
 
 ---
 
-# PART IV: CONCLUSION & FINAL MANDATES
+## PART IV: CONCLUSION & FINAL MANDATES
 Reading this is not enough. The gap between "knowing" and "doing" is where dreams die.
 
 ## The Immediate Action Checklist

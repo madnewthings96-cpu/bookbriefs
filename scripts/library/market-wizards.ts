@@ -28,7 +28,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: THE ILLUSION OF THE HOLY GRAIL
+## INTRODUCTION: THE ILLUSION OF THE HOLY GRAIL
 If you strip away the charts, the tickers, and the noise of the trading floor, you are left with the central premise of Jack Schwager’s *Market Wizards*: **There is no secret sauce.** There is no single indicator, no magical algorithm, and no insider whisper that guarantees wealth.
 
 The novice trader spends years searching for the Holy Grail—a system that never loses, a methodology that predicts the future with certainty. The defining characteristic of the "Wizards"—from the macro-global dominance of Paul Tudor Jones to the systematic precision of Ed Seykota and the currency mastery of Bruce Kovner—is that they stopped looking for the Holy Grail outside of themselves. **They realized that they are the edge.**
@@ -39,7 +39,7 @@ The synthesis reveals that trading success is a stool supported by three legs: *
 
 ---
 
-# PILLAR I: THE PSYCHOLOGY OF THE WIZARD
+## PILLAR I: THE PSYCHOLOGY OF THE WIZARD
 The most profound realization in *Market Wizards* is that the market is not a battleground of prices, but a mirror of the self. The defining chasm between the amateur and the Wizard is not intellectual—it is psychological.
 
 ## 1. The Subconscious Mandate
@@ -66,7 +66,7 @@ This discipline manifests in the ability to pull the trigger when the system say
 
 ---
 
-# PILLAR II: RISK MANAGEMENT: THE PRIME DIRECTIVE
+## PILLAR II: RISK MANAGEMENT: THE PRIME DIRECTIVE
 If Psychology is the engine, Risk Management is the brakes. Without brakes, the engine will eventually drive you off a cliff. The universal consensus among every trader in *Market Wizards*—without a single exception—is that **Capital Preservation is the highest priority**.
 
 ## 1. The Mathematics of Ruin
@@ -96,7 +96,7 @@ Many Wizards discuss the concept of an "Uncle Point"—a total equity drawdown l
 
 ---
 
-# PILLAR III: THE EDGE AND SYSTEM DESIGN
+## PILLAR III: THE EDGE AND SYSTEM DESIGN
 While psychology and risk management are defensive, your Edge is your offense.
 
 ## 1. Define Your Methodology: Technical vs. Fundamental
@@ -119,7 +119,7 @@ You cannot simply copy a Wizard’s system. Van Tharp stresses that a system mus
 
 ---
 
-# PILLAR IV: ACTIONABLE MANDATES & SYNTHESIS
+## PILLAR IV: ACTIONABLE MANDATES & SYNTHESIS
 We have analyzed the mind, the math, and the method. Now, we synthesize these lessons into actionable mandates.
 
 ## THE WIZARD MANDATES
@@ -140,7 +140,7 @@ We have analyzed the mind, the math, and the method. Now, we synthesize these le
 15. **Accept the Unknown**: You do not need to know where the market is going to make money.
 16. **Love the Game**: If you are trading solely for the money, you will quit during the first drawdown.
 
-# FINAL SYNTHESIS
+## FINAL SYNTHESIS
 Jack Schwager’s *Market Wizards* serves as a testament to the fact that trading is the hardest way to make easy money. The "Secret" hidden in these pages is that **success is an internal journey**.
 
 The Wizards did not conquer the market; they conquered themselves. They mastered their fear of losing, their greed for quick riches, and their ego’s need to be right. They built systems that respected the unknowable nature of the future and applied mathematical rigor to survive the inevitable storms.

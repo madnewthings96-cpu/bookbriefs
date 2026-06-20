@@ -24,7 +24,7 @@ export const book: BookDefinition = {
     summary: `# Masterclass: The Engineering of Value – A Deep Dive into Broken Money
 Based on the work of Lyn Alden
 
-# I. Introduction: Money as a Technology
+## I. Introduction: Money as a Technology
 To understand why the global economy feels increasingly volatile, distinct from the typical cycles of boom and bust, we must strip away the jargon of modern finance—yield curves, quantitative easing, reverse repos—and view money through a first-principles framework. In *Broken Money*, Lyn Alden does not view money merely as a social construct or a government mandate. She views it as a **technology**.
 
 Specifically, money is a tool used to trade value across two distinct planes: **Time** and **Space**.
@@ -50,7 +50,7 @@ The critical question regarding any monetary technology is: **Who maintains the 
 
 We are currently living through the friction caused by a ledger system that relies on authority in an age where technology allows for trustless verification.
 
-# II. Detailed Analysis — Part I: The History of Money (Commodity & Ledgers)
+## II. Detailed Analysis — Part I: The History of Money (Commodity & Ledgers)
 To understand how we arrived at the current crisis, we must trace the evolution of monetary technology. Alden argues that the history of money is actually a history of **ledger maintenance** and the struggle against **transaction friction**.
 
 ## 1. The Early Ledgers: Credit and Commodities
@@ -83,7 +83,7 @@ This completed the trap. The population had traded a hard, bearer asset (gold) f
 
 The technology of money had fundamentally shifted from a **bearer asset** (I hold the value) to a **ledger entry** (The bank says I have value). This centralization created the mechanism for the greatest monetary experiment in history: the total severing of the link between the receipt and the asset.
 
-# III. Detailed Analysis — Part II: The Fiat Experiment (1971–Present)
+## III. Detailed Analysis — Part II: The Fiat Experiment (1971–Present)
 In the previous section, we established that the centralization of money was a technological patch to solve the slowness of gold. However, on August 15, 1971, the patch became the operating system. When Richard Nixon "temporarily" suspended the convertibility of the US dollar into gold, the world entered a new monetary epoch: **The Fiat Standard**.
 
 From an engineering perspective, this was a fundamental protocol change. We moved from a system of **"Proof of Work"** (Gold, which requires energy to extract) to a system of **"Proof of Authority"** (Fiat, which requires a government decree).
@@ -133,7 +133,7 @@ If inflation is 7% and bonds yield 4%, the bondholder is losing 3% of their purc
 
 **The Verdict on Fiat**: Alden concludes that the Fiat experiment is reaching its mathematical limit. The ledger is now so manipulated that it no longer transmits accurate price signals. The volatility we see today—supply chain breaks, asset bubbles, currency collapses—is the result of the "administrators" frantically trying to keep a broken database consistent. The world is looking for a new ledger. But unlike 1971, we now have digital tools that do not require a central vault.
 
-# IV. The Solution & Conclusion: The Re-Emergence of Sound Money
+## IV. The Solution & Conclusion: The Re-Emergence of Sound Money
 ## The Systems Engineering Fix: Bitcoin as "Digital Gold"
 Throughout *Broken Money*, Alden frames the history of money as a trade-off between **Hardness** (Gold) and **Velocity** (Fiat/Paper).
 *   Gold was good because it was scarce, but it failed because it was slow.

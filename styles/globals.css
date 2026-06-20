@@ -175,6 +175,7 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
 
   h1,
@@ -188,6 +189,117 @@
   li,
   figcaption {
     text-wrap: pretty;
+  }
+
+  .summary-redesign [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  .summary-redesign .summary-notes-panel > div {
+    border-radius: 0.5rem;
+    box-shadow: 0 14px 34px rgba(23, 33, 31, 0.07);
+    border-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .summary-redesign .summary-notes-panel .p-6 {
+    padding: 1rem;
+  }
+
+  .summary-redesign .summary-notes-panel .py-8 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .summary-pdf-button {
+    position: relative;
+    overflow: hidden;
+    animation: summary-pdf-glow 4.8s cubic-bezier(0.2, 0, 0, 1) infinite;
+  }
+
+  .summary-pdf-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-125%) skewX(-18deg);
+    background: linear-gradient(90deg, transparent 18%, rgba(255, 255, 255, 0.34) 48%, transparent 76%);
+    animation: summary-pdf-sheen 4.8s cubic-bezier(0.2, 0, 0, 1) infinite;
+  }
+
+  .summary-pdf-button > svg,
+  .summary-pdf-button > span {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes summary-pdf-glow {
+    0%,
+    70%,
+    100% {
+      filter: drop-shadow(0 0 0 rgba(255, 127, 80, 0));
+    }
+
+    82% {
+      filter: drop-shadow(0 8px 14px rgba(255, 127, 80, 0.18));
+    }
+  }
+
+  @keyframes summary-pdf-sheen {
+    0%,
+    64% {
+      opacity: 0;
+      transform: translateX(-125%) skewX(-18deg);
+    }
+
+    76% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateX(125%) skewX(-18deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .summary-pdf-button,
+    .summary-pdf-button::before {
+      animation: none;
+    }
+  }
+
+  .summary-support-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-support-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-120%);
+    background: linear-gradient(120deg, transparent 15%, rgba(255, 255, 255, 0.28) 48%, transparent 72%);
+    animation: summary-support-sheen 6s cubic-bezier(0.2, 0, 0, 1) infinite;
+  }
+
+  @keyframes summary-support-sheen {
+    0%,
+    58% {
+      opacity: 0;
+      transform: translateX(-120%);
+    }
+
+    68% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateX(120%);
+    }
   }
 
   /* RTL Support */

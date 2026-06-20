@@ -27,7 +27,7 @@ export const book: BookDefinition = {
 
 ---
 
-# Introduction: The "One Force" That Matters
+## Introduction: The "One Force" That Matters
 
 Welcome to the seminar. Put away your general management textbooks. In this course, we are going to dismantle the complexities of corporate strategy that consultants often sell you and replace them with a rigorous, singular focus on economic reality.
 
@@ -59,7 +59,7 @@ If you are a toaster manufacturer with no brand loyalty and no patent protection
 
 ---
 
-# Part I: The Landscape of Strategy
+## Part I: The Landscape of Strategy
 
 If Strategy is the management of Barriers to Entry (also known as "Moats"), we must rigorously define what a genuine moat looks like. There are, in reality, only three genuine sources of competitive advantage.
 
@@ -95,7 +95,7 @@ Greenwald argues that **Local Scale** is often far more powerful than Global Sca
 
 ---
 
-# Part II: Strategy in Action (Game Theory)
+## Part II: Strategy in Action (Game Theory)
 
 If you have a moat, you are likely operating in an **Oligopoly** (a few dominant players). Here, every move you make impacts your competitors. To navigate this, we use **Game Theory**.
 
@@ -130,7 +130,7 @@ You must "train" your competitors using **Signaling**.
 
 ---
 
-# Part III: Valuation and The EPV Method
+## Part III: Valuation and The EPV Method
 
 Most people use **DCF (Discounted Cash Flow)**, which relies on guessing the future. Greenwald prefers **EPV (Earnings Power Value)**.
 
@@ -164,7 +164,7 @@ What is the steady-state cash flow worth?
 
 ---
 
-# Conclusion & Key Takeaways
+## Conclusion & Key Takeaways
 
 1.  **Barriers are Everything**: Without them, you are just running a race.
 2.  **The Three Moats**: Supply, Demand, and Economies of Scale.

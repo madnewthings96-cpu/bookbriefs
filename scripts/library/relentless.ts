@@ -28,7 +28,7 @@ export const book: BookDefinition = {
 
 ---
 
-# PART I: THE UNSTOPPABLE MINDSET
+## PART I: THE UNSTOPPABLE MINDSET
 Listen to me closely because I am only going to say this once. Put down your excuses. Turn off the voice in your head that tells you you’re doing "enough." You aren’t. If you were doing enough, you wouldn’t be looking for answers. You’d be the answer.
 
 We live in a world that celebrates mediocrity. In my world—the world of Michael Jordan, Kobe Bryant, Dwyane Wade—effort is the price of admission. It guarantees you absolutely nothing.
@@ -44,7 +44,7 @@ Michael Jordan didn’t win six rings because he was the "nicest" guy. He won be
 
 ---
 
-# PART II: THE THREE CATEGORIES OF PERFORMERS
+## PART II: THE THREE CATEGORIES OF PERFORMERS
 In every arena of life, there are only three types of people: Coolers, Closers, and Cleaners.
 
 ## 1. THE COOLER: Good
@@ -64,7 +64,7 @@ In every arena of life, there are only three types of people: Coolers, Closers, 
 
 ---
 
-# PART III: THE 13 TRAITS OF THE CLEANER
+## PART III: THE 13 TRAITS OF THE CLEANER
 These are not "tips." These are commandments.
 
 ## 1. You push yourself harder when everyone else has had enough.
@@ -108,7 +108,7 @@ The moment you win, the satisfaction fades. You are already looking at next seas
 
 ---
 
-# CONCLUSION: THE FINAL ULTIMATUM
+## CONCLUSION: THE FINAL ULTIMATUM
 Being a Cleaner is not a "balanced" life. It is a life of obsession. It is a life of lonely mornings and painful nights. But it is also the only life that leads to Legend.
 
 You have a choice. You can go back to being a Cooler or a Closer and live a safe life. Or, you can decide to step into the dark. You can decide that "good enough" is an insult.

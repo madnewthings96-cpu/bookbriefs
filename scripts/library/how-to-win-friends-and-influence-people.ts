@@ -26,14 +26,14 @@ export const book: BookDefinition = {
 
 ---
 
-# Introduction: The Only Book You Need
+## Introduction: The Only Book You Need
 Published in 1936, this is not just a self-help book; it is the foundational text of modern social dynamics. Dale Carnegie didn't write it based on theory; he wrote it after years of conducting courses for engineers and business professionals who needed to master human relations to advance their careers.
 
 **The Core Premise**: Success is 15% technical knowledge and **85% skill in human engineering**—personality and the ability to lead people.
 
 ---
 
-# Part I: Fundamental Techniques in Handling People
+## Part I: Fundamental Techniques in Handling People
 *If you want to gather honey, don't kick over the beehive.*
 
 ## 1. Don't Criticize, Condemn, or Complain
@@ -53,7 +53,7 @@ The only way on earth to influence other people is to talk about what **they** w
 
 ---
 
-# Part II: Six Ways to Make People Like You
+## Part II: Six Ways to Make People Like You
 
 ## 1. Become Genuinely Interested in Other People
 You can make more friends in two months by becoming interested in other people than you can in two years by trying to get other people interested in you.
@@ -86,7 +86,7 @@ Always make the other person feel important—and do it sincerely.
 
 ---
 
-# Part III: How to Win People to Your Way of Thinking
+## Part III: How to Win People to Your Way of Thinking
 
 ## 1. The Only Way to Get the Best of an Argument is to Avoid It
 You can't win an argument. If you lose it, you lose it; and if you win it, you lose it. Why? You have hurt the other person's pride.
@@ -139,7 +139,7 @@ The way to get things done is to stimulate competition. Not in a sordid, money-g
 
 ---
 
-# Part IV: Be a Leader
+## Part IV: Be a Leader
 *How to Change People Without Giving Offense or Arousing Resentment*
 
 1.  **Begin with praise and honest appreciation.** (The Dentist Approach: Novocain before the drill).
@@ -154,7 +154,7 @@ The way to get things done is to stimulate competition. Not in a sordid, money-g
 
 ---
 
-# Conclusion & Key Takeaways
+## Conclusion & Key Takeaways
 
 | Principle | Action |
 | :--- | :--- |

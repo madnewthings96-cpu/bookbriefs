@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: Defining the Intelligent Investor
+## INTRODUCTION: Defining the Intelligent Investor
 Intelligence in finance is a matter of character, not IQ. It is defined by patience, discipline, and emotional control.
 *   **Investment vs. Speculation**:
     *   **Investment**: Thorough analysis, safety of principal, and adequate return.
@@ -35,14 +35,14 @@ Intelligence in finance is a matter of character, not IQ. It is defined by patie
 
 ---
 
-# PILLAR I: MR. MARKET
+## PILLAR I: MR. MARKET
 Imagine a partner named Mr. Market who offers to buy or sell shares every day.
 *   **Manic-Depressive**: He is emotional. When euphoric, he overprices. When depressed, he underprices.
 *   **The Lesson**: Treat Mr. Market as a servant, not a guide. Buy when he is depressed, sell when he is euphoric. Ignore him when he is rational.
 
 ---
 
-# PILLAR II: MARGIN OF SAFETY
+## PILLAR II: MARGIN OF SAFETY
 The secret sound of investment success.
 *   **Definition**: The difference between Price (what you pay) and Intrinsic Value (what it's worth).
 *   **Function**: To render accurate prediction of the future unnecessary. It absorbs "bad luck" and errors in calculation.
@@ -50,7 +50,7 @@ The secret sound of investment success.
 
 ---
 
-# BLUEPRINT I: THE DEFENSIVE INVESTOR
+## BLUEPRINT I: THE DEFENSIVE INVESTOR
 Focuses on avoiding mistakes and freedom from effort.
 1.  **Portfolio Allocation**: 50% Stocks / 50% Bonds. Never exceed 75/25 in either direction. Rebalance every six months.
 2.  **Stock Selection**:
@@ -64,7 +64,7 @@ Focuses on avoiding mistakes and freedom from effort.
 
 ---
 
-# BLUEPRINT II: THE ENTERPRISING INVESTOR
+## BLUEPRINT II: THE ENTERPRISING INVESTOR
 Willing to devote time and care to select securities for excess return (Alpha).
 *   **Path A**: Buying large, unpopular companies (contrarian approach).
 *   **Path B**: Buying "Bargain Issues" (Net-Nets: Price < Net Current Assets).
@@ -72,7 +72,7 @@ Willing to devote time and care to select securities for excess return (Alpha).
 
 ---
 
-# CONCLUSION: Synthesis & Legacy
+## CONCLUSION: Synthesis & Legacy
 Investment is most intelligent when it is most businesslike.
 *   **The Realist**: Sells to optimists and buys from pessimists.
 *   **Success**: Determined by discipline to hold cash when expensive and courage to buy when terrified.

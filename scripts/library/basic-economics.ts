@@ -18,7 +18,7 @@ export const book: BookDefinition = {
     summary: `# Basic Economics: A Master Guide and Deep-Dive Analysis
 Based on the work of Thomas Sowell
 
-# Introduction
+## Introduction
 ## The Core Philosophy: Scarcity and Alternative Uses
 To understand Thomas Sowell’s Basic Economics, one must first strip away the common misconception that economics is simply the study of money, banking, or stock indices. While these are components of the system, they are not the foundation. Sowell defines economics with a specific, unbreakable rule: Economics is the study of the use of scarce resources which have alternative uses.
 
@@ -42,7 +42,7 @@ This automatic adjustment prevents shortages and surpluses. When governments att
 ## The Absence of Jargon
 Perhaps the most distinct feature of Sowell’s approach is his rejection of "blackboard economics." There are no supply-and-demand curves, calculus equations, or complex graphs in this analysis. Sowell argues that while mathematics can be useful for modeling, it often obscures the fundamental logic of human incentives. A policy may look perfect in an equation where variables are controlled, but in the real world, humans react to incentives in messy, unpredictable ways. This guide focuses on that empirical reality: logic, evidence, and historical precedent.
 
-# Section-by-Section Detailed Analysis
+## Section-by-Section Detailed Analysis
 
 ## Part I: Prices and Markets
 The first section of the book establishes the foundation of the market economy: the price mechanism is not a barrier to getting what you want; it is the mechanism that ensures things are produced at all.
@@ -161,7 +161,7 @@ To say the market is unfair because a teacher earns less than a professional ath
 ### Non-Economic Values
 Sowell admits that economics is not everything. There are things more important than efficiency (e.g., saving a historical building rather than tearing it down for a Walmart). However, he insists that we must understand the cost of these choices. Economics doesn't tell you what to do; it tells you what it costs.
 
-# Key Themes & "Sowellisms"
+## Key Themes & "Sowellisms"
 ## "There are no solutions, only trade-offs."
 This is the single most important sentence in the book. In the political sphere, candidates offer "solutions"—policies that fix a problem with no downsides. Sowell argues that this is a fantasy.
 **Example**: You want safer cars? You can mandate heavier steel and advanced sensors. The trade-off is that cars become more expensive. As a result, some people will keep driving their old, dangerous cars longer because they can't afford the new "safe" ones. The policy meant to save lives might cost lives. Every benefit has a cost; the economic question is whether the benefit is worth the cost.
@@ -180,7 +180,7 @@ Sowell criticizes "Stage One Thinking"—the inability to see beyond the immedia
 **Result**: You saved 1,000 steel jobs but lost 2,000 auto jobs.
 Systemic thinking requires tracing the incentives through the entire ecosystem, not just the first step.
 
-# Conclusion
+## Conclusion
 Thomas Sowell’s Basic Economics is a manifesto for clarity. It strips away the confusing terminology of finance and reveals the underlying machinery of human decision-making.
 
 The book teaches that the economy is not a machine that can be driven by a pilot; it is an ecosystem that evolves based on the reality of scarcity. Attempts to ignore this reality—to legislate plenty, to mandate equality, or to control prices—invariably fail because they fight against the fundamental nature of human incentives.

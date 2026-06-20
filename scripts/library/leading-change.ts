@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Nature of Change & The Anatomy of Failure
+## INTRODUCTION: The Nature of Change & The Anatomy of Failure
 In the modern business landscape, the rate of change is not merely constant; it is accelerating exponentially. Globalization, digital disruption, economic instability, and evolving workforce demographics have created an environment where the status quo is a death sentence. However, the statistics regarding organizational transformation are grim: nearly 70% of large-scale change initiatives fail to achieve their stated goals.
 
 As a senior executive, you must understand that this high failure rate is rarely due to a lack of resources, brainpower, or market opportunity. It is almost always a failure of process and leadership.
@@ -51,7 +51,7 @@ To understand the solution—the 8-Step Process—you must first diagnose the pa
 
 ---
 
-# THE REMEDY: THE 8-STEP PROCESS
+## THE REMEDY: THE 8-STEP PROCESS
 The following masterclass details the antidote to these errors. This is not a menu from which you can pick and choose; it is a sequential, cumulative process.
 
 ## STEP 1: ESTABLISHING A SENSE OF URGENCY
@@ -182,7 +182,7 @@ Culture is not the first step; it is the last. Culture changes only *after* new 
 
 ---
 
-# CONCLUSION: The Executive’s Mandate
+## CONCLUSION: The Executive’s Mandate
 Leading change is not a project; it is a discipline. It requires the courage to disrupt the status quo, the patience to follow the process, and the resilience to weather resistance.
 
 As an executive, your role is not to manage the details, but to architect the environment. You must be the guardian of urgency, the builder of the coalition, and the narrator of the vision.`,

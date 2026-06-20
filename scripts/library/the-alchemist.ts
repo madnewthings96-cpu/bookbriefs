@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Power of the Personal Legend
+## INTRODUCTION: The Power of the Personal Legend
 *The Alchemist* is not just a fable; it is a manual for spiritual evolution. It maps the journey of the soul through the story of Santiago, a shepherd boy in search of treasure.
 
 **The Core Philosophy**:
@@ -36,7 +36,7 @@ export const book: BookDefinition = {
 
 ---
 
-# STAGE I: LEAVING THE FLOCK (The Initial Call)
+## STAGE I: LEAVING THE FLOCK (The Initial Call)
 The transition from an unconscious life to a conscious one.
 
 ## The Symbolism of the Sheep
@@ -51,7 +51,7 @@ Santiago is robbed in Tangier. He reframes his narrative from "victim of a thief
 
 ---
 
-# STAGE II: THE ILLUSION OF SECURITY (The Crystal Merchant)
+## STAGE II: THE ILLUSION OF SECURITY (The Crystal Merchant)
 The test of endurance and the fear of realization.
 
 ## The Crystal Merchant
@@ -66,7 +66,7 @@ Santiago earns enough to return to his sheep but chooses to continue to the Pyra
 
 ---
 
-# STAGE III: THE PATH OF LOVE AND TRIALS (The Desert)
+## STAGE III: THE PATH OF LOVE AND TRIALS (The Desert)
 The spiritual proving ground. Moving from "doing" to "being."
 
 ## The Englishman vs. Santiago
@@ -85,7 +85,7 @@ Santiago predicts an attack on the oasis by observing hawks. He risks his life o
 
 ---
 
-# STAGE IV: MASTERY AND THE FINAL LESSON (The Alchemist)
+## STAGE IV: MASTERY AND THE FINAL LESSON (The Alchemist)
 Wisdom is powerful and dangerous.
 
 ## The Alchemist's Lesson
@@ -104,7 +104,7 @@ Santiago reaches the Pyramids but finds no treasure. He is beaten, but learns th
 
 ---
 
-# CONCLUSION: The 10 Mandates of the Personal Legend
+## CONCLUSION: The 10 Mandates of the Personal Legend
 1.  **Acknowledge Your Legend**: Don't ignore your destiny.
 2.  **Trust Beginner's Luck**: It's a down payment from the universe.
 3.  **Burn the Ships**: Sacrifice security for potential.

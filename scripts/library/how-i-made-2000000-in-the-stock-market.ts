@@ -22,7 +22,7 @@ What sets Darvas apart from typical Wall Street insiders is his refreshingly hon
 
 The book's enduring appeal lies not in promising get-rich-quick schemes, but in demonstrating how disciplined observation, continuous learning, and rigorous self-control can enable anyone—regardless of their background—to succeed in the stock market. Darvas proves that successful investing isn't about insider connections or financial credentials; it's about developing a sound methodology and having the discipline to stick with it.
 
-# The Philosophy of a Dancing Millionaire
+## The Philosophy of a Dancing Millionaire
 
 ## From Ballrooms to Boardrooms
 
@@ -64,7 +64,7 @@ Through this rigorous self-examination, Darvas developed several core principles
 
 These principles became the foundation of his Box Theory and guided every trade he made thereafter.
 
-# The Darvas Box Theory Explained
+## The Darvas Box Theory Explained
 
 ## The Anatomy of a Box
 
@@ -129,7 +129,7 @@ Darvas's solution was to wait for confirmation. He wanted to see the stock close
 
 This patience saved him from countless false signals. While eager traders rushed into stocks at the first hint of a breakout, Darvas waited. Many of these early breakouts fizzled, leaving hasty buyers with losses. By waiting for confirmation, Darvas dramatically improved his win rate.
 
-# Psychological Mastery and Emotional Discipline
+## Psychological Mastery and Emotional Discipline
 
 ## The Market's Greatest Enemy: Yourself
 
@@ -172,7 +172,7 @@ He discovered that his losses typically fell into a few categories:
 
 By systematically eliminating each category of error, Darvas transformed himself from a losing trader into a winning one. This scientific approach to self-improvement is perhaps the book's most important lesson.
 
-# Risk Management and Capital Preservation
+## Risk Management and Capital Preservation
 
 ## The Sanctity of Capital
 
@@ -202,7 +202,7 @@ Darvas learned that sometimes the best action was no action at all. During perio
 
 Darvas was comfortable holding large amounts of cash while waiting for high-probability setups. He understood that capital preservation included avoiding mediocre opportunities that merely looked attractive because of boredom or impatience.
 
-# Modern Relevance and Timeless Lessons
+## Modern Relevance and Timeless Lessons
 
 ## What Still Works Today
 
@@ -252,7 +252,7 @@ Beneath the specific techniques, Darvas's book teaches timeless principles:
 
 **Patience Pays**: In a world obsessed with quick riches, Darvas's patient approach—waiting for perfect setups, holding through consolidations, letting profits compound—stands as a powerful counterpoint. Slow and steady really can win the race.
 
-# Key Takeaways
+## Key Takeaways
 
 The enduring power of "How I Made $2,000,000 in the Stock Market" lies not in promising easy wealth, but in honestly portraying the journey from naive beginner to disciplined expert. Darvas shows us that market success is available to anyone willing to learn, adapt, and exercise rigorous self-control.
 

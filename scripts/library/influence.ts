@@ -46,7 +46,7 @@ The danger lies in our automaticity. When we are rushed, stressed, uncertain, or
 
 ---
 
-# MODULE 1: RECIPROCITY
+## MODULE 1: RECIPROCITY
 **The Oldest Norm of Civilization**
 
 ## The Mechanism
@@ -80,7 +80,7 @@ How do you defend against a rule that is essential for social cohesion? You cann
 
 ---
 
-# MODULE 2: COMMITMENT AND CONSISTENCY
+## MODULE 2: COMMITMENT AND CONSISTENCY
 **The Hobgoblins of the Mind**
 
 ## The Mechanism
@@ -122,7 +122,7 @@ This is for when the trap is more subtle. Ask yourself the crucial question:
 
 ---
 
-# MODULE 3: SOCIAL PROOF
+## MODULE 3: SOCIAL PROOF
 **The Principle of Consensus and The Herd Mind**
 
 ## The Mechanism
@@ -160,7 +160,7 @@ If you are the victim in an emergency, you cannot rely on the crowd. The crowd i
 
 ---
 
-# MODULE 4: AUTHORITY
+## MODULE 4: AUTHORITY
 **Directed Deference and The Power of Symbols**
 
 ## The Mechanism
@@ -192,7 +192,7 @@ Even if they are an expert, they may not be on your side. You must assess the **
 
 ---
 
-# MODULE 5: LIKING
+## MODULE 5: LIKING
 **The Friendly Thief**
 
 ## The Mechanism

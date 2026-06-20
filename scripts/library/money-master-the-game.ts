@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: THE NEW RULES OF MONEY
+## INTRODUCTION: THE NEW RULES OF MONEY
 Welcome to the jungle. If you are reading this, you have decided that being a passive participant in your financial life is no longer acceptable. You are ready to stop being a chess piece and start being the chess player.
 
 For decades, the financial industry has sold the public a lie. They have told you that investing is too complex for the average person, that you need to "beat the market" to win, and that you should hand over your hard-earned money to "experts" who charge you hefty fees regardless of whether they make you money or lose it. The result? The system is rigged to ensure the house always wins, while the individual investor is left hoping for the best.
@@ -41,7 +41,7 @@ However, the most critical component of this blueprint is not a spreadsheet; it 
 
 ---
 
-# STEP 1: THE MOST IMPORTANT FINANCIAL DECISION
+## STEP 1: THE MOST IMPORTANT FINANCIAL DECISION
 **Commit to the Wealth Fund**
 
 Before we discuss asset allocation or fee structures, we must address the single biggest failure point for most investors: They do not have capital to invest.
@@ -64,7 +64,7 @@ Why is this urgency required? Because of the exponential power of compounding.
 
 ---
 
-# STEP 2: LEARN THE RULES & CRUSH THE FEES
+## STEP 2: LEARN THE RULES & CRUSH THE FEES
 **The Tyranny of the 1%**
 
 The financial industry is designed to transfer wealth from your pocket to theirs via fees.
@@ -87,7 +87,7 @@ A 1% or 2% fee sounds small, but it is devastating.
 
 ---
 
-# STEP 3: MAKE THE GAME WINNABLE
+## STEP 3: MAKE THE GAME WINNABLE
 **Define Your Financial Freedom Number**
 
 Most people never hit a target because they have never defined what the target is. "I want to be rich" is a wish, not a target.
@@ -109,7 +109,7 @@ To accelerate your timeline:
 
 ---
 
-# STEP 4: THE ALL-WEATHER PORTFOLIO & ASSET ALLOCATION
+## STEP 4: THE ALL-WEATHER PORTFOLIO & ASSET ALLOCATION
 **The Holy Grail of Investing**
 
 Most people hold a 50/50 stock/bond portfolio, thinking it's diversified. It's not. Stocks are 3x more volatile than bonds, so stocks dominate 95% of the risk.
@@ -130,7 +130,7 @@ Ray Dalio’s strategy balances risk, not just capital. It is designed to thrive
 
 ---
 
-# STEP 5: THE UPSIDE WITHOUT THE DOWNSIDE
+## STEP 5: THE UPSIDE WITHOUT THE DOWNSIDE
 **Asymmetric Risk & Structured Protection**
 
 Warren Buffett’s Rules:
@@ -145,7 +145,7 @@ For the conservative portion of your portfolio, consider vehicles that offer a "
 
 ---
 
-# STEP 6: THE INCOME FOR LIFE PLAN
+## STEP 6: THE INCOME FOR LIFE PLAN
 **Insuring Your Future**
 
 The greatest fear of retirees is running out of money. The traditional "4% Rule" may fail in low-interest or high-volatility environments.
@@ -157,7 +157,7 @@ Consider converting a portion of wealth into an **Income Annuity**. You give a l
 
 ---
 
-# STEP 7: JUST DO IT, ENJOY IT, AND SHARE IT
+## STEP 7: JUST DO IT, ENJOY IT, AND SHARE IT
 **The Joy of Financial Freedom**
 
 Money is a tool, not a goal. If you worship the tool, you will never be happy. If you use the tool, you will be free.

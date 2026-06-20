@@ -44,7 +44,7 @@ The true reward is patience—waiting for the **Psychological Time** to enter, a
 
 ---
 
-# Part I: The Psychology of the Speculator
+## Part I: The Psychology of the Speculator
 *The enemies of the speculator are internal and universal.*
 
 ## The Four Emotional Enemies
@@ -61,7 +61,7 @@ Patience is disciplined inactivity. You must wait for the **Psychological Time**
 
 ---
 
-# Part II: The Technical Methodology
+## Part II: The Technical Methodology
 
 ## The Pivotal Point
 The single most important concept. It is the point of **least resistance** where a breakthrough signals a substantial move.
@@ -95,7 +95,7 @@ Never trade in isolation. Follow the flow:
 
 ---
 
-# Part III: The Livermore Market Key
+## Part III: The Livermore Market Key
 *The secret weapon for developing "Market Feel."*
 
 Livermore kept a manual ledger to track price movements. This forced him to **internalize** the rhythm of the stock.
@@ -111,7 +111,7 @@ Livermore kept a manual ledger to track price movements. This forced him to **in
 
 ---
 
-# Conclusion & Legacy
+## Conclusion & Legacy
 
 ## Money Management Rules
 1.  **Cut Losses Quickly**: Never lose more than **10%** of capital on a trade. "When the market goes against you, get out."

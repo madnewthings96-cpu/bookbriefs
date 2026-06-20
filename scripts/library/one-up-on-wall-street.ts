@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Amateur’s Edge & The Psychology of the Long Game
+## INTRODUCTION: The Amateur’s Edge & The Psychology of the Long Game
 Welcome to the masterclass. If you are reading this, you’ve probably been told that investing is a game for the professionals—that unless you have a Bloomberg terminal, a Wharton MBA, and a direct line to the trading floor, you’re just "dumb money."
 
 I am here to tell you that is absolute baloney.
@@ -44,7 +44,7 @@ If you are susceptible to selling everything in a panic the moment the news anch
 
 ---
 
-# SECTION I: The Six Stock Categories
+## SECTION I: The Six Stock Categories
 Before you buy a single share, you have to know what you are buying. Not all stocks are the same. Almost every stock falls into one of six categories.
 
 ## 1. The Slow Growers (The "Sluggards")
@@ -80,7 +80,7 @@ Before you buy a single share, you have to know what you are buying. Not all sto
 
 ---
 
-# SECTION II: The Shopping Checklist – How to Find a Multi-Bagger
+## SECTION II: The Shopping Checklist – How to Find a Multi-Bagger
 How do you find the stocks? Look at the world around you.
 
 ## 1. It Sounds Dull—Or Even Better, Ridiculous
@@ -109,7 +109,7 @@ There is only one reason an insider buys: They think the price is going up.
 
 ---
 
-# SECTION III: The Golden Rules of Fundamental Analysis
+## SECTION III: The Golden Rules of Fundamental Analysis
 You don't need calculus. You need fourth-grade arithmetic.
 
 ## 1. The P/E Ratio vs. The Growth Rate (The PEG)
@@ -136,7 +136,7 @@ Avoid companies with no earnings and only a "great story."
 
 ---
 
-# SECTION IV: The Investor’s Final Mandates
+## SECTION IV: The Investor’s Final Mandates
 1.  **Know What You Own**: Explain it to a 10-year-old in two minutes.
 2.  **Don’t Predict the Economy**: Focus on the company, not the Fed.
 3.  **Volatility is the Price of Admission**: Don't panic sell.

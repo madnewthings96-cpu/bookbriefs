@@ -29,7 +29,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The "One Good Trade" Philosophy
+## INTRODUCTION: The "One Good Trade" Philosophy
 Welcome to the firm. You are here because you have potential, but potential alone does not pay the bills in this market. The market is a ruthless efficiency machine designed to transfer money from the undisciplined to the disciplined. To survive and thrive here, you must delete your obsession with "making money" and replace it with an obsession for "process."
 
 The foundation of everything we do at this firm is built on the concept of **One Good Trade**.
@@ -50,7 +50,7 @@ Your goal is to become a machine that executes One Good Trade, then clears the c
 
 ---
 
-# PILLAR I: Preparation & The Game Plan
+## PILLAR I: Preparation & The Game Plan
 *"You can't control what the market does, but you can control your reaction to it. That reaction is determined by your preparation."*
 
 At our firm, the trading day does not start at 9:30 AM. If you are logging in at 9:15 AM hoping to find something to trade, you have already lost. The battle is won in the pre-market.
@@ -94,7 +94,7 @@ You must write down scripts for your trades.
 
 ---
 
-# PILLAR II: The Trading Playbook & Execution
+## PILLAR II: The Trading Playbook & Execution
 *"You do not need to know what the market will do next to make money. You need to know what YOU will do next."*
 
 To succeed, you must develop a **Personal Playbook**. A Playbook is a collection of trading setups that you have mastered.
@@ -133,7 +133,7 @@ Charts show the past; the Tape shows the present.
 
 ---
 
-# PILLAR III: The Trader's Progression & Review
+## PILLAR III: The Trader's Progression & Review
 *"You are not a trader until you have survived the learning curve. The tuition is steep, and it is paid in cash and ego."*
 
 ## 1. The Three Stages of a Trader
@@ -152,7 +152,7 @@ You cannot improve what you do not measure.
 
 ---
 
-# PILLAR IV: The Psychological Battleground
+## PILLAR IV: The Psychological Battleground
 *"The market is a mirror. It reflects your own insecurities, greed, and fear back at you."*
 
 ## 1. Discipline: The Anchor
@@ -174,7 +174,7 @@ Treat your body and mind like an athlete. Sleep, nutrition, and visualization ar
 
 ---
 
-# THE MASTER CHECKLIST: 15 Non-Negotiable Rules
+## THE MASTER CHECKLIST: 15 Non-Negotiable Rules
 1.  **Protect the Capital**: Risk management first.
 2.  **Respect the Stop**: Never move a stop-loss to accommodate a losing position.
 3.  **No Stocks in Play, No Trade**: Do not trade out of boredom.

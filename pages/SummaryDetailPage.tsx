@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
@@ -12,6 +12,7 @@ import HighlightableText from '../components/HighlightableText';
 import YouMayAlsoLike from '../components/YouMayAlsoLike';
 import BookReviews from '../components/BookReviews';
 import FavoriteButton from '../components/FavoriteButton';
+import SummaryReadingExperience from '../components/SummaryReadingExperience';
 // Lazy load jsPDF - only when user clicks download (saves 385KB from initial bundle!)
 // import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -24,6 +25,61 @@ import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { SITE_URL } from '../utils/seoConfig';
+
+const PDF_PATHS: Record<string, string> = {
+  'americas-bank': '/pdfs/americas bank.pdf',
+  'broken-money': '/pdfs/broken money.pdf',
+  'rich-dad-poor-dad': '/pdfs/rich dad poor dad.pdf',
+  'the-mental-game-of-trading': '/pdfs/the mental game of trading.pdf',
+  'the-alchemist': '/pdfs/the alchemist.pdf',
+  howtodaytradeforaliving: '/pdfs/how to day trade for a living.pdf',
+  'trading-in-the-zone': '/pdfs/trading in the zone 2.pdf',
+  'atomic-habits': '/pdfs/atomic habits.pdf',
+  'best-loser-wins': '/pdfs/best loser wins.pdf',
+  therichestmaninbabylon: '/pdfs/the richest man in babylon.pdf',
+  secretsofthemillionairemind: '/pdfs/secrets of the millionaire mind.pdf',
+  marketwizards: '/pdfs/market wizards.pdf',
+  becoming: '/pdfs/becoming.pdf',
+  dune: '/pdfs/dune.pdf',
+  educated: '/pdfs/educated.pdf',
+  'project-hail-mary': '/pdfs/project hail mary.pdf',
+  'the-subtle-art-of-not-giving-a-f': '/pdfs/the subtle art of not giving a fck.pdf',
+  sapiens: '/pdfs/sapiens.pdf',
+  'the-four-agreements': '/pdfs/the four agreements.pdf',
+  'the-4-hour-workweek': '/pdfs/the 4 hour workweek.pdf',
+  'the-laws-of-human-nature': '/pdfs/the laws of human nature.pdf',
+  'thinking-fast-and-slow': '/pdfs/thinking fast and slow.pdf',
+  belesszombie: '/pdfs/be less zombie.pdf',
+  the48lawsofpower: '/pdfs/the 48 laws of power.pdf',
+  the33strategiesofwar: '/pdfs/the 33 strategies of war.pdf',
+  relentless: '/pdfs/relentless.pdf',
+  'the-intelligent-investor': '/pdfs/the intelligent investor.pdf',
+  'one-up-on-wall-street': '/pdfs/one up on wall street.pdf',
+  'the-psychology-of-money': '/pdfs/the psychology of money.pdf',
+  'one-good-trade': '/pdfs/one good trade.pdf',
+  'cant-hurt-me': "/pdfs/can't hurt me.pdf",
+  'the-alchemy-of-finance': '/pdfs/the alchemy of finance.pdf',
+  'competition-demystified': '/pdfs/competition demystified.pdf',
+  'the-4-hour-work-week': '/pdfs/the 4 hour work week.pdf',
+  'the-black-swan': '/pdfs/the black swan.pdf',
+  'the-playbook': '/pdfs/the playbook.pdf',
+  'the-chatgpt-millionaire': '/pdfs/the chatgpt millionaire.pdf',
+  'the-miracle-morning': '/pdfs/the miracle morning.pdf',
+  'the-first-90-days': '/pdfs/the first 90 days.pdf',
+  'leading-change': '/pdfs/leading change.pdf',
+  'i-will-teach-you-to-be-rich': '/pdfs/i will teach you to be rich.pdf',
+  'money-master-the-game': '/pdfs/money master the game.pdf',
+  'the-total-money-makeover': '/pdfs/the total money makeover.pdf',
+  'the-7-habits-of-highly-effective-people': '/pdfs/the 7 habits of highly effective people.pdf',
+  'how-to-win-friends-and-influence-people': '/pdfs/how to win friends and influence people.pdf',
+  'influence-the-psychology-of-persuasion': '/pdfs/influence.pdf',
+  'a-random-walk-down-wall-street': '/pdfs/a random walk down wall street.pdf',
+  'the-simple-path-to-wealth': '/pdfs/the simple path to wealth.pdf',
+  'basic-economics': '/pdfs/basic economics.pdf',
+  'black-rednecks-and-white-liberals': '/pdfs/black rednecks and white liberals.pdf',
+  'how-to-trade-in-stocks': '/pdfs/how to trade in stocks.pdf',
+  'reminiscences-of-a-stock-operator': '/pdfs/reminiscences of a stock operator.pdf',
+};
 
 const SummaryDetailPage: React.FC = () => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
@@ -80,9 +136,6 @@ const SummaryDetailPage: React.FC = () => {
     type: 'book',
     canonical: canonicalSlug ? `${SITE_URL}/summary/${canonicalSlug}` : undefined,
   });
-
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Personal Notes & Highlights state
   const [showAddNoteModal, setShowAddNoteModal] = useState(false);
@@ -163,7 +216,7 @@ const SummaryDetailPage: React.FC = () => {
       }
     }
 
-    // Listen for language changes
+    // Refresh translated summary when language changes
     const handleLanguageChange = () => {
       if (currentBook) {
         fetchSummary(currentBook);
@@ -172,35 +225,91 @@ const SummaryDetailPage: React.FC = () => {
 
     window.addEventListener('languagechange', handleLanguageChange);
 
-    // Cleanup speech synthesis and event listener on component unmount
+    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener('languagechange', handleLanguageChange);
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId, fetchSummary, books, booksLoading]);
 
-  const handleToggleSpeech = () => {
+  const handleDownloadPdf = useCallback(async () => {
+    if (!book) return;
+
+    if (!isAuthenticated) {
+      setShowSignUpModal(true);
+      return;
+    }
+
+    const directPdfUrl = book.arabicPdfUrl || PDF_PATHS[book.id];
+    if (directPdfUrl) {
+      window.open(directPdfUrl, '_blank');
+      return;
+    }
+
     if (!summaryData) return;
 
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    } else {
-      const textToSpeak = `Summary for ${displayTitle}. ${summaryData.summary}`;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => {
-        console.error("Speech synthesis error");
-        setIsSpeaking(false);
-      };
-      utteranceRef.current = utterance;
-      window.speechSynthesis.speak(utterance);
-      setIsSpeaking(true);
+    try {
+      const { default: jsPDF } = await import('jspdf');
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+        putOnlyUsedFonts: true,
+      });
+
+      const title = getBookTitle(book.id);
+      const author = getBookAuthor(book.id);
+
+      doc.setFontSize(24);
+      doc.text(title, 20, 22);
+
+      doc.setFontSize(14);
+      doc.text(`By: ${author}`, 20, 32);
+
+      doc.setFontSize(18);
+      doc.text('Key Takeaways', 20, 48);
+      doc.setFontSize(11);
+
+      let yPos = 58;
+      summaryData.keyTakeaways.forEach((takeaway, index) => {
+        const lines = doc.splitTextToSize(`${index + 1}. ${takeaway.replace(/\*\*/g, '')}`, 170);
+        if (yPos + lines.length * 7 > 280) {
+          doc.addPage();
+          yPos = 22;
+        }
+        doc.text(lines, 20, yPos);
+        yPos += 7 * lines.length + 3;
+      });
+
+      yPos += 6;
+      if (yPos > 265) {
+        doc.addPage();
+        yPos = 22;
+      }
+
+      doc.setFontSize(18);
+      doc.text('Detailed Summary', 20, yPos);
+      doc.setFontSize(11);
+      yPos += 10;
+
+      const summaryLines = doc.splitTextToSize(summaryData.summary.replace(/\*\*/g, ''), 170);
+      summaryLines.forEach((line: string) => {
+        if (yPos > 280) {
+          doc.addPage();
+          yPos = 22;
+        }
+        doc.text(line, 20, yPos);
+        yPos += 6;
+      });
+
+      const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
     }
-  };
+  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
 
   if (!book && !loading) {
     return (
@@ -213,6 +322,8 @@ const SummaryDetailPage: React.FC = () => {
       </div>
     );
   }
+
+  const showRedesignedLayout = Boolean(book && summaryData && !loading && !error);
 
   return (
     <>
@@ -227,7 +338,29 @@ const SummaryDetailPage: React.FC = () => {
         />
       )}
       <ReadingProgressBar />
-      <div className="bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 rounded-lg shadow-xl max-w-5xl mx-auto">
+      {book && summaryData && showRedesignedLayout && (
+        <SummaryReadingExperience
+          book={book}
+          bookId={bookId || book.id}
+          summaryData={summaryData}
+          displayTitle={displayTitle}
+          displayAuthor={displayAuthor}
+          isAuthenticated={isAuthenticated}
+          onDownloadPdf={handleDownloadPdf}
+          onAddNote={() => setShowAddNoteModal(true)}
+          onRequireSignUp={() => setShowSignUpModal(true)}
+          t={t}
+        />
+      )}
+      {bookId && showRedesignedLayout && (
+        <div className="bg-[#f7f3ed] px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <BookReviews bookId={bookId} />
+          </div>
+        </div>
+      )}
+      {!showRedesignedLayout && (
+        <div className="bg-white px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 rounded-lg shadow-xl max-w-5xl mx-auto">
         {book && (
           <header className="mb-4 sm:mb-6 text-center border-b border-gray-200 pb-4">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: '#2F4F4F' }}>{displayTitle}</h1>
@@ -2609,7 +2742,23 @@ const SummaryDetailPage: React.FC = () => {
           isOpen={showSignUpModal}
           onClose={() => setShowSignUpModal(false)}
         />
-      </div >
+        </div >
+      )}
+
+      {showRedesignedLayout && (
+        <>
+          <AddNoteModal
+            bookId={bookId || ''}
+            isOpen={showAddNoteModal}
+            onClose={() => setShowAddNoteModal(false)}
+          />
+
+          <SignUpPromptModal
+            isOpen={showSignUpModal}
+            onClose={() => setShowSignUpModal(false)}
+          />
+        </>
+      )}
 
       {/* You May Also Like Section */}
       {

@@ -26,13 +26,13 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The New Rich
+## INTRODUCTION: The New Rich
 I am here to liberate you from the cult of the 9-to-5. We focus on high-yield output, geo-arbitrage, and separating income from time.
 **The Goal**: Replace "Retirement" with "Mini-Retirements" and "Being a Millionaire" with "Living like a Millionaire."
 
 ---
 
-# PHASE I: D - DEFINITION (The Philosophy)
+## PHASE I: D - DEFINITION (The Philosophy)
 ## The Great Lie: The Deferred Life Plan (DLP)
 The DLP is a sucker's bet: Work 40 years, save 10%, and retire at 65. The New Rich (NR) distribute "recovery periods" throughout life.
 
@@ -48,7 +48,7 @@ The DLP is a sucker's bet: Work 40 years, save 10%, and retire at 65. The New Ri
 
 ---
 
-# PHASE II: E - ELIMINATION (The Efficiency Engine)
+## PHASE II: E - ELIMINATION (The Efficiency Engine)
 To create time, do less, not more.
 
 ## The Pareto Principle (80/20 Rule)
@@ -66,7 +66,7 @@ Ignore "just in case" information.
 
 ---
 
-# PHASE III: A - AUTOMATION (The Income Machine)
+## PHASE III: A - AUTOMATION (The Income Machine)
 Build a system that replaces you.
 
 ## Outsourcing and The Virtual Assistant (VA)
@@ -85,7 +85,7 @@ A business designed specifically to fund your lifestyle.
 
 ---
 
-# PHASE IV: L - LIBERATION (The Escape Hatch)
+## PHASE IV: L - LIBERATION (The Escape Hatch)
 Disconnect location from work.
 
 ## Escaping the Office (For Employees)
@@ -101,7 +101,7 @@ The biggest barrier is fear.
 
 ---
 
-# CONCLUSION: The Mindset Shift
+## CONCLUSION: The Mindset Shift
 The 9-to-5 is a prison with the door unlocked.
 **10 Non-Negotiable Action Steps**:
 1.  **Define Your Nightmare**: Realize risks are manageable.

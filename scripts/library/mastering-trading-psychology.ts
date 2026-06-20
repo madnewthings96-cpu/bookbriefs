@@ -22,7 +22,7 @@ Andrew Aziz, known for his technical prowess in How to Day Trade for a Living, p
 
 Below is a chapter-by-chapter deep dive.
 
-# Chapter 1: The Three Pillars of Trading
+## Chapter 1: The Three Pillars of Trading
 
 ## The Core Thesis
 The authors open by debunking the myth that psychology is a "soft skill" that can be ignored until one is profitable. They introduce the concept that trading success stands on a three-legged stool. If any single leg is short or broken, the stool falls. Psychology is not a supplement to strategy; it is the glue that holds strategy together.
@@ -45,7 +45,7 @@ Rate yourself 1-10 in each.
 Crucially: If your Psychology score is below 7, stop trading with live capital immediately.
 Write down three specific psychological barriers you faced in your last session (e.g., "I moved my stop loss," "I took a trade out of boredom").
 
-# Chapter 2: The "Big Why" and Motivation
+## Chapter 2: The "Big Why" and Motivation
 
 ## The Core Thesis
 Willpower is a finite resource. When you are waking up at 5:00 AM for pre-market analysis, "making money" is not a strong enough motivator. The market is too difficult for money to be the only driver. You need a "Big Why"—a profound, personal reason for trading that transcends financial gain.
@@ -67,7 +67,7 @@ Write a manifesto (minimum 300 words) answering the following:
 
 **Task:** Print this statement and tape it to the bezel of your trading monitor. Read it every morning before the bell rings.
 
-# Chapter 3: Psycho-Trading and Cognitive Biases
+## Chapter 3: Psycho-Trading and Cognitive Biases
 
 ## The Core Thesis
 Our brains evolved to survive in the wild, not to trade in the markets. Evolution wired us to run from danger (selling low) and hoard resources (buying high/FOMO). Aziz and Baer argue that to be a successful trader, you must actively fight your biological programming.
@@ -88,7 +88,7 @@ Create a checklist to review during a trade when you feel emotional:
 *   Did I enter this trade because my setup appeared, or because the candle was green and moving fast? (FOMO)
 *   If I were not in this trade, would I buy it right now at this price? (Endowment Effect)
 
-# Chapter 4: The Imposter Syndrome & The Dunning-Kruger Effect
+## Chapter 4: The Imposter Syndrome & The Dunning-Kruger Effect
 
 ## The Core Thesis
 Traders oscillate between two dangerous states: feeling like a fraud who got lucky (Imposter Syndrome) and feeling like a genius who knows everything (Dunning-Kruger). Both lead to account destruction. The goal is "Unconscious Competence"—where trading becomes boring and routine.
@@ -109,7 +109,7 @@ For your last 10 winning trades, ask:
 
 **Verdict:** If you won but broke your rules, mark it as a "Bad Win." Bad wins are more dangerous than losses because they reinforce bad habits (Dunning-Kruger).
 
-# Chapter 5: Mental Capital – The Scarcest Resource
+## Chapter 5: Mental Capital – The Scarcest Resource
 
 ## The Core Thesis
 This is arguably the most distinct concept in the book. We all know about Financial Capital (money). Aziz and Baer introduce Mental Capital—the amount of emotional energy and focus you have available. When Mental Capital is depleted, you cannot trade, even if your account is full of cash.
@@ -132,7 +132,7 @@ Before opening your trading platform, check the acronym HALT.
 
 If you answer yes to any, your Mental Capital is low. Do not trade. Go for a run, eat, or sleep. Treat your mind like a battery that must be charged.
 
-# Chapter 6: The Power of Habits and Routine
+## Chapter 6: The Power of Habits and Routine
 
 ## The Core Thesis
 You cannot control the market. You can only control your routine. Success is not an act; it is a habit. The authors lean heavily on the idea that a chaotic life leads to chaotic trading. Structure outside the markets creates discipline inside the markets.
@@ -163,7 +163,7 @@ Create a checklist that must be completed before you are allowed to take a trade
 
 **Rule:** If a box is unchecked, the market is closed for you today.
 
-# Chapter 7: The Trading Plan – Your Contract with the Market
+## Chapter 7: The Trading Plan – Your Contract with the Market
 
 ## The Core Thesis
 A goal without a plan is just a wish. A trade without a plan is just gambling. Aziz and Baer insist that the Trading Plan is a binding legal contract you sign with yourself. Breaking it is a breach of contract that warrants suspension (stopping trading).
@@ -187,7 +187,7 @@ Create a physical document that includes:
 
 Sign and date the bottom.
 
-# Chapter 8: Resilience, Recovery, and the "Prop Mindset"
+## Chapter 8: Resilience, Recovery, and the "Prop Mindset"
 
 ## The Core Thesis
 Losses are inevitable. How you deal with them determines your career. This chapter draws heavily on Baer’s experience. It introduces the "Proprietary Firm Mindset"—treating your trading not as a personal reflection of your worth, but as a business managing risk.
@@ -210,7 +210,7 @@ After every trading session, answer:
 
 **Re-entry Visualization:** If you lost, close your eyes and visualize taking the loss calmly, without anger. Re-wire your brain's response to the red numbers.
 
-# Conclusion: Synthesizing the Aziz/Baer Framework
+## Conclusion: Synthesizing the Aziz/Baer Framework
 
 ## The "Psycho-Structural" Approach
 You have just read a breakdown of the key components of Mastering Trading Psychology. But why is this specific framework superior to general self-help books or other trading psychology texts?

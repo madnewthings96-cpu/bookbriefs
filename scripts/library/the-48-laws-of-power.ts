@@ -26,14 +26,14 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Amoral Landscape of Power
+## INTRODUCTION: The Amoral Landscape of Power
 Power is the fundamental thermodynamic of human interaction. To believe you can opt out is the most dangerous illusion. The world is a giant court, and we are all trapped inside it. There are no safe spaces, only players and pawns.
 
 **Key Principle**: Appearance is more important than Reality. Reputation is the cornerstone of power.
 
 ---
 
-# PILLAR I: DECEPTION & IMAGE CONTROL
+## PILLAR I: DECEPTION & IMAGE CONTROL
 **Objective**: Curate an impenetrable facade. Leverage perception to intimidate and attract.
 
 ## The Art of Concealment and Silence
@@ -58,7 +58,7 @@ Power is the fundamental thermodynamic of human interaction. To believe you can 
 
 ---
 
-# PILLAR II: MANIPULATION & INFLUENCE
+## PILLAR II: MANIPULATION & INFLUENCE
 **Objective**: Maneuver others into doing your bidding without force.
 
 ## Creating Dependence and Need
@@ -86,7 +86,7 @@ Power is the fundamental thermodynamic of human interaction. To believe you can 
 
 ---
 
-# PILLAR III: AUTHORITY & SELF-PRESERVATION
+## PILLAR III: AUTHORITY & SELF-PRESERVATION
 **Objective**: Maintain your position and avoid the pitfalls of victory.
 
 ## Managing the Master
@@ -114,7 +114,7 @@ Power is the fundamental thermodynamic of human interaction. To believe you can 
 
 ---
 
-# CONCLUSION: The Ultimate Defense
+## CONCLUSION: The Ultimate Defense
 To master the 48 Laws is to rewire your perception of reality. Become a creature of calculation. The innocent lamb is eaten; the strategic lion rules.
 
 ## The "Fatal 10" Defense Checklist

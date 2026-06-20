@@ -26,14 +26,14 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Strategic Mindset
+## INTRODUCTION: The Strategic Mindset
 Understand this clearly: **Peace is an illusion.** Beneath the polite veneer of society lies the eternal dynamic of conflict. You are navigating a landscape of constant warfare. To survive, you must adopt the **Strategic Mindset**.
 *   **Tactical Mindset**: Reactive, emotional, clinging to the past. The path to defeat.
 *   **Strategic Mindset**: Rational, detached, viewing the whole chessboard. The path to power.
 
 ---
 
-# PART I: SELF-DIRECTED WAR (Forging the Sword)
+## PART I: SELF-DIRECTED WAR (Forging the Sword)
 Before you conquer an enemy, you must conquer yourself.
 
 ## 1. The Polarity Strategy: Declare War on Your Enemies
@@ -54,7 +54,7 @@ You waste time because you think you have it. Place yourself on "Death Ground" w
 
 ---
 
-# PART II: ORGANIZATIONAL WAR (The Shield)
+## PART II: ORGANIZATIONAL WAR (The Shield)
 Transform a chaotic group into a lethal organism.
 
 ## 5. The Command-and-Control Strategy: Avoid Groupthink
@@ -71,7 +71,7 @@ Mercenaries fight for money; soldiers fight for a cause. Frame your goal as a mo
 
 ---
 
-# PART III: DEFENSIVE WAR (Buying Time)
+## PART III: DEFENSIVE WAR (Buying Time)
 Know when to conserve energy and bait the enemy.
 
 ## 8. The Perfect-Economy Strategy: Pick Your Battles
@@ -92,7 +92,7 @@ When weak, retreat. Let them swing at air. Regroup and return when strong.
 
 ---
 
-# PART IV: OFFENSIVE WAR (Seizing Initiative)
+## PART IV: OFFENSIVE WAR (Seizing Initiative)
 Disrupt the enemy and achieve decisive victory.
 
 ## 12. The Grand Strategy: Lose Battles but Win the War
@@ -141,7 +141,7 @@ There is no such thing as total victory. Stop before arrogance destroys you.
 
 ---
 
-# PART V: UNCONVENTIONAL (DIRTY) WAR
+## PART V: UNCONVENTIONAL (DIRTY) WAR
 The dark arts of asymmetry and deception.
 
 ## 23. The Misperception Strategy: Manipulate Reality
@@ -190,7 +190,7 @@ Trigger a chain reaction of fear.
 
 ---
 
-# CONCLUSION: The Way of the Strategic Warrior
+## CONCLUSION: The Way of the Strategic Warrior
 Strategy is the art of fluidity.
 **10 Non-Negotiable Rules**:
 1.  Look at things as they are, not as you wish.

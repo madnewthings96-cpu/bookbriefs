@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# Introduction: The Philosophy of the 'Rich Life'
+## Introduction: The Philosophy of the 'Rich Life'
 **Stop asking $3 questions. Start asking $30,000 questions.**
 
 Most people are experts at being average. They agonize over buying a latte, spend hours hunting for a $10 coupon, and then lose tens of thousands of dollars because they didn’t negotiate their salary or chose a mutual fund with a 1% expense ratio. This is what I call playing offense with your money, rather than defense.
@@ -43,7 +43,7 @@ If you follow this guide, you will be richer than 99% of your friends within 12 
 
 ---
 
-# Phase 1: Credit Cards & Banking
+## Phase 1: Credit Cards & Banking
 *Optimize the Infrastructure.*
 
 Before we talk about investing, we have to fix the plumbing. Most people treat their bank accounts like a storage unit—dumping money in and hoping it doesn’t rot. We are going to treat your accounts like a logistics hub.
@@ -77,7 +77,7 @@ Most big banks pay you 0.01% interest. That is an insult. You are losing money t
 
 ---
 
-# Phase 2: Defeating Debt & Optimization
+## Phase 2: Defeating Debt & Optimization
 *Stop Crying, Start Attacking.*
 
 Debt is the single biggest barrier to the Rich Life. It destroys your cash flow and your psychology. We are going to tackle it with math, not emotion.
@@ -99,7 +99,7 @@ I recommend the **Avalanche Method**. Why? Because math. Paying off a 24% APR ca
 
 ---
 
-# Phase 3: The Conscious Spending Plan (CSP)
+## Phase 3: The Conscious Spending Plan (CSP)
 *Budgets are for victims. The CSP is for winners.*
 
 Most people hate budgeting because it is backward-looking. A Conscious Spending Plan is forward-looking. It decides where your money goes *before* you spend it.
@@ -122,7 +122,7 @@ You will allocate every dollar of take-home pay into these four categories.
 
 ---
 
-# Phase 4: Automation—The Invisible Financial Engine
+## Phase 4: Automation—The Invisible Financial Engine
 *Willpower is a finite resource. Automation is infinite.*
 
 We are going to build a system where money flows automatically. You will be accumulating wealth while you sleep.
@@ -142,7 +142,7 @@ Your Checking Account is the Hub. All income flows in here, and the system pushe
 
 ---
 
-# Phase 5: Investing: Index Funds & Simplicity
+## Phase 5: Investing: Index Funds & Simplicity
 *Investing is not about picking stocks. It is about asset allocation.*
 
 Stop trying to beat the market. You can’t. 80-90% of actively managed funds fail to beat the S&P 500 over a 10-year period.
@@ -171,7 +171,7 @@ Do not buy individual stocks. Buy **Index Funds**.
 
 ---
 
-# Phase 6: The Big Wins
+## Phase 6: The Big Wins
 *Focus on the $30,000 Wins, ignore the $3 lattes.*
 
 ## 1. Salary Negotiation
@@ -188,7 +188,7 @@ Stop buying new cars. A new car loses 20% of its value the moment you drive it o
 
 ---
 
-# The Master Checklist
+## The Master Checklist
 *   [ ] Set up "Autopay: Full Statement Balance" on credit cards.
 *   [ ] Call credit card company to waive fees/lower APR.
 *   [ ] Open a High-Yield Savings Account.

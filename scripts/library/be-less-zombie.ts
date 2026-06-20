@@ -19,7 +19,7 @@ export const book: BookDefinition = {
 For Senior Leaders, Innovation Strategists, and Change Makers
 Based on the work of Elvin Turner
 
-# 1. INTRODUCTION
+## 1. INTRODUCTION
 ## The Core Diagnosis: The Rise of the Corporate Walking Dead
 We are witnessing a silent epidemic in the corporate world. It is not a lack of capital, a lack of talent, or a lack of market opportunity. It is a systemic condition Elvin Turner defines as the "Zombie Company."
 
@@ -39,7 +39,7 @@ Be Less Zombie is not a plea for creativity; it is a manual for survival. The ce
 
 By reverse-engineering the habits of highly innovative companies (the "dynamic" organizations), we can build a systemic capability for innovation. This guide transforms innovation from a "nice-to-have" value on a lobby wall into a strategic habit. We will unpack how to turn the lights back on, re-engage the workforce, and build a dual-engine organization that delivers today while designing tomorrow.
 
-# 2. DETAILED BREAKDOWN: THE ANATOMY OF SURVIVAL
+## 2. DETAILED BREAKDOWN: THE ANATOMY OF SURVIVAL
 
 ## PART 1: THE ZOMBIE DIAGNOSIS
 ### Why Companies Die and the Biology of Stagnation
@@ -126,7 +126,7 @@ The hardest task for a leader is to be "Ambidextrous."
 **Right Hand**: Lead the Discovery Engine (curiosity, patience, experimentation).
 **The Challenge**: Most leaders are promoted because they are good at the Left Hand. They must consciously develop Right Hand skills or delegate them to those who have them.
 
-# 3. THE TOOLKIT: OPERATIONALIZING THE STRATEGY
+## 3. THE TOOLKIT: OPERATIONALIZING THE STRATEGY
 To move from theory to practice, use these specific tools derived from Turner’s methodology.
 
 ### A. The "Kill the Company" Exercise
@@ -155,7 +155,7 @@ Copy this and tape it to your monitor.
 *   On Strategy: Regularly ask, "If we were a startup launching today, would we build the company the way it looks right now?" If the answer is no, you have a Zombie problem.
 *   On Fear: publicly reward someone who took a smart risk and failed. Signal to the herd that it is safe.
 
-# 4. CRITICAL ANALYSIS & CONCLUSION
+## 4. CRITICAL ANALYSIS & CONCLUSION
 ## Synthesis: The Human-Centric Pivot
 Be Less Zombie is, at its core, a humanistic manifesto disguised as a business strategy. Turner argues that the Zombie state is unnatural—it suppresses human curiosity and passion in the name of robotic efficiency. By restoring the human element—curiosity, safety, purpose—we do not just make the workplace happier; we make the business more robust.
 

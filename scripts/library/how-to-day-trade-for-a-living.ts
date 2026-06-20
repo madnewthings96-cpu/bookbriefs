@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# Introduction: The Business of Trading
+## Introduction: The Business of Trading
 Welcome to the profession. If you are reading this manual, you have decided to move past the phase of "gambling" and treat day trading as a serious business. This guide is not designed to sell you a dream of Lamborghinis and private islands; it is a technical blueprint for survival and profitability in the financial markets.
 
 ## Day Trading vs. Gambling: The Casino Analogy
@@ -58,7 +58,7 @@ You cannot compete against algorithms using a smartphone app.
 
 ---
 
-# Part I: Risk Management & Psychology
+## Part I: Risk Management & Psychology
 *Strategies are useless without the discipline to manage risk.*
 
 ## The 2% Rule: The Mathematics of Survival
@@ -87,7 +87,7 @@ You cannot compete against algorithms using a smartphone app.
 
 ---
 
-# Part II: The 9 Core Strategies (Section A)
+## Part II: The 9 Core Strategies (Section A)
 *Timeframes: 1-minute and 5-minute charts.*
 
 ## 1. The ABCD Pattern
@@ -116,7 +116,7 @@ Aggressive momentum strategy.
 
 ---
 
-# Part II: The 9 Core Strategies (Section B)
+## Part II: The 9 Core Strategies (Section B)
 
 ## 4. Reversal Strategies
 *Catching a falling knife (requires confirmation).*
@@ -137,7 +137,7 @@ Draw these **before** the market opens.
 
 ---
 
-# Part III: Execution & The Trading Plan
+## Part III: Execution & The Trading Plan
 
 ## The Morning Routine (8:00 AM – 9:30 AM)
 1.  **Scanner**: Find Top Gappers (>2-4%).
@@ -154,7 +154,7 @@ Track **Win Rate** and **Profit Factor**. Identify which strategies make money a
 
 ---
 
-# Conclusion: The Roadmap to Success
+## Conclusion: The Roadmap to Success
 
 Reading the manual doesn't make you a pilot. You need flight hours.
 

@@ -24,7 +24,7 @@ export const book: BookDefinition = {
     summary: `# Best Loser Wins: A Deep-Dive Analysis and Behavioral Guide
 Based on the work of Tom Hougaard
 
-# 1. Introduction
+## 1. Introduction
 ## The Central Paradox: Why Losing is the Key to Winning
 Tom Hougaard’s *Best Loser Wins* is built on a counter-intuitive premise: to win at trading, you must become an expert at losing. Most people come to the markets trying to predict the future. They spend years studying charts, indicators, and patterns, believing that if they can just "know" what happens next, they will be rich. Hougaard argues this is a fallacy. You cannot predict the future. The market is a chaotic environment where anything can happen. Therefore, your edge does not come from prediction; it comes from risk management. Specifically, it comes from how you handle the trades that go against you. The "Best Loser" is the trader who takes a loss quickly, cleanly, and without emotional damage, preserving their capital for the winning trades.
 
@@ -34,7 +34,7 @@ The statistics are grim: 90% of retail traders lose 90% of their money in 90 day
 ## The Author: Tom Hougaard
 Tom Hougaard is not an armchair theorist. He is a high-stakes day trader who has worked for major brokerages and traded his own capital publicly. He is known for his transparency, often live-streaming his trading sessions where he wins—and loses—thousands of dollars in minutes. This book is the distillation of his journey from a "normal" loser to a high-performance "abnormal" winner.
 
-# 2. Detailed Analysis
+## 2. Detailed Analysis
 ## Normal vs. Abnormal Behavior
 The core of Hougaard’s philosophy is that "normal" human instincts are destructive in trading.
 *   **Normal Behavior**: In life, if you are in pain (physical or emotional), your instinct is to avoid it. If you touch a hot stove, you pull your hand away. In trading, "pain" is a losing trade. But instead of pulling away (cutting the loss), the normal human instinct is to *avoid the realization of the loss*. We hold onto the trade, hoping it will turn around, because closing it makes the pain "real."
@@ -57,7 +57,7 @@ This is where Hougaard is most controversial and most profound.
 *   **Adding to Winners**: Most traders add to losers (averaging down) to lower their breakeven price. This is suicide. Hougaard advocates **adding to winners**. If the market confirms your direction, buy more. Use the market's money (your open profits) to finance larger positions. This is how you turn a normal winning day into a career-defining day.
 *   **The Logic**: If you are wrong, you lose small (because you cut it). If you are right, you are heavily invested. This asymmetry is the holy grail of trading.
 
-# 3. Practical Application & Drills
+## 3. Practical Application & Drills
 ## The "Best Loser" Toolkit
 How do you train your brain to be abnormal?
 1.  **The "Stop Loss" Drill**: Practice entering a trade and immediately placing a hard stop loss. Do not move it. If it gets hit, say out loud: "Good trade." You followed your rules. You took a small loss. That is a victory.
@@ -68,7 +68,7 @@ Hougaard emphasizes that willpower is a finite resource. You cannot rely on it i
 *   **Visualization**: Before the market opens, visualize yourself taking a loss. Visualize the feeling of the market going against you and you calmly clicking "Close." Rehearse the pain so it doesn't surprise you.
 *   **Routine**: High performance requires high maintenance. Sleep, diet, and exercise are not "extras"; they are the foundation of your emotional stability. You cannot trade well if you are physically compromised.
 
-# 4. Critical Synthesis & Conclusion
+## 4. Critical Synthesis & Conclusion
 ## The Philosophical Takeaway
 *Best Loser Wins* is more than a trading book; it is a philosophy of life. It teaches that uncertainty is the only certainty. We cannot control the world (the market), but we can control our reaction to it. The discipline required to be a "Best Loser"—the ability to admit you are wrong, to let go of ego, and to act with conviction in the face of fear—is the same discipline required to succeed in any high-performance field.
 

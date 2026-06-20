@@ -26,7 +26,7 @@ export const book: BookDefinition = {
 
 ---
 
-# INTRODUCTION: The Hook & The Stakes
+## INTRODUCTION: The Hook & The Stakes
 The narrative opens not with a bang, but with a question of cognition: "What is two plus two?" This simple query sets the stage for a story that is equal parts survival thriller and scientific procedural. We are introduced to our protagonist, Ryland Grace, in a state of terrified tabula rasa.
 
 The hook is immediate and brutal. Unlike *The Martian*, this isolation is intentional and systemic. The stakes are absolute: **The sun is dying.** A microscopic entity, *Astrophage*, is infecting the star, consuming its output. Within decades, the resulting Ice Age will kill billions.
@@ -35,7 +35,7 @@ Grace finds himself aboard the *Hail Mary*, a starship hurtling toward the Tau C
 
 ---
 
-# PART I: The Past Timeline
+## PART I: The Past Timeline
 The timeline is defined by the tension between ethical boundaries and existential necessity.
 
 ## The Initial Crisis: The Petrova Line
@@ -55,7 +55,7 @@ Days before launch, an explosion kills the science specialists. Stratt decides G
 
 ---
 
-# PART II: The Present Timeline & Solutions
+## PART II: The Present Timeline & Solutions
 The present timeline is a masterclass in problem-solving, elevated by first contact.
 
 ## Amnesia & Identity
@@ -79,7 +79,7 @@ With the cure secured, they part ways. Grace launches the "Beatles" (probes) bac
 
 ---
 
-# CONCLUSION: Themes & Takeaways
+## CONCLUSION: Themes & Takeaways
 Ryland Grace lives out his days on Erid, teaching young Eridians physics. Earth is saved.
 
 ## Core Pillars
@@ -89,7 +89,7 @@ Ryland Grace lives out his days on Erid, teaching young Eridians physics. Earth 
 
 ---
 
-# EXPANDED ANALYSIS: Deep Dives
+## EXPANDED ANALYSIS: Deep Dives
 
 ## Micro-Analysis I: The Thermodynamics of Astrophage
 *   **The Neutrino Problem**: How does Astrophage not vaporize from heat? It emits neutrinos, which interact weakly with matter, carrying energy away without heat.

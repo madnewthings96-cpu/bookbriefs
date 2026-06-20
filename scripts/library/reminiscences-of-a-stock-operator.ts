@@ -22,7 +22,7 @@ Unlike modern textbooks that focus on mathematical formulas or economic theory, 
 
 The book is not just a collection of war stories; it is a complete course in the art of speculation. It teaches that the market is never wrong, but opinions often are; that big money is made not in the individual fluctuations but in the main movements; and that the greatest enemy of the trader is not the market, but their own human nature.
 
-# Part I: The Education of a Speculator
+## Part I: The Education of a Speculator
 
 ## Chapter 1: The Boy Plunger
 
@@ -60,7 +60,7 @@ He discovers that he is often "right too soon." He correctly predicts a move but
 
 **Key Lesson:** *Timing is distinct from direction. You can be right about the direction of the market and still lose money if your timing is off. Patience is a skill that must be cultivated.*
 
-# Part II: The Art of Speculation
+## Part II: The Art of Speculation
 
 ## Chapter 5: The General Conditions
 
@@ -96,7 +96,7 @@ This disaster teaches him that he must rely solely on his own judgment. If he bu
 
 **Key Lesson:** *A man must believe in himself and his judgment if he expects to make a living at this game. That is why I don't believe in tips.*
 
-# Part III: The Psychology of Trading
+## Part III: The Psychology of Trading
 
 ## Chapter 9: Human Nature
 
@@ -133,7 +133,7 @@ He describes a massive operation in the cotton market where he corners the marke
 
 **Key Lesson:** *Markets are driven by supply and demand. Manipulation can only move prices temporarily. In the end, the facts will assert themselves.*
 
-# Part IV: Manipulation and Strategy
+## Part IV: Manipulation and Strategy
 
 ## Chapter 13: The Manipulator's Art
 
@@ -161,7 +161,7 @@ He argues that the tape tells the truth while insiders lie. If a company preside
 
 **Key Lesson:** *The public always wants to be told. They want a tip. They want to be told what to buy and when. But there is no easy road to riches. Success requires work, study, and self-reliance.*
 
-# Conclusion: The Legacy of Jesse Livermore
+## Conclusion: The Legacy of Jesse Livermore
 
 "Reminiscences of a Stock Operator" ends with Livingston (Livermore) as a wealthy but humble student of the market. He acknowledges that the game never ends and that the market will always find a way to humble those who become arrogant.
 

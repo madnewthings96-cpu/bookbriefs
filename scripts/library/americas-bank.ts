@@ -26,7 +26,7 @@ Lowenstein establishes this precarious landscape to set the stage for the book's
 
 While the panic was quelled, the terrifying realization set in: a modern superpower could not rely on the mortality and benevolence of a single private citizen to save it from ruin. This is the central thesis of America’s Bank. Lowenstein argues that the Federal Reserve was not created merely as an economic tool, but as a monumental act of political engineering. It was a desperate, decades-long struggle to reconcile the economic necessity of centralization with the political reality of American democratic mistrust. The result was a uniquely American compromise—a "decentralized central bank"—that required the collision of four distinct personalities to bring into existence.
 
-# The Narrative Arc: A Detailed Walkthrough
+## The Narrative Arc: A Detailed Walkthrough
 Lowenstein’s narrative functions as a political thriller, moving from the chaotic trading floors of Wall Street to the secluded beaches of Georgia, and finally to the cloakrooms of Washington D.C. The following is a reconstruction of this epic struggle.
 
 ## Part I: The Intellectual Architect and the Convert
@@ -77,7 +77,7 @@ Lowenstein captures the exhaustion of the process. Carter Glass, suffering from 
 
 On December 23, 1913, two days before Christmas, the Federal Reserve Act was signed into law. The narrative concludes with a sense of awe at what had been achieved: the United States had managed to create a sophisticated central bank in a nation that culturally detested the very idea.
 
-# Character Studies: The Four Pillars
+## Character Studies: The Four Pillars
 Lowenstein’s history is driven by the interplay of four distinct personalities, each representing a different facet of American life.
 
 1. **Paul Warburg: The Prophet**
@@ -92,7 +92,7 @@ Glass is the most complex figure. A fierce states-rights Democrat from Virginia,
 4. **Woodrow Wilson: The Statesman**
 Wilson emerges as the indispensable man. While he lacked the technical knowledge of Warburg, he possessed the political genius the others lacked. He understood that a central bank in America had to be a hybrid: private ownership with public control. Lowenstein argues that Wilson’s ability to navigate between the Scylla of Wall Street and the Charybdis of William Jennings Bryan was a feat of supreme political skill. He provided the legitimacy the institution needed.
 
-# Themes & Analysis
+## Themes & Analysis
 ## The Central Paradox: Efficiency vs. Liberty
 The overriding theme of America’s Bank is the tension between the economic need for centralization and the political desire for liberty (or local control). Economics dictates that money is fluid; reserves function best when pooled centrally. Politics, specifically American politics, dictates that power corrupts. Lowenstein illustrates that the Federal Reserve Act was not a victory of one over the other, but a stalemate. The US got a central bank that pretends not to be one—scattered across 12 cities (Richmond, St. Louis, Dallas, etc.) to maintain the illusion of local control, while the real power slowly gravitated to Washington.
 
@@ -102,7 +102,7 @@ Lowenstein implicitly addresses why the Fed remains a target of conspiracy theor
 ## Technocracy in a Democracy
 The book explores the birth of American technocracy. The Fed represents the first major instance of Congress delegating vast sovereign powers (the management of the currency) to a board of unelected experts. This tension—can a democracy tolerate an entity that can crash the economy without voter input?—is still the defining debate regarding the Fed today. Lowenstein shows that the founders of the Fed wrestled with this extensively, creating the "Board" (political appointees) to check the "Banks" (private bankers).
 
-# Key Takeaways and Conclusion
+## Key Takeaways and Conclusion
 ## The Art of Compromise
 The primary lesson of America’s Bank is that perfect legislation is impossible in a democracy. Warburg wanted a purely economic machine; Glass wanted a decentralized reserve; Bryan wanted government fiat money. If any one of them had gotten exactly what they wanted, the system would have failed or never passed. The Federal Reserve is a "Rube Goldberg" machine of checks and balances that only exists because everyone left the table slightly unhappy.
 
