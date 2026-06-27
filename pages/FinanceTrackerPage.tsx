@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useFirebase } from '../App';
-import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, Timestamp, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, Timestamp, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import useSEO from '../hooks/useSEO';
 import ReceiptScanner from '../components/ReceiptScanner';
@@ -9,13 +9,18 @@ import {
     ArrowUpRight,
     CalendarDays,
     Download,
+    Edit3,
+    PiggyBank,
     Plus,
     ReceiptText,
+    Search,
+    SlidersHorizontal,
     Target,
     Trash2,
     TrendingDown,
     TrendingUp,
     WalletCards,
+    X,
 } from 'lucide-react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -42,6 +47,17 @@ interface Goal {
     createdAt: Timestamp;
 }
 
+interface Budget {
+    id: string;
+    category: string;
+    amount: number;
+    updatedAt?: Timestamp;
+}
+
+type TransactionTypeFilter = 'all' | 'income' | 'expense';
+type TransactionSort = 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc';
+type FinanceLanguage = 'en' | 'ar';
+
 const CATEGORIES = {
     income: ['Salary', 'Freelance', 'Investments', 'Gift', 'Other Income'],
     expense: ['Food', 'Transport', 'Housing', 'Entertainment', 'Shopping', 'Utilities', 'Healthcare', 'Other'],
@@ -50,34 +66,389 @@ const CATEGORIES = {
 const PIE_COLORS = ['#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280'];
 const GOAL_EMOJIS = ['🚗', '🏖️', '🏠', '💻', '📱', '🎓', '💍', '🎸', '🏋️', '✈️'];
 
-const formatCurrency = (value: number) =>
-    new Intl.NumberFormat('en-US', {
+const CATEGORY_LABELS: Record<FinanceLanguage, Record<string, string>> = {
+    en: {},
+    ar: {
+        Salary: 'الراتب',
+        Freelance: 'العمل الحر',
+        Investments: 'الاستثمارات',
+        Gift: 'هدية',
+        'Other Income': 'دخل آخر',
+        Food: 'الطعام',
+        Transport: 'المواصلات',
+        Housing: 'السكن',
+        Entertainment: 'الترفيه',
+        Shopping: 'التسوق',
+        Utilities: 'الفواتير',
+        Healthcare: 'الصحة',
+        Other: 'أخرى',
+    },
+};
+
+const FINANCE_COPY = {
+    en: {
+        allTime: 'All Time',
+        allTimeSentence: 'All time',
+        currentMonth: 'Current month',
+        language: 'Language',
+        english: 'English',
+        arabic: 'العربية',
+        financeTracker: 'Finance tracker',
+        headerDescription: 'Track spending, scan receipts, set category budgets, and keep savings goals visible without leaving your reading workflow.',
+        scanReceipt: 'Scan receipt',
+        addTransaction: 'Add transaction',
+        netBalance: 'Net balance',
+        netBalanceHelp: 'Income minus expenses for {period}.',
+        income: 'Income',
+        expenses: 'Expenses',
+        savingsRate: 'Savings rate',
+        incomeEntries: '{count} income entries',
+        addIncomeToTrackSavings: 'Add income to track savings',
+        addExpensesToBuildCategories: 'Add expenses to build categories',
+        transactionsTracked: '{count} transactions tracked',
+        addTransactionsToCalculateRate: 'Add transactions to calculate rate',
+        startPeriod: 'Start {period}',
+        onboardingTitle: 'Turn this empty month into a useful ledger.',
+        onboardingBody: 'Add one income source and one expense to unlock meaningful trends for this period.',
+        addIncome: 'Add income',
+        addIncomeHelp: 'Salary, freelance, dividends, or gifts.',
+        logExpense: 'Log expense',
+        logExpenseHelp: 'Capture the first spend for this month.',
+        setBudget: 'Set a budget',
+        setBudgetHelp: 'Pick a category below and save a limit.',
+        insights: 'Insights',
+        insightsReady: 'Spending momentum for the selected period.',
+        insightsEmpty: 'Insights appear once this period has expense data.',
+        averageDailySpend: 'Average daily spend',
+        projectedSpend: 'Projected spend',
+        vsLastMonth: 'Vs last month',
+        topCategory: 'Top category',
+        biggestIncrease: 'Biggest increase',
+        waitingForExpenses: 'Waiting for expenses',
+        noProjectionYet: 'No projection yet',
+        noBaseline: 'No baseline',
+        needsPriorMonthSpend: 'Needs prior-month spend',
+        addExpenseFirst: 'Add an expense first',
+        noneYet: 'None yet',
+        daysLeft: '{count} days left',
+        acrossTrackedDays: 'Across tracked days',
+        allTrackedSpend: 'All tracked spend',
+        atCurrentPace: 'At current pace',
+        previousAmount: '{amount} previous',
+        higher: '{amount} higher',
+        categoryBudgets: 'Category budgets',
+        budgetSummary: '{period}: {spent} spent of {budget} planned.',
+        remaining: 'Remaining',
+        used: 'Used',
+        alerts: 'Alerts',
+        budgetCategory: 'Budget category',
+        limit: 'Limit',
+        save: 'Save',
+        noBudgetsYet: 'No budgets yet',
+        noBudgetsHelp: 'Set a monthly limit for a category and it will track automatically against your expenses.',
+        spentOf: '{spent} spent of {budget}',
+        spentWithoutBudget: '{spent} spent without a set budget',
+        unset: 'Unset',
+        deleteBudget: 'Delete {category} budget',
+        overBudget: '{amount} over budget',
+        remainingAmount: '{amount} remaining',
+        setLimitToTrack: 'Set a limit to start tracking this category.',
+        goals: 'Goals',
+        fundedOverall: '{percent}% funded overall',
+        newGoal: 'New goal',
+        noGoalsYet: 'No goals yet',
+        noGoalsHelp: 'Create a savings target and track progress alongside your spending.',
+        target: 'Target',
+        noDate: 'No date',
+        of: 'of',
+        perMonthNeeded: '{amount} per month needed',
+        leftToFund: '{amount} left to fund',
+        addFunds: '+ Add funds',
+        add: 'Add',
+        cancel: 'Cancel',
+        amount: 'Amount',
+        transactions: 'Transactions',
+        entriesForPeriod: '{visible} of {total} entries for {period}',
+        clear: 'Clear',
+        exportCsv: 'Export CSV',
+        searchTransactions: 'Search transactions',
+        searchPlaceholder: 'Search description, category, amount',
+        allTypes: 'All types',
+        allCategories: 'All categories',
+        newestFirst: 'Newest first',
+        oldestFirst: 'Oldest first',
+        largestAmount: 'Largest amount',
+        smallestAmount: 'Smallest amount',
+        noTransactionsYet: 'No transactions yet',
+        noTransactionsHelp: 'Start with one expense or income entry. Your charts and savings rate will update automatically.',
+        addFirstTransaction: 'Add first transaction',
+        noMatchingTransactions: 'No matching transactions',
+        noMatchingHelp: 'Adjust your filters or clear them to return to the full list for this period.',
+        clearFilters: 'Clear filters',
+        transaction: 'Transaction',
+        date: 'Date',
+        category: 'Category',
+        description: 'Description',
+        amountColumn: 'Amount',
+        edit: 'Edit {description}',
+        delete: 'Delete {description}',
+        showLatest10: 'Show latest 10',
+        showAll: 'Show all {count}',
+        cashflowHistory: '12-month cashflow history',
+        cashflowHelp: 'Income and expenses across the last 12 calendar months.',
+        spendingMix: 'Spending mix',
+        spendingMixHelp: 'Top categories for the selected period.',
+        spent: 'Spent',
+        noExpenseData: 'No expense data yet',
+        noExpenseDataHelp: 'Add or scan an expense to see your category mix.',
+        signInRequired: 'Sign In Required',
+        signInMessage: 'Please log in to access your personal finance dashboard.',
+        signIn: 'Sign In',
+        editTransaction: 'Edit Transaction',
+        newTransaction: 'New Transaction',
+        closeTransactionForm: 'Close transaction form',
+        expense: 'Expense',
+        amountUsd: 'Amount ($)',
+        selectCategory: 'Select category',
+        coffeeExample: 'e.g., Coffee',
+        saving: 'Saving...',
+        saveTransaction: 'Save Transaction',
+        updateTransaction: 'Update Transaction',
+        closeGoalForm: 'Close goal form',
+        emoji: 'Emoji',
+        goalName: 'Goal Name',
+        goalPlaceholder: 'e.g., Buying a car',
+        targetAmountUsd: 'Target Amount ($)',
+        currentAmountUsd: 'Current Amount ($)',
+        targetDate: 'Target Date',
+        createGoal: 'Create Goal',
+        invalidAmount: 'Invalid amount format.',
+        scannedReceipt: 'Scanned Receipt',
+        failedToSave: 'Failed to save transaction: {message}',
+    },
+    ar: {
+        allTime: 'كل الفترات',
+        allTimeSentence: 'كل الفترات',
+        currentMonth: 'الشهر الحالي',
+        language: 'اللغة',
+        english: 'English',
+        arabic: 'العربية',
+        financeTracker: 'متتبع المال',
+        headerDescription: 'تتبع المصروفات، امسح الإيصالات، حدد ميزانيات التصنيفات، واجعل أهداف الادخار واضحة في مكان واحد.',
+        scanReceipt: 'مسح إيصال',
+        addTransaction: 'إضافة معاملة',
+        netBalance: 'صافي الرصيد',
+        netBalanceHelp: 'الدخل ناقص المصروفات خلال {period}.',
+        income: 'الدخل',
+        expenses: 'المصروفات',
+        savingsRate: 'معدل الادخار',
+        incomeEntries: '{count} إدخالات دخل',
+        addIncomeToTrackSavings: 'أضف دخلاً لحساب الادخار',
+        addExpensesToBuildCategories: 'أضف مصروفات لبناء التصنيفات',
+        transactionsTracked: '{count} معاملات مسجلة',
+        addTransactionsToCalculateRate: 'أضف معاملات لحساب المعدل',
+        startPeriod: 'ابدأ {period}',
+        onboardingTitle: 'حوّل هذا الشهر الفارغ إلى سجل مالي مفيد.',
+        onboardingBody: 'أضف مصدر دخل ومصروفاً واحداً لتظهر المؤشرات لهذه الفترة.',
+        addIncome: 'أضف دخل',
+        addIncomeHelp: 'راتب أو عمل حر أو أرباح أو هدية.',
+        logExpense: 'سجل مصروف',
+        logExpenseHelp: 'سجل أول مصروف لهذه الفترة.',
+        setBudget: 'حدد ميزانية',
+        setBudgetHelp: 'اختر تصنيفاً بالأسفل واحفظ حد الإنفاق.',
+        insights: 'المؤشرات',
+        insightsReady: 'قراءة سريعة لاتجاه المصروفات في الفترة المحددة.',
+        insightsEmpty: 'تظهر المؤشرات بعد إضافة مصروفات لهذه الفترة.',
+        averageDailySpend: 'متوسط الصرف اليومي',
+        projectedSpend: 'الصرف المتوقع',
+        vsLastMonth: 'مقارنة بالشهر السابق',
+        topCategory: 'أعلى تصنيف',
+        biggestIncrease: 'أكبر زيادة',
+        waitingForExpenses: 'بانتظار المصروفات',
+        noProjectionYet: 'لا يوجد توقع بعد',
+        noBaseline: 'لا يوجد أساس مقارنة',
+        needsPriorMonthSpend: 'يحتاج مصروفات من الشهر السابق',
+        addExpenseFirst: 'أضف مصروفاً أولاً',
+        noneYet: 'لا شيء بعد',
+        daysLeft: '{count} أيام متبقية',
+        acrossTrackedDays: 'عبر الأيام المسجلة',
+        allTrackedSpend: 'كل المصروفات المسجلة',
+        atCurrentPace: 'حسب الوتيرة الحالية',
+        previousAmount: '{amount} سابقاً',
+        higher: '{amount} أعلى',
+        categoryBudgets: 'ميزانيات التصنيفات',
+        budgetSummary: '{period}: تم صرف {spent} من {budget} المخطط.',
+        remaining: 'المتبقي',
+        used: 'المستخدم',
+        alerts: 'تنبيهات',
+        budgetCategory: 'تصنيف الميزانية',
+        limit: 'الحد',
+        save: 'حفظ',
+        noBudgetsYet: 'لا توجد ميزانيات بعد',
+        noBudgetsHelp: 'حدد حداً شهرياً لتصنيف وسيتم تتبعه تلقائياً مقابل مصروفاتك.',
+        spentOf: '{spent} مصروف من {budget}',
+        spentWithoutBudget: '{spent} مصروف بدون ميزانية محددة',
+        unset: 'غير محدد',
+        deleteBudget: 'حذف ميزانية {category}',
+        overBudget: '{amount} فوق الميزانية',
+        remainingAmount: '{amount} متبقي',
+        setLimitToTrack: 'حدد حداً لبدء تتبع هذا التصنيف.',
+        goals: 'الأهداف',
+        fundedOverall: '{percent}% ممول إجمالاً',
+        newGoal: 'هدف جديد',
+        noGoalsYet: 'لا توجد أهداف بعد',
+        noGoalsHelp: 'أنشئ هدف ادخار وتابع تقدمه بجانب مصروفاتك.',
+        target: 'الهدف',
+        noDate: 'بدون تاريخ',
+        of: 'من',
+        perMonthNeeded: '{amount} شهرياً مطلوب',
+        leftToFund: '{amount} متبقي للتمويل',
+        addFunds: '+ إضافة مبلغ',
+        add: 'إضافة',
+        cancel: 'إلغاء',
+        amount: 'المبلغ',
+        transactions: 'المعاملات',
+        entriesForPeriod: '{visible} من {total} معاملات لـ {period}',
+        clear: 'مسح',
+        exportCsv: 'تصدير CSV',
+        searchTransactions: 'بحث في المعاملات',
+        searchPlaceholder: 'ابحث بالوصف أو التصنيف أو المبلغ',
+        allTypes: 'كل الأنواع',
+        allCategories: 'كل التصنيفات',
+        newestFirst: 'الأحدث أولاً',
+        oldestFirst: 'الأقدم أولاً',
+        largestAmount: 'الأكبر مبلغاً',
+        smallestAmount: 'الأصغر مبلغاً',
+        noTransactionsYet: 'لا توجد معاملات بعد',
+        noTransactionsHelp: 'ابدأ بإدخال دخل أو مصروف واحد. ستتحدث الرسوم ومعدل الادخار تلقائياً.',
+        addFirstTransaction: 'أضف أول معاملة',
+        noMatchingTransactions: 'لا توجد معاملات مطابقة',
+        noMatchingHelp: 'عدّل الفلاتر أو امسحها للعودة إلى القائمة الكاملة لهذه الفترة.',
+        clearFilters: 'مسح الفلاتر',
+        transaction: 'المعاملة',
+        date: 'التاريخ',
+        category: 'التصنيف',
+        description: 'الوصف',
+        amountColumn: 'المبلغ',
+        edit: 'تعديل {description}',
+        delete: 'حذف {description}',
+        showLatest10: 'إظهار آخر 10',
+        showAll: 'إظهار الكل {count}',
+        cashflowHistory: 'تاريخ التدفق النقدي خلال 12 شهراً',
+        cashflowHelp: 'الدخل والمصروفات خلال آخر 12 شهراً.',
+        spendingMix: 'توزيع المصروفات',
+        spendingMixHelp: 'أعلى التصنيفات في الفترة المحددة.',
+        spent: 'مصروف',
+        noExpenseData: 'لا توجد بيانات مصروفات بعد',
+        noExpenseDataHelp: 'أضف أو امسح مصروفاً لرؤية توزيع التصنيفات.',
+        signInRequired: 'تسجيل الدخول مطلوب',
+        signInMessage: 'يرجى تسجيل الدخول للوصول إلى لوحة المال الشخصية.',
+        signIn: 'تسجيل الدخول',
+        editTransaction: 'تعديل المعاملة',
+        newTransaction: 'معاملة جديدة',
+        closeTransactionForm: 'إغلاق نموذج المعاملة',
+        expense: 'مصروف',
+        amountUsd: 'المبلغ ($)',
+        selectCategory: 'اختر التصنيف',
+        coffeeExample: 'مثال: قهوة',
+        saving: 'جاري الحفظ...',
+        saveTransaction: 'حفظ المعاملة',
+        updateTransaction: 'تحديث المعاملة',
+        closeGoalForm: 'إغلاق نموذج الهدف',
+        emoji: 'رمز',
+        goalName: 'اسم الهدف',
+        goalPlaceholder: 'مثال: شراء سيارة',
+        targetAmountUsd: 'مبلغ الهدف ($)',
+        currentAmountUsd: 'المبلغ الحالي ($)',
+        targetDate: 'تاريخ الهدف',
+        createGoal: 'إنشاء الهدف',
+        invalidAmount: 'صيغة المبلغ غير صحيحة.',
+        scannedReceipt: 'إيصال ممسوح',
+        failedToSave: 'فشل حفظ المعاملة: {message}',
+    },
+} as const;
+
+const getMonthKey = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+const parseLocalDate = (date: string) => new Date(`${date}T00:00:00`);
+
+const localeForLanguage = (language: FinanceLanguage) => language === 'ar' ? 'ar-MA' : 'en-US';
+
+const formatCopy = (template: string, values: Record<string, string | number>) =>
+    Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, String(value)), template);
+
+const getCategoryLabel = (category: string, language: FinanceLanguage) =>
+    CATEGORY_LABELS[language][category] || category;
+
+const formatMonthLabel = (monthKey: string, language: FinanceLanguage = 'en') =>
+    parseLocalDate(`${monthKey}-01`).toLocaleDateString(localeForLanguage(language), {
+        month: 'long',
+        year: 'numeric',
+    });
+
+const getPreviousMonthKey = (monthKey: string) => {
+    const [year, month] = monthKey.split('-').map(Number);
+    return getMonthKey(new Date(year, month - 2, 1));
+};
+
+const getDaysInMonth = (monthKey: string) => {
+    const [year, month] = monthKey.split('-').map(Number);
+    return new Date(year, month, 0).getDate();
+};
+
+const getMonthsUntil = (targetDate: string) => {
+    if (!targetDate) return null;
+    const [year, month] = targetDate.split('-').map(Number);
+    if (!year || !month) return null;
+    const now = new Date();
+    const monthDelta = (year - now.getFullYear()) * 12 + (month - (now.getMonth() + 1));
+    return Math.max(monthDelta + 1, 1);
+};
+
+const formatCurrency = (value: number, language: FinanceLanguage = 'en') =>
+    new Intl.NumberFormat(localeForLanguage(language), {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 0,
     }).format(value);
 
-const formatCompactCurrency = (value: number) =>
-    new Intl.NumberFormat('en-US', {
+const formatCompactCurrency = (value: number, language: FinanceLanguage = 'en') =>
+    new Intl.NumberFormat(localeForLanguage(language), {
         style: 'currency',
         currency: 'USD',
         notation: 'compact',
         maximumFractionDigits: 1,
     }).format(value);
 
+const formatDateLabel = (date: string, language: FinanceLanguage = 'en') =>
+    parseLocalDate(date).toLocaleDateString(localeForLanguage(language), {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    });
+
 const FinanceTrackerPage: React.FC = () => {
     const { currentUser } = useFirebase();
+    const currentMonthKey = useMemo(() => getMonthKey(new Date()), []);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [goals, setGoals] = useState<Goal[]>([]);
+    const [budgets, setBudgets] = useState<Budget[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [showGoalForm, setShowGoalForm] = useState(false);
-    const [selectedMonth, setSelectedMonth] = useState<string>(() => {
-        const now = new Date();
-        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthKey);
+    const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
+    const [transactionSearch, setTransactionSearch] = useState('');
+    const [transactionTypeFilter, setTransactionTypeFilter] = useState<TransactionTypeFilter>('all');
+    const [transactionCategoryFilter, setTransactionCategoryFilter] = useState('all');
+    const [transactionSort, setTransactionSort] = useState<TransactionSort>('date-desc');
+    const [showAllTransactions, setShowAllTransactions] = useState(false);
+    const [financeLanguage, setFinanceLanguage] = useState<FinanceLanguage>(() => {
+        if (typeof window === 'undefined') return 'en';
+        return window.localStorage.getItem('bookbriefs_finance_language') === 'ar' ? 'ar' : 'en';
     });
 
-    // Form state
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
         description: '',
@@ -92,18 +463,36 @@ const FinanceTrackerPage: React.FC = () => {
         currentAmount: '',
         targetDate: '',
     });
+    const [budgetFormData, setBudgetFormData] = useState({
+        category: CATEGORIES.expense[0],
+        amount: '',
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [addAmountGoalId, setAddAmountGoalId] = useState<string | null>(null);
     const [addAmount, setAddAmount] = useState('');
+    const t = FINANCE_COPY[financeLanguage];
+    const isArabic = financeLanguage === 'ar';
+    const direction = isArabic ? 'rtl' : 'ltr';
+    const textStartClass = isArabic ? 'text-right' : 'text-left';
+    const textEndClass = isArabic ? 'text-left' : 'text-right';
+    const money = (value: number) => formatCurrency(value, financeLanguage);
+    const compactMoney = (value: number) => formatCompactCurrency(value, financeLanguage);
+    const monthLabel = (month: string) => formatMonthLabel(month, financeLanguage);
+    const dateLabel = (date: string) => formatDateLabel(date, financeLanguage);
+    const categoryLabel = (category: string) => getCategoryLabel(category, financeLanguage);
+
+    const changeFinanceLanguage = (language: FinanceLanguage) => {
+        setFinanceLanguage(language);
+        window.localStorage.setItem('bookbriefs_finance_language', language);
+    };
 
     useSEO({
         title: 'Finance Tracker - Dashboard | BookBriefs',
-        description: 'Professional finance dashboard. Track income and expenses with beautiful charts.',
+        description: 'Professional finance dashboard. Track income, expenses, budgets, and savings goals with beautiful charts.',
         keywords: 'finance tracker, dashboard, expense tracker, charts, budget',
         type: 'website',
     });
 
-    // Load transactions from Firestore
     useEffect(() => {
         if (!currentUser) {
             setIsLoading(false);
@@ -118,6 +507,11 @@ const FinanceTrackerPage: React.FC = () => {
         const goalQuery = query(
             collection(db, 'users', currentUser.uid, 'goals'),
             orderBy('createdAt', 'desc')
+        );
+
+        const budgetQuery = query(
+            collection(db, 'users', currentUser.uid, 'budgets'),
+            orderBy('category', 'asc')
         );
 
         const unsubTxn = onSnapshot(txnQuery, (snapshot) => {
@@ -137,13 +531,21 @@ const FinanceTrackerPage: React.FC = () => {
             setGoals(g);
         });
 
+        const unsubBudgets = onSnapshot(budgetQuery, (snapshot) => {
+            const b: Budget[] = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            })) as Budget[];
+            setBudgets(b);
+        });
+
         return () => {
             unsubTxn();
             unsubGoals();
+            unsubBudgets();
         };
     }, [currentUser]);
 
-    // Filter transactions by selected month
     const filteredTransactions = useMemo(() => {
         return transactions.filter((t) => {
             const txnMonth = t.date.substring(0, 7);
@@ -151,7 +553,6 @@ const FinanceTrackerPage: React.FC = () => {
         });
     }, [transactions, selectedMonth]);
 
-    // Calculate summary stats
     const stats = useMemo(() => {
         const totalIncome = filteredTransactions
             .filter((t) => t.type === 'income')
@@ -163,14 +564,13 @@ const FinanceTrackerPage: React.FC = () => {
         return { totalIncome, totalExpenses, balance };
     }, [filteredTransactions]);
 
-    // Monthly chart data (last 12 months)
     const monthlyChartData = useMemo(() => {
         const months: Record<string, { month: string; Income: number; Expenses: number }> = {};
         const now = new Date();
         for (let i = 11; i >= 0; i--) {
             const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-            months[key] = { month: d.toLocaleDateString('en-US', { month: 'short' }), Income: 0, Expenses: 0 };
+            const key = getMonthKey(d);
+            months[key] = { month: d.toLocaleDateString(localeForLanguage(financeLanguage), { month: 'short' }), Income: 0, Expenses: 0 };
         }
         transactions.forEach((t) => {
             const key = t.date.substring(0, 7);
@@ -180,9 +580,8 @@ const FinanceTrackerPage: React.FC = () => {
             }
         });
         return Object.values(months);
-    }, [transactions]);
+    }, [financeLanguage, transactions]);
 
-    // Category breakdown for pie chart
     const pieChartData = useMemo(() => {
         const breakdown: Record<string, number> = {};
         filteredTransactions
@@ -196,12 +595,47 @@ const FinanceTrackerPage: React.FC = () => {
             .slice(0, 6);
     }, [filteredTransactions]);
 
-    // Get unique months
     const availableMonths = useMemo(() => {
         const months = new Set<string>();
         transactions.forEach((t) => months.add(t.date.substring(0, 7)));
         return Array.from(months).sort().reverse();
     }, [transactions]);
+
+    const monthOptions = useMemo(() => {
+        return Array.from(new Set([currentMonthKey, ...availableMonths])).sort().reverse();
+    }, [availableMonths, currentMonthKey]);
+
+    const allCategoryOptions = useMemo(() => {
+        return Array.from(new Set([...CATEGORIES.expense, ...CATEGORIES.income]));
+    }, []);
+
+    const transactionCategoryOptions = useMemo(() => {
+        if (transactionTypeFilter === 'income') return CATEGORIES.income;
+        if (transactionTypeFilter === 'expense') return CATEGORIES.expense;
+        return allCategoryOptions;
+    }, [allCategoryOptions, transactionTypeFilter]);
+
+    const visibleTransactions = useMemo(() => {
+        const searchTerm = transactionSearch.trim().toLowerCase();
+        return filteredTransactions
+            .filter((txn) => {
+                const matchesSearch = !searchTerm ||
+                    txn.description.toLowerCase().includes(searchTerm) ||
+                    txn.category.toLowerCase().includes(searchTerm) ||
+                    txn.amount.toString().includes(searchTerm);
+                const matchesType = transactionTypeFilter === 'all' || txn.type === transactionTypeFilter;
+                const matchesCategory = transactionCategoryFilter === 'all' || txn.category === transactionCategoryFilter;
+                return matchesSearch && matchesType && matchesCategory;
+            })
+            .sort((a, b) => {
+                if (transactionSort === 'date-asc') return a.date.localeCompare(b.date);
+                if (transactionSort === 'amount-desc') return b.amount - a.amount;
+                if (transactionSort === 'amount-asc') return a.amount - b.amount;
+                return b.date.localeCompare(a.date);
+            });
+    }, [filteredTransactions, transactionCategoryFilter, transactionSearch, transactionSort, transactionTypeFilter]);
+
+    const transactionsToRender = showAllTransactions ? visibleTransactions : visibleTransactions.slice(0, 10);
 
     const savingsRate = useMemo(() => {
         if (stats.totalIncome <= 0) return 0;
@@ -209,12 +643,9 @@ const FinanceTrackerPage: React.FC = () => {
     }, [stats.balance, stats.totalIncome]);
 
     const periodLabel = useMemo(() => {
-        if (selectedMonth === 'all') return 'All time';
-        return new Date(`${selectedMonth}-01`).toLocaleDateString('en-US', {
-            month: 'long',
-            year: 'numeric',
-        });
-    }, [selectedMonth]);
+        if (selectedMonth === 'all') return t.allTimeSentence;
+        return formatMonthLabel(selectedMonth, financeLanguage);
+    }, [financeLanguage, selectedMonth, t.allTimeSentence]);
 
     const topExpenseCategory = pieChartData[0]?.name || 'No category yet';
     const totalGoalProgress = useMemo(() => {
@@ -224,10 +655,199 @@ const FinanceTrackerPage: React.FC = () => {
         return targetTotal > 0 ? Math.min(Math.round((currentTotal / targetTotal) * 100), 100) : 0;
     }, [goals]);
 
-    // Export CSV
+    const budgetMonth = selectedMonth === 'all' ? currentMonthKey : selectedMonth;
+    const budgetPeriodLabel = selectedMonth === 'all' ? t.currentMonth : monthLabel(budgetMonth);
+
+    const budgetTransactions = useMemo(() => {
+        return transactions.filter((t) => t.date.substring(0, 7) === budgetMonth);
+    }, [budgetMonth, transactions]);
+
+    const budgetRows = useMemo(() => {
+        const expenseByCategory = budgetTransactions
+            .filter((t) => t.type === 'expense')
+            .reduce<Record<string, number>>((acc, txn) => {
+                acc[txn.category] = (acc[txn.category] || 0) + txn.amount;
+                return acc;
+            }, {});
+
+        return CATEGORIES.expense.map((category) => {
+            const budget = budgets.find((item) => item.category === category);
+            const amount = budget?.amount || 0;
+            const spent = expenseByCategory[category] || 0;
+            const remaining = amount - spent;
+            const progress = amount > 0 ? Math.round((spent / amount) * 100) : 0;
+            return {
+                category,
+                amount,
+                spent,
+                remaining,
+                progress,
+                hasBudget: amount > 0,
+            };
+        });
+    }, [budgetTransactions, budgets]);
+
+    const activeBudgetRows = useMemo(() => {
+        return budgetRows
+            .filter((row) => row.hasBudget || row.spent > 0)
+            .sort((a, b) => {
+                if (a.hasBudget !== b.hasBudget) return a.hasBudget ? -1 : 1;
+                return b.spent - a.spent;
+            });
+    }, [budgetRows]);
+
+    const budgetSummary = useMemo(() => {
+        const totalBudget = budgetRows.reduce((sum, row) => sum + row.amount, 0);
+        const totalSpent = budgetRows.reduce((sum, row) => sum + row.spent, 0);
+        const overBudgetCount = budgetRows.filter((row) => row.hasBudget && row.spent > row.amount).length;
+        const progress = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
+        return {
+            totalBudget,
+            totalSpent,
+            remaining: totalBudget - totalSpent,
+            progress,
+            overBudgetCount,
+            categoriesSet: budgetRows.filter((row) => row.hasBudget).length,
+        };
+    }, [budgetRows]);
+
+    const insightData = useMemo(() => {
+        const expenseTransactions = filteredTransactions.filter((t) => t.type === 'expense');
+        const expenseByCategory = expenseTransactions.reduce<Record<string, number>>((acc, txn) => {
+            acc[txn.category] = (acc[txn.category] || 0) + txn.amount;
+            return acc;
+        }, {});
+
+        const topCategory = Object.entries(expenseByCategory).sort((a, b) => b[1] - a[1])[0];
+
+        let elapsedDays = 1;
+        let totalDays = 1;
+        let daysLeft: number | null = null;
+
+        if (selectedMonth === 'all') {
+            const sortedDates = filteredTransactions.map((t) => t.date).sort();
+            if (sortedDates.length > 0) {
+                const start = parseLocalDate(sortedDates[0]).getTime();
+                const end = parseLocalDate(sortedDates[sortedDates.length - 1]).getTime();
+                elapsedDays = Math.max(Math.ceil((end - start) / 86400000) + 1, 1);
+            }
+            totalDays = elapsedDays;
+        } else {
+            totalDays = getDaysInMonth(selectedMonth);
+            const today = new Date();
+            elapsedDays = selectedMonth === currentMonthKey ? Math.min(today.getDate(), totalDays) : totalDays;
+            daysLeft = Math.max(totalDays - elapsedDays, 0);
+        }
+
+        const averageDailySpend = stats.totalExpenses / Math.max(elapsedDays, 1);
+        const projectedSpend = selectedMonth === 'all' ? stats.totalExpenses : averageDailySpend * totalDays;
+        const previousMonthKey = selectedMonth === 'all' ? null : getPreviousMonthKey(selectedMonth);
+        const previousExpenses = previousMonthKey
+            ? transactions
+                .filter((txn) => txn.date.substring(0, 7) === previousMonthKey && txn.type === 'expense')
+                .reduce((sum, txn) => sum + txn.amount, 0)
+            : null;
+
+        const previousExpenseByCategory = previousMonthKey
+            ? transactions
+                .filter((txn) => txn.date.substring(0, 7) === previousMonthKey && txn.type === 'expense')
+                .reduce<Record<string, number>>((acc, txn) => {
+                    acc[txn.category] = (acc[txn.category] || 0) + txn.amount;
+                    return acc;
+                }, {})
+            : {};
+
+        const categoryTrend = Object.entries(expenseByCategory)
+            .map(([category, amount]) => ({
+                category,
+                delta: amount - (previousExpenseByCategory[category] || 0),
+            }))
+            .sort((a, b) => b.delta - a.delta)[0];
+
+        const expenseChangePercent = previousExpenses && previousExpenses > 0
+            ? Math.round(((stats.totalExpenses - previousExpenses) / previousExpenses) * 100)
+            : null;
+
+        return {
+            averageDailySpend,
+            projectedSpend,
+            daysLeft,
+            previousExpenses,
+            expenseChangePercent,
+            topCategory: topCategory ? { name: topCategory[0], amount: topCategory[1] } : null,
+            categoryTrend: categoryTrend && categoryTrend.delta > 0 ? categoryTrend : null,
+        };
+    }, [currentMonthKey, filteredTransactions, selectedMonth, stats.totalExpenses, transactions]);
+
+    const hasActiveTransactionFilters =
+        transactionSearch.trim().length > 0 ||
+        transactionTypeFilter !== 'all' ||
+        transactionCategoryFilter !== 'all' ||
+        transactionSort !== 'date-desc';
+    const hasSelectedPeriodTransactions = filteredTransactions.length > 0;
+    const hasSelectedPeriodExpenses = stats.totalExpenses > 0;
+    const hasSelectedPeriodIncome = stats.totalIncome > 0;
+    const hasExpenseComparison = insightData.expenseChangePercent !== null;
+
+    const resetTransactionForm = () => {
+        setFormData({
+            date: new Date().toISOString().split('T')[0],
+            description: '',
+            category: '',
+            amount: '',
+            type: 'expense',
+        });
+    };
+
+    const openAddTransaction = (type: 'income' | 'expense' = 'expense') => {
+        setEditingTransactionId(null);
+        setFormData({
+            date: new Date().toISOString().split('T')[0],
+            description: '',
+            category: '',
+            amount: '',
+            type,
+        });
+        setShowForm(true);
+    };
+
+    const openEditTransaction = (transaction: Transaction) => {
+        setEditingTransactionId(transaction.id);
+        setFormData({
+            date: transaction.date,
+            description: transaction.description,
+            category: transaction.category,
+            amount: String(transaction.amount),
+            type: transaction.type,
+        });
+        setShowForm(true);
+    };
+
+    const closeTransactionForm = () => {
+        setShowForm(false);
+        setEditingTransactionId(null);
+        resetTransactionForm();
+    };
+
+    const resetTransactionFilters = () => {
+        setTransactionSearch('');
+        setTransactionTypeFilter('all');
+        setTransactionCategoryFilter('all');
+        setTransactionSort('date-desc');
+        setShowAllTransactions(false);
+    };
+
+    const handleBudgetCategoryChange = (category: string) => {
+        const existingBudget = budgets.find((budget) => budget.category === category);
+        setBudgetFormData({
+            category,
+            amount: existingBudget ? String(existingBudget.amount) : '',
+        });
+    };
+
     const handleExportCSV = () => {
-        const reportDate = new Date().toLocaleDateString();
-        const period = selectedMonth === 'all' ? 'All Time' : new Date(selectedMonth + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        const reportDate = new Date().toLocaleDateString(localeForLanguage(financeLanguage));
+        const period = selectedMonth === 'all' ? t.allTime : monthLabel(selectedMonth);
         const summaryRows = [
             ['BookBriefs Finance Report'],
             ['Generated On', reportDate],
@@ -241,10 +861,10 @@ const FinanceTrackerPage: React.FC = () => {
             ['TRANSACTIONS']
         ];
         const headers = ['Date', 'Type', 'Category', 'Description', 'Amount'];
-        const rows = filteredTransactions.map((t) => [
+        const rows = visibleTransactions.map((t) => [
             t.date,
-            t.type.charAt(0).toUpperCase() + t.type.slice(1),
-            t.category,
+            t.type === 'income' ? FINANCE_COPY[financeLanguage].income : FINANCE_COPY[financeLanguage].expense,
+            categoryLabel(t.category),
             `"${t.description.replace(/"/g, '""')}"`,
             t.amount.toFixed(2),
         ]);
@@ -260,61 +880,91 @@ const FinanceTrackerPage: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
-    // Handle scanned receipt
     const handleScanComplete = async (data: { date: string; amount: string; description: string; category: string }) => {
         if (!currentUser) return;
 
         try {
-            // Sanitize amount (replace comma with dot for international formats)
             const cleanAmount = data.amount.replace(/,/g, '.');
             const numericAmount = parseFloat(cleanAmount);
 
             if (isNaN(numericAmount)) {
-                alert('Invalid amount format.');
+                alert(t.invalidAmount);
                 return;
             }
 
             await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
                 date: data.date,
-                description: data.description || 'Scanned Receipt',
-                category: data.category || 'Other', // Default to 'Other' if not matching
+                description: data.description || t.scannedReceipt,
+                category: data.category || 'Other',
                 amount: numericAmount,
                 type: 'expense',
                 createdAt: Timestamp.now(),
             });
-
-            // Success feedback
-            // console.log('Transaction added successfully');
         } catch (error: any) {
             console.error('Error adding scanned transaction:', error);
-            alert(`Failed to save transaction: ${error.message}`);
+            alert(formatCopy(t.failedToSave, { message: error.message }));
         }
     };
 
-    // Handle transaction form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentUser || isSubmitting) return;
+
+        const numericAmount = parseFloat(formData.amount);
+        if (isNaN(numericAmount) || numericAmount <= 0) return;
+
         setIsSubmitting(true);
         try {
-            await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
+            const payload = {
                 date: formData.date,
-                description: formData.description,
+                description: formData.description.trim(),
                 category: formData.category,
-                amount: parseFloat(formData.amount),
+                amount: numericAmount,
                 type: formData.type,
-                createdAt: Timestamp.now(),
-            });
-            setFormData({ date: new Date().toISOString().split('T')[0], description: '', category: '', amount: '', type: 'expense' });
-            setShowForm(false);
+            };
+
+            if (editingTransactionId) {
+                await updateDoc(doc(db, 'users', currentUser.uid, 'transactions', editingTransactionId), {
+                    ...payload,
+                    updatedAt: Timestamp.now(),
+                });
+            } else {
+                await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
+                    ...payload,
+                    createdAt: Timestamp.now(),
+                });
+            }
+
+            closeTransactionForm();
         } catch (error) {
-            console.error('Error adding transaction:', error);
+            console.error('Error saving transaction:', error);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // Handle goal form submission
+    const handleBudgetSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentUser || isSubmitting) return;
+
+        const numericAmount = parseFloat(budgetFormData.amount);
+        if (isNaN(numericAmount) || numericAmount <= 0) return;
+
+        setIsSubmitting(true);
+        try {
+            await setDoc(doc(db, 'users', currentUser.uid, 'budgets', budgetFormData.category), {
+                category: budgetFormData.category,
+                amount: numericAmount,
+                updatedAt: Timestamp.now(),
+            }, { merge: true });
+            setBudgetFormData({ category: budgetFormData.category, amount: '' });
+        } catch (error) {
+            console.error('Error saving budget:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const handleGoalSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentUser || isSubmitting) return;
@@ -337,14 +987,15 @@ const FinanceTrackerPage: React.FC = () => {
         }
     };
 
-    // Add amount to goal
     const handleAddToGoal = async (goalId: string) => {
         if (!currentUser || !addAmount) return;
         const goal = goals.find(g => g.id === goalId);
-        if (!goal) return;
+        const numericAmount = parseFloat(addAmount);
+        if (!goal || isNaN(numericAmount) || numericAmount <= 0) return;
+
         try {
             await updateDoc(doc(db, 'users', currentUser.uid, 'goals', goalId), {
-                currentAmount: goal.currentAmount + parseFloat(addAmount),
+                currentAmount: goal.currentAmount + numericAmount,
             });
             setAddAmount('');
             setAddAmountGoalId(null);
@@ -353,7 +1004,6 @@ const FinanceTrackerPage: React.FC = () => {
         }
     };
 
-    // Delete goal
     const handleDeleteGoal = async (goalId: string) => {
         if (!currentUser) return;
         try {
@@ -363,7 +1013,15 @@ const FinanceTrackerPage: React.FC = () => {
         }
     };
 
-    // Delete transaction
+    const handleDeleteBudget = async (category: string) => {
+        if (!currentUser) return;
+        try {
+            await deleteDoc(doc(db, 'users', currentUser.uid, 'budgets', category));
+        } catch (error) {
+            console.error('Error deleting budget:', error);
+        }
+    };
+
     const handleDelete = async (id: string) => {
         if (!currentUser) return;
         try {
@@ -375,15 +1033,15 @@ const FinanceTrackerPage: React.FC = () => {
 
     if (!currentUser) {
         return (
-            <div className="max-w-3xl mx-auto text-center py-16" style={{ fontFamily: "'Manrope', sans-serif" }}>
-                <div className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 rounded-2xl p-8 border border-orange-200">
-                    <svg className="w-16 h-16 mx-auto text-orange-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div dir={direction} className="mx-auto max-w-3xl py-16 text-center" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                <div className="rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 p-8">
+                    <svg className="mx-auto mb-4 h-16 w-16 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Sign In Required</h2>
-                    <p className="text-gray-600 mb-6">Please log in to access your personal finance dashboard.</p>
-                    <a href="/login" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                        Sign In
+                    <h2 className="mb-2 text-2xl font-bold text-gray-800">{t.signInRequired}</h2>
+                    <p className="mb-6 text-gray-600">{t.signInMessage}</p>
+                    <a href="/login" className="inline-flex min-h-12 items-center rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3 font-semibold text-white shadow-lg transition-[box-shadow,transform,background-color] duration-300 hover:shadow-xl">
+                        {t.signIn}
                     </a>
                 </div>
             </div>
@@ -391,127 +1049,589 @@ const FinanceTrackerPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F6F7F9] px-4 py-6 md:py-8" style={{ fontFamily: "'Manrope', sans-serif" }}>
+        <div dir={direction} className={`min-h-screen bg-[#F6F7F9] px-4 py-6 md:py-8 ${textStartClass}`} style={{ fontFamily: "'Manrope', sans-serif" }}>
             <div className="mx-auto max-w-7xl space-y-6">
-                {/* Header */}
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
                         <div className="mb-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_26px_rgba(17,24,39,0.06)]">
                             <CalendarDays className="h-4 w-4 text-orange-500" aria-hidden="true" />
                             <span>{periodLabel}</span>
                         </div>
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">Finance tracker</h1>
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-500 text-pretty">
-                            Track spending, scan receipts, and keep goals visible without leaving your reading workflow.
+                        <h1 className="text-balance text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">{t.financeTracker}</h1>
+                        <p className="mt-2 max-w-2xl text-pretty text-sm leading-6 text-gray-500">
+                            {t.headerDescription}
                         </p>
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div className="inline-flex min-h-10 rounded-xl bg-white p-1 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)]" aria-label={t.language}>
+                            {(['en', 'ar'] as FinanceLanguage[]).map((language) => (
+                                <button
+                                    key={language}
+                                    type="button"
+                                    onClick={() => changeFinanceLanguage(language)}
+                                    className={`pressable min-h-8 rounded-lg px-3 text-sm font-bold transition-[transform,background-color,color,box-shadow] duration-200 ${financeLanguage === language ? 'bg-gray-950 text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'}`}
+                                >
+                                    {language === 'en' ? 'EN' : 'عربي'}
+                                </button>
+                            ))}
+                        </div>
                         <select
                             value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedMonth(e.target.value);
+                                setShowAllTransactions(false);
+                            }}
                             className="min-h-10 rounded-xl bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[box-shadow,background-color] duration-200 focus:outline-none focus:ring-2 focus:ring-orange-300"
                         >
-                            <option value="all">All Time</option>
-                            {availableMonths.map((month) => (
+                            <option value="all">{t.allTime}</option>
+                            {monthOptions.map((month) => (
                                 <option key={month} value={month}>
-                                    {new Date(month + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                                    {monthLabel(month)}
                                 </option>
                             ))}
                         </select>
                         <ReceiptScanner
                             onScanComplete={handleScanComplete}
                             className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-gray-50"
-                            label="Scan receipt"
+                            label={t.scanReceipt}
                         />
                         <button
-                            onClick={() => setShowForm(true)}
+                            onClick={openAddTransaction}
                             className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 text-sm font-bold text-white shadow-[0_1px_2px_rgba(127,29,29,0.12),0_14px_30px_rgba(249,115,22,0.26)] transition-[transform,box-shadow,background-color] duration-200 hover:shadow-[0_1px_2px_rgba(127,29,29,0.12),0_18px_36px_rgba(249,115,22,0.32)]"
                         >
                             <Plus className="h-4 w-4" aria-hidden="true" />
-                            Add transaction
+                            {t.addTransaction}
                         </button>
                     </div>
                 </div>
 
-                {/* KPI Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     <div className="rounded-[24px] bg-[#E7EBDF] p-5 text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_18px_44px_rgba(71,85,62,0.14)]">
                         <div className="mb-5 flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-700">Net balance</span>
+                            <span className="text-sm font-medium text-gray-700">{t.netBalance}</span>
                             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/65 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.06)]">
                                 <WalletCards className="h-5 w-5 text-gray-800" aria-hidden="true" />
                             </span>
                         </div>
                         <p className={`text-3xl font-bold tabular-nums ${stats.balance < 0 ? 'text-red-600' : 'text-gray-950'}`}>
-                            {formatCurrency(stats.balance)}
+                            {money(stats.balance)}
                         </p>
-                        <p className="mt-2 text-xs text-gray-600">Income minus expenses for {periodLabel.toLowerCase()}.</p>
+                        <p className="mt-2 text-xs text-gray-600">{formatCopy(t.netBalanceHelp, { period: periodLabel.toLowerCase() })}</p>
                     </div>
 
                     <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
                         <div className="mb-5 flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-500">Income</span>
+                            <span className="text-sm font-medium text-gray-500">{t.income}</span>
                             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
                                 <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
                             </span>
                         </div>
-                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalIncome)}</p>
-                        <p className="mt-2 text-xs text-gray-400">{filteredTransactions.filter((t) => t.type === 'income').length} income entries</p>
+                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{money(stats.totalIncome)}</p>
+                        <p className="mt-2 text-xs text-gray-400">{hasSelectedPeriodIncome ? formatCopy(t.incomeEntries, { count: filteredTransactions.filter((t) => t.type === 'income').length }) : t.addIncomeToTrackSavings}</p>
                     </div>
 
                     <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
                         <div className="mb-5 flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-500">Expenses</span>
+                            <span className="text-sm font-medium text-gray-500">{t.expenses}</span>
                             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
                                 <ArrowDownRight className="h-5 w-5" aria-hidden="true" />
                             </span>
                         </div>
-                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalExpenses)}</p>
-                        <p className="mt-2 text-xs text-gray-400">{topExpenseCategory}</p>
+                        <p className="text-3xl font-bold text-gray-950 tabular-nums">{money(stats.totalExpenses)}</p>
+                        <p className="mt-2 text-xs text-gray-400">{hasSelectedPeriodExpenses ? categoryLabel(topExpenseCategory) : t.addExpensesToBuildCategories}</p>
                     </div>
 
                     <div className="rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
                         <div className="mb-5 flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-500">Savings rate</span>
+                            <span className="text-sm font-medium text-gray-500">{t.savingsRate}</span>
                             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
                                 <TrendingUp className="h-5 w-5" aria-hidden="true" />
                             </span>
                         </div>
                         <p className={`text-3xl font-bold tabular-nums ${savingsRate < 0 ? 'text-red-600' : 'text-gray-950'}`}>{savingsRate}%</p>
-                        <p className="mt-2 text-xs text-gray-400">{filteredTransactions.length} transactions tracked</p>
+                        <p className="mt-2 text-xs text-gray-400">{hasSelectedPeriodTransactions ? formatCopy(t.transactionsTracked, { count: filteredTransactions.length }) : t.addTransactionsToCalculateRate}</p>
                     </div>
                 </div>
 
-                {/* Charts Row */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-                    <div className="lg:col-span-3 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+                {!hasSelectedPeriodTransactions && (
+                    <div className="grid grid-cols-1 overflow-hidden rounded-[20px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] lg:grid-cols-[1.1fr_1.9fr]">
+                        <div className="bg-gray-950 p-5 text-white md:p-6">
+                            <p className="text-xs font-bold uppercase tracking-wide text-orange-300">{formatCopy(t.startPeriod, { period: periodLabel })}</p>
+                            <h2 className="mt-2 text-balance text-xl font-bold">{t.onboardingTitle}</h2>
+                            <p className="mt-2 text-pretty text-sm leading-6 text-gray-300">
+                                {t.onboardingBody}
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-3 md:p-5">
+                            <button
+                                onClick={() => openAddTransaction('income')}
+                                className={`pressable min-h-24 rounded-2xl bg-emerald-50 p-4 ${textStartClass} shadow-[inset_0_0_0_1px_rgba(5,150,105,0.10)] transition-[transform,background-color,box-shadow] duration-200 hover:bg-emerald-100`}
+                            >
+                                <ArrowUpRight className="mb-3 h-5 w-5 text-emerald-600" aria-hidden="true" />
+                                <span className="block text-sm font-bold text-gray-950">{t.addIncome}</span>
+                                <span className="mt-1 block text-xs leading-5 text-gray-500">{t.addIncomeHelp}</span>
+                            </button>
+                            <button
+                                onClick={() => openAddTransaction('expense')}
+                                className={`pressable min-h-24 rounded-2xl bg-orange-50 p-4 ${textStartClass} shadow-[inset_0_0_0_1px_rgba(249,115,22,0.12)] transition-[transform,background-color,box-shadow] duration-200 hover:bg-orange-100`}
+                            >
+                                <ArrowDownRight className="mb-3 h-5 w-5 text-orange-600" aria-hidden="true" />
+                                <span className="block text-sm font-bold text-gray-950">{t.logExpense}</span>
+                                <span className="mt-1 block text-xs leading-5 text-gray-500">{t.logExpenseHelp}</span>
+                            </button>
+                            <div className="min-h-24 rounded-2xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.05)]">
+                                <PiggyBank className="mb-3 h-5 w-5 text-gray-500" aria-hidden="true" />
+                                <span className="block text-sm font-bold text-gray-950">{t.setBudget}</span>
+                                <span className="mt-1 block text-xs leading-5 text-gray-500">{t.setBudgetHelp}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    <div className="rounded-[20px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] md:p-6 lg:col-span-5">
                         <div className="mb-5 flex items-start justify-between gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-950">Cashflow</h2>
-                                <p className="mt-1 text-sm text-gray-500">Income and expenses across the last 12 months.</p>
+                                <h2 className="text-balance text-lg font-semibold text-gray-950">{t.insights}</h2>
+                                <p className="mt-1 text-pretty text-sm text-gray-500">{hasSelectedPeriodExpenses ? t.insightsReady : t.insightsEmpty}</p>
+                            </div>
+                            <SlidersHorizontal className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div className="rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t.averageDailySpend}</p>
+                                <p className={`mt-2 text-2xl font-bold tabular-nums ${hasSelectedPeriodExpenses ? 'text-gray-950' : 'text-gray-400'}`}>{hasSelectedPeriodExpenses ? money(insightData.averageDailySpend) : money(0)}</p>
+                                <p className="mt-1 text-xs text-gray-500">{hasSelectedPeriodExpenses ? (insightData.daysLeft === null ? t.acrossTrackedDays : formatCopy(t.daysLeft, { count: insightData.daysLeft })) : t.waitingForExpenses}</p>
+                            </div>
+                            <div className="rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t.projectedSpend}</p>
+                                <p className={`mt-2 text-2xl font-bold tabular-nums ${hasSelectedPeriodExpenses ? 'text-gray-950' : 'text-gray-400'}`}>{hasSelectedPeriodExpenses ? money(insightData.projectedSpend) : money(0)}</p>
+                                <p className="mt-1 text-xs text-gray-500">{hasSelectedPeriodExpenses ? (selectedMonth === 'all' ? t.allTrackedSpend : t.atCurrentPace) : t.noProjectionYet}</p>
+                            </div>
+                            <div className="rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t.vsLastMonth}</p>
+                                <p className={`mt-2 text-2xl font-bold tabular-nums ${!hasExpenseComparison ? 'text-gray-400' : insightData.expenseChangePercent !== null && insightData.expenseChangePercent > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                                    {hasExpenseComparison ? `${insightData.expenseChangePercent! > 0 ? '+' : ''}${insightData.expenseChangePercent}%` : t.noBaseline}
+                                </p>
+                                <p className="mt-1 text-xs text-gray-500">{hasExpenseComparison && insightData.previousExpenses !== null ? formatCopy(t.previousAmount, { amount: money(insightData.previousExpenses) }) : t.needsPriorMonthSpend}</p>
+                            </div>
+                            <div className="rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{insightData.categoryTrend ? t.biggestIncrease : t.topCategory}</p>
+                                <p className={`mt-2 truncate text-2xl font-bold ${hasSelectedPeriodExpenses ? 'text-gray-950' : 'text-gray-400'}`}>{insightData.categoryTrend ? categoryLabel(insightData.categoryTrend.category) : insightData.topCategory ? categoryLabel(insightData.topCategory.name) : t.noneYet}</p>
+                                <p className="mt-1 text-xs text-gray-500 tabular-nums">
+                                    {insightData.categoryTrend
+                                        ? formatCopy(t.higher, { amount: money(insightData.categoryTrend.delta) })
+                                        : insightData.topCategory
+                                            ? money(insightData.topCategory.amount)
+                                            : t.addExpenseFirst}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-[20px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] md:p-6 lg:col-span-7">
+                        <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                            <div>
+                                <h2 className="text-balance text-lg font-semibold text-gray-950">{t.categoryBudgets}</h2>
+                                <p className="mt-1 text-pretty text-sm text-gray-500">{formatCopy(t.budgetSummary, { period: budgetPeriodLabel, spent: money(budgetSummary.totalSpent), budget: money(budgetSummary.totalBudget) })}</p>
+                            </div>
+                            <form onSubmit={handleBudgetSubmit} className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_110px_80px]">
+                                <select
+                                    value={budgetFormData.category}
+                                    onChange={(e) => handleBudgetCategoryChange(e.target.value)}
+                                    className="min-h-10 rounded-xl bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    aria-label={t.budgetCategory}
+                                >
+                                    {CATEGORIES.expense.map((category) => (
+                                        <option key={category} value={category}>{categoryLabel(category)}</option>
+                                    ))}
+                                </select>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    step="0.01"
+                                    value={budgetFormData.amount}
+                                    onChange={(e) => setBudgetFormData({ ...budgetFormData, amount: e.target.value })}
+                                    placeholder={t.limit}
+                                    className="min-h-10 rounded-xl bg-gray-50 px-3 py-2 text-sm font-medium text-gray-800 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="pressable min-h-10 rounded-xl bg-gray-950 px-3 py-2 text-sm font-bold text-white transition-[transform,background-color,opacity] duration-200 hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {t.save}
+                                </button>
+                            </form>
+                        </div>
+
+                        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <div className="rounded-2xl bg-orange-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-orange-500">{t.remaining}</p>
+                                <p className={`mt-1 text-xl font-bold tabular-nums ${budgetSummary.remaining < 0 ? 'text-red-600' : 'text-gray-950'}`}>{money(budgetSummary.remaining)}</p>
+                            </div>
+                            <div className="rounded-2xl bg-gray-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t.used}</p>
+                                <p className="mt-1 text-xl font-bold text-gray-950 tabular-nums">{budgetSummary.progress}%</p>
+                            </div>
+                            <div className="rounded-2xl bg-gray-50 p-4">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t.alerts}</p>
+                                <p className={`mt-1 text-xl font-bold tabular-nums ${budgetSummary.overBudgetCount > 0 ? 'text-red-600' : 'text-gray-950'}`}>{budgetSummary.overBudgetCount}</p>
+                            </div>
+                        </div>
+
+                        {activeBudgetRows.length === 0 ? (
+                            <div className="flex min-h-[190px] flex-col items-center justify-center rounded-xl bg-gray-50 px-6 text-center">
+                                <PiggyBank className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
+                                <p className="font-semibold text-gray-700">{t.noBudgetsYet}</p>
+                                <p className="mt-1 max-w-sm text-pretty text-sm text-gray-400">{t.noBudgetsHelp}</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {activeBudgetRows.map((row) => {
+                                    const cappedProgress = Math.min(row.progress, 100);
+                                    const isOverBudget = row.hasBudget && row.spent > row.amount;
+                                    return (
+                                        <div key={row.category} className="rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">{categoryLabel(row.category)}</p>
+                                                    <p className="mt-1 text-xs text-gray-500 tabular-nums">
+                                                        {row.hasBudget
+                                                            ? formatCopy(t.spentOf, { spent: money(row.spent), budget: money(row.amount) })
+                                                            : formatCopy(t.spentWithoutBudget, { spent: money(row.spent) })}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`rounded-full px-2.5 py-1 text-xs font-bold tabular-nums ${isOverBudget ? 'bg-red-100 text-red-700' : 'bg-white text-gray-600'}`}>
+                                                        {row.hasBudget ? `${row.progress}%` : t.unset}
+                                                    </span>
+                                                    {row.hasBudget && (
+                                                        <button
+                                                            onClick={() => handleDeleteBudget(row.category)}
+                                                            className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 transition-[transform,background-color,color] duration-200 hover:bg-red-50 hover:text-red-500"
+                                                            aria-label={formatCopy(t.deleteBudget, { category: categoryLabel(row.category) })}
+                                                        >
+                                                            <X className="h-4 w-4" aria-hidden="true" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 h-2.5 w-full rounded-full bg-gray-200">
+                                                <div
+                                                    className={`h-2.5 rounded-full transition-[width,background-color] duration-300 ${isOverBudget ? 'bg-red-500' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}
+                                                    style={{ width: `${row.hasBudget ? cappedProgress : 0}%` }}
+                                                />
+                                            </div>
+                                            <p className={`mt-2 text-xs font-medium tabular-nums ${isOverBudget ? 'text-red-600' : 'text-gray-500'}`}>
+                                                {row.hasBudget
+                                                    ? isOverBudget
+                                                        ? formatCopy(t.overBudget, { amount: money(Math.abs(row.remaining)) })
+                                                        : formatCopy(t.remainingAmount, { amount: money(row.remaining) })
+                                                    : t.setLimitToTrack}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    <div className="order-2 rounded-[20px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] md:p-6 lg:col-span-4">
+                        <div className="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">{t.goals}</h2>
+                                <p className="mt-1 text-sm text-gray-500 tabular-nums">{formatCopy(t.fundedOverall, { percent: totalGoalProgress })}</p>
+                            </div>
+                            <button
+                                onClick={() => setShowGoalForm(true)}
+                                className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-orange-50 px-3 py-2 text-xs font-bold text-orange-700 transition-[transform,background-color] duration-200 hover:bg-orange-100"
+                            >
+                                <Target className="h-4 w-4" aria-hidden="true" />
+                                {t.newGoal}
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            {goals.length === 0 ? (
+                                <div className="flex min-h-[260px] flex-col items-center justify-center rounded-xl bg-gray-50 px-6 text-center">
+                                    <Target className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
+                                    <p className="font-semibold text-gray-700">{t.noGoalsYet}</p>
+                                    <p className="mt-1 text-pretty text-sm text-gray-400">{t.noGoalsHelp}</p>
+                                </div>
+                            ) : (
+                                goals.map((goal) => {
+                                    const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
+                                    const remaining = Math.max(goal.targetAmount - goal.currentAmount, 0);
+                                    const monthsLeft = getMonthsUntil(goal.targetDate);
+                                    const monthlyNeed = monthsLeft ? remaining / monthsLeft : null;
+                                    return (
+                                        <div key={goal.id} className="group relative rounded-xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
+                                            <button
+                                                onClick={() => handleDeleteGoal(goal.id)}
+                                                className="pressable absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 opacity-0 transition-[opacity,transform,color,background-color] duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+                                                aria-label={formatCopy(t.delete, { description: goal.name })}
+                                            >
+                                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                            </button>
+                                            <div className="flex items-start justify-between gap-4 pr-8">
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">{goal.emoji} {goal.name}</p>
+                                                    <p className="mt-1 text-xs text-gray-400">{t.target}: {goal.targetDate ? monthLabel(goal.targetDate) : t.noDate}</p>
+                                                </div>
+                                                <div className={textEndClass}>
+                                                    <p className="text-sm font-bold text-gray-900 tabular-nums">{money(goal.currentAmount)}</p>
+                                                    <p className="text-xs text-gray-400 tabular-nums">{t.of} {money(goal.targetAmount)}</p>
+                                                </div>
+                                            </div>
+                                            <div className="mt-4 h-2 w-full rounded-full bg-gray-200">
+                                                <div className="h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-[width] duration-300" style={{ width: `${Math.min(progress, 100)}%` }} />
+                                            </div>
+                                            <p className="mt-2 text-xs font-medium text-gray-500 tabular-nums">
+                                                {monthlyNeed !== null ? formatCopy(t.perMonthNeeded, { amount: money(monthlyNeed) }) : formatCopy(t.leftToFund, { amount: money(remaining) })}
+                                            </p>
+                                            {addAmountGoalId === goal.id ? (
+                                                <div className="mt-3 flex gap-2">
+                                                    <input
+                                                        type="number"
+                                                        value={addAmount}
+                                                        onChange={(e) => setAddAmount(e.target.value)}
+                                                        placeholder={t.amount}
+                                                        className="min-h-10 flex-1 rounded-xl bg-white px-3 py-2 text-sm shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                                    />
+                                                    <button onClick={() => handleAddToGoal(goal.id)} className="pressable min-h-10 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition-[transform,background-color] duration-200">{t.add}</button>
+                                                    <button onClick={() => setAddAmountGoalId(null)} className="pressable min-h-10 rounded-xl bg-white px-3 py-2 text-xs font-bold text-gray-600 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] transition-[transform,background-color] duration-200">{t.cancel}</button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    onClick={() => setAddAmountGoalId(goal.id)}
+                                                    className="pressable mt-3 min-h-10 rounded-xl px-3 py-2 text-sm font-semibold text-orange-600 transition-[transform,background-color] duration-200 hover:bg-orange-50"
+                                                >
+                                                    {t.addFunds}
+                                                </button>
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="order-1 overflow-hidden rounded-[20px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] lg:col-span-8">
+                        <div className="space-y-4 px-5 py-5 md:px-6">
+                            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                <div>
+                                    <h2 className="text-lg font-semibold text-gray-950">{t.transactions}</h2>
+                                    <p className="mt-1 text-sm text-gray-500 tabular-nums">{formatCopy(t.entriesForPeriod, { visible: visibleTransactions.length, total: filteredTransactions.length, period: periodLabel.toLowerCase() })}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {hasActiveTransactionFilters && (
+                                        <button
+                                            onClick={resetTransactionFilters}
+                                            className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gray-50 px-3 py-2 text-xs font-bold text-gray-600 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-900"
+                                        >
+                                            <X className="h-4 w-4" aria-hidden="true" />
+                                            {t.clear}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={handleExportCSV}
+                                        className="pressable flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-500 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-800"
+                                        aria-label={t.exportCsv}
+                                    >
+                                        <Download className="h-4 w-4" aria-hidden="true" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-3 xl:grid-cols-[minmax(220px,1.4fr)_minmax(120px,0.7fr)_minmax(150px,0.8fr)_minmax(140px,0.8fr)]">
+                                <label className="relative block">
+                                    <span className="sr-only">{t.searchTransactions}</span>
+                                    <Search className={`pointer-events-none absolute ${isArabic ? 'right-3' : 'left-3'} top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400`} aria-hidden="true" />
+                                    <input
+                                        type="search"
+                                        value={transactionSearch}
+                                        onChange={(e) => {
+                                            setTransactionSearch(e.target.value);
+                                            setShowAllTransactions(false);
+                                        }}
+                                        placeholder={t.searchPlaceholder}
+                                        className={`min-h-10 w-full rounded-xl bg-gray-50 py-2 ${isArabic ? 'pl-3 pr-10' : 'pl-10 pr-3'} text-sm font-medium text-gray-800 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300`}
+                                    />
+                                </label>
+                                <select
+                                    value={transactionTypeFilter}
+                                    onChange={(e) => {
+                                        setTransactionTypeFilter(e.target.value as TransactionTypeFilter);
+                                        setTransactionCategoryFilter('all');
+                                        setShowAllTransactions(false);
+                                    }}
+                                    className="min-h-10 rounded-xl bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    aria-label={t.allTypes}
+                                >
+                                    <option value="all">{t.allTypes}</option>
+                                    <option value="expense">{t.expenses}</option>
+                                    <option value="income">{t.income}</option>
+                                </select>
+                                <select
+                                    value={transactionCategoryFilter}
+                                    onChange={(e) => {
+                                        setTransactionCategoryFilter(e.target.value);
+                                        setShowAllTransactions(false);
+                                    }}
+                                    className="min-h-10 rounded-xl bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    aria-label={t.allCategories}
+                                >
+                                    <option value="all">{t.allCategories}</option>
+                                    {transactionCategoryOptions.map((category) => (
+                                        <option key={category} value={category}>{categoryLabel(category)}</option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={transactionSort}
+                                    onChange={(e) => setTransactionSort(e.target.value as TransactionSort)}
+                                    className="min-h-10 rounded-xl bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
+                                    aria-label={t.newestFirst}
+                                >
+                                    <option value="date-desc">{t.newestFirst}</option>
+                                    <option value="date-asc">{t.oldestFirst}</option>
+                                    <option value="amount-desc">{t.largestAmount}</option>
+                                    <option value="amount-asc">{t.smallestAmount}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {isLoading ? (
+                            <div className="border-t border-gray-100 p-10 text-center">
+                                <div className="mx-auto h-10 w-10 animate-spin rounded-full border-b-2 border-orange-500"></div>
+                            </div>
+                        ) : filteredTransactions.length === 0 ? (
+                            <div className="flex min-h-[340px] flex-col items-center justify-center border-t border-gray-100 px-6 text-center">
+                                <ReceiptText className="mb-4 h-10 w-10 text-gray-300" aria-hidden="true" />
+                                <p className="text-lg font-semibold text-gray-800">{t.noTransactionsYet}</p>
+                                <p className="mt-2 max-w-sm text-pretty text-sm text-gray-400">{t.noTransactionsHelp}</p>
+                                <button
+                                    onClick={openAddTransaction}
+                                    className="pressable mt-5 inline-flex min-h-10 items-center gap-2 rounded-xl bg-gray-950 px-4 py-2 text-sm font-bold text-white transition-[transform,background-color] duration-200 hover:bg-gray-800"
+                                >
+                                    <Plus className="h-4 w-4" aria-hidden="true" />
+                                    {t.addFirstTransaction}
+                                </button>
+                            </div>
+                        ) : visibleTransactions.length === 0 ? (
+                            <div className="flex min-h-[300px] flex-col items-center justify-center border-t border-gray-100 px-6 text-center">
+                                <Search className="mb-4 h-10 w-10 text-gray-300" aria-hidden="true" />
+                                <p className="text-lg font-semibold text-gray-800">{t.noMatchingTransactions}</p>
+                                <p className="mt-2 max-w-sm text-pretty text-sm text-gray-400">{t.noMatchingHelp}</p>
+                                <button
+                                    onClick={resetTransactionFilters}
+                                    className="pressable mt-5 inline-flex min-h-10 items-center gap-2 rounded-xl bg-gray-950 px-4 py-2 text-sm font-bold text-white transition-[transform,background-color] duration-200 hover:bg-gray-800"
+                                >
+                                    {t.clearFilters}
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="overflow-x-auto border-t border-gray-100">
+                                    <table className="w-full text-sm">
+                                        <thead className="bg-gray-50/80 text-xs uppercase tracking-wide text-gray-400">
+                                            <tr>
+                                                <th className={`px-6 py-3 ${textStartClass}`}>{t.transaction}</th>
+                                                <th className={`hidden px-6 py-3 ${textStartClass} sm:table-cell`}>{t.date}</th>
+                                                <th className={`hidden px-6 py-3 ${textStartClass} md:table-cell`}>{t.category}</th>
+                                                <th className={`px-6 py-3 ${textEndClass}`}>{t.amountColumn}</th>
+                                                <th className="px-3 py-3"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {transactionsToRender.map((txn) => (
+                                                <tr key={txn.id} className="transition-[background-color] duration-200 hover:bg-gray-50/80">
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className={`flex h-10 w-10 items-center justify-center rounded-2xl ${txn.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                                {txn.type === 'income' ? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /> : <ArrowDownRight className="h-4 w-4" aria-hidden="true" />}
+                                                            </span>
+                                                            <div className="min-w-0">
+                                                                <p className="truncate font-semibold text-gray-900">{txn.description}</p>
+                                                                <p className="text-xs text-gray-400 sm:hidden">{dateLabel(txn.date)}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="hidden px-6 py-4 text-gray-500 sm:table-cell">{dateLabel(txn.date)}</td>
+                                                    <td className="hidden px-6 py-4 md:table-cell">
+                                                        <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">{categoryLabel(txn.category)}</span>
+                                                    </td>
+                                                    <td className={`px-6 py-4 ${textEndClass} font-bold tabular-nums ${txn.type === 'income' ? 'text-emerald-600' : 'text-gray-950'}`}>
+                                                        {txn.type === 'income' ? '+' : '-'}{money(txn.amount)}
+                                                    </td>
+                                                    <td className="px-3 py-4">
+                                                        <div className="flex items-center justify-end gap-1">
+                                                            <button
+                                                                onClick={() => openEditTransaction(txn)}
+                                                                className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 transition-[transform,background-color,color] duration-200 hover:bg-blue-50 hover:text-blue-600"
+                                                                aria-label={formatCopy(t.edit, { description: txn.description })}
+                                                            >
+                                                                <Edit3 className="h-4 w-4" aria-hidden="true" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDelete(txn.id)}
+                                                                className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 transition-[transform,background-color,color] duration-200 hover:bg-red-50 hover:text-red-500"
+                                                                aria-label={formatCopy(t.delete, { description: txn.description })}
+                                                            >
+                                                                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {visibleTransactions.length > 10 && (
+                                    <div className="border-t border-gray-100 px-5 py-4 text-center">
+                                        <button
+                                            onClick={() => setShowAllTransactions((value) => !value)}
+                                            className="pressable inline-flex min-h-10 items-center justify-center rounded-xl bg-gray-50 px-4 py-2 text-sm font-bold text-gray-700 transition-[transform,background-color,color] duration-200 hover:bg-gray-950 hover:text-white"
+                                        >
+                                            {showAllTransactions ? t.showLatest10 : formatCopy(t.showAll, { count: visibleTransactions.length })}
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+                    <div className="rounded-[20px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] md:p-6 lg:col-span-3">
+                        <div className="mb-5 flex items-start justify-between gap-4">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-950">{t.cashflowHistory}</h2>
+                                <p className="mt-1 text-sm text-gray-500">{t.cashflowHelp}</p>
                             </div>
                             <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-500 tabular-nums">
-                                {formatCompactCurrency(stats.balance)}
+                                {compactMoney(stats.balance)}
                             </span>
                         </div>
-                        <ResponsiveContainer width="100%" height={290}>
+                        <ResponsiveContainer width="100%" height={280}>
                             <BarChart data={monthlyChartData} margin={{ top: 8, right: 16, left: 0, bottom: 6 }}>
                                 <CartesianGrid strokeDasharray="4 6" vertical={false} stroke="#E5E7EB" />
                                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} tickFormatter={(v) => v >= 1000 ? `${v / 1000}K` : v} />
-                                <Tooltip formatter={(value: number) => [formatCurrency(value), '']} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
+                                <Tooltip formatter={(value: number) => [money(value), '']} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
                                 <Legend wrapperStyle={{ paddingTop: '12px' }} />
-                                <Bar dataKey="Income" fill="#111827" radius={[8, 8, 0, 0]} />
-                                <Bar dataKey="Expenses" fill="#F97316" radius={[8, 8, 0, 0]} />
+                                <Bar dataKey="Income" name={t.income} fill="#111827" radius={[8, 8, 0, 0]} />
+                                <Bar dataKey="Expenses" name={t.expenses} fill="#F97316" radius={[8, 8, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
-                    <div className="lg:col-span-2 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
+                    <div className="rounded-[20px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] md:p-6 lg:col-span-2">
                         <div className="mb-5 flex items-start justify-between gap-4">
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-950">Spending mix</h2>
-                                <p className="mt-1 text-sm text-gray-500">Top categories for the selected period.</p>
+                                <h2 className="text-lg font-semibold text-gray-950">{t.spendingMix}</h2>
+                                <p className="mt-1 text-sm text-gray-500">{t.spendingMixHelp}</p>
                             </div>
                             <TrendingDown className="h-5 w-5 text-orange-500" aria-hidden="true" />
                         </div>
@@ -533,13 +1653,13 @@ const FinanceTrackerPage: React.FC = () => {
                                                     <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
+                                            <Tooltip formatter={(value: number) => money(value)} contentStyle={{ borderRadius: '14px', border: '0', boxShadow: '0 18px 45px rgba(17, 24, 39, 0.14)' }} />
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                                         <div className="text-center">
-                                            <p className="text-xs font-medium text-gray-400">Spent</p>
-                                            <p className="text-xl font-bold text-gray-950 tabular-nums">{formatCurrency(stats.totalExpenses)}</p>
+                                            <p className="text-xs font-medium text-gray-400">{t.spent}</p>
+                                            <p className="text-xl font-bold text-gray-950 tabular-nums">{money(stats.totalExpenses)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -547,245 +1667,86 @@ const FinanceTrackerPage: React.FC = () => {
                                     {pieChartData.map((item, index) => (
                                         <div key={item.name} className="flex min-h-9 items-center gap-2 rounded-xl bg-gray-50 px-3 py-2">
                                             <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
-                                            <span className="truncate text-gray-600">{item.name}</span>
+                                            <span className="truncate text-gray-600">{categoryLabel(item.name)}</span>
                                         </div>
                                     ))}
                                 </div>
                             </>
                         ) : (
-                            <div className="flex min-h-[250px] flex-col items-center justify-center rounded-2xl bg-gray-50 px-6 text-center">
+                            <div className="flex min-h-[240px] flex-col items-center justify-center rounded-xl bg-gray-50 px-6 text-center">
                                 <ReceiptText className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
-                                <p className="font-semibold text-gray-700">No expense data yet</p>
-                                <p className="mt-1 text-sm text-gray-400">Add or scan an expense to see your category mix.</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Goals + Transactions Row */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                    <div className="lg:col-span-4 rounded-[24px] bg-white p-5 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)] md:p-6">
-                        <div className="mb-5 flex items-center justify-between gap-3">
-                            <div>
-                                <h2 className="text-lg font-semibold text-gray-950">Goals</h2>
-                                <p className="mt-1 text-sm text-gray-500 tabular-nums">{totalGoalProgress}% funded overall</p>
-                            </div>
-                            <button
-                                onClick={() => setShowGoalForm(true)}
-                                className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-orange-50 px-3 py-2 text-xs font-bold text-orange-700 transition-[transform,background-color] duration-200 hover:bg-orange-100"
-                            >
-                                <Target className="h-4 w-4" aria-hidden="true" />
-                                New goal
-                            </button>
-                        </div>
-                        <div className="space-y-3">
-                            {goals.length === 0 ? (
-                                <div className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl bg-gray-50 px-6 text-center">
-                                    <Target className="mb-3 h-8 w-8 text-gray-300" aria-hidden="true" />
-                                    <p className="font-semibold text-gray-700">No goals yet</p>
-                                    <p className="mt-1 text-sm text-gray-400">Create a savings target and track progress alongside your spending.</p>
-                                </div>
-                            ) : (
-                                goals.map((goal) => {
-                                    const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
-                                    return (
-                                        <div key={goal.id} className="group relative rounded-2xl bg-gray-50 p-4 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.04)]">
-                                            <button
-                                                onClick={() => handleDeleteGoal(goal.id)}
-                                                className="pressable absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 opacity-0 transition-[opacity,transform,color,background-color] duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
-                                                aria-label={`Delete ${goal.name}`}
-                                            >
-                                                <Trash2 className="h-4 w-4" aria-hidden="true" />
-                                            </button>
-                                            <div className="flex items-start justify-between gap-4 pr-8">
-                                                <div>
-                                                    <p className="font-semibold text-gray-900">{goal.emoji} {goal.name}</p>
-                                                    <p className="mt-1 text-xs text-gray-400">Target: {goal.targetDate ? new Date(goal.targetDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'No date'}</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-sm font-bold text-gray-900 tabular-nums">{formatCurrency(goal.currentAmount)}</p>
-                                                    <p className="text-xs text-gray-400 tabular-nums">of {formatCurrency(goal.targetAmount)}</p>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4 h-2 w-full rounded-full bg-gray-200">
-                                                <div className="h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-[width] duration-300" style={{ width: `${Math.min(progress, 100)}%` }} />
-                                            </div>
-                                            {addAmountGoalId === goal.id ? (
-                                                <div className="mt-3 flex gap-2">
-                                                    <input
-                                                        type="number"
-                                                        value={addAmount}
-                                                        onChange={(e) => setAddAmount(e.target.value)}
-                                                        placeholder="Amount"
-                                                        className="min-h-10 flex-1 rounded-xl bg-white px-3 py-2 text-sm shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] focus:outline-none focus:ring-2 focus:ring-orange-300"
-                                                    />
-                                                    <button onClick={() => handleAddToGoal(goal.id)} className="pressable min-h-10 rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition-[transform,background-color] duration-200">Add</button>
-                                                    <button onClick={() => setAddAmountGoalId(null)} className="pressable min-h-10 rounded-xl bg-white px-3 py-2 text-xs font-bold text-gray-600 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)] transition-[transform,background-color] duration-200">Cancel</button>
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    onClick={() => setAddAmountGoalId(goal.id)}
-                                                    className="pressable mt-3 min-h-10 rounded-xl px-3 py-2 text-sm font-semibold text-orange-600 transition-[transform,background-color] duration-200 hover:bg-orange-50"
-                                                >
-                                                    + Add funds
-                                                </button>
-                                            )}
-                                        </div>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="lg:col-span-8 overflow-hidden rounded-[24px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_14px_34px_rgba(17,24,39,0.08)]">
-                        <div className="flex items-center justify-between gap-4 px-5 py-5 md:px-6">
-                            <div>
-                                <h2 className="text-lg font-semibold text-gray-950">Recent transactions</h2>
-                                <p className="mt-1 text-sm text-gray-500 tabular-nums">{filteredTransactions.length} entries for {periodLabel.toLowerCase()}</p>
-                            </div>
-                            <button
-                                onClick={handleExportCSV}
-                                className="pressable flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 text-gray-500 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-800"
-                                aria-label="Export CSV"
-                            >
-                                <Download className="h-4 w-4" aria-hidden="true" />
-                            </button>
-                        </div>
-                        {isLoading ? (
-                            <div className="p-10 text-center">
-                                <div className="mx-auto h-10 w-10 animate-spin rounded-full border-b-2 border-orange-500"></div>
-                            </div>
-                        ) : filteredTransactions.length === 0 ? (
-                            <div className="flex min-h-[340px] flex-col items-center justify-center border-t border-gray-100 px-6 text-center">
-                                <ReceiptText className="mb-4 h-10 w-10 text-gray-300" aria-hidden="true" />
-                                <p className="text-lg font-semibold text-gray-800">No transactions yet</p>
-                                <p className="mt-2 max-w-sm text-sm text-gray-400">Start with one expense or income entry. Your charts and savings rate will update automatically.</p>
-                                <button
-                                    onClick={() => setShowForm(true)}
-                                    className="pressable mt-5 inline-flex min-h-10 items-center gap-2 rounded-xl bg-gray-950 px-4 py-2 text-sm font-bold text-white transition-[transform,background-color] duration-200 hover:bg-gray-800"
-                                >
-                                    <Plus className="h-4 w-4" aria-hidden="true" />
-                                    Add first transaction
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto border-t border-gray-100">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-gray-50/80 text-xs uppercase tracking-wide text-gray-400">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left">Transaction</th>
-                                            <th className="hidden px-6 py-3 text-left sm:table-cell">Date</th>
-                                            <th className="hidden px-6 py-3 text-left md:table-cell">Category</th>
-                                            <th className="px-6 py-3 text-right">Amount</th>
-                                            <th className="px-3 py-3"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-100">
-                                        {filteredTransactions.slice(0, 10).map((txn) => (
-                                            <tr key={txn.id} className="transition-colors duration-200 hover:bg-gray-50/80">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className={`flex h-10 w-10 items-center justify-center rounded-2xl ${txn.type === 'income' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
-                                                            {txn.type === 'income' ? <ArrowUpRight className="h-4 w-4" aria-hidden="true" /> : <ArrowDownRight className="h-4 w-4" aria-hidden="true" />}
-                                                        </span>
-                                                        <div>
-                                                            <p className="font-semibold text-gray-900">{txn.description}</p>
-                                                            <p className="text-xs text-gray-400 sm:hidden">{new Date(txn.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="hidden px-6 py-4 text-gray-500 sm:table-cell">{new Date(txn.date).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                                                <td className="hidden px-6 py-4 md:table-cell">
-                                                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">{txn.category}</span>
-                                                </td>
-                                                <td className={`px-6 py-4 text-right font-bold tabular-nums ${txn.type === 'income' ? 'text-emerald-600' : 'text-gray-950'}`}>
-                                                    {txn.type === 'income' ? '+' : '-'}{formatCurrency(txn.amount)}
-                                                </td>
-                                                <td className="px-3 py-4">
-                                                    <button
-                                                        onClick={() => handleDelete(txn.id)}
-                                                        className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-300 transition-[transform,background-color,color] duration-200 hover:bg-red-50 hover:text-red-500"
-                                                        aria-label={`Delete ${txn.description}`}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                <p className="font-semibold text-gray-700">{t.noExpenseData}</p>
+                                <p className="mt-1 text-sm text-gray-400">{t.noExpenseDataHelp}</p>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
 
-            {/* Add Transaction Modal */}
             {showForm && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md" style={{ fontFamily: "'Manrope', sans-serif" }}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-gray-800">New Transaction</h2>
-                            <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div dir={direction} className={`w-full max-w-md rounded-2xl bg-white p-6 ${textStartClass} shadow-2xl`} style={{ fontFamily: "'Manrope', sans-serif" }}>
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-gray-800">{editingTransactionId ? t.editTransaction : t.newTransaction}</h2>
+                            <button onClick={closeTransactionForm} className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-600" aria-label={t.closeTransactionForm}>
+                                <X className="h-5 w-5" aria-hidden="true" />
                             </button>
                         </div>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="flex bg-gray-100 rounded-xl p-1">
-                                <button type="button" onClick={() => setFormData({ ...formData, type: 'expense', category: '' })} className={`flex-1 py-2 rounded-lg font-medium transition-all ${formData.type === 'expense' ? 'bg-red-500 text-white' : 'text-gray-600'}`}>
-                                    Expense
+                            <div className="flex rounded-xl bg-gray-100 p-1">
+                                <button type="button" onClick={() => setFormData({ ...formData, type: 'expense', category: '' })} className={`pressable flex-1 rounded-lg py-2 font-medium transition-[transform,background-color,color] duration-200 ${formData.type === 'expense' ? 'bg-red-500 text-white' : 'text-gray-600'}`}>
+                                    {t.expense}
                                 </button>
-                                <button type="button" onClick={() => setFormData({ ...formData, type: 'income', category: '' })} className={`flex-1 py-2 rounded-lg font-medium transition-all ${formData.type === 'income' ? 'bg-green-500 text-white' : 'text-gray-600'}`}>
-                                    Income
+                                <button type="button" onClick={() => setFormData({ ...formData, type: 'income', category: '' })} className={`pressable flex-1 rounded-lg py-2 font-medium transition-[transform,background-color,color] duration-200 ${formData.type === 'income' ? 'bg-green-500 text-white' : 'text-gray-600'}`}>
+                                    {t.income}
                                 </button>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                                <input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required />
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.date}</label>
+                                <input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label>
-                                <input type="number" step="0.01" min="0.01" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} placeholder="0.00" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required />
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.amountUsd}</label>
+                                <input type="number" step="0.01" min="0.01" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} placeholder="0.00" className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required>
-                                    <option value="">Select category</option>
-                                    {CATEGORIES[formData.type].map((cat) => (<option key={cat} value={cat}>{cat}</option>))}
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.category}</label>
+                                <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required>
+                                    <option value="">{t.selectCategory}</option>
+                                    {CATEGORIES[formData.type].map((cat) => (<option key={cat} value={cat}>{categoryLabel(cat)}</option>))}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <input type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="e.g., Coffee" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required />
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.description}</label>
+                                <input type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder={t.coffeeExample} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required />
                             </div>
-                            <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50">
-                                {isSubmitting ? 'Saving...' : 'Save Transaction'}
+                            <button type="submit" disabled={isSubmitting} className="pressable w-full rounded-lg bg-orange-500 py-3 font-semibold text-white transition-[transform,background-color,opacity] duration-200 hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50">
+                                {isSubmitting ? t.saving : editingTransactionId ? t.updateTransaction : t.saveTransaction}
                             </button>
                         </form>
                     </div>
                 </div>
             )}
 
-            {/* Add Goal Modal */}
             {showGoalForm && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md" style={{ fontFamily: "'Manrope', sans-serif" }}>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-gray-800">New Goal</h2>
-                            <button onClick={() => setShowGoalForm(false)} className="text-gray-400 hover:text-gray-600">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div dir={direction} className={`w-full max-w-md rounded-2xl bg-white p-6 ${textStartClass} shadow-2xl`} style={{ fontFamily: "'Manrope', sans-serif" }}>
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-gray-800">{t.newGoal}</h2>
+                            <button onClick={() => setShowGoalForm(false)} className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-600" aria-label={t.closeGoalForm}>
+                                <X className="h-5 w-5" aria-hidden="true" />
                             </button>
                         </div>
                         <form onSubmit={handleGoalSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.emoji}</label>
                                 <div className="flex flex-wrap gap-2">
                                     {GOAL_EMOJIS.map((emoji) => (
                                         <button
                                             key={emoji}
                                             type="button"
                                             onClick={() => setGoalFormData({ ...goalFormData, emoji })}
-                                            className={`w-10 h-10 text-xl rounded-lg border-2 transition-all ${goalFormData.emoji === emoji ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                            className={`pressable h-10 w-10 rounded-lg border-2 text-xl transition-[transform,background-color,border-color] duration-200 ${goalFormData.emoji === emoji ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}
                                         >
                                             {emoji}
                                         </button>
@@ -793,25 +1754,25 @@ const FinanceTrackerPage: React.FC = () => {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Goal Name</label>
-                                <input type="text" value={goalFormData.name} onChange={(e) => setGoalFormData({ ...goalFormData, name: e.target.value })} placeholder="e.g., Buying a car" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required />
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.goalName}</label>
+                                <input type="text" value={goalFormData.name} onChange={(e) => setGoalFormData({ ...goalFormData, name: e.target.value })} placeholder={t.goalPlaceholder} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Target Amount ($)</label>
-                                    <input type="number" step="0.01" min="1" value={goalFormData.targetAmount} onChange={(e) => setGoalFormData({ ...goalFormData, targetAmount: e.target.value })} placeholder="15000" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" required />
+                                    <label className="mb-1 block text-sm font-medium text-gray-700">{t.targetAmountUsd}</label>
+                                    <input type="number" step="0.01" min="1" value={goalFormData.targetAmount} onChange={(e) => setGoalFormData({ ...goalFormData, targetAmount: e.target.value })} placeholder="15000" className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" required />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Current Amount ($)</label>
-                                    <input type="number" step="0.01" min="0" value={goalFormData.currentAmount} onChange={(e) => setGoalFormData({ ...goalFormData, currentAmount: e.target.value })} placeholder="0" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" />
+                                    <label className="mb-1 block text-sm font-medium text-gray-700">{t.currentAmountUsd}</label>
+                                    <input type="number" step="0.01" min="0" value={goalFormData.currentAmount} onChange={(e) => setGoalFormData({ ...goalFormData, currentAmount: e.target.value })} placeholder="0" className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" />
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Target Date</label>
-                                <input type="month" value={goalFormData.targetDate} onChange={(e) => setGoalFormData({ ...goalFormData, targetDate: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400" />
+                                <label className="mb-1 block text-sm font-medium text-gray-700">{t.targetDate}</label>
+                                <input type="month" value={goalFormData.targetDate} onChange={(e) => setGoalFormData({ ...goalFormData, targetDate: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-orange-400" />
                             </div>
-                            <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50">
-                                {isSubmitting ? 'Saving...' : 'Create Goal'}
+                            <button type="submit" disabled={isSubmitting} className="pressable w-full rounded-lg bg-orange-500 py-3 font-semibold text-white transition-[transform,background-color,opacity] duration-200 hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50">
+                                {isSubmitting ? t.saving : t.createGoal}
                             </button>
                         </form>
                     </div>
