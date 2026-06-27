@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { CALCULATOR_ROUTES, CATEGORY_HUBS, SITE_URL } from '../utils/seoConfig.ts';
+import { CALCULATOR_ROUTES, CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import { absoluteUrl, escapeXml, getCanonicalBookSlug, loadBookCatalog } from './seoCatalog.ts';
 
 const today = new Date().toISOString().split('T')[0];
@@ -13,7 +13,7 @@ interface SitemapUrl {
 
 function renderUrl({ path: pathname, changefreq, priority }: SitemapUrl): string {
   return `  <url>
-    <loc>${escapeXml(absoluteUrl(SITE_URL, pathname))}</loc>
+    <loc>${escapeXml(absoluteUrl(SITE_URL, canonicalRoutePath(pathname)))}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>

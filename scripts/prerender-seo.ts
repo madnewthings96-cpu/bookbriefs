@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, SITE_URL } from '../utils/seoConfig.ts';
+import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import {
   absoluteUrl,
   escapeHtml,
@@ -78,7 +78,7 @@ function replaceRoot(html: string, body: string): string {
 }
 
 function renderPage(template: string, page: PrerenderPage): string {
-  const canonical = absoluteUrl(SITE_URL, page.path);
+  const canonical = absoluteUrl(SITE_URL, canonicalRoutePath(page.path));
   const image = page.image || DEFAULT_OG_IMAGE;
   const absoluteImage = image.startsWith('http') ? image : absoluteUrl(SITE_URL, image);
 
@@ -117,7 +117,7 @@ function breadcrumbSchema(items: Array<{ name: string; path: string }>) {
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: absoluteUrl(SITE_URL, item.path),
+      item: absoluteUrl(SITE_URL, canonicalRoutePath(item.path)),
     })),
   };
 }
@@ -134,7 +134,7 @@ function websiteSchema() {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/summaries?search={search_term_string}`,
+        urlTemplate: `${SITE_URL}/summaries/?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -208,7 +208,7 @@ function bookPage(book: BookDefinition): PrerenderPage {
         image: absoluteUrl(SITE_URL, book.coverImageUrl),
         description: truncateText(cleanSummary, 400),
         genre: book.category,
-        url: absoluteUrl(SITE_URL, pathName),
+        url: absoluteUrl(SITE_URL, canonicalRoutePath(pathName)),
       },
       breadcrumbSchema([
         { name: 'Home', path: '/' },
@@ -272,12 +272,12 @@ function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefin
         '@type': 'CollectionPage',
         name: arabic ? category.arabicTitle : category.englishTitle,
         description,
-        url: absoluteUrl(SITE_URL, pathName),
+        url: absoluteUrl(SITE_URL, canonicalRoutePath(pathName)),
         mainEntity: categoryBooks.map((book) => ({
           '@type': 'Book',
           name: book.title,
           author: book.author,
-          url: absoluteUrl(SITE_URL, `/summary/${getCanonicalBookSlug(book)}`),
+          url: absoluteUrl(SITE_URL, canonicalRoutePath(`/summary/${getCanonicalBookSlug(book)}`)),
         })),
       },
       breadcrumbSchema([
@@ -423,7 +423,7 @@ function calculatorPage(route: (typeof CALCULATOR_ROUTES)[number]): PrerenderPag
         name: route.h1,
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Any',
-        url: absoluteUrl(SITE_URL, route.path),
+        url: absoluteUrl(SITE_URL, canonicalRoutePath(route.path)),
         description: route.description,
       },
       {

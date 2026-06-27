@@ -27,6 +27,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
     const [calculatedPnL, setCalculatedPnL] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCustomSetup, setIsCustomSetup] = useState(false);
+    const [isManualPnL, setIsManualPnL] = useState(false);
 
     // Initialize form when editing or opening
     useEffect(() => {
@@ -51,14 +52,40 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
             const isPredefined = SETUP_OPTIONS.includes(editingTrade.setup);
             setIsCustomSetup(!isPredefined && editingTrade.setup !== '');
             setCalculatedPnL(editingTrade.pnl.toString());
+            setIsManualPnL(true);
         } else if (isOpen) {
             setFormData(getInitialTradeFormData());
             setCalculatedPnL('');
             setIsCustomSetup(false);
+            setIsManualPnL(false);
         }
     }, [editingTrade, isOpen]);
 
-    // Auto-calculation removed per user request
+    useEffect(() => {
+        if (!isOpen || isManualPnL) return;
+
+        const entryPrice = parseFloat(formData.entryPrice);
+        const exitPrice = parseFloat(formData.exitPrice);
+        const lotSize = parseFloat(formData.lotSize);
+
+        if ([entryPrice, exitPrice, lotSize].every(Number.isFinite)) {
+            const pnl = calculatePnL(formData.direction, entryPrice, exitPrice, lotSize);
+            setCalculatedPnL(pnl.toFixed(2));
+        } else {
+            setCalculatedPnL('');
+        }
+    }, [
+        formData.direction,
+        formData.entryPrice,
+        formData.exitPrice,
+        formData.lotSize,
+        isManualPnL,
+        isOpen,
+    ]);
+
+    const handleManualPnLToggle = () => {
+        setIsManualPnL((current) => !current);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -92,7 +119,8 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     </h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-[scale,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-600 active:scale-[0.96]"
+                        title="Close"
                     >
                         <X className="w-6 h-6" />
                     </button>
@@ -119,7 +147,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'LONG' })}
-                                    className={`flex-1 py-2 rounded-md font-medium transition-all ${formData.direction === 'LONG'
+                                    className={`flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${formData.direction === 'LONG'
                                         ? 'bg-emerald-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -129,7 +157,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'SHORT' })}
-                                    className={`flex-1 py-2 rounded-md font-medium transition-all ${formData.direction === 'SHORT'
+                                    className={`flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${formData.direction === 'SHORT'
                                         ? 'bg-rose-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -208,14 +236,28 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Calculated P&L ($)</label>
+                            <div className="mb-1.5 flex items-center justify-between gap-2">
+                                <label className="block text-sm font-medium text-gray-700">P&L ($)</label>
+                                <button
+                                    type="button"
+                                    onClick={handleManualPnLToggle}
+                                    className={`rounded-md px-2 py-1 text-xs font-semibold transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${isManualPnL
+                                        ? 'bg-orange-50 text-orange-600'
+                                        : 'bg-emerald-50 text-emerald-600'
+                                        }`}
+                                    title={isManualPnL ? 'Switch to automatic P&L' : 'Override calculated P&L'}
+                                >
+                                    {isManualPnL ? 'Manual' : 'Auto'}
+                                </button>
+                            </div>
                             <input
                                 type="number"
                                 step="any"
                                 value={calculatedPnL}
                                 onChange={(e) => setCalculatedPnL(e.target.value)}
-                                placeholder="0.00"
-                                className={`w-full px-4 py-2.5 rounded-lg font-bold text-lg border focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-colors ${parseFloat(calculatedPnL || '0') > 0
+                                readOnly={!isManualPnL}
+                                placeholder={isManualPnL ? '0.00' : 'Auto'}
+                                className={`w-full rounded-lg border px-4 py-2.5 text-lg font-bold tabular-nums transition-colors focus:border-transparent focus:ring-2 focus:ring-orange-400 ${!isManualPnL ? 'cursor-not-allowed' : ''} ${parseFloat(calculatedPnL || '0') > 0
                                     ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                     : parseFloat(calculatedPnL || '0') < 0
                                         ? 'bg-rose-50 text-rose-600 border-rose-200'
@@ -246,7 +288,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                         setIsCustomSetup(false);
                                         setFormData({ ...formData, setup: '' });
                                     }}
-                                    className="px-3 py-2 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                    className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-200 hover:text-gray-700 active:scale-[0.96]"
                                     title="Back to list"
                                 >
                                     <ArrowLeft className="w-5 h-5" />
@@ -281,7 +323,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">
                             Psychology / Emotions
-                            <span className="ml-2 text-xs text-orange-500 font-normal">🧠 Key Insight</span>
+                            <span className="ml-2 text-xs text-orange-500 font-normal">Key Insight</span>
                         </label>
                         <select
                             value={formData.emotions}
@@ -324,7 +366,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {isSubmitting ? (
                                 <>

@@ -40,12 +40,12 @@ const StatCard: React.FC<StatCardProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-xl p-5 border border-gray-100 hover:border-gray-200 transition-colors shadow-sm">
+        <div className="rounded-xl bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] transition-[box-shadow] duration-150 ease-out hover:shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_2px_-1px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.06)]">
             <div className="flex items-start justify-between">
                 <div className="flex-1">
                     <p className="text-gray-500 text-sm font-medium mb-1">{title}</p>
                     <div className="flex items-center gap-2">
-                        <p className={`text-2xl font-bold ${getValueColorClass()}`}>
+                        <p className={`text-2xl font-bold tabular-nums ${getValueColorClass()}`}>
                             {value}
                         </p>
                         {getTrendIcon()}

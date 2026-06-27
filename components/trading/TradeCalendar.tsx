@@ -4,31 +4,24 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TradeCalendarProps {
     trades: Trade[];
-    onEditTrade: (trade: Trade) => void;
+    onSelectTrade: (trade: Trade) => void;
+    onSelectDay: (date: Date, trades: Trade[]) => void;
 }
 
-const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) => {
+const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onSelectTrade, onSelectDay }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
 
-    // Get calendar data for current month
     const calendarData = useMemo(() => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
-
-        // First day of month and last day of month
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
-
-        // Get day of week for first day (0 = Sunday)
         const startingDayOfWeek = firstDay.getDay();
-
-        // Calculate days to show from previous month
         const daysInMonth = lastDay.getDate();
         const totalCells = Math.ceil((daysInMonth + startingDayOfWeek) / 7) * 7;
-
-        // Group trades by date
         const tradesByDate: { [key: string]: Trade[] } = {};
-        trades.forEach(trade => {
+
+        trades.forEach((trade) => {
             if (trade.entryDate?.toDate) {
                 const date = trade.entryDate.toDate();
                 const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -39,7 +32,12 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) =>
             }
         });
 
-        return { startingDayOfWeek, daysInMonth, totalCells, tradesByDate };
+        const dailyPnLs = Object.values(tradesByDate).map((dayTrades) =>
+            dayTrades.reduce((sum, trade) => sum + trade.pnl, 0)
+        );
+        const maxAbsDailyPnL = Math.max(0, ...dailyPnLs.map((pnl) => Math.abs(pnl)));
+
+        return { startingDayOfWeek, daysInMonth, totalCells, tradesByDate, maxAbsDailyPnL };
     }, [currentDate, trades]);
 
     const goToPreviousMonth = () => {
@@ -54,6 +52,24 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) =>
         setCurrentDate(new Date());
     };
 
+    const getHeatmapClass = (dailyPnL: number) => {
+        if (dailyPnL === 0 || calendarData.maxAbsDailyPnL === 0) {
+            return 'bg-white';
+        }
+
+        const intensity = Math.ceil((Math.abs(dailyPnL) / calendarData.maxAbsDailyPnL) * 3);
+
+        if (dailyPnL > 0) {
+            if (intensity >= 3) return 'bg-emerald-100';
+            if (intensity === 2) return 'bg-emerald-50';
+            return 'bg-emerald-50/60';
+        }
+
+        if (intensity >= 3) return 'bg-rose-100';
+        if (intensity === 2) return 'bg-rose-50';
+        return 'bg-rose-50/60';
+    };
+
     const renderCalendarCells = () => {
         const cells = [];
         const { startingDayOfWeek, daysInMonth, totalCells, tradesByDate } = calendarData;
@@ -66,11 +82,10 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) =>
             const date = new Date(year, month, dayNumber);
             const dateKey = `${year}-${month}-${dayNumber}`;
             const dayTrades = tradesByDate[dateKey] || [];
-
-            // Calculate daily P&L
             const dailyPnL = dayTrades.reduce((sum, trade) => sum + trade.pnl, 0);
-            const wins = dayTrades.filter(t => t.status === 'WIN').length;
-            const losses = dayTrades.filter(t => t.status === 'LOSS').length;
+            const wins = dayTrades.filter((trade) => trade.status === 'WIN').length;
+            const losses = dayTrades.filter((trade) => trade.status === 'LOSS').length;
+            const hasTrades = dayTrades.length > 0;
 
             const isToday = isCurrentMonth &&
                 date.getDate() === new Date().getDate() &&
@@ -80,53 +95,67 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) =>
             cells.push(
                 <div
                     key={i}
-                    className={`min-h-24 border border-gray-100 p-2 ${isCurrentMonth ? 'bg-white' : 'bg-gray-50'
-                        } ${isToday ? 'ring-2 ring-orange-400' : ''}`}
+                    role={hasTrades ? 'button' : undefined}
+                    tabIndex={hasTrades ? 0 : undefined}
+                    onClick={() => {
+                        if (hasTrades) onSelectDay(date, dayTrades);
+                    }}
+                    onKeyDown={(event) => {
+                        if (!hasTrades) return;
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            onSelectDay(date, dayTrades);
+                        }
+                    }}
+                    className={`min-h-28 p-2 transition-[background-color,box-shadow] duration-150 ease-out ${isCurrentMonth
+                        ? getHeatmapClass(dailyPnL)
+                        : 'bg-gray-50'
+                        } ${isToday ? 'ring-2 ring-orange-400 ring-inset' : ''} ${hasTrades ? 'cursor-pointer hover:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]' : ''}`}
                 >
                     {isCurrentMonth && (
                         <>
-                            <div className={`text-sm font-medium mb-1 ${isToday ? 'text-orange-600' : 'text-gray-700'
-                                }`}>
+                            <div className={`mb-1 text-sm font-medium ${isToday ? 'text-orange-600' : 'text-gray-700'}`}>
                                 {dayNumber}
                             </div>
 
-                            {dayTrades.length > 0 && (
-                                <div className="space-y-1">
-                                    {/* Daily Summary */}
-                                    <div className={`text-xs font-semibold px-1.5 py-0.5 rounded ${dailyPnL > 0
-                                        ? 'bg-emerald-50 text-emerald-700'
+                            {hasTrades && (
+                                <div className="space-y-1.5">
+                                    <div className={`rounded px-1.5 py-0.5 text-xs font-semibold tabular-nums ${dailyPnL > 0
+                                        ? 'bg-white/75 text-emerald-700'
                                         : dailyPnL < 0
-                                            ? 'bg-rose-50 text-rose-700'
-                                            : 'bg-gray-100 text-gray-700'
+                                            ? 'bg-white/75 text-rose-700'
+                                            : 'bg-white/75 text-gray-700'
                                         }`}>
                                         {formatCurrency(dailyPnL)}
                                     </div>
 
-                                    {/* Trade indicators */}
-                                    <div className="flex gap-1 flex-wrap">
-                                        {dayTrades.slice(0, 3).map((trade, idx) => (
+                                    <div className="flex flex-wrap gap-1">
+                                        {dayTrades.slice(0, 3).map((trade) => (
                                             <button
                                                 key={trade.id}
-                                                onClick={() => onEditTrade(trade)}
-                                                className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center transition-transform hover:scale-110 ${trade.status === 'WIN'
-                                                    ? 'bg-emerald-500 text-white'
+                                                type="button"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    onSelectTrade(trade);
+                                                }}
+                                                className={`flex h-7 min-w-7 items-center justify-center rounded px-1 text-[11px] font-bold text-white transition-[scale,opacity] duration-150 ease-out hover:opacity-90 active:scale-[0.96] ${trade.status === 'WIN'
+                                                    ? 'bg-emerald-500'
                                                     : trade.status === 'LOSS'
-                                                        ? 'bg-rose-500 text-white'
-                                                        : 'bg-gray-400 text-white'
+                                                        ? 'bg-rose-500'
+                                                        : 'bg-gray-400'
                                                     }`}
-                                                title={`${trade.symbol}: ${formatCurrency(trade.pnl)}${trade.screenshotUrl ? ' 📷' : ''}`}
+                                                title={`${trade.symbol}: ${formatCurrency(trade.pnl)}`}
                                             >
                                                 {trade.symbol.substring(0, 2)}
                                             </button>
                                         ))}
                                         {dayTrades.length > 3 && (
-                                            <div className="w-6 h-6 rounded bg-gray-200 text-gray-600 text-xs font-bold flex items-center justify-center">
+                                            <div className="flex h-7 min-w-7 items-center justify-center rounded bg-gray-200 px-1 text-xs font-bold text-gray-600">
                                                 +{dayTrades.length - 3}
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Win/Loss count */}
                                     {(wins > 0 || losses > 0) && (
                                         <div className="text-xs text-gray-500">
                                             {wins}W {losses}L
@@ -146,47 +175,49 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onEditTrade }) =>
     const monthName = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h2 className="text-lg font-bold text-gray-800">{monthName}</h2>
+        <div className="overflow-hidden rounded-xl bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
+            <div className="flex flex-col gap-3 border-b border-gray-100 bg-gray-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div>
+                    <h2 className="text-lg font-bold text-gray-800">{monthName}</h2>
+                    <p className="mt-1 text-sm text-gray-500">Daily P&L heatmap</p>
+                </div>
                 <div className="flex gap-2">
                     <button
+                        type="button"
                         onClick={goToPreviousMonth}
-                        className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition-[scale,background-color] duration-150 ease-out hover:bg-gray-200 active:scale-[0.96]"
                         title="Previous Month"
                     >
-                        <ChevronLeft className="w-5 h-5" />
+                        <ChevronLeft className="h-5 w-5" />
                     </button>
                     <button
+                        type="button"
                         onClick={goToToday}
-                        className="px-3 py-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600 text-sm font-medium"
+                        className="inline-flex min-h-10 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-[scale,background-color] duration-150 ease-out hover:bg-gray-200 active:scale-[0.96]"
                     >
                         Today
                     </button>
                     <button
+                        type="button"
                         onClick={goToNextMonth}
-                        className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition-[scale,background-color] duration-150 ease-out hover:bg-gray-200 active:scale-[0.96]"
                         title="Next Month"
                     >
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRight className="h-5 w-5" />
                     </button>
                 </div>
             </div>
 
-            {/* Calendar Grid */}
             <div className="p-4">
-                {/* Day headers */}
-                <div className="grid grid-cols-7 gap-px mb-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+                <div className="mb-2 grid grid-cols-7 gap-px">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                        <div key={day} className="py-2 text-center text-xs font-semibold text-gray-500">
                             {day}
                         </div>
                     ))}
                 </div>
 
-                {/* Calendar cells */}
-                <div className="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
+                <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg bg-gray-200">
                     {renderCalendarCells()}
                 </div>
             </div>

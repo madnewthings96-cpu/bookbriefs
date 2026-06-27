@@ -24,7 +24,7 @@ import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
-import { SITE_URL } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -134,7 +134,7 @@ const SummaryDetailPage: React.FC = () => {
       : 'book summary, book insights',
     image: book?.coverImageUrl || '/images/og-default.jpg',
     type: 'book',
-    canonical: canonicalSlug ? `${SITE_URL}/summary/${canonicalSlug}` : undefined,
+    canonical: canonicalSlug ? `${SITE_URL}${canonicalRoutePath(`/summary/${canonicalSlug}`)}` : undefined,
   });
 
   // Personal Notes & Highlights state

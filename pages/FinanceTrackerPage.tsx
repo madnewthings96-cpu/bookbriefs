@@ -1052,13 +1052,13 @@ const FinanceTrackerPage: React.FC = () => {
         <div dir={direction} className={`min-h-screen bg-[#F6F7F9] px-4 py-6 md:py-8 ${textStartClass}`} style={{ fontFamily: "'Manrope', sans-serif" }}>
             <div className="mx-auto max-w-7xl space-y-6">
                 <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-                    <div>
+                    <div className={`text-center ${isArabic ? 'md:text-right' : 'md:text-left'}`}>
                         <div className="mb-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_26px_rgba(17,24,39,0.06)]">
                             <CalendarDays className="h-4 w-4 text-orange-500" aria-hidden="true" />
                             <span>{periodLabel}</span>
                         </div>
                         <h1 className="text-balance text-3xl font-bold tracking-tight text-gray-950 md:text-4xl">{t.financeTracker}</h1>
-                        <p className="mt-2 max-w-2xl text-pretty text-sm leading-6 text-gray-500">
+                        <p className="mx-auto mt-2 max-w-2xl text-pretty text-sm leading-6 text-gray-500 md:mx-0">
                             {t.headerDescription}
                         </p>
                     </div>
@@ -1092,7 +1092,7 @@ const FinanceTrackerPage: React.FC = () => {
                         </select>
                         <ReceiptScanner
                             onScanComplete={handleScanComplete}
-                            className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-gray-50"
+                            className="pressable inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#e5d8c7] px-4 py-2 text-sm font-semibold text-gray-950 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08),0_8px_22px_rgba(17,24,39,0.05)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-[#dccab8]"
                             label={t.scanReceipt}
                         />
                         <button
@@ -1155,10 +1155,10 @@ const FinanceTrackerPage: React.FC = () => {
 
                 {!hasSelectedPeriodTransactions && (
                     <div className="grid grid-cols-1 overflow-hidden rounded-[20px] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(17,24,39,0.07)] lg:grid-cols-[1.1fr_1.9fr]">
-                        <div className="bg-gray-950 p-5 text-white md:p-6">
-                            <p className="text-xs font-bold uppercase tracking-wide text-orange-300">{formatCopy(t.startPeriod, { period: periodLabel })}</p>
+                        <div className="bg-[#e5d8c7] p-5 text-gray-950 md:p-6">
+                            <p className="text-xs font-bold uppercase tracking-wide text-orange-700">{formatCopy(t.startPeriod, { period: periodLabel })}</p>
                             <h2 className="mt-2 text-balance text-xl font-bold">{t.onboardingTitle}</h2>
-                            <p className="mt-2 text-pretty text-sm leading-6 text-gray-300">
+                            <p className="mt-2 text-pretty text-sm leading-6 text-gray-700">
                                 {t.onboardingBody}
                             </p>
                         </div>

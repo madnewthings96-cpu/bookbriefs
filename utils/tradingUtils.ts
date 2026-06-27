@@ -60,6 +60,37 @@ export interface DrawdownPoint {
     drawdownValue: number; // Absolute value
 }
 
+export interface BreakdownStats {
+    key: string;
+    label: string;
+    trades: number;
+    wins: number;
+    losses: number;
+    breakEven: number;
+    winRate: number;
+    totalPnL: number;
+    avgPnL: number;
+    avgR: number;
+    bestTrade?: Trade;
+    worstTrade?: Trade;
+}
+
+export interface AdvancedTradingStats {
+    avgWin: number;
+    avgLoss: number;
+    avgR: number;
+    expectancy: number;
+    maxDrawdownPercent: number;
+    maxDrawdownValue: number;
+    bestTrade?: Trade;
+    worstTrade?: Trade;
+    bestDay?: { date: string; pnl: number; trades: number };
+    worstDay?: { date: string; pnl: number; trades: number };
+    winningDays: number;
+    losingDays: number;
+    activeDays: number;
+}
+
 // Goal types for tracking
 export type GoalType = 'balance' | 'behavior' | 'winRate' | 'streak';
 
@@ -349,6 +380,143 @@ export const calculateDrawdown = (equityPoints: EquityPoint[]): DrawdownPoint[] 
     });
 
     return drawdownPoints;
+};
+
+const getTradeDateKey = (trade: Trade): string => {
+    const date = trade.entryDate?.toDate?.() || new Date(0);
+    return date.toISOString().split('T')[0];
+};
+
+const formatDateLabel = (dateKey: string): string => {
+    const [year, month, day] = dateKey.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
+};
+
+export const calculateAdvancedStats = (
+    trades: Trade[],
+    startingBalance: number = 0
+): AdvancedTradingStats => {
+    if (trades.length === 0) {
+        return {
+            avgWin: 0,
+            avgLoss: 0,
+            avgR: 0,
+            expectancy: 0,
+            maxDrawdownPercent: 0,
+            maxDrawdownValue: 0,
+            winningDays: 0,
+            losingDays: 0,
+            activeDays: 0,
+        };
+    }
+
+    const wins = trades.filter((trade) => trade.pnl > 0);
+    const losses = trades.filter((trade) => trade.pnl < 0);
+    const rrTrades = trades.filter((trade) => typeof trade.rr === 'number' && Number.isFinite(trade.rr));
+
+    const avgWin = wins.length > 0
+        ? wins.reduce((sum, trade) => sum + trade.pnl, 0) / wins.length
+        : 0;
+    const avgLoss = losses.length > 0
+        ? Math.abs(losses.reduce((sum, trade) => sum + trade.pnl, 0) / losses.length)
+        : 0;
+    const avgR = rrTrades.length > 0
+        ? rrTrades.reduce((sum, trade) => sum + (trade.rr || 0), 0) / rrTrades.length
+        : 0;
+    const expectancy = trades.reduce((sum, trade) => sum + trade.pnl, 0) / trades.length;
+
+    const equityPoints = calculateCumulativePnL(trades, startingBalance);
+    const drawdownPoints = calculateDrawdown(equityPoints);
+    const maxDrawdown = drawdownPoints.reduce(
+        (max, point) => point.drawdownValue > max.drawdownValue ? point : max,
+        { drawdown: 0, drawdownValue: 0 } as DrawdownPoint
+    );
+
+    const sortedByPnL = [...trades].sort((a, b) => b.pnl - a.pnl);
+    const bestTrade = sortedByPnL[0];
+    const worstTrade = sortedByPnL[sortedByPnL.length - 1];
+
+    const dayMap = new Map<string, { pnl: number; trades: number }>();
+    trades.forEach((trade) => {
+        const key = getTradeDateKey(trade);
+        const current = dayMap.get(key) || { pnl: 0, trades: 0 };
+        dayMap.set(key, {
+            pnl: current.pnl + trade.pnl,
+            trades: current.trades + 1,
+        });
+    });
+
+    const dayStats = Array.from(dayMap.entries()).map(([date, value]) => ({
+        date: formatDateLabel(date),
+        pnl: Math.round(value.pnl * 100) / 100,
+        trades: value.trades,
+    }));
+
+    const sortedDays = [...dayStats].sort((a, b) => b.pnl - a.pnl);
+    const winningDays = dayStats.filter((day) => day.pnl > 0).length;
+    const losingDays = dayStats.filter((day) => day.pnl < 0).length;
+
+    return {
+        avgWin: Math.round(avgWin * 100) / 100,
+        avgLoss: Math.round(avgLoss * 100) / 100,
+        avgR: Math.round(avgR * 100) / 100,
+        expectancy: Math.round(expectancy * 100) / 100,
+        maxDrawdownPercent: Math.round(maxDrawdown.drawdown * 100) / 100,
+        maxDrawdownValue: Math.round(maxDrawdown.drawdownValue * 100) / 100,
+        bestTrade,
+        worstTrade,
+        bestDay: sortedDays[0],
+        worstDay: sortedDays[sortedDays.length - 1],
+        winningDays,
+        losingDays,
+        activeDays: dayStats.length,
+    };
+};
+
+export const calculateBreakdownStats = (
+    trades: Trade[],
+    field: 'setup' | 'emotions'
+): BreakdownStats[] => {
+    const groups = new Map<string, Trade[]>();
+
+    trades.forEach((trade) => {
+        const value = trade[field]?.trim() || 'Unlabeled';
+        const current = groups.get(value) || [];
+        groups.set(value, [...current, trade]);
+    });
+
+    return Array.from(groups.entries())
+        .map(([label, groupTrades]) => {
+            const wins = groupTrades.filter((trade) => trade.status === 'WIN');
+            const losses = groupTrades.filter((trade) => trade.status === 'LOSS');
+            const breakEven = groupTrades.filter((trade) => trade.status === 'BE');
+            const totalPnL = groupTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+            const rrTrades = groupTrades.filter((trade) => typeof trade.rr === 'number' && Number.isFinite(trade.rr));
+            const avgR = rrTrades.length > 0
+                ? rrTrades.reduce((sum, trade) => sum + (trade.rr || 0), 0) / rrTrades.length
+                : 0;
+            const sortedByPnL = [...groupTrades].sort((a, b) => b.pnl - a.pnl);
+
+            return {
+                key: label,
+                label,
+                trades: groupTrades.length,
+                wins: wins.length,
+                losses: losses.length,
+                breakEven: breakEven.length,
+                winRate: Math.round((wins.length / groupTrades.length) * 1000) / 10,
+                totalPnL: Math.round(totalPnL * 100) / 100,
+                avgPnL: Math.round((totalPnL / groupTrades.length) * 100) / 100,
+                avgR: Math.round(avgR * 100) / 100,
+                bestTrade: sortedByPnL[0],
+                worstTrade: sortedByPnL[sortedByPnL.length - 1],
+            };
+        })
+        .sort((a, b) => Math.abs(b.totalPnL) - Math.abs(a.totalPnL));
 };
 
 /**

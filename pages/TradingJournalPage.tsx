@@ -6,7 +6,6 @@ import useSEO from '../hooks/useSEO';
 
 // Trading Components
 import StatCard from '../components/trading/StatCard';
-import EquityCurve from '../components/trading/EquityCurve';
 import AddTradeModal from '../components/trading/AddTradeModal';
 import TradeTable from '../components/trading/TradeTable';
 import TradeCalendar from '../components/trading/TradeCalendar';
@@ -16,6 +15,9 @@ import GoalsSection from '../components/trading/GoalsSection';
 import AddGoalModal, { GoalFormData } from '../components/trading/AddGoalModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import ExportReportModal from '../components/trading/ExportReportModal';
+import TradingReviewDrawer from '../components/trading/TradingReviewDrawer';
+import TradingCommandCenter from '../components/trading/TradingCommandCenter';
+import { BreakdownAnalytics, OverviewInsights, ReviewPanel } from '../components/trading/TradingAnalyticsPanels';
 
 // Utilities
 import {
@@ -25,9 +27,31 @@ import {
     calculateStats,
     calculateCumulativePnL,
     calculateStreak,
+    calculateAdvancedStats,
+    calculateBreakdownStats,
     formatCurrency,
 } from '../utils/tradingUtils';
-import { BookOpen, Plus, Wallet, Edit2, Banknote, Percent, TrendingUp, Scale, Table2, Calendar, Target, FileDown } from 'lucide-react';
+import {
+    BookOpen,
+    Plus,
+    Wallet,
+    Edit2,
+    Banknote,
+    Percent,
+    TrendingUp,
+    Scale,
+    Target,
+    FileDown,
+    LayoutDashboard,
+    ListChecks,
+    CalendarDays,
+    Brain,
+    BarChart3,
+    ClipboardCheck,
+    TrendingDown,
+} from 'lucide-react';
+
+type TradingTab = 'overview' | 'trades' | 'calendar' | 'psychology' | 'setups' | 'review';
 
 const TradingJournalPage: React.FC = () => {
     const { currentUser } = useFirebase();
@@ -37,11 +61,13 @@ const TradingJournalPage: React.FC = () => {
     const [showBalanceModal, setShowBalanceModal] = useState(false);
     const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
     const [startingBalance, setStartingBalance] = useState(10000);
-    const [viewMode, setViewMode] = useState<'table' | 'calendar'>('table');
+    const [activeTab, setActiveTab] = useState<TradingTab>('overview');
     const [goals, setGoals] = useState<Goal[]>([]);
     const [showGoalModal, setShowGoalModal] = useState(false);
     const [goalToDelete, setGoalToDelete] = useState<string | null>(null);
     const [showExportModal, setShowExportModal] = useState(false);
+    const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
+    const [selectedDay, setSelectedDay] = useState<{ date: Date; trades: Trade[] } | null>(null);
 
     useSEO({
         title: 'Trading Journal - Ta7leel | BookBriefs',
@@ -118,6 +144,18 @@ const TradingJournalPage: React.FC = () => {
     const equityCurveData = useMemo(() => calculateCumulativePnL(trades, startingBalance), [trades, startingBalance]);
     const currentBalance = startingBalance + stats.totalPnL;
     const streak = useMemo(() => calculateStreak(trades), [trades]);
+    const advancedStats = useMemo(() => calculateAdvancedStats(trades, startingBalance), [trades, startingBalance]);
+    const setupBreakdowns = useMemo(() => calculateBreakdownStats(trades, 'setup'), [trades]);
+    const emotionBreakdowns = useMemo(() => calculateBreakdownStats(trades, 'emotions'), [trades]);
+
+    const tabs: Array<{ id: TradingTab; label: string; icon: React.ReactNode }> = [
+        { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
+        { id: 'trades', label: 'Trades', icon: <ListChecks className="w-4 h-4" /> },
+        { id: 'calendar', label: 'Calendar', icon: <CalendarDays className="w-4 h-4" /> },
+        { id: 'psychology', label: 'Psychology', icon: <Brain className="w-4 h-4" /> },
+        { id: 'setups', label: 'Setups', icon: <BarChart3 className="w-4 h-4" /> },
+        { id: 'review', label: 'Review', icon: <ClipboardCheck className="w-4 h-4" /> },
+    ];
 
     // Load goals from Firestore (real-time)
     useEffect(() => {
@@ -222,7 +260,24 @@ const TradingJournalPage: React.FC = () => {
     // Handle edit trade
     const handleEditTrade = (trade: Trade) => {
         setEditingTrade(trade);
+        setSelectedTrade(null);
+        setSelectedDay(null);
         setShowModal(true);
+    };
+
+    const handleSelectTrade = (trade: Trade) => {
+        setSelectedTrade(trade);
+        setSelectedDay(null);
+    };
+
+    const handleSelectDay = (date: Date, dayTrades: Trade[]) => {
+        setSelectedDay({ date, trades: dayTrades });
+        setSelectedTrade(null);
+    };
+
+    const handleCloseReviewDrawer = () => {
+        setSelectedTrade(null);
+        setSelectedDay(null);
     };
 
     // Handle delete trade
@@ -233,6 +288,12 @@ const TradingJournalPage: React.FC = () => {
 
         try {
             await deleteDoc(doc(db, 'users', currentUser.uid, 'trades', tradeId));
+            setSelectedTrade((trade) => trade?.id === tradeId ? null : trade);
+            setSelectedDay((day) => {
+                if (!day) return day;
+                const remainingTrades = day.trades.filter((trade) => trade.id !== tradeId);
+                return remainingTrades.length > 0 ? { ...day, trades: remainingTrades } : null;
+            });
         } catch (error) {
             console.error('Error deleting trade:', error);
         }
@@ -304,7 +365,7 @@ const TradingJournalPage: React.FC = () => {
                     <p className="text-gray-600 mb-6">Sign in to track your trades and master your trading psychology.</p>
                     <a
                         href="/login"
-                        className="inline-flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors"
+                        className="inline-flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-[scale,background-color] duration-150 ease-out active:scale-[0.96]"
                     >
                         Sign In to Continue
                     </a>
@@ -328,21 +389,21 @@ const TradingJournalPage: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setShowExportModal(true)}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors"
+                            className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-medium text-gray-700 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color] duration-150 ease-out hover:bg-gray-50 active:scale-[0.96]"
                         >
                             <FileDown className="w-5 h-5 text-gray-500" />
                             Export
                         </button>
                         <button
                             onClick={() => setShowGoalModal(true)}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors"
+                            className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-medium text-gray-700 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color] duration-150 ease-out hover:bg-gray-50 active:scale-[0.96]"
                         >
                             <Target className="w-5 h-5 text-orange-500" />
                             Add Goal
                         </button>
                         <button
                             onClick={() => setShowModal(true)}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors shadow-lg shadow-orange-500/25"
+                            className="flex min-h-10 items-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 font-medium text-white shadow-lg shadow-orange-500/25 transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 active:scale-[0.96]"
                         >
                             <Plus className="w-5 h-5" />
                             Add Trade
@@ -361,9 +422,9 @@ const TradingJournalPage: React.FC = () => {
                 />
 
                 {/* Stats Row */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
                     {/* Account Balance Card */}
-                    <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative group">
+                    <div className="group relative rounded-xl bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-sm font-medium text-gray-500">Account Balance</span>
                             <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
@@ -372,23 +433,23 @@ const TradingJournalPage: React.FC = () => {
                         </div>
                         <div className="flex items-baseline gap-2">
                             <h3 className="text-2xl font-bold text-gray-800">
-                                {formatCurrency(currentBalance)}
+                                {formatCurrency(currentBalance, false)}
                             </h3>
                             <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${stats.totalPnL >= 0
                                 ? 'bg-emerald-50 text-emerald-600'
                                 : 'bg-rose-50 text-rose-600'
                                 }`}>
-                                {stats.totalPnL >= 0 ? '+' : ''}{((stats.totalPnL / startingBalance) * 100).toFixed(2)}%
+                                <span className="tabular-nums">{startingBalance > 0 ? `${stats.totalPnL >= 0 ? '+' : ''}${((stats.totalPnL / startingBalance) * 100).toFixed(2)}%` : '0.00%'}</span>
                             </span>
                         </div>
                         <div className="text-xs text-gray-400 mt-1">
-                            Start: {formatCurrency(startingBalance)}
+                            Start: {formatCurrency(startingBalance, false)}
                         </div>
 
                         {/* Edit Button */}
                         <button
                             onClick={() => setShowBalanceModal(true)}
-                            className="absolute top-4 right-14 p-1 text-gray-300 hover:text-gray-500 transition-colors opacity-0 group-hover:opacity-100"
+                            className="absolute right-14 top-4 inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-300 opacity-0 transition-[scale,opacity,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-500 active:scale-[0.96] group-hover:opacity-100"
                             title="Edit Starting Balance"
                         >
                             <Edit2 className="w-4 h-4" />
@@ -431,53 +492,96 @@ const TradingJournalPage: React.FC = () => {
                             <Scale className="w-5 h-5" />
                         }
                     />
+                    <StatCard
+                        title="Max DD"
+                        value={`${advancedStats.maxDrawdownPercent.toFixed(2)}%`}
+                        subtitle={formatCurrency(-advancedStats.maxDrawdownValue)}
+                        valueColor={advancedStats.maxDrawdownValue > 0 ? 'loss' : 'neutral'}
+                        icon={
+                            <TrendingDown className="w-5 h-5" />
+                        }
+                    />
                 </div>
 
-                {/* Equity Curve */}
-                <EquityCurve data={equityCurveData} goals={goals} />
-
-                {/* View Toggle */}
-                <div className="flex justify-end">
-                    <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
-                        <button
-                            onClick={() => setViewMode('table')}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'table'
-                                ? 'bg-orange-500 text-white shadow-sm'
-                                : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            <div className="flex items-center gap-2">
-                                <Table2 className="w-4 h-4" />
-                                Table
-                            </div>
-                        </button>
-                        <button
-                            onClick={() => setViewMode('calendar')}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'calendar'
-                                ? 'bg-orange-500 text-white shadow-sm'
-                                : 'text-gray-600 hover:text-gray-800'
-                                }`}
-                        >
-                            <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4" />
-                                Calendar
-                            </div>
-                        </button>
+                {/* Tabs */}
+                <div className="overflow-x-auto pb-1">
+                    <div className="inline-flex min-w-max rounded-xl bg-white p-1 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                type="button"
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${activeTab === tab.id
+                                    ? 'bg-[#e5d8c7] text-gray-900 shadow-sm'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                    }`}
+                            >
+                                {tab.icon}
+                                {tab.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
-                {/* Trade Table or Calendar */}
-                {viewMode === 'table' ? (
+                {activeTab === 'overview' && (
+                    <div className="space-y-6">
+                        <TradingCommandCenter
+                            trades={trades}
+                            stats={stats}
+                            advancedStats={advancedStats}
+                            equityCurveData={equityCurveData}
+                            goals={goals}
+                            streak={streak}
+                            startingBalance={startingBalance}
+                            onAddTrade={() => setShowModal(true)}
+                            onAddGoal={() => setShowGoalModal(true)}
+                        />
+                        <OverviewInsights stats={stats} advancedStats={advancedStats} />
+                    </div>
+                )}
+
+                {activeTab === 'trades' && (
                     <TradeTable
                         trades={trades}
                         onEdit={handleEditTrade}
                         onDelete={handleDeleteTrade}
+                        onSelect={handleSelectTrade}
                         isLoading={isLoading}
                     />
-                ) : (
+                )}
+
+                {activeTab === 'calendar' && (
                     <TradeCalendar
                         trades={trades}
-                        onEditTrade={handleEditTrade}
+                        onSelectTrade={handleSelectTrade}
+                        onSelectDay={handleSelectDay}
+                    />
+                )}
+
+                {activeTab === 'psychology' && (
+                    <BreakdownAnalytics
+                        title="Psychology Analytics"
+                        description="See which emotional states are helping or hurting execution."
+                        icon={<Brain className="w-5 h-5" />}
+                        breakdowns={emotionBreakdowns}
+                    />
+                )}
+
+                {activeTab === 'setups' && (
+                    <BreakdownAnalytics
+                        title="Setup Performance"
+                        description="Compare strategies by P&L, win rate, average R, and trade count."
+                        icon={<Target className="w-5 h-5" />}
+                        breakdowns={setupBreakdowns}
+                    />
+                )}
+
+                {activeTab === 'review' && (
+                    <ReviewPanel
+                        stats={stats}
+                        advancedStats={advancedStats}
+                        setupBreakdowns={setupBreakdowns}
+                        emotionBreakdowns={emotionBreakdowns}
                     />
                 )}
 
@@ -541,6 +645,15 @@ const TradingJournalPage: React.FC = () => {
                 startingBalance={startingBalance}
                 currentBalance={currentBalance}
                 userEmail={currentUser?.email || undefined}
+            />
+
+            <TradingReviewDrawer
+                trade={selectedTrade}
+                day={selectedDay}
+                onClose={handleCloseReviewDrawer}
+                onEdit={handleEditTrade}
+                onDelete={handleDeleteTrade}
+                onSelectTrade={handleSelectTrade}
             />
         </div>
     );

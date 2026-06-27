@@ -6,7 +6,7 @@ import FIRECalculator from '../components/FIRECalculator';
 import CompoundCalculator from '../components/CompoundCalculator';
 import useSEO from '../hooks/useSEO';
 import { Calculator, CheckCircle2, Flame, LineChart, ShieldCheck, Sparkles, Target, TrendingUp, WalletCards } from 'lucide-react';
-import { CALCULATOR_ROUTES, SITE_URL } from '../utils/seoConfig';
+import { CALCULATOR_ROUTES, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import type { CalculatorLanguage, CalculatorRoute } from '../utils/seoConfig';
 
 type CalculatorTab = 'pipValue' | 'positionSize' | 'fire' | 'compound';
@@ -124,7 +124,7 @@ const CalculatorsPage: React.FC = () => {
     title: activeRoute.title,
     description: activeRoute.description,
     keywords: activeRoute.keywords,
-    canonical: `${SITE_URL}${activeRoute.path}`,
+    canonical: `${SITE_URL}${canonicalRoutePath(activeRoute.path)}`,
     type: 'website',
   });
 

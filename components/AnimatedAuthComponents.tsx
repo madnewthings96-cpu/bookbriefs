@@ -511,7 +511,7 @@ const AnimatedForm = memo(function AnimatedForm({
           ))}
         </section>
 
-        <BoxReveal width='100%' boxColor='#FF7F50' duration={0.3}>
+        <BoxReveal width='100%' boxColor='#e5d8c7' duration={0.3}>
           {errorField && (
             <p className='text-red-500 text-sm mb-4'>{errorField}</p>
           )}
@@ -522,14 +522,13 @@ const AnimatedForm = memo(function AnimatedForm({
 
         <BoxReveal
           width='100%'
-          boxColor='#FF7F50'
+          boxColor='#e5d8c7'
           duration={0.3}
           overflow='visible'
         >
           <button
-            className='bg-gradient-to-br relative group/btn from-orange-400 via-orange-500 to-red-500
-            block w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] 
-            outline-hidden hover:cursor-pointer disabled:opacity-50 transition-opacity'
+            className='relative group/btn block h-10 w-full rounded-md bg-[#e5d8c7] font-medium text-gray-900 shadow-[0px_1px_0px_0px_#ffffff66_inset,0px_-1px_0px_0px_#ffffff40_inset]
+            outline-hidden transition-[scale,background-color,opacity] duration-150 ease-out hover:cursor-pointer hover:bg-[#dacbb7] active:scale-[0.96] disabled:opacity-50'
             type='submit'
             disabled={isLoading || isGoogleLoading}
           >
@@ -539,7 +538,7 @@ const AnimatedForm = memo(function AnimatedForm({
         </BoxReveal>
 
         {textVariantButton && goTo && (
-          <BoxReveal boxColor='#FF7F50' duration={0.3}>
+          <BoxReveal boxColor='#e5d8c7' duration={0.3}>
             <section className='mt-4 text-center hover:cursor-pointer'>
               <button
                 className='text-sm text-orange-500 hover:underline outline-hidden'

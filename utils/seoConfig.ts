@@ -2,6 +2,14 @@ export const SITE_URL = 'https://ta7leel.site';
 export const BRAND_NAME = 'Ta7leel | تحليل';
 export const DEFAULT_OG_IMAGE = '/images/og-default.jpg';
 
+export function canonicalRoutePath(path: string): string {
+  if (!path || path === '/') return '/';
+
+  const [pathname, suffix = ''] = path.split(/(?=[?#])/);
+  const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
+  return `${normalizedPathname}${suffix}`;
+}
+
 export interface CategoryHub {
   slug: string;
   category: string;

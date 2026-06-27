@@ -49,7 +49,7 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, currentBalance, onDe
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+        <div className="rounded-xl bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <Target className="w-5 h-5 text-orange-500" />
                 Active Goals
@@ -63,9 +63,9 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, currentBalance, onDe
                     return (
                         <div
                             key={goal.id}
-                            className={`p-4 rounded-lg border ${isCompleted
-                                ? 'bg-emerald-50 border-emerald-200'
-                                : 'bg-gray-50 border-gray-200'
+                            className={`rounded-lg p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.04)] ${isCompleted
+                                ? 'bg-emerald-50'
+                                : 'bg-gray-50'
                                 }`}
                         >
                             <div className="flex items-center justify-between mb-2">
@@ -78,12 +78,12 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, currentBalance, onDe
                                     <span className="font-medium text-gray-800">{goal.title}</span>
                                 </div>
                                 <span className="text-sm text-gray-500">
-                                    {formatGoalValue(goal, currentValue)} / {formatGoalValue(goal, goal.target)}
-                                </span>
+                                            <span className="tabular-nums">{formatGoalValue(goal, currentValue)} / {formatGoalValue(goal, goal.target)}</span>
+                                        </span>
                             </div>
                             <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
                                 <div
-                                    className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${isCompleted
+                                    className={`absolute left-0 top-0 h-full rounded-full transition-[width] duration-500 ${isCompleted
                                         ? 'bg-gradient-to-r from-emerald-400 to-green-500'
                                         : 'bg-gradient-to-r from-orange-400 to-orange-500'
                                         }`}
@@ -103,7 +103,7 @@ const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, currentBalance, onDe
                                     {onDeleteGoal && (
                                         <button
                                             onClick={() => onDeleteGoal(goal.id)}
-                                            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                                            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-[scale,background-color,color] duration-150 ease-out hover:bg-red-50 hover:text-red-500 active:scale-[0.96]"
                                             title="Delete goal"
                                         >
                                             <Trash2 className="w-4 h-4" />

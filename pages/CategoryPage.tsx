@@ -5,7 +5,7 @@ import Spinner from '../components/Spinner';
 import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import useSEO from '../hooks/useSEO';
-import { CATEGORY_HUBS, SITE_URL } from '../utils/seoConfig';
+import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 
 const CategoryPage: React.FC = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
@@ -28,7 +28,7 @@ const CategoryPage: React.FC = () => {
     description,
     keywords,
     type: 'website',
-    canonical: `${SITE_URL}${location.pathname}`,
+    canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
   });
 
   if (loading) {
@@ -110,4 +110,3 @@ const CategoryPage: React.FC = () => {
 };
 
 export default CategoryPage;
-

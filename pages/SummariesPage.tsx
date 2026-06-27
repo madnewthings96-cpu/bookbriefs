@@ -17,7 +17,7 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import Spinner from '../components/Spinner';
-import { SITE_URL } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import type { Book } from '../types';
 
 const starterBookIds = [
@@ -54,7 +54,7 @@ const SummariesPage: React.FC = () => {
       ? 'ملخصات كتب, ملخصات كتب عربية, كتب تطوير الذات, كتب الاستثمار, كتب التداول'
       : 'book summaries, business book summaries, trading book summaries, finance book summaries, self-help books',
     type: 'website',
-    canonical: `${SITE_URL}${location.pathname}`,
+    canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
   });
 
   const genres = useMemo(() => {
