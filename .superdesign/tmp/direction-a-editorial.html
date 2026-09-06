@@ -1,0 +1,2269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookBriefs — الاتجاه التحريري</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Bricolage+Grotesque:wght@500;600;700;800&amp;family=Lato:wght@400;700;900&amp;family=Newsreader:ital,opsz,wght@1,6..72,500&amp;display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --canvas: #fffaf3;
+      --quiet: #f7f0e6;
+      --menu: #fbf6ed;
+      --sand: #e5d8c7;
+      --copper: #a75d37;
+      --copper-hover: #8f4f2f;
+      --ink: #25301f;
+      --ink-strong: #111827;
+      --body: #574f43;
+      --muted: #7a6f62;
+      --rule: #d7c7b3;
+      --rule-soft: #e8dfd3;
+      --white: #ffffff;
+      --shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 18px 42px rgba(89, 69, 45, .10);
+      --ease: cubic-bezier(.2, 0, 0, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--canvas);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink-strong);
+      font-family: "Lato", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    iconify-icon {
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+
+    .shell {
+      width: min(100% - 40px, 1280px);
+      margin-inline: auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      inset-block-start: 12px;
+      inset-inline-start: 12px;
+      min-height: 44px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: var(--white);
+      transform: translateY(-160%);
+      transition: transform 180ms var(--ease);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .site-header {
+      position: sticky;
+      z-index: 40;
+      inset-block-start: 0;
+      border-block-end: 1px solid rgba(89, 69, 45, .16);
+      background: rgba(247, 240, 230, .96);
+      backdrop-filter: blur(16px);
+    }
+
+    .header-row {
+      position: relative;
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .brand-lockup {
+      min-height: 52px;
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+    }
+
+    .brand-copy {
+      display: grid;
+      line-height: 1;
+    }
+
+    .brand-name {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -.035em;
+    }
+
+    .brand-subtitle {
+      margin-block-start: 4px;
+      color: var(--muted);
+      font-family: "Newsreader", serif;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .nav-link,
+    .header-action,
+    .menu-toggle {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-family: "Bricolage Grotesque", "Amiri", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      transition: color 180ms var(--ease), background-color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .nav-link {
+      padding-inline: 14px;
+      color: var(--body);
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, .64);
+      color: var(--ink-strong);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-action {
+      gap: 8px;
+      padding-inline: 16px;
+      background: var(--copper);
+      color: var(--white);
+      box-shadow: 0 10px 24px rgba(167, 93, 55, .18);
+    }
+
+    .header-action:hover {
+      background: var(--copper-hover);
+    }
+
+    .menu-toggle {
+      width: 44px;
+      border: 1px solid var(--rule);
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
+      display: none;
+    }
+
+    .nav-link:active,
+    .header-action:active,
+    .menu-toggle:active,
+    .primary-button:active,
+    .secondary-button:active,
+    .search-submit:active {
+      transform: scale(.96);
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(167, 93, 55, .34);
+      outline-offset: 3px;
+    }
+
+    .search-stage {
+      padding-block: 24px 28px;
+      border-block-end: 1px solid rgba(89, 69, 45, .12);
+      background: var(--quiet);
+    }
+
+    .search-layout {
+      display: grid;
+      grid-template-columns: minmax(230px, .72fr) minmax(480px, 1.55fr);
+      align-items: end;
+      gap: 30px;
+    }
+
+    .search-intro p {
+      margin: 0 0 4px;
+      color: var(--copper);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .search-intro h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: clamp(25px, 2.2vw, 36px);
+      line-height: 1.2;
+    }
+
+    .search-form {
+      position: relative;
+    }
+
+    .search-label {
+      display: block;
+      margin-block-end: 8px;
+      color: var(--body);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .search-control {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 6px;
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .search-input-wrap {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding-inline: 13px;
+    }
+
+    .search-input-wrap iconify-icon {
+      color: var(--copper);
+      font-size: 21px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink-strong);
+      font-family: "Amiri", "Lato", serif;
+      font-size: 18px;
+    }
+
+    .search-input::placeholder {
+      color: #9a8d7f;
+    }
+
+    .key-hint {
+      min-width: 28px;
+      padding: 4px 7px;
+      border: 1px solid var(--rule-soft);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      direction: ltr;
+    }
+
+    .search-submit {
+      min-width: 108px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--copper);
+      color: var(--white);
+      cursor: pointer;
+      font-family: "Bricolage Grotesque", "Amiri", sans-serif;
+      font-weight: 800;
+      transition: background-color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .search-submit:hover {
+      background: var(--copper-hover);
+    }
+
+    .search-results {
+      position: absolute;
+      z-index: 60;
+      inset-block-start: calc(100% + 10px);
+      inset-inline: 0;
+      display: none;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 22px 54px rgba(89, 69, 45, .18);
+    }
+
+    .search-results.is-visible {
+      display: block;
+    }
+
+    .search-status {
+      margin: 0;
+      padding: 13px 16px;
+      border-block-end: 1px solid var(--rule-soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .search-result-list {
+      margin: 0;
+      padding: 7px;
+      list-style: none;
+    }
+
+    .search-result-item[hidden] {
+      display: none;
+    }
+
+    .search-result-link {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease);
+    }
+
+    .search-result-link:hover,
+    .search-result-link:focus-visible {
+      background: var(--quiet);
+      color: var(--copper-hover);
+    }
+
+    .search-result-link bdi {
+      font-weight: 900;
+    }
+
+    .search-result-link span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .issue-intro {
+      padding-block: 42px 24px;
+    }
+
+    .issue-heading-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      align-items: end;
+      gap: 40px;
+      padding-block-end: 26px;
+      border-block-end: 2px solid var(--ink);
+    }
+
+    .issue-kicker,
+    .section-kicker {
+      margin: 0 0 9px;
+      color: var(--copper);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .issue-title {
+      max-width: 820px;
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: clamp(42px, 5.4vw, 78px);
+      line-height: .98;
+      letter-spacing: -.025em;
+      text-wrap: balance;
+    }
+
+    .issue-note {
+      margin: 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 20px;
+      line-height: 1.8;
+      text-wrap: pretty;
+    }
+
+    .editorial-desk {
+      padding-block: 26px 42px;
+      border-block-end: 1px solid var(--ink);
+    }
+
+    .desk-grid {
+      display: grid;
+      grid-template-columns: minmax(285px, 1.16fr) minmax(250px, .96fr) minmax(210px, .78fr) minmax(230px, .86fr);
+      grid-template-rows: repeat(2, minmax(184px, 1fr));
+      grid-template-areas:
+        "feature shelf category notes"
+        "feature shelf path notes";
+      gap: 16px;
+      min-height: 420px;
+    }
+
+    .desk-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      background: var(--white);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 16px 34px rgba(89, 69, 45, .09);
+    }
+
+    .desk-feature {
+      grid-area: feature;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 26px;
+      background: var(--sand);
+    }
+
+    .desk-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: fit-content;
+      margin: 0;
+      color: #7a4a31;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .desk-feature-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 118px;
+      align-items: end;
+      gap: 20px;
+      margin-block: 18px 22px;
+    }
+
+    .desk-feature h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: clamp(34px, 3.2vw, 52px);
+      line-height: 1.02;
+      letter-spacing: -.018em;
+      text-wrap: balance;
+    }
+
+    .desk-feature h2 bdi {
+      display: block;
+      margin-block-end: 5px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: .72em;
+      font-weight: 800;
+      letter-spacing: -.045em;
+    }
+
+    .desk-feature-copy {
+      margin: 13px 0 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 17px;
+      line-height: 1.65;
+      text-wrap: pretty;
+    }
+
+    .desk-feature-cover {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      display: block;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 16px 28px rgba(17, 24, 39, .22);
+    }
+
+    .desk-feature-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      padding-block-start: 18px;
+      border-block-start: 1px solid rgba(89, 69, 45, .18);
+    }
+
+    .desk-feature-link,
+    .desk-secondary-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      padding-inline: 15px;
+      font-family: "Bricolage Grotesque", "Amiri", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      transition: background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .desk-feature-link {
+      background: var(--copper);
+      color: var(--white);
+    }
+
+    .desk-feature-link:hover {
+      background: var(--copper-hover);
+    }
+
+    .desk-secondary-link {
+      color: var(--ink);
+    }
+
+    .desk-secondary-link:hover {
+      background: rgba(255, 255, 255, .45);
+    }
+
+    .desk-feature-link:active,
+    .desk-secondary-link:active,
+    .desk-mini:active,
+    .desk-shelf-link:active {
+      transform: scale(.96);
+    }
+
+    .desk-shelf {
+      grid-area: shelf;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      padding: 24px;
+      border-color: var(--copper-hover);
+      background: var(--copper);
+      color: var(--white);
+      box-shadow: 0 1px 2px rgba(89, 69, 45, .12), 0 18px 38px rgba(167, 93, 55, .24);
+    }
+
+    .desk-shelf .desk-eyebrow {
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .desk-shelf h3 {
+      margin: 14px 0 0;
+      font-family: "Amiri", serif;
+      font-size: 30px;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+
+    .desk-shelf-covers {
+      display: flex;
+      align-items: end;
+      gap: 9px;
+      margin-block: 22px;
+      direction: ltr;
+    }
+
+    .desk-shelf-covers img {
+      width: min(31%, 78px);
+      aspect-ratio: 2 / 3;
+      display: block;
+      border-radius: 9px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 12px 24px rgba(69, 42, 29, .28);
+    }
+
+    .desk-shelf-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-block-start: 1px solid rgba(255, 255, 255, .22);
+    }
+
+    .desk-shelf-list li {
+      border-block-end: 1px solid rgba(255, 255, 255, .18);
+    }
+
+    .desk-shelf-link {
+      min-height: 43px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .desk-shelf-link:hover {
+      opacity: .78;
+    }
+
+    .desk-mini {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 74px;
+      align-items: end;
+      gap: 12px;
+      padding: 19px;
+      transition: background-color 180ms var(--ease), transform 180ms var(--ease), box-shadow 180ms var(--ease);
+    }
+
+    .desk-mini:hover {
+      background: var(--quiet);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .05), 0 20px 42px rgba(89, 69, 45, .13);
+    }
+
+    .desk-category {
+      grid-area: category;
+    }
+
+    .desk-path {
+      grid-area: path;
+      background: var(--menu);
+    }
+
+    .desk-mini-copy {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .desk-mini-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--copper);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .desk-mini h3 {
+      margin: 13px 0 4px;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 23px;
+      line-height: 1.15;
+    }
+
+    .desk-mini p {
+      margin: 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .desk-mini-image,
+    .desk-mini-stack img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      display: block;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 9px 20px rgba(17, 24, 39, .16);
+    }
+
+    .desk-mini-stack {
+      position: relative;
+      width: 74px;
+      height: 108px;
+    }
+
+    .desk-mini-stack img {
+      position: absolute;
+      inset-block-end: 0;
+      inset-inline-start: 0;
+      width: 59px;
+    }
+
+    .desk-mini-stack img + img {
+      inset-inline-start: 15px;
+      inset-block-end: 8px;
+    }
+
+    .desk-notes {
+      grid-area: notes;
+      padding: 4px 2px 4px 12px;
+    }
+
+    .desk-notes-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-block: 2px 14px;
+      border-block-end: 2px solid var(--ink);
+    }
+
+    .desk-notes-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .desk-notes-heading span {
+      color: var(--copper);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .desk-note-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .desk-note-list li {
+      border-block-end: 1px solid var(--rule-soft);
+    }
+
+    .desk-note-link {
+      min-height: 87px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding-block: 10px;
+      transition: color 180ms var(--ease), padding-inline-start 180ms var(--ease);
+    }
+
+    .desk-note-link:hover {
+      color: var(--copper-hover);
+      padding-inline-start: 5px;
+    }
+
+    .desk-note-link strong {
+      font-family: "Amiri", serif;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .desk-note-link span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .desk-notes-all {
+      width: 100%;
+      margin-block-start: 15px;
+      border: 1px solid var(--rule);
+      background: var(--quiet);
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(310px, .7fr);
+      gap: 0;
+      border-block-end: 1px solid var(--ink);
+    }
+
+    .lead-story {
+      padding: 30px 0 36px 34px;
+      border-inline-end: 1px solid var(--rule);
+    }
+
+    .lead-layout {
+      display: grid;
+      grid-template-columns: 166px minmax(0, 1fr);
+      align-items: start;
+      gap: 25px;
+    }
+
+    .lead-cover {
+      margin: 0;
+    }
+
+    .lead-cover img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      display: block;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 18px 38px rgba(17, 24, 39, .20);
+    }
+
+    .story-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding-inline: 11px;
+      border-radius: 999px;
+      background: var(--sand);
+      color: #7a4a31;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .lead-story h2 {
+      max-width: 780px;
+      margin: 18px 0 12px;
+      color: var(--ink-strong);
+      font-family: "Amiri", serif;
+      font-size: clamp(36px, 4.2vw, 62px);
+      line-height: 1.07;
+      text-wrap: balance;
+    }
+
+    .lead-story h2 bdi {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .lead-copy {
+      max-width: 760px;
+      margin: 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 20px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .lead-insights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-block: 26px;
+      border-block: 1px solid var(--rule);
+    }
+
+    .insight {
+      min-height: 118px;
+      padding: 17px 18px;
+    }
+
+    .insight + .insight {
+      border-inline-start: 1px solid var(--rule);
+    }
+
+    .insight span {
+      display: block;
+      margin-block-end: 8px;
+      color: var(--copper);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .1em;
+    }
+
+    .insight strong {
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 19px;
+      line-height: 1.45;
+    }
+
+    .story-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding-inline: 20px;
+      border-radius: 12px;
+      font-family: "Bricolage Grotesque", "Amiri", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      transition: background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease), box-shadow 180ms var(--ease);
+    }
+
+    .primary-button {
+      background: var(--copper);
+      color: var(--white);
+      box-shadow: 0 14px 30px rgba(167, 93, 55, .22);
+    }
+
+    .primary-button:hover {
+      background: var(--copper-hover);
+      box-shadow: 0 18px 36px rgba(167, 93, 55, .28);
+    }
+
+    .secondary-button {
+      border: 1px solid var(--rule);
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .secondary-button:hover {
+      background: var(--quiet);
+    }
+
+    .popular-column {
+      padding: 30px 30px 30px 0;
+    }
+
+    .column-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-block-end: 14px;
+      border-block-end: 2px solid var(--ink);
+    }
+
+    .column-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 27px;
+    }
+
+    .column-heading span {
+      color: var(--copper);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .popular-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: popular;
+    }
+
+    .popular-item {
+      counter-increment: popular;
+      border-block-end: 1px solid var(--rule-soft);
+    }
+
+    .popular-link {
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: 35px 1fr auto;
+      align-items: center;
+      gap: 11px;
+      padding-block: 12px;
+      transition: color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .popular-link::before {
+      content: counter(popular, decimal-leading-zero);
+      color: var(--copper);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      direction: ltr;
+    }
+
+    .popular-link:hover {
+      color: var(--copper-hover);
+      transform: translateX(-3px);
+    }
+
+    .popular-link bdi {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .popular-link iconify-icon {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .category-ribbon {
+      padding-block: 34px;
+      border-block-end: 1px solid var(--rule);
+    }
+
+    .category-ribbon-header,
+    .section-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-block-end: 21px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: clamp(31px, 3.4vw, 48px);
+      line-height: 1.2;
+    }
+
+    .text-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--copper);
+      font-size: 13px;
+      font-weight: 900;
+      transition: color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .text-link:hover {
+      color: var(--copper-hover);
+      transform: translateX(-3px);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--white);
+      box-shadow: 0 12px 30px rgba(89, 69, 45, .07);
+    }
+
+    .category-link {
+      min-height: 104px;
+      display: grid;
+      align-content: space-between;
+      gap: 13px;
+      padding: 17px;
+      transition: background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .category-link + .category-link {
+      border-inline-start: 1px solid var(--rule-soft);
+    }
+
+    .category-link:hover {
+      background: var(--quiet);
+      color: var(--copper-hover);
+    }
+
+    .category-link iconify-icon {
+      color: var(--copper);
+      font-size: 21px;
+    }
+
+    .category-link span {
+      font-family: "Amiri", serif;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .paths-section {
+      padding-block: 56px;
+      background: var(--quiet);
+    }
+
+    .section-summary {
+      max-width: 580px;
+      margin: 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .paths-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-block: 1px solid var(--ink);
+    }
+
+    .path-column {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .path-column + .path-column {
+      border-inline-start: 1px solid var(--rule);
+    }
+
+    .path-index {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-block-end: 24px;
+      color: var(--copper);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      direction: ltr;
+    }
+
+    .path-column h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 25px;
+      line-height: 1.3;
+    }
+
+    .path-column > p {
+      min-height: 76px;
+      margin: 8px 0 18px;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .path-books {
+      margin: 0 0 21px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .path-covers {
+      min-height: 92px;
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      margin-block: 16px 18px;
+    }
+
+    .path-covers img {
+      width: 53px;
+      aspect-ratio: 2 / 3;
+      display: block;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .10), 0 9px 20px rgba(17, 24, 39, .16);
+    }
+
+    .path-books li {
+      border-block-start: 1px solid rgba(89, 69, 45, .13);
+    }
+
+    .path-book-link {
+      min-height: 49px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink-strong);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      transition: color 180ms var(--ease), padding-inline-start 180ms var(--ease);
+    }
+
+    .path-book-link:hover {
+      color: var(--copper-hover);
+      padding-inline-start: 5px;
+    }
+
+    .path-book-link iconify-icon {
+      color: var(--muted);
+    }
+
+    .path-start {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--copper);
+      font-size: 13px;
+      font-weight: 900;
+      transition: color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .path-start:hover {
+      color: var(--copper-hover);
+      transform: translateX(-3px);
+    }
+
+    .latest-section {
+      padding-block: 58px 64px;
+      background: var(--canvas);
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-block-start: 2px solid var(--ink);
+      border-block-end: 1px solid var(--ink);
+    }
+
+    .article-card {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .article-card + .article-card {
+      border-inline-start: 1px solid var(--rule);
+    }
+
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px 12px;
+      margin-block-end: 16px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .article-meta strong {
+      color: var(--copper);
+    }
+
+    .article-card h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: 25px;
+      line-height: 1.35;
+      text-wrap: balance;
+    }
+
+    .article-card p {
+      margin: 13px 0 18px;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 16px;
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+
+    .article-link {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--copper);
+      font-size: 13px;
+      font-weight: 900;
+      transition: color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .article-link:hover {
+      color: var(--copper-hover);
+      transform: translateX(-3px);
+    }
+
+    .retention-section {
+      padding-block: 0 62px;
+      background: var(--canvas);
+    }
+
+    .retention-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 28px;
+      padding: 30px 34px;
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      background: var(--sand);
+      box-shadow: var(--shadow);
+    }
+
+    .retention-panel h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Amiri", serif;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: 1.15;
+    }
+
+    .retention-panel p {
+      max-width: 680px;
+      margin: 8px 0 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .site-footer {
+      border-block-start: 1px solid rgba(17, 24, 39, .38);
+      background: var(--sand);
+    }
+
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, 1fr);
+      gap: 34px;
+      padding-block: 44px;
+    }
+
+    .footer-brand-copy {
+      max-width: 300px;
+      margin: 15px 0 0;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .footer-column h2 {
+      margin: 0 0 13px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: grid;
+      gap: 4px;
+    }
+
+    .footer-link {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      color: var(--body);
+      font-size: 14px;
+      font-weight: 700;
+      transition: color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .footer-link:hover {
+      color: var(--ink-strong);
+      transform: translateX(-3px);
+    }
+
+    .footer-bottom {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-block-start: 1px solid rgba(17, 24, 39, .35);
+      color: var(--body);
+      font-size: 12px;
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .social-link {
+      min-width: 44px;
+      min-height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--body);
+      transition: color 180ms var(--ease), background-color 180ms var(--ease), transform 180ms var(--ease);
+    }
+
+    .social-link:hover {
+      background: rgba(255, 255, 255, .54);
+      color: var(--ink-strong);
+      transform: translateY(-2px);
+    }
+
+    .search-empty {
+      display: none;
+      margin: 0;
+      padding: 18px;
+      color: var(--body);
+      font-family: "Amiri", serif;
+      text-align: center;
+    }
+
+    .search-empty.is-visible {
+      display: block;
+    }
+
+    @media (max-width: 1100px) {
+      .shell {
+        width: min(100% - 32px, 1280px);
+      }
+
+      .header-row {
+        grid-template-columns: auto 1fr auto;
+        gap: 16px;
+      }
+
+      .main-nav {
+        gap: 2px;
+      }
+
+      .nav-link {
+        padding-inline: 9px;
+      }
+
+      .search-layout {
+        grid-template-columns: .65fr 1.35fr;
+      }
+
+      .paths-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .path-column:nth-child(3) {
+        border-inline-start: 0;
+        border-block-start: 1px solid var(--rule);
+      }
+
+      .path-column:nth-child(4) {
+        border-block-start: 1px solid var(--rule);
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .category-link:nth-child(4) {
+        border-inline-start: 0;
+        border-block-start: 1px solid var(--rule-soft);
+      }
+
+      .category-link:nth-child(5) {
+        border-block-start: 1px solid var(--rule-soft);
+      }
+
+      .footer-main {
+        grid-template-columns: 1.3fr repeat(3, 1fr);
+        gap: 22px;
+      }
+
+      .desk-grid {
+        grid-template-columns: minmax(280px, 1.2fr) minmax(250px, 1fr) minmax(220px, .82fr);
+        grid-template-areas:
+          "feature shelf category"
+          "feature shelf path"
+          "notes notes notes";
+        grid-template-rows: repeat(2, minmax(184px, 1fr)) auto;
+      }
+
+      .desk-notes {
+        display: grid;
+        grid-template-columns: 220px 1fr auto;
+        align-items: center;
+        gap: 20px;
+        padding: 17px 0 0;
+      }
+
+      .desk-notes-heading {
+        border-block-end: 0;
+      }
+
+      .desk-note-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-inline-start: 1px solid var(--rule);
+      }
+
+      .desk-note-list li {
+        border-block-end: 0;
+        border-inline-end: 1px solid var(--rule-soft);
+      }
+
+      .desk-note-link {
+        min-height: 92px;
+        padding-inline: 15px;
+      }
+
+      .desk-notes-all {
+        width: auto;
+        margin-block-start: 0;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .header-row {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .header-action span {
+        display: none;
+      }
+
+      .header-action {
+        width: 44px;
+        padding: 0;
+      }
+
+      .main-nav {
+        position: absolute;
+        inset-block-start: calc(100% - 2px);
+        inset-inline: 0;
+        display: none;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        padding: 10px;
+        border: 1px solid var(--rule);
+        border-radius: 16px;
+        background: var(--menu);
+        box-shadow: var(--shadow);
+      }
+
+      .main-nav.is-open {
+        display: grid;
+      }
+
+      .search-layout,
+      .issue-heading-row {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .editorial-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-story {
+        padding-inline: 0;
+        border-inline-end: 0;
+        border-block-end: 1px solid var(--rule);
+      }
+
+      .popular-column {
+        padding: 28px 0;
+      }
+
+      .article-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .article-card + .article-card {
+        border-inline-start: 0;
+        border-block-start: 1px solid var(--rule);
+      }
+
+      .footer-main {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .desk-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+          "feature shelf"
+          "category path"
+          "notes notes";
+        grid-template-rows: auto auto auto;
+      }
+
+      .desk-notes {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .desk-notes-heading {
+        border-block-end: 2px solid var(--ink);
+      }
+
+      .desk-note-list {
+        grid-template-columns: 1fr;
+        border-inline-start: 0;
+      }
+
+      .desk-note-list li {
+        border-block-end: 1px solid var(--rule-soft);
+        border-inline-end: 0;
+      }
+
+      .desk-note-link {
+        min-height: 70px;
+        padding-inline: 0;
+      }
+
+      .desk-notes-all {
+        width: fit-content;
+        margin-block-start: 14px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 24px, 1280px);
+      }
+
+      .site-header {
+        position: relative;
+      }
+
+      .header-row {
+        min-height: 68px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .brand-subtitle {
+        font-size: 11px;
+      }
+
+      .header-actions {
+        gap: 5px;
+      }
+
+      .search-stage {
+        padding-block: 19px 22px;
+      }
+
+      .search-intro h2 {
+        font-size: 27px;
+      }
+
+      .search-control {
+        grid-template-columns: 1fr;
+        border-radius: 18px;
+      }
+
+      .search-submit {
+        width: 100%;
+      }
+
+      .key-hint {
+        display: none;
+      }
+
+      .issue-intro {
+        padding-block-start: 32px;
+      }
+
+      .issue-title {
+        font-size: 44px;
+      }
+
+      .lead-insights {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-cover {
+        width: min(46vw, 172px);
+      }
+
+      .insight + .insight {
+        border-inline-start: 0;
+        border-block-start: 1px solid var(--rule);
+      }
+
+      .category-ribbon-header,
+      .section-header {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .category-grid,
+      .paths-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .category-link + .category-link,
+      .category-link:nth-child(4),
+      .category-link:nth-child(5),
+      .path-column + .path-column,
+      .path-column:nth-child(3),
+      .path-column:nth-child(4) {
+        border-inline-start: 0;
+        border-block-start: 1px solid var(--rule-soft);
+      }
+
+      .path-column > p {
+        min-height: auto;
+      }
+
+      .retention-panel {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+
+      .retention-panel .primary-button {
+        width: 100%;
+      }
+
+      .footer-main {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-block: 20px;
+      }
+
+      .issue-heading-row {
+        padding-block-end: 18px;
+      }
+
+      .desk-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "feature"
+          "shelf"
+          "category"
+          "path"
+          "notes";
+      }
+
+      .desk-feature-main {
+        grid-template-columns: minmax(0, 1fr) 104px;
+      }
+
+      .desk-shelf-covers img {
+        width: min(29%, 82px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-root">
+    <a id="link-skip-to-content" class="skip-link" href="#main-content">انتقل إلى المحتوى</a>
+
+    <header class="site-header">
+      <div class="shell header-row">
+        <a id="link-brand-home" class="brand-lockup" href="#/" aria-label="BookBriefs Ta7leel — الصفحة الرئيسية">
+          <span class="brand-mark" aria-hidden="true">
+            <iconify-icon icon="lucide:book-open" width="38" height="38"></iconify-icon>
+          </span>
+          <span class="brand-copy">
+            <span class="brand-name" dir="ltr">BookBriefs</span>
+            <span class="brand-subtitle" dir="ltr">Ta7leel</span>
+          </span>
+        </a>
+
+        <nav id="primary-navigation" class="main-nav" aria-label="التنقل الرئيسي">
+          <a id="link-nav-summaries" class="nav-link" href="#/summaries">الخلاصات</a>
+          <a id="link-nav-categories" class="nav-link" href="#category-hubs">التصنيفات</a>
+          <a id="link-nav-reading-paths" class="nav-link" href="#reading-paths">مسارات القراءة</a>
+          <a id="link-nav-blog" class="nav-link" href="#/blog">المقالات</a>
+          <a id="link-nav-tools" class="nav-link" href="#/calculators">الأدوات</a>
+          <a id="link-nav-about" class="nav-link" href="#/about">عن تحليل</a>
+        </nav>
+
+        <div class="header-actions">
+          <a id="link-header-reading-challenge" class="header-action" href="#/reading-challenge">
+            <iconify-icon icon="lucide:target" width="17" height="17" aria-hidden="true"></iconify-icon>
+            <span>تحدّي القراءة</span>
+          </a>
+          <button id="button-menu-toggle" class="menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="فتح القائمة">
+            <iconify-icon icon="lucide:menu" width="20" height="20" aria-hidden="true"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="search-stage" aria-labelledby="search-heading">
+      <div class="shell search-layout">
+        <div class="search-intro">
+          <p>ادخل المكتبة من السؤال الصحيح</p>
+          <h2 id="search-heading">ما الفكرة التي تبحث عنها اليوم؟</h2>
+        </div>
+
+        <form id="library-search-form" class="search-form" role="search">
+          <label class="search-label" for="library-search-input">ابحث في خلاصات الكتب</label>
+          <div class="search-control">
+            <div class="search-input-wrap">
+              <iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>
+              <input id="library-search-input" class="search-input" type="search" autocomplete="off" placeholder="عنوان الكتاب أو الموضوع…" aria-describedby="search-status">
+              <span class="key-hint" aria-hidden="true">/</span>
+            </div>
+            <button id="button-search-submit" class="search-submit" type="submit">ابحث</button>
+          </div>
+
+          <div id="search-results" class="search-results" aria-label="نتائج البحث">
+            <p id="search-status" class="search-status" role="status" aria-live="polite">ابدأ بكتابة اسم كتاب أو موضوع</p>
+            <ul class="search-result-list">
+              <li class="search-result-item" data-search="atomic habits عادات تطوير ذاتي بناء العادات">
+                <a id="link-search-atomic-habits" class="search-result-link" href="#/summary/atomic-habits">
+                  <bdi>Atomic Habits</bdi><span>العادات</span>
+                </a>
+              </li>
+              <li class="search-result-item" data-search="the psychology of money مال استثمار علم نفس المال">
+                <a id="link-search-psychology-money" class="search-result-link" href="#/summary/the-psychology-of-money">
+                  <bdi>The Psychology of Money</bdi><span>المال والاستثمار</span>
+                </a>
+              </li>
+              <li class="search-result-item" data-search="trading in the zone تداول انضباط علم النفس">
+                <a id="link-search-trading-zone" class="search-result-link" href="#/summary/trading-in-the-zone">
+                  <bdi>Trading in the Zone</bdi><span>التداول</span>
+                </a>
+              </li>
+              <li class="search-result-item" data-search="thinking fast and slow تفكير علم النفس اتخاذ القرار">
+                <a id="link-search-thinking-fast-slow" class="search-result-link" href="#/summary/thinking-fast-and-slow">
+                  <bdi>Thinking, Fast and Slow</bdi><span>التفكير وعلم النفس</span>
+                </a>
+              </li>
+              <li class="search-result-item" data-search="market wizards marketwizards تداول أسواق">
+                <a id="link-search-market-wizards" class="search-result-link" href="#/summary/marketwizards">
+                  <bdi>Market Wizards</bdi><span>التداول</span>
+                </a>
+              </li>
+              <li class="search-result-item" data-search="the disciplined trader تداول انضباط نفسية">
+                <a id="link-search-disciplined-trader" class="search-result-link" href="#/summary/the-disciplined-trader">
+                  <bdi>The Disciplined Trader</bdi><span>التداول والانضباط</span>
+                </a>
+              </li>
+            </ul>
+            <p id="search-empty" class="search-empty">لا توجد نتيجة مطابقة هنا. تصفّح المكتبة الكاملة بدلًا من ذلك.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <main id="main-content">
+      <section class="issue-intro shell" aria-labelledby="issue-title">
+        <div class="issue-heading-row">
+          <div>
+            <p class="issue-kicker">واجهة المكتبة · قراءة موجّهة لا تصفّح عشوائي</p>
+            <h1 id="issue-title" class="issue-title">أفكار كتب تستحق أن تبقى معك.</h1>
+          </div>
+          <p class="issue-note">خلاصات واضحة للكتب في الأعمال والمال وعلم النفس وتطوير الذات، مصمّمة لتصل إلى الحجة الأساسية وما يمكنك تطبيقه.</p>
+        </div>
+      </section>
+
+      <section class="editorial-desk shell" aria-labelledby="editorial-desk-title">
+        <h2 id="editorial-desk-title" class="sr-only">مكتب القراءة التحريري</h2>
+        <div class="desk-grid">
+          <article class="desk-panel desk-feature">
+            <p class="desk-eyebrow"><iconify-icon icon="lucide:bookmark" aria-hidden="true"></iconify-icon> اختيار المحرّر</p>
+            <div class="desk-feature-main">
+              <div>
+                <h2><bdi>Atomic Habits</bdi>التغيير الكبير يبدأ من نظام صغير.</h2>
+                <p class="desk-feature-copy">تتراكم العادات الصغيرة لأنها تغيّر النظام الذي تعيش به. اجعل الفعل الجيد التالي واضحًا، سهلًا، وقابلًا للتكرار.</p>
+              </div>
+              <img class="desk-feature-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="غلاف كتاب Atomic Habits" width="236" height="354">
+            </div>
+            <div class="desk-feature-actions">
+              <a id="link-desk-feature-atomic" class="desk-feature-link" href="#/summary/atomic-habits">اقرأ الخلاصة <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              <a id="link-desk-feature-library" class="desk-secondary-link" href="#/summaries">كل الخلاصات</a>
+            </div>
+          </article>
+
+          <article class="desk-panel desk-shelf">
+            <p class="desk-eyebrow"><iconify-icon icon="lucide:trending-up" aria-hidden="true"></iconify-icon> الأكثر قراءة هذا الأسبوع</p>
+            <h3>ثلاثة مداخل سريعة إلى المكتبة.</h3>
+            <div class="desk-shelf-covers" aria-label="أغلفة الكتب الأكثر قراءة">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="غلاف كتاب Atomic Habits" width="156" height="234" loading="lazy">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="غلاف كتاب Trading in the Zone" width="156" height="234" loading="lazy">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="غلاف كتاب Thinking, Fast and Slow" width="156" height="234" loading="lazy">
+            </div>
+            <ul class="desk-shelf-list">
+              <li><a id="link-desk-popular-atomic" class="desk-shelf-link" href="#/summary/atomic-habits"><bdi>Atomic Habits</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              <li><a id="link-desk-popular-trading-zone" class="desk-shelf-link" href="#/summary/trading-in-the-zone"><bdi>Trading in the Zone</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              <li><a id="link-desk-popular-thinking" class="desk-shelf-link" href="#/summary/thinking-fast-and-slow"><bdi>Thinking, Fast and Slow</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+            </ul>
+          </article>
+
+          <a id="link-desk-category-investing" class="desk-panel desk-mini desk-category" href="#/ar/categories/investing-books">
+            <div class="desk-mini-copy">
+              <span class="desk-mini-kicker"><iconify-icon icon="lucide:landmark" aria-hidden="true"></iconify-icon> تصنيف</span>
+              <div>
+                <h3>كتب الاستثمار</h3>
+                <p>ابدأ من نماذج المال والقيمة.</p>
+              </div>
+            </div>
+            <img class="desk-mini-image" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="غلاف كتاب The Psychology of Money" width="148" height="222" loading="lazy">
+          </a>
+
+          <a id="link-desk-path-thinking" class="desk-panel desk-mini desk-path" href="#reading-paths">
+            <div class="desk-mini-copy">
+              <span class="desk-mini-kicker"><iconify-icon icon="lucide:brain" aria-hidden="true"></iconify-icon> مسار قراءة</span>
+              <div>
+                <h3>شحّذ تفكيرك</h3>
+                <p>ابدأ بـ <bdi>Sapiens</bdi> ثم وسّع زاوية الحكم.</p>
+              </div>
+            </div>
+            <div class="desk-mini-stack" aria-hidden="true">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg" alt="" width="118" height="177" loading="lazy">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-subtle-art/the_subtle_art.jpg" alt="" width="118" height="177" loading="lazy">
+            </div>
+          </a>
+
+          <aside class="desk-notes" aria-labelledby="desk-notes-title">
+            <div class="desk-notes-heading">
+              <h2 id="desk-notes-title">الجديد في دفتر تحليل</h2>
+              <span>مقالات</span>
+            </div>
+            <ul class="desk-note-list">
+              <li><a id="link-desk-article-berkshire" class="desk-note-link" href="#/blog/بيركشاير-هاثاواي-يانكيز-1927"><strong>بيركشاير هاثاواي ونسخة بافيت من يانكيز 1927</strong><span>18 دقيقة قراءة</span></a></li>
+              <li><a id="link-desk-article-rochon" class="desk-note-link" href="#/blog/فرانسوا-روشون-فن-الاستثمار"><strong>فرانسوا روشون وفن الاستثمار</strong><span>17 دقيقة قراءة</span></a></li>
+              <li><a id="link-desk-article-pabrai" class="desk-note-link" href="#/blog/موهنيش-بابراي-استنساخ-وصفة-بافيت"><strong>موهنيش بابراي: وصفة بافيت لبناء ثروة بهدوء</strong><span>18 دقيقة قراءة</span></a></li>
+            </ul>
+            <a id="link-desk-all-articles" class="secondary-button desk-notes-all" href="#/blog">شاهد ما هو جديد <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="category-hubs" class="category-ribbon shell" aria-labelledby="categories-title">
+        <div class="category-ribbon-header">
+          <div>
+            <p class="section-kicker">أبواب المكتبة</p>
+            <h2 id="categories-title" class="section-title">اختر المجال قبل أن تختار الكتاب</h2>
+          </div>
+          <a id="link-categories-all-summaries" class="text-link" href="#/summaries">كل الخلاصات <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+        </div>
+
+        <div class="category-grid">
+          <a id="link-category-trading" class="category-link" href="#/ar/categories/trading-books">
+            <iconify-icon icon="lucide:line-chart" aria-hidden="true"></iconify-icon>
+            <span>كتب التداول</span>
+          </a>
+          <a id="link-category-investing" class="category-link" href="#/ar/categories/investing-books">
+            <iconify-icon icon="lucide:landmark" aria-hidden="true"></iconify-icon>
+            <span>كتب الاستثمار</span>
+          </a>
+          <a id="link-category-business" class="category-link" href="#/ar/categories/business-books">
+            <iconify-icon icon="lucide:briefcase-business" aria-hidden="true"></iconify-icon>
+            <span>كتب الأعمال</span>
+          </a>
+          <a id="link-category-self-development" class="category-link" href="#/ar/categories/self-development-books">
+            <iconify-icon icon="lucide:sprout" aria-hidden="true"></iconify-icon>
+            <span>تطوير الذات</span>
+          </a>
+          <a id="link-category-psychology" class="category-link" href="#/ar/categories/psychology-books">
+            <iconify-icon icon="lucide:brain" aria-hidden="true"></iconify-icon>
+            <span>علم النفس</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="reading-paths" class="paths-section" aria-labelledby="paths-title">
+        <div class="shell">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">ابدأ بالغاية</p>
+              <h2 id="paths-title" class="section-title">اختر مسارًا، لا كتابًا عشوائيًا.</h2>
+            </div>
+            <p class="section-summary">اختر النتيجة التي تهمك واتبع سلسلة قصيرة من الخلاصات التي تبني أفكارها فوق بعضها.</p>
+          </div>
+
+          <div class="paths-grid">
+            <article class="path-column">
+              <div class="path-index"><span>01</span><iconify-icon icon="lucide:target" width="19" height="19" aria-hidden="true"></iconify-icon></div>
+              <h3>ابنِ عادات أفضل</h3>
+              <p>مسار عملي للروتين والانضباط والتغيير القائم على الهوية.</p>
+              <div class="path-covers" aria-label="كتب مسار بناء العادات">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="غلاف كتاب Atomic Habits" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-seven-habits/the_7_habits_of_highly_effective_people.jpg" alt="غلاف كتاب The 7 Habits of Highly Effective People" width="106" height="159" loading="lazy">
+              </div>
+              <ul class="path-books">
+                <li><a id="link-path-habits-atomic" class="path-book-link" href="#/summary/atomic-habits"><bdi>Atomic Habits</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-habits-seven" class="path-book-link" href="#/summary/the-7-habits-of-highly-effective-people"><bdi>The 7 Habits</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              </ul>
+              <a id="link-path-habits-start" class="path-start" href="#/summary/atomic-habits">ابدأ هذا المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+
+            <article class="path-column">
+              <div class="path-index"><span>02</span><iconify-icon icon="lucide:landmark" width="19" height="19" aria-hidden="true"></iconify-icon></div>
+              <h3>افهم المال</h3>
+              <p>نماذج ذهنية للثروة والادخار والاستثمار طويل الأجل.</p>
+              <div class="path-covers" aria-label="كتب مسار فهم المال">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="غلاف كتاب The Psychology of Money" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg" alt="غلاف كتاب Rich Dad Poor Dad" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-intelligent-investor/the_intelligent_investor.jpg" alt="غلاف كتاب The Intelligent Investor" width="106" height="159" loading="lazy">
+              </div>
+              <ul class="path-books">
+                <li><a id="link-path-money-psychology" class="path-book-link" href="#/summary/the-psychology-of-money"><bdi>The Psychology of Money</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-money-rich-dad" class="path-book-link" href="#/summary/rich-dad-poor-dad"><bdi>Rich Dad Poor Dad</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-money-intelligent-investor" class="path-book-link" href="#/summary/the-intelligent-investor"><bdi>The Intelligent Investor</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              </ul>
+              <a id="link-path-money-start" class="path-start" href="#/summary/the-psychology-of-money">ابدأ هذا المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+
+            <article class="path-column">
+              <div class="path-index"><span>03</span><iconify-icon icon="lucide:line-chart" width="19" height="19" aria-hidden="true"></iconify-icon></div>
+              <h3>فكّر كمتداول</h3>
+              <p>ادرس المخاطر وعلم النفس واتخاذ القرار قبل الصفقة التالية.</p>
+              <div class="path-covers" aria-label="كتب مسار التفكير كمتداول">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="غلاف كتاب Trading in the Zone" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-mental-game/the_mental_game_of_trading.jpg" alt="غلاف كتاب The Mental Game of Trading" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-best-loser/best_loser_wins.jpg" alt="غلاف كتاب Best Loser Wins" width="106" height="159" loading="lazy">
+              </div>
+              <ul class="path-books">
+                <li><a id="link-path-trading-zone" class="path-book-link" href="#/summary/trading-in-the-zone"><bdi>Trading in the Zone</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-trading-mental-game" class="path-book-link" href="#/summary/the-mental-game-of-trading"><bdi>The Mental Game</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-trading-best-loser" class="path-book-link" href="#/summary/best-loser-wins"><bdi>Best Loser Wins</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              </ul>
+              <a id="link-path-trading-start" class="path-start" href="#/summary/trading-in-the-zone">ابدأ هذا المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+
+            <article class="path-column">
+              <div class="path-index"><span>04</span><iconify-icon icon="lucide:brain" width="19" height="19" aria-hidden="true"></iconify-icon></div>
+              <h3>شحّذ تفكيرك</h3>
+              <p>كتب واسعة النظرة لفهم الناس والتاريخ وتحسين الحكم.</p>
+              <div class="path-covers" aria-label="كتب مسار شحذ التفكير">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg" alt="غلاف كتاب Sapiens" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="غلاف كتاب Thinking, Fast and Slow" width="106" height="159" loading="lazy">
+                <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-subtle-art/the_subtle_art.jpg" alt="غلاف كتاب The Subtle Art" width="106" height="159" loading="lazy">
+              </div>
+              <ul class="path-books">
+                <li><a id="link-path-thinking-sapiens" class="path-book-link" href="#/summary/sapiens"><bdi>Sapiens</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-thinking-fast-slow" class="path-book-link" href="#/summary/thinking-fast-and-slow"><bdi>Thinking, Fast and Slow</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+                <li><a id="link-path-thinking-subtle-art" class="path-book-link" href="#/summary/the-subtle-art-of-not-giving-a-f"><bdi>The Subtle Art</bdi><iconify-icon icon="lucide:arrow-up-left" aria-hidden="true"></iconify-icon></a></li>
+              </ul>
+              <a id="link-path-thinking-start" class="path-start" href="#/summary/sapiens">ابدأ هذا المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="latest-section" aria-labelledby="latest-title">
+        <div class="shell">
+          <div class="section-header">
+            <div>
+              <p class="section-kicker">من دفتر تحليل</p>
+              <h2 id="latest-title" class="section-title">مقالات توسّع الفكرة بعد الخلاصة</h2>
+            </div>
+            <a id="link-latest-all-blog" class="text-link" href="#/blog">كل المقالات <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+          </div>
+
+          <div class="article-grid">
+            <article class="article-card">
+              <div class="article-meta"><strong>الاستثمار</strong><time datetime="2026-06-07">7 يونيو 2026</time><span>18 دقيقة قراءة</span></div>
+              <h3>بيركشاير هاثاواي ونسخة بافيت من يانكيز 1927</h3>
+              <p>ما تكشفه قصص <bdi>Borsheim’s</bdi> و<bdi>See’s</bdi> و<bdi>Nebraska Furniture Mart</bdi> عن قوة الإدارة والثقافة وجودة الأعمال.</p>
+              <a id="link-article-berkshire-yankees" class="article-link" href="#/blog/بيركشاير-هاثاواي-يانكيز-1927">اقرأ المقال <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+
+            <article class="article-card">
+              <div class="article-meta"><strong>الاستثمار</strong><time datetime="2026-06-07">7 يونيو 2026</time><span>17 دقيقة قراءة</span></div>
+              <h3>فرانسوا روشون وفن الاستثمار: كيف تختار شركات عظيمة لعقود</h3>
+              <p>فلسفة <bdi>Giverny Capital</bdi> في جودة الإدارة والملكية الشخصية والعائد على رأس المال والصبر على الشركات الممتازة.</p>
+              <a id="link-article-francois-rochon" class="article-link" href="#/blog/فرانسوا-روشون-فن-الاستثمار">اقرأ المقال <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+
+            <article class="article-card">
+              <div class="article-meta"><strong>الاستثمار</strong><time datetime="2026-06-05">5 يونيو 2026</time><span>18 دقيقة قراءة</span></div>
+              <h3>موهنيش بابراي: استنساخ وصفة بافيت لبناء ثروة بهدوء</h3>
+              <p>قصة تجمع الاستثمار القيمي مع التواضع الفكري والصبر والتركيز، من فلسفة داندو إلى هامش الأمان.</p>
+              <a id="link-article-mohnish-pabrai" class="article-link" href="#/blog/موهنيش-بابراي-استنساخ-وصفة-بافيت">اقرأ المقال <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="retention-section" aria-labelledby="retention-title">
+        <div class="shell retention-panel">
+          <div>
+            <p class="section-kicker">حوّل القراءة إلى عادة</p>
+            <h2 id="retention-title">ضع هدفًا شهريًا وتابع تقدّمك.</h2>
+            <p>استخدم تحدّي القراءة لتختار هدفك وتحافظ على إيقاع واضح بين الخلاصات.</p>
+          </div>
+          <a id="link-retention-reading-challenge" class="primary-button" href="#/reading-challenge">ابدأ تحدّي القراءة <iconify-icon icon="lucide:target" aria-hidden="true"></iconify-icon></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-main">
+        <div>
+          <a id="link-footer-brand-home" class="brand-lockup" href="#/" aria-label="BookBriefs Ta7leel — الصفحة الرئيسية">
+            <span class="brand-mark" aria-hidden="true"><iconify-icon icon="lucide:book-open" width="38" height="38"></iconify-icon></span>
+            <span class="brand-copy"><span class="brand-name" dir="ltr">BookBriefs</span><span class="brand-subtitle" dir="ltr">Ta7leel</span></span>
+          </a>
+          <p class="footer-brand-copy">خلاصات كتب واضحة وقصيرة تساعدك على الوصول إلى الفكرة الأساسية والاحتفاظ بما ينفع.</p>
+        </div>
+
+        <nav class="footer-column" aria-label="روابط المكتبة">
+          <h2>المكتبة</h2>
+          <div class="footer-links">
+            <a id="link-footer-summaries" class="footer-link" href="#/summaries">كل الخلاصات</a>
+            <a id="link-footer-category-trading" class="footer-link" href="#/ar/categories/trading-books">كتب التداول</a>
+            <a id="link-footer-category-investing" class="footer-link" href="#/ar/categories/investing-books">كتب الاستثمار</a>
+            <a id="link-footer-category-self-development" class="footer-link" href="#/ar/categories/self-development-books">تطوير الذات</a>
+          </div>
+        </nav>
+
+        <nav class="footer-column" aria-label="روابط التعلّم">
+          <h2>تعلّم</h2>
+          <div class="footer-links">
+            <a id="link-footer-blog" class="footer-link" href="#/blog">المقالات</a>
+            <a id="link-footer-news" class="footer-link" href="#/news">الأخبار</a>
+            <a id="link-footer-about" class="footer-link" href="#/about">عن تحليل</a>
+            <a id="link-footer-reading-challenge" class="footer-link" href="#/reading-challenge">تحدّي القراءة</a>
+          </div>
+        </nav>
+
+        <nav class="footer-column" aria-label="روابط الأدوات والسياسات">
+          <h2>الأدوات والسياسات</h2>
+          <div class="footer-links">
+            <a id="link-footer-calculators" class="footer-link" href="#/calculators">الحاسبات</a>
+            <a id="link-footer-trading-journal" class="footer-link" href="#/trading-journal">سجل التداول</a>
+            <a id="link-footer-privacy" class="footer-link" href="#/privacy-policy">سياسة الخصوصية</a>
+            <a id="link-footer-terms" class="footer-link" href="#/terms-of-use">شروط الاستخدام</a>
+          </div>
+        </nav>
+      </div>
+
+      <div class="shell footer-bottom">
+        <span>© 2026 BookBriefs, Inc. All Rights Reserved.</span>
+        <nav class="social-links" aria-label="روابط التواصل الاجتماعي">
+          <a id="link-social-x" class="social-link" href="https://x.com/Ta7leel007" aria-label="BookBriefs على X"><span aria-hidden="true">𝕏</span></a>
+          <a id="link-social-youtube" class="social-link" href="https://www.youtube.com/@ta7leeel" aria-label="BookBriefs على YouTube"><iconify-icon icon="lucide:youtube" width="18" height="18" aria-hidden="true"></iconify-icon></a>
+          <a id="link-social-kofi" class="social-link" href="https://ko-fi.com/ta7leel" aria-label="دعم BookBriefs على Ko-fi"><iconify-icon icon="lucide:coffee" width="18" height="18" aria-hidden="true"></iconify-icon></a>
+          <a id="link-social-telegram" class="social-link" href="https://t.me/MadMarkets" aria-label="BookBriefs على Telegram"><iconify-icon icon="lucide:send" width="18" height="18" aria-hidden="true"></iconify-icon></a>
+          <a id="link-social-instagram" class="social-link" href="https://www.instagram.com/ta7leel007" aria-label="BookBriefs على Instagram"><iconify-icon icon="lucide:instagram" width="18" height="18" aria-hidden="true"></iconify-icon></a>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      (() => {
+        const menuButton = document.getElementById('button-menu-toggle');
+        const navigation = document.getElementById('primary-navigation');
+        const searchForm = document.getElementById('library-search-form');
+        const searchInput = document.getElementById('library-search-input');
+        const searchPanel = document.getElementById('search-results');
+        const searchStatus = document.getElementById('search-status');
+        const searchEmpty = document.getElementById('search-empty');
+        const resultItems = Array.from(document.querySelectorAll('.search-result-item'));
+
+        const closeMenu = () => {
+          navigation.classList.remove('is-open');
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuButton.setAttribute('aria-label', 'فتح القائمة');
+          menuButton.querySelector('iconify-icon').setAttribute('icon', 'lucide:menu');
+        };
+
+        menuButton.addEventListener('click', () => {
+          const willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+          navigation.classList.toggle('is-open', willOpen);
+          menuButton.setAttribute('aria-expanded', String(willOpen));
+          menuButton.setAttribute('aria-label', willOpen ? 'إغلاق القائمة' : 'فتح القائمة');
+          menuButton.querySelector('iconify-icon').setAttribute('icon', willOpen ? 'lucide:x' : 'lucide:menu');
+        });
+
+        navigation.addEventListener('click', closeMenu);
+
+        const updateSearch = () => {
+          const query = searchInput.value.trim().toLocaleLowerCase('ar');
+
+          if (!query) {
+            resultItems.forEach((item) => { item.hidden = false; });
+            searchPanel.classList.remove('is-visible');
+            searchEmpty.classList.remove('is-visible');
+            searchStatus.textContent = 'ابدأ بكتابة اسم كتاب أو موضوع';
+            return;
+          }
+
+          let matches = 0;
+          resultItems.forEach((item) => {
+            const isMatch = item.dataset.search.toLocaleLowerCase('ar').includes(query);
+            item.hidden = !isMatch;
+            if (isMatch) matches += 1;
+          });
+
+          searchPanel.classList.add('is-visible');
+          searchEmpty.classList.toggle('is-visible', matches === 0);
+          searchStatus.textContent = matches === 0 ? 'لم نجد نتيجة مطابقة' : `نتائج مطابقة: ${matches}`;
+        };
+
+        searchInput.addEventListener('input', updateSearch);
+        searchInput.addEventListener('focus', () => {
+          if (searchInput.value.trim()) updateSearch();
+        });
+
+        searchForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const firstVisibleLink = resultItems.find((item) => !item.hidden)?.querySelector('a');
+          if (searchInput.value.trim() && firstVisibleLink) {
+            firstVisibleLink.click();
+            searchPanel.classList.remove('is-visible');
+          } else {
+            window.location.hash = '#/summaries';
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          const activeTag = document.activeElement?.tagName;
+          const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA';
+
+          if (event.key === '/' && !isTyping) {
+            event.preventDefault();
+            searchInput.focus();
+          }
+
+          if (event.key === 'Escape') {
+            searchInput.value = '';
+            searchPanel.classList.remove('is-visible');
+            closeMenu();
+          }
+        });
+
+        document.addEventListener('click', (event) => {
+          if (!searchForm.contains(event.target)) searchPanel.classList.remove('is-visible');
+        });
+      })();
+    </script>
+  </div>
+</body>
+</html>

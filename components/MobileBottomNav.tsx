@@ -1,44 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, Calculator, Newspaper, Sparkles, FileText } from 'lucide-react';
+import { Home, BookOpen, Calculator, Newspaper, FileText } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
 
-// Iridescent bubble animation component
-const IridescentBubble: React.FC = () => (
-  <div className="absolute inset-0 overflow-hidden rounded-2xl">
-    {/* Animated iridescent bubble */}
-    <div className="absolute inset-[-20%] animate-bubble-morph">
-      <div
-        className="absolute inset-0 animate-bubble-rotate"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 30% 40%, rgba(255, 100, 50, 0.9) 0%, transparent 50%),
-            radial-gradient(ellipse 70% 80% at 70% 60%, rgba(50, 150, 255, 0.9) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 70% at 50% 30%, rgba(255, 200, 100, 0.8) 0%, transparent 50%),
-            radial-gradient(ellipse 50% 60% at 40% 70%, rgba(150, 50, 255, 0.7) 0%, transparent 50%),
-            radial-gradient(ellipse 80% 50% at 60% 50%, rgba(50, 200, 150, 0.6) 0%, transparent 50%)
-          `,
-          filter: 'blur(8px) contrast(1.2) saturate(1.5)',
-        }}
-      />
-    </div>
-    {/* Glass overlay for depth */}
-    <div
-      className="absolute inset-0 rounded-2xl"
-      style={{
-        background: 'radial-gradient(ellipse 100% 100% at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 60%)',
-      }}
-    />
-    {/* Inner glow ring */}
-    <div
-      className="absolute inset-[2px] rounded-xl border border-white/20"
-      style={{
-        boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)',
-      }}
-    />
-  </div>
-);
+export const getMobileBottomNavAppearance = (isReaderMode: boolean) =>
+  isReaderMode
+    ? ({ surface: 'reader', showSparkles: false } as const)
+    : ({ surface: 'forest', showSparkles: true } as const);
 
 interface MobileNavItem {
   to: string;
@@ -49,6 +18,7 @@ interface MobileNavItem {
 const MobileBottomNav: React.FC = () => {
   const { t } = useLanguage();
   const { isReaderMode } = useReaderMode();
+  const appearance = getMobileBottomNavAppearance(isReaderMode);
 
   const navItems: MobileNavItem[] = [
     { to: '/', label: t('home') || 'Home', icon: Home },
@@ -58,20 +28,25 @@ const MobileBottomNav: React.FC = () => {
     { to: '/news', label: t('news') || 'News', icon: Newspaper },
   ];
 
-  const baseBackground = isReaderMode ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5' : 'bg-[#e5d8c7] text-gray-950 shadow-[0_15px_35px_-15px_rgba(89,69,45,0.45)]';
-  const inactiveStyles = isReaderMode ? 'text-gray-400' : 'text-gray-600';
-  const activeStyles = isReaderMode ? 'bg-gray-900 text-white shadow-inner shadow-gray-900/30' : 'bg-white text-gray-950 shadow-inner shadow-gray-900/15';
+  const baseBackground = appearance.surface === 'reader'
+    ? 'bg-white/95 text-gray-800 shadow-xl shadow-gray-900/5'
+    : 'mobile-bottom-nav--forest text-[#FBF8F1]';
+  const inactiveStyles = appearance.surface === 'reader' ? 'text-gray-400' : 'text-[#FBF8F1]/80 hover:text-white';
+  const activeStyles = appearance.surface === 'reader'
+    ? 'bg-gray-900 text-white shadow-inner shadow-gray-900/30'
+    : 'bg-[#FBF8F1] text-[#304529] shadow-[0_1px_2px_rgba(9,37,28,0.18),0_5px_14px_rgba(9,37,28,0.16)]';
 
   return (
     <div className="md:hidden fixed bottom-4 left-0 right-0 px-4 z-50 pointer-events-none">
       <div className="flex w-full max-w-2xl mx-auto items-end gap-3 pointer-events-auto">
-        <nav className={`flex-1 flex items-center justify-between rounded-[28px] px-2 py-1 backdrop-blur-xl ${baseBackground}`} aria-label="Primary">
+        <nav className={`relative isolate flex min-h-14 flex-1 items-center justify-between overflow-hidden rounded-[28px] px-2 py-1 backdrop-blur-xl ${baseBackground}`} aria-label="Primary">
+          {appearance.showSparkles && <span className="mobile-bottom-nav-sparkles" aria-hidden="true" />}
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center justify-center gap-2 px-2 py-2 rounded-2xl text-[11px] font-semibold uppercase tracking-wide transition-[width,max-width,opacity,transform,background-color,color,box-shadow] duration-200 ${isActive ? `${activeStyles}` : `${inactiveStyles}`
+                `relative z-10 flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[22px] px-2 py-2 text-[11px] font-semibold uppercase tracking-wide outline-none transition-[width,max-width,opacity,transform,background-color,color,box-shadow] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#F3D7A0] focus-visible:ring-offset-2 focus-visible:ring-offset-[#304529] ${isActive ? `${activeStyles}` : `${inactiveStyles}`
                 }`
               }
             >
@@ -89,7 +64,6 @@ const MobileBottomNav: React.FC = () => {
             </NavLink>
           ))}
         </nav>
-
       </div>
     </div>
   );

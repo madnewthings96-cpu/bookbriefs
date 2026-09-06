@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
-import { AuthTabs } from '../components/AnimatedAuthComponents';
+import { AuthGateway } from '../components/AuthGateway';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -122,53 +122,21 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Left Side - Brand Image Display (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#f0dcc0]">
-        <img
-          src="/images/join login new.webp"
-          alt="Ta7leel login artwork"
-          className="h-full w-full object-cover object-center outline outline-1 outline-black/10"
-        />
-      </div>
-
-      {/* Right Side - Login Form */}
-      <AuthTabs
-        formFields={{
-          header: 'Welcome Back',
-          subHeader: 'Sign in to your BookBriefs account',
-          fields: [
-            {
-              label: 'Email',
-              required: true,
-              type: 'email',
-              placeholder: 'Enter your email',
-              onChange: (e) => setEmail(e.target.value),
-            },
-            {
-              label: 'Password',
-              required: true,
-              type: 'password',
-              placeholder: 'Enter your password',
-              onChange: (e) => setPassword(e.target.value),
-            },
-          ],
-          submitButton: success ? 'Success!' : 'Sign In',
-          textVariantButton: "Don't have an account? Sign up",
-        }}
-        goTo={(e) => {
-          e.preventDefault();
-          navigate('/signup');
-        }}
-        handleSubmit={handleSubmit}
-        errorField={error}
-        googleLogin="Sign in with Google"
-        onGoogleLogin={handleGoogleLogin}
-        isLoading={isLoading}
-        isGoogleLoading={isGoogleLoading}
-        success={success}
-      />
-    </div>
+    <AuthGateway
+      mode="login"
+      email={email}
+      password={password}
+      error={error}
+      success={success}
+      isLoading={isLoading}
+      isGoogleLoading={isGoogleLoading}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      onSubmit={handleSubmit}
+      onGoogleAuth={handleGoogleLogin}
+      onSwitchMode={() => navigate('/signup')}
+      onGoHome={() => navigate('/')}
+    />
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Award, Flame, Info, Lightbulb, PiggyBank, Sparkles, TrendingUp, Zap } from 'lucide-react';
 
 const FIRECalculator: React.FC = () => {
   const [currentAge, setCurrentAge] = useState<number>(30);
@@ -9,29 +10,19 @@ const FIRECalculator: React.FC = () => {
   const [withdrawalRate, setWithdrawalRate] = useState<number>(4);
 
   const calculateFIRE = () => {
-    // Calculate annual savings
     const annualSavings = annualIncome - annualExpenses;
-    
-    // Calculate FIRE number (25x annual expenses rule)
     const fireNumber = annualExpenses * (100 / withdrawalRate);
-    
-    // Calculate years to FIRE
     const r = expectedReturn / 100;
     let yearsToFIRE = 0;
-    
+
     if (annualSavings > 0) {
-      // Future Value of Annuity formula with initial principal
-      // FV = PV(1 + r)^n + PMT * [((1 + r)^n - 1) / r]
-      // Solving for n (years)
-      
       const pv = currentSavings;
       const pmt = annualSavings;
       const fv = fireNumber;
-      
+
       if (pv >= fv) {
         yearsToFIRE = 0;
       } else {
-        // Iterative approach to find years
         for (let n = 1; n <= 100; n++) {
           const futureValue = pv * Math.pow(1 + r, n) + pmt * ((Math.pow(1 + r, n) - 1) / r);
           if (futureValue >= fv) {
@@ -43,185 +34,257 @@ const FIRECalculator: React.FC = () => {
     } else {
       yearsToFIRE = Infinity;
     }
-    
+
     const fireAge = currentAge + yearsToFIRE;
     const savingsRate = annualIncome > 0 ? (annualSavings / annualIncome) * 100 : 0;
-    
+
     return {
       fireNumber,
       yearsToFIRE,
       fireAge,
       annualSavings,
-      savingsRate
+      savingsRate,
     };
   };
 
   const results = calculateFIRE();
 
+  const formInputStyle =
+    'w-full px-4 py-2.5 rounded-xl border border-forest-900/15 bg-white text-sm font-medium text-forest-950 placeholder:text-forest-900/30 focus:border-forest-700 focus:outline-none focus:ring-4 focus:ring-forest-700/10 transition-all shadow-sm';
+  const formLabelStyle = 'block text-xs font-bold uppercase tracking-wider text-forest-900/80 mb-1.5';
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Header Banner */}
+      <div className="flex flex-col gap-2 rounded-2xl bg-forest-50/70 p-4 border border-forest-900/[0.06] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-forest-800 text-white shadow-sm">
+            <Flame className="h-4.5 w-4.5 text-amber-400" />
+          </div>
+          <div>
+            <h3 className="font-display text-base font-bold text-forest-950">
+              Financial Independence Planner
+            </h3>
+            <p className="text-xs text-forest-900/70">
+              Calculate your personal FIRE target and timeline to financial freedom.
+            </p>
+          </div>
+        </div>
+
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-bold text-forest-900 border border-forest-900/10 shadow-sm">
+          <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+          Based on the 25x Rule
+        </div>
+      </div>
+
+      {/* Input Parameters Grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {/* Current Age */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Current Age
-          </label>
-          <input
-            type="number"
-            value={currentAge}
-            onChange={(e) => setCurrentAge(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="18"
-            max="100"
-          />
+          <label className={formLabelStyle}>Current Age</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={currentAge}
+              onChange={(e) => setCurrentAge(Number(e.target.value))}
+              className={formInputStyle}
+              min="18"
+              max="100"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              Years
+            </span>
+          </div>
         </div>
 
         {/* Current Savings */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Current Savings ($)
-          </label>
-          <input
-            type="number"
-            value={currentSavings}
-            onChange={(e) => setCurrentSavings(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="0"
-            step="1000"
-          />
+          <label className={formLabelStyle}>Current Portfolio Savings ($)</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={currentSavings}
+              onChange={(e) => setCurrentSavings(Number(e.target.value))}
+              className={formInputStyle}
+              min="0"
+              step="1000"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              USD
+            </span>
+          </div>
         </div>
 
         {/* Annual Income */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Annual Income ($)
-          </label>
-          <input
-            type="number"
-            value={annualIncome}
-            onChange={(e) => setAnnualIncome(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="0"
-            step="1000"
-          />
+          <label className={formLabelStyle}>Annual Net Income ($)</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={annualIncome}
+              onChange={(e) => setAnnualIncome(Number(e.target.value))}
+              className={formInputStyle}
+              min="0"
+              step="1000"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              / Year
+            </span>
+          </div>
         </div>
 
         {/* Annual Expenses */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Annual Expenses ($)
-          </label>
-          <input
-            type="number"
-            value={annualExpenses}
-            onChange={(e) => setAnnualExpenses(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="0"
-            step="1000"
-          />
+          <label className={formLabelStyle}>Annual Lifestyle Expenses ($)</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={annualExpenses}
+              onChange={(e) => setAnnualExpenses(Number(e.target.value))}
+              className={formInputStyle}
+              min="0"
+              step="1000"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              / Year
+            </span>
+          </div>
         </div>
 
         {/* Expected Return */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Expected Annual Return (%)
-          </label>
-          <input
-            type="number"
-            value={expectedReturn}
-            onChange={(e) => setExpectedReturn(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="0"
-            max="20"
-            step="0.5"
-          />
+          <label className={formLabelStyle}>Expected Annual Return (%)</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={expectedReturn}
+              onChange={(e) => setExpectedReturn(Number(e.target.value))}
+              className={formInputStyle}
+              min="0"
+              max="20"
+              step="0.5"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              %
+            </span>
+          </div>
         </div>
 
-        {/* Withdrawal Rate */}
+        {/* Safe Withdrawal Rate */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Safe Withdrawal Rate (%)
-          </label>
-          <input
-            type="number"
-            value={withdrawalRate}
-            onChange={(e) => setWithdrawalRate(Number(e.target.value))}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            min="1"
-            max="10"
-            step="0.5"
-          />
+          <label className={formLabelStyle}>Safe Withdrawal Rate (%)</label>
+          <div className="relative">
+            <input
+              type="number"
+              value={withdrawalRate}
+              onChange={(e) => setWithdrawalRate(Number(e.target.value))}
+              className={formInputStyle}
+              min="1"
+              max="10"
+              step="0.5"
+            />
+            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">
+              %
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Results Section */}
-      <div className="mt-8 p-6 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border-2 border-orange-200">
-        <h3 className="text-xl font-bold mb-4 text-gray-800">Your FIRE Journey</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* FIRE Number */}
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-600 mb-1">FIRE Number</p>
-            <p className="text-2xl font-bold text-orange-600">
-              ${results.fireNumber.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Amount needed to retire
-            </p>
+      {/* Results Section: Financial Freedom Milestone Board */}
+      <div className="overflow-hidden rounded-2xl border border-forest-900/15 bg-white shadow-card-hover">
+        {/* Top Strip */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-forest-900/10 bg-forest-50/70 p-4 sm:px-6">
+          <div className="flex items-center gap-2">
+            <Award className="h-4 w-4 text-emerald-600" />
+            <span className="text-xs font-bold uppercase tracking-wider text-forest-900">
+              Your Financial Independence Roadmap
+            </span>
           </div>
-
-          {/* Years to FIRE */}
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-600 mb-1">Years to FIRE</p>
-            <p className="text-2xl font-bold text-green-600">
-              {results.yearsToFIRE === Infinity ? '∞' : results.yearsToFIRE.toFixed(1)} years
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Time until financial independence
-            </p>
-          </div>
-
-          {/* FIRE Age */}
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-600 mb-1">FIRE Age</p>
-            <p className="text-2xl font-bold text-blue-600">
-              {results.yearsToFIRE === Infinity ? 'N/A' : Math.round(results.fireAge)}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Age at financial independence
-            </p>
-          </div>
-
-          {/* Savings Rate */}
-          <div className="bg-white p-4 rounded-lg shadow-sm">
-            <p className="text-sm text-gray-600 mb-1">Savings Rate</p>
-            <p className="text-2xl font-bold text-purple-600">
-              {results.savingsRate.toFixed(1)}%
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              ${results.annualSavings.toLocaleString('en-US', { maximumFractionDigits: 0 })}/year
-            </p>
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-forest-800">
+            <span>Annual Savings:</span>
+            <span className="font-extrabold text-forest-950">
+              ${results.annualSavings.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            </span>
           </div>
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-4 p-4 bg-white rounded-lg border border-orange-200">
-          <h4 className="font-semibold text-gray-700 mb-2">💡 Understanding Your Results</h4>
-          <ul className="text-sm text-gray-600 space-y-1">
-            <li>• <strong>FIRE Number:</strong> The total amount you need to save based on the {withdrawalRate}% rule</li>
-            <li>• <strong>Years to FIRE:</strong> Time needed to reach your goal with current savings rate</li>
-            <li>• <strong>Savings Rate:</strong> Percentage of income saved annually</li>
-            {results.yearsToFIRE === Infinity && (
-              <li className="text-red-600 font-medium">
-                ⚠️ Your expenses exceed income. Increase income or reduce expenses to achieve FIRE.
-              </li>
-            )}
-            {results.savingsRate < 20 && results.savingsRate > 0 && (
-              <li className="text-yellow-600 font-medium">
-                ⚡ Consider increasing your savings rate to reach FIRE faster!
-              </li>
-            )}
-          </ul>
+        {/* Metric Cards Grid */}
+        <div className="p-4 sm:p-6 space-y-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Target FIRE Number */}
+            <div className="relative rounded-2xl bg-forest-950 p-5 text-white border border-forest-800 shadow-md">
+              <span className="inline-block rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300">
+                Target Portfolio
+              </span>
+              <div className="mt-2 font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                ${results.fireNumber.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </div>
+              <p className="mt-1 text-xs text-forest-200">
+                Amount required to sustain ${annualExpenses.toLocaleString()}/yr
+              </p>
+            </div>
+
+            {/* Years to FIRE */}
+            <div className="rounded-2xl bg-forest-50/60 p-5 border border-forest-900/10">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-forest-900/60">
+                Years to Reach
+              </span>
+              <div className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950 sm:text-3xl">
+                {results.yearsToFIRE === Infinity ? '∞' : `${results.yearsToFIRE.toFixed(1)} yrs`}
+              </div>
+              <p className="mt-1 text-xs text-forest-900/70">
+                Time until full financial freedom
+              </p>
+            </div>
+
+            {/* Projected FIRE Age */}
+            <div className="rounded-2xl bg-forest-50/60 p-5 border border-forest-900/10">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-forest-900/60">
+                Projected FIRE Age
+              </span>
+              <div className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950 sm:text-3xl">
+                {results.yearsToFIRE === Infinity ? 'N/A' : `Age ${Math.round(results.fireAge)}`}
+              </div>
+              <p className="mt-1 text-xs text-forest-900/70">
+                Retirement age on current trajectory
+              </p>
+            </div>
+
+            {/* Savings Rate with Mini Bar */}
+            <div className="rounded-2xl bg-forest-50/60 p-5 border border-forest-900/10">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-forest-900/60">
+                Savings Rate
+              </span>
+              <div className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950 sm:text-3xl">
+                {results.savingsRate.toFixed(1)}%
+              </div>
+              {/* Progress visual */}
+              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-forest-900/10">
+                <div
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                  style={{ width: `${Math.min(Math.max(results.savingsRate, 0), 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Strategic Insight Callout */}
+          <div className="rounded-2xl bg-forest-50/80 p-4 border border-forest-900/[0.06] flex items-start gap-3">
+            <Lightbulb className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+            <div className="text-xs leading-relaxed text-forest-900/80 space-y-1">
+              <p className="font-bold text-forest-950">
+                The Core Math of Financial Freedom:
+              </p>
+              <p>
+                Your savings rate determines your timeline far more than your investment returns. At a 50% savings rate, you achieve financial freedom in approximately 17 years from scratch. Increasing your savings rate from 20% to 40% can cut your working timeline by over a decade.
+              </p>
+              {results.yearsToFIRE === Infinity && (
+                <p className="font-bold text-rose-600">
+                  ⚠️ Your annual expenses currently meet or exceed your income. Lowering annual burn or creating supplementary cashflow will activate the compounding engine.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

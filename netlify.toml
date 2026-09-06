@@ -6,6 +6,8 @@
 [build.environment]
   # Disable secret scanning for Firebase client keys (they're meant to be public)
   NETLIFY_SKIP_SECRET_SCANNING = "true"
+  # Keep Firebase Auth callbacks independent from the retiring website domain.
+  VITE_FIREBASE_AUTH_DOMAIN = "ta7leel-site-dc32f.firebaseapp.com"
 
 # PERFORMANCE: Enable Brotli compression (30-40% better than gzip for mobile)
 [build.processing]
@@ -77,6 +79,20 @@
   for = "/*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Permanently consolidate the retiring domain into the primary hostname.
+# Keep these host-specific redirects before the SPA catch-all.
+[[redirects]]
+  from = "https://ta7leel.site/*"
+  to = "https://www.ta7leel.pro/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.ta7leel.site/*"
+  to = "https://www.ta7leel.pro/:splat"
+  status = 301
+  force = true
 
 # SPA redirects
 [[redirects]]

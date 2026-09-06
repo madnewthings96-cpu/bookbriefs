@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { SITE_URL } from '../utils/seoConfig';
 
 interface SEOProps {
   title: string;
@@ -14,8 +15,6 @@ interface SEOProps {
   noindex?: boolean;
 }
 
-const BASE_URL = 'https://ta7leel.site';
-
 const useSEO = ({
   title,
   description,
@@ -29,8 +28,8 @@ const useSEO = ({
   noindex = false,
 }: SEOProps) => {
   const location = useLocation();
-  const currentUrl = canonical || `${BASE_URL}${location.pathname}`;
-  const fullImageUrl = image.startsWith('http') ? image : `${BASE_URL}${image}`;
+  const currentUrl = canonical || `${SITE_URL}${location.pathname}`;
+  const fullImageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
   useEffect(() => {
     // Track created elements for cleanup

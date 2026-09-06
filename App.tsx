@@ -1,6 +1,6 @@
 
 import React, { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -19,6 +19,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
+import { isStandaloneAppRoute } from './components/appLayoutModel';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SummariesPage = lazy(() => import('./pages/SummariesPage'));
@@ -164,16 +165,16 @@ const App: React.FC = () => {
   );
 };
 
-// App Content Component (separated to use Firebase context)
-const AppContent: React.FC = () => {
-  const { loading } = useFirebase();
+const AppFrame: React.FC = () => {
+  const location = useLocation();
+  const isStandalone = isStandaloneAppRoute(location.pathname);
 
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
-      <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
-        <Header />
-        <main className="flex-grow container mx-auto px-0 sm:px-0 lg:px-0 py-8">
+      <div className={isStandalone ? 'min-h-screen bg-[#ece9df]' : 'flex min-h-screen flex-col bg-gray-50 text-gray-800'}>
+        {!isStandalone && <Header />}
+        <main className={isStandalone ? 'min-h-screen' : 'container mx-auto flex-grow px-0 py-8 sm:px-0 lg:px-0'}>
           <Suspense fallback={<Spinner />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -234,12 +235,24 @@ const AppContent: React.FC = () => {
           </Suspense>
         </main>
 
-        <MobileBottomNav />
-        <Suspense fallback={null}>
-          <ExitIntentPopup />
-        </Suspense>
-        <Footer />
+        {!isStandalone && (
+          <>
+            <MobileBottomNav />
+            <Suspense fallback={null}>
+              <ExitIntentPopup />
+            </Suspense>
+            <Footer />
+          </>
+        )}
       </div>
+    </>
+  );
+};
+
+const AppContent: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <AppFrame />
     </BrowserRouter>
   );
 };

@@ -42,10 +42,10 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemaps
-Sitemap: https://ta7leel.site/sitemap-index.xml
-Sitemap: https://ta7leel.site/sitemap.xml
-Sitemap: https://ta7leel.site/sitemap-en.xml
-Sitemap: https://ta7leel.site/sitemap-ar.xml
+Sitemap: https://www.ta7leel.pro/sitemap-index.xml
+Sitemap: https://www.ta7leel.pro/sitemap.xml
+Sitemap: https://www.ta7leel.pro/sitemap-en.xml
+Sitemap: https://www.ta7leel.pro/sitemap-ar.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1

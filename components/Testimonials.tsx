@@ -29,32 +29,32 @@ const TestimonialsColumn: React.FC<{
           <React.Fragment key={index}>
             {testimonials.map(({ text, image, name, role }, i) => (
               <div
-                className="w-full max-w-xs rounded-2xl border border-[#d7c7b3] bg-white/86 p-6 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_18px_40px_rgba(89,69,45,0.10)] backdrop-blur"
+                className="w-full max-w-xs rounded-2xl border border-forest-900/[0.08] bg-white p-6 shadow-card-rest transition-all duration-300 hover:shadow-card-hover hover:border-forest-700/20"
                 key={i}
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <Quote className="h-5 w-5 text-[#a75d37]" aria-hidden="true" />
+                  <Quote className="h-5 w-5 text-emerald-600" aria-hidden="true" />
                   <div className="flex" aria-hidden="true">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                      <Star key={star} className="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
                     ))}
                   </div>
                 </div>
-                <div className="text-sm leading-7 text-[#4d453a]">{text}</div>
+                <div className="text-sm leading-relaxed text-forest-900/80">{text}</div>
                 <div className="mt-5 flex items-center gap-3">
                   <img
                     width={40}
                     height={40}
                     src={image}
                     alt={name}
-                    className="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]"
+                    className="h-10 w-10 rounded-full object-cover ring-2 ring-forest-100"
                     loading="lazy"
                   />
                   <div className="flex flex-col">
-                    <div className="font-black tracking-tight leading-5 text-gray-950">
+                    <div className="font-display font-bold tracking-tight leading-5 text-forest-950">
                       {name}
                     </div>
-                    <div className="text-sm font-semibold leading-5 tracking-tight text-[#7a6f62]">
+                    <div className="text-xs font-semibold leading-5 text-forest-900/60">
                       {role}
                     </div>
                   </div>
@@ -84,21 +84,21 @@ const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
   const thirdColumn = testimonials.slice(0, 2);
 
   return (
-    <section className="overflow-hidden bg-[#f7f0e6] py-20 md:py-24">
+    <section className="overflow-hidden bg-[#FBFBFA] py-20 md:py-24 border-t border-forest-900/[0.06]">
       <div className="container mx-auto px-4">
         <div className="mx-auto mb-14 max-w-3xl text-center">
-          <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-[#a75d37] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.10)]">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-forest-50 border border-forest-800/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-forest-800 shadow-sm">
             Reader notes
           </p>
-          <h2 className="text-3xl font-black tracking-tight text-gray-950 md:text-5xl">
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-forest-950 md:text-5xl">
             The kind of reading habit people keep.
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#675b4d] md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-forest-900/70 md:text-lg">
             Shorter sessions, clearer takeaways, and fewer unfinished books sitting in the queue.
           </p>
         </div>
         
-        <div className="flex justify-center gap-6 max-h-[738px] overflow-hidden mask-gradient [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]">
+        <div className="flex justify-center gap-6 max-h-[738px] overflow-hidden mask-gradient [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
           <TestimonialsColumn testimonials={firstColumn} duration={15} />
           <TestimonialsColumn
             testimonials={secondColumn}

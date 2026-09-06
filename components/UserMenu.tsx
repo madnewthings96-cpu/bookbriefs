@@ -8,6 +8,7 @@ const UserMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { isAuthenticated, user, logout } = useAuth();
   const { t } = useLanguage();
 
@@ -28,38 +29,63 @@ const UserMenu: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  const menuItemClassName = "flex w-full items-center px-4 py-3 text-left transition-[background-color,color] duration-200 hover:bg-[#F2F5EC] group";
-  const menuIconClassName = "mr-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#F2F5EC] transition-colors duration-200 group-hover:bg-[#E7EBDF]";
-  const menuIconSvgClassName = "h-5 w-5 text-gray-500 transition-colors duration-200 group-hover:text-gray-950";
-  const menuTextClassName = "text-sm font-semibold text-gray-700 transition-colors duration-200 group-hover:text-gray-950";
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setIsMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMenuOpen]);
+
+  const menuItemClassName =
+    'group mx-1.5 flex min-h-12 w-[calc(100%-0.75rem)] items-center rounded-[16px] px-3 py-2 text-left outline-none transition-[background-color,color,transform] duration-150 hover:bg-[#F0EADF] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]';
+  const menuIconClassName =
+    'mr-3 flex h-9 w-9 items-center justify-center rounded-[12px] bg-[#E5ECE6] text-[#2B654F] shadow-[inset_0_0_0_1px_rgba(18,61,47,0.05)] transition-[background-color,color,transform] duration-150 group-hover:-rotate-2 group-hover:bg-[#123D2F] group-hover:text-[#FBF8F1]';
+  const menuIconSvgClassName = 'h-[18px] w-[18px] text-current';
+  const menuTextClassName =
+    'text-[13px] font-semibold text-[#334B40] transition-colors duration-150 group-hover:text-[#09251C]';
 
   return (
     <div className="relative" ref={menuRef}>
       {/* Menu Toggle Button */}
       <button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="pressable flex h-10 w-10 items-center justify-center rounded-xl bg-white/55 text-gray-700 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.06)] transition-[transform,background-color,color,box-shadow] duration-200 hover:bg-white hover:text-gray-950"
+        ref={menuButtonRef}
+        type="button"
+        id="user-menu-button"
+        onClick={() => setIsMenuOpen((current) => !current)}
+        className="relative flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#F0EADF] text-[#123D2F] shadow-[0_0_0_1px_rgba(18,61,47,0.07)] outline-none transition-[background-color,box-shadow,transform] duration-150 hover:bg-[#E8DFD0] hover:shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_5px_12px_rgba(9,37,28,0.07)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
         aria-label="User menu"
+        aria-haspopup="true"
+        aria-expanded={isMenuOpen}
+        aria-controls="user-account-menu"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <span className="font-['Bricolage_Grotesque'] text-xs font-extrabold uppercase tracking-[-0.03em]">
+          {user?.name?.charAt(0) || user?.email?.charAt(0) || 'T'}
+        </span>
+        <span className="absolute bottom-1.5 right-1.5 h-2 w-2 rounded-full bg-[#C49552] shadow-[0_0_0_2px_#F0EADF]" aria-hidden="true" />
       </button>
 
       {/* Dropdown Menu */}
       {isMenuOpen && (
-        <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl bg-white/95 shadow-[0_1px_2px_rgba(17,24,39,0.08),0_22px_48px_rgba(71,85,62,0.18)] ring-1 ring-gray-950/5 backdrop-blur-xl animate-fadeIn">
+        <div
+          id="user-account-menu"
+          className="absolute right-0 z-[96] mt-2 w-72 overflow-hidden rounded-[24px] bg-[#FBF8F1]/95 p-1.5 shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_3px_8px_rgba(9,37,28,0.06),0_22px_52px_rgba(9,37,28,0.16)] backdrop-blur-2xl animate-fadeIn"
+        >
           {/* User Info Header */}
           {isAuthenticated && user && (
-            <div className="border-b border-[#E7EBDF] bg-[#F5F7F1] px-4 py-3">
-              <div className="truncate text-sm font-semibold text-gray-950">{user.email}</div>
+            <div className="mb-1 rounded-[17px] bg-[#F0EADF] px-4 py-3">
+              <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#715B38]">Signed in</div>
+              <div className="mt-1 truncate text-[13px] font-semibold text-[#09251C]">{user.email}</div>
             </div>
           )}
 
           {/* Menu Items */}
           <div className="py-2">
-
-
             {/* Your Library */}
             {isAuthenticated && (
               <NavLink
@@ -112,6 +138,7 @@ const UserMenu: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     setIsFeedbackModalOpen(true);
                     setIsMenuOpen(false);
@@ -154,23 +181,24 @@ const UserMenu: React.FC = () => {
             )}
 
             {/* Divider */}
-            <div className="my-2 border-t border-[#E7EBDF]"></div>
+            <div className="mx-3 my-2 border-t border-[#123D2F]/10"></div>
 
             {/* Sign Out */}
             {isAuthenticated ? (
               <button
+                type="button"
                 onClick={() => {
                   logout();
                   setIsMenuOpen(false);
                 }}
-                className="flex w-full items-center px-4 py-3 text-left transition-[background-color,color] duration-200 hover:bg-red-50 group"
+                className="group mx-1.5 flex min-h-12 w-[calc(100%-0.75rem)] items-center rounded-[16px] px-3 py-2 text-left outline-none transition-[background-color,transform] duration-150 hover:bg-[#FBEDEA] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C95F4E]"
               >
-                <div className="mr-3 flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 transition-colors duration-200 group-hover:bg-red-100">
-                  <svg className="h-5 w-5 text-red-500 transition-colors duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="mr-3 flex h-9 w-9 items-center justify-center rounded-[12px] bg-[#FBEDEA] transition-colors duration-150 group-hover:bg-[#F6DCD6]">
+                  <svg className="h-[18px] w-[18px] text-[#B44D3E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                 </div>
-                <span className="text-sm font-semibold text-red-600">{t('logout')}</span>
+                <span className="text-[13px] font-semibold text-[#A94336]">{t('logout')}</span>
               </button>
             ) : (
               <>

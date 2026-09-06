@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
-import { AuthTabs } from '../components/AnimatedAuthComponents';
+import { AuthGateway } from '../components/AuthGateway';
 
 const SignUpPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -147,67 +147,25 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Left Side - Brand Image Display (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[#f0dcc0]">
-        <img
-          src="/images/join login new.webp"
-          alt="Ta7leel sign up artwork"
-          className="h-full w-full object-cover object-center outline outline-1 outline-black/10"
-        />
-      </div>
-
-      {/* Right Side - Sign Up Form */}
-      <AuthTabs
-        formFields={{
-          header: 'Create Account',
-          subHeader: 'Join BookBriefs to start learning',
-          fields: [
-            {
-              label: 'Full Name',
-              required: true,
-              type: 'text',
-              placeholder: 'Enter your full name',
-              onChange: (e) => setName(e.target.value),
-            },
-            {
-              label: 'Email',
-              required: true,
-              type: 'email',
-              placeholder: 'Enter your email',
-              onChange: (e) => setEmail(e.target.value),
-            },
-            {
-              label: 'Password',
-              required: true,
-              type: 'password',
-              placeholder: 'Enter your password',
-              onChange: (e) => setPassword(e.target.value),
-            },
-            {
-              label: 'Confirm Password',
-              required: true,
-              type: 'password',
-              placeholder: 'Confirm your password',
-              onChange: (e) => setConfirmPassword(e.target.value),
-            },
-          ],
-          submitButton: success ? 'Success!' : 'Sign Up',
-          textVariantButton: 'Already have an account? Sign in',
-        }}
-        goTo={(e) => {
-          e.preventDefault();
-          navigate('/login');
-        }}
-        handleSubmit={handleSubmit}
-        errorField={error}
-        googleLogin="Sign up with Google"
-        onGoogleLogin={handleGoogleSignUp}
-        isLoading={isLoading}
-        isGoogleLoading={isGoogleLoading}
-        success={success}
-      />
-    </div>
+    <AuthGateway
+      mode="signup"
+      name={name}
+      email={email}
+      password={password}
+      confirmPassword={confirmPassword}
+      error={error}
+      success={success}
+      isLoading={isLoading}
+      isGoogleLoading={isGoogleLoading}
+      onNameChange={setName}
+      onEmailChange={setEmail}
+      onPasswordChange={setPassword}
+      onConfirmPasswordChange={setConfirmPassword}
+      onSubmit={handleSubmit}
+      onGoogleAuth={handleGoogleSignUp}
+      onSwitchMode={() => navigate('/login')}
+      onGoHome={() => navigate('/')}
+    />
   );
 };
 

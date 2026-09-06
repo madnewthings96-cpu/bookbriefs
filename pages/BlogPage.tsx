@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
-import { useLanguage } from '../contexts/LanguageContext';
 import useSEO from '../hooks/useSEO';
-import StructuredData from '../components/StructuredData';
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  readTime: string;
-  imageUrl: string;
-  tags: string[];
-  slug: string;
-}
+import BlogLibrary from '../components/blog/BlogLibrary';
+import BlogArticleReader from '../components/blog/BlogArticleReader';
+import {
+  BlogPost,
+  calculateReadingProgress,
+  filterBlogPosts,
+  getBlogCategories,
+  getBlogPostDirection,
+  getRelatedBlogPosts,
+  normalizeBlogArticleMarkup,
+  scheduleBlogScrollReset,
+  shareBlogArticle,
+} from '../components/blog/blogPageModel';
+import './BlogPage.css';
 
 const BlogPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { t } = useLanguage();
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [shareLabel, setShareLabel] = useState('Share');
+  const articleRef = useRef<HTMLElement>(null);
 
   useSEO({
     title: selectedPost 
@@ -3214,351 +3216,102 @@ const BlogPage: React.FC = () => {
     }
   ];
 
-  // Handle URL-based post selection
   useEffect(() => {
-    if (slug) {
-      const post = blogPosts.find(p => p.slug === slug);
-      if (post) {
-        setSelectedPost(post);
-        setIsModalOpen(true);
-      }
-    } else {
+    if (!slug) {
       setSelectedPost(null);
-      setIsModalOpen(false);
+      setReadingProgress(0);
+      setShareLabel('Share');
+      return;
     }
+
+    const post = blogPosts.find((candidate) => candidate.slug === slug) ?? null;
+    setSelectedPost(post);
+    setShareLabel('Share');
+    setReadingProgress(0);
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, [slug]);
 
-  const filteredPosts = blogPosts;  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+  useLayoutEffect(() => {
+    if (slug || selectedPost) return undefined;
+    return scheduleBlogScrollReset(window);
+  }, [selectedPost, slug]);
+
+  useEffect(() => {
+    if (!selectedPost) return undefined;
+
+    const updateProgress = () => {
+      const article = articleRef.current;
+      if (!article) return;
+      const articleTop = window.scrollY + article.getBoundingClientRect().top;
+      setReadingProgress(calculateReadingProgress(
+        window.scrollY,
+        articleTop,
+        article.scrollHeight,
+        window.innerHeight,
+      ));
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+    return () => {
+      window.removeEventListener('scroll', updateProgress);
+      window.removeEventListener('resize', updateProgress);
+    };
+  }, [selectedPost]);
+
+  const categories = getBlogCategories(blogPosts);
+  const filteredPosts = filterBlogPosts(blogPosts, activeCategory);
+  const relatedPosts = selectedPost ? getRelatedBlogPosts(blogPosts, selectedPost) : [];
+  const sanitizedArticleContent = useMemo(() => {
+    if (!selectedPost) return '';
+    return DOMPurify.sanitize(normalizeBlogArticleMarkup(getFullContent(selectedPost.id)), {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'div', 'span', 'code', 'pre'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id'],
+      FORBID_ATTR: ['style'],
+    });
+  }, [selectedPost]);
+
+  const formatDate = (dateString: string, post: BlogPost = selectedPost ?? blogPosts[0]) => {
+    const direction = getBlogPostDirection(post);
+    return new Date(`${dateString}T00:00:00Z`).toLocaleDateString(direction === 'rtl' ? 'ar' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
     });
   };
 
+  const shareArticle = async () => {
+    if (!selectedPost) return;
+    const shareData = { title: selectedPost.title, text: selectedPost.excerpt, url: window.location.href };
+    setShareLabel(await shareBlogArticle(shareData, navigator));
+  };
+
   return (
-    <div className="min-h-screen bg-[#fffaf3]">
-
-      {/* Enhanced Blog Posts Grid */}
-      <section className="py-20 px-4 bg-gradient-to-b from-[#f7f0e6] to-[#fffaf3]">
-        <div className="container mx-auto max-w-7xl">
-          {/* Featured Post (First Post) */}
-          {filteredPosts.length > 0 && (
-            <div className="mb-16">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: '#453c31' }}>Featured Article</h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-[#a75d37] to-[#e5d8c7] mx-auto rounded-full"></div>
-              </div>
-              
-              <article 
-                className="bg-white rounded-2xl shadow-xl ring-1 ring-[#eadfce] overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer group max-w-4xl mx-auto"
-                onClick={() => openPostModal(filteredPosts[0])}
-              >
-                <div className="md:flex">
-                  <div className="md:w-1/2 relative overflow-hidden">
-                    <img 
-                      src={filteredPosts[0].imageUrl} 
-                      alt={filteredPosts[0].title}
-                      className="w-full h-64 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span 
-                        className="px-3 py-1 text-sm font-semibold text-white rounded-full shadow-lg"
-                        style={{ backgroundColor: '#a75d37' }}
-                      >
-                        {filteredPosts[0].category}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                    <div className="flex items-center text-sm text-[#7a6f62] mb-4">
-                      <span className="font-medium">{formatDate(filteredPosts[0].date)}</span>
-                      <span className="mx-3">•</span>
-                      <span>{filteredPosts[0].readTime}</span>
-                    </div>
-                    
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 leading-tight group-hover:text-[#a75d37] transition-colors" style={{ color: '#453c31' }}>
-                      {filteredPosts[0].title}
-                    </h3>
-                    
-                    <p className="text-[#675b4d] mb-6 leading-relaxed">
-                      {filteredPosts[0].excerpt}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {filteredPosts[0].tags.map((tag) => (
-                        <span 
-                          key={tag}
-                          className="px-3 py-1 text-xs bg-[#f7f0e6] text-[#453c31] rounded-full font-medium hover:bg-[#e5d8c7] transition-colors"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <button 
-                      className="inline-flex items-center text-[#a75d37] font-semibold hover:text-[#8f4f2f] transition-colors group"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openPostModal(filteredPosts[0]);
-                      }}
-                    >
-                      Read Full Article
-                      <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </article>
-            </div>
-          )}
-
-          {/* Regular Posts Grid */}
-          {filteredPosts.length > 1 && (
-            <div>
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: '#453c31' }}>Latest Articles</h2>
-                <div className="w-20 h-1 bg-gradient-to-r from-[#a75d37] to-[#e5d8c7] mx-auto rounded-full"></div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredPosts.slice(1).map((post) => (
-                  <article 
-                    key={post.id} 
-                    className="bg-white rounded-xl shadow-lg ring-1 ring-[#eadfce] overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group transform hover:-translate-y-1"
-                    onClick={() => openPostModal(post)}
-                  >
-                    <div className="relative overflow-hidden">
-                      <img 
-                        src={post.imageUrl} 
-                        alt={post.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <span 
-                          className="px-3 py-1 text-xs font-semibold text-white rounded-full shadow-md"
-                          style={{ backgroundColor: '#a75d37' }}
-                        >
-                          {post.category}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="p-6">
-                      <div className="flex items-center text-sm text-[#7a6f62] mb-3">
-                        <span className="font-medium">{formatDate(post.date)}</span>
-                        <span className="mx-2">•</span>
-                        <span>{post.readTime}</span>
-                      </div>
-                      
-                      <h3 className="text-lg font-bold mb-3 line-clamp-2 group-hover:text-[#a75d37] transition-colors leading-tight" style={{ color: '#453c31' }}>
-                        {post.title}
-                      </h3>
-                      
-                      <p className="text-[#675b4d] text-sm mb-4 line-clamp-3 leading-relaxed">
-                        {post.excerpt}
-                      </p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {post.tags.slice(0, 2).map((tag) => (
-                          <span 
-                            key={tag}
-                            className="px-2 py-1 text-xs bg-[#f7f0e6] text-[#675b4d] rounded-full font-medium"
-                          >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      <button 
-                        className="inline-flex items-center text-[#a75d37] font-semibold text-sm hover:text-[#8f4f2f] transition-colors group"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openPostModal(post);
-                        }}
-                      >
-                        Read More
-                        <svg className="ml-1 w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-          
-        {filteredPosts.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-[#7a6f62] text-lg">No posts found in this category.</p>
-          </div>
-        )}
-      </section>
-
-      {/* Blog Post Modal - WSJ Style */}
-      {isModalOpen && selectedPost && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#fffaf3]">
-          <div className="min-h-screen">
-            {/* Header Navigation Bar */}
-            <div className="sticky top-0 bg-white border-b border-[#eadfce] z-20 shadow-sm">
-              <div className="max-w-6xl mx-auto px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <h1 className="text-xl font-bold text-[#453c31]" style={{ fontFamily: 'Georgia, serif' }}>
-                      BookBriefs
-                    </h1>
-                    <div className="h-4 w-px bg-[#e5d8c7]"></div>
-                    <span className="text-sm text-[#675b4d] font-medium">
-                      {selectedPost.category}
-                    </span>
-                  </div>
-                  <button
-                    onClick={closePostModal}
-                    className="p-2 hover:bg-[#f7f0e6] rounded-full transition-colors"
-                  >
-                    <svg className="w-5 h-5 text-[#675b4d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Article Content */}
-            <div className="max-w-4xl mx-auto px-4 py-8">
-              {/* Article Header */}
-              <header className="mb-8">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#453c31] leading-tight mb-4" 
-                    style={{ fontFamily: 'Georgia, serif' }}>
-                  {selectedPost.title}
-                </h1>
-                
-                <div className="flex items-center text-sm text-[#675b4d] mb-6 space-x-4">
-                  <span className="font-medium">Published {formatDate(selectedPost.date)}</span>
-                  <span>•</span>
-                  <span>{selectedPost.readTime}</span>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {selectedPost.tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-3 py-1 text-xs bg-[#f7f0e6] text-[#a75d37] border border-[#e5d8c7] rounded font-medium uppercase tracking-wide"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </header>
-
-              {/* Article Image */}
-              <div className="mb-8">
-                <img 
-                  src={selectedPost.imageUrl} 
-                  alt={selectedPost.title}
-                  className="w-full h-80 object-cover rounded-lg"
-                  loading="eager"
-                />
-              </div>
-
-              {/* Article Body */}
-              <article className="prose prose-lg prose-gray max-w-none">
-                <div 
-                  className="article-content"
-                  dangerouslySetInnerHTML={{ 
-                    __html: DOMPurify.sanitize(getFullContent(selectedPost.id), {
-                      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'div', 'span', 'code', 'pre'],
-                      ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'class', 'id', 'style']
-                    })
-                  }}
-                  style={{
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '18px',
-                    lineHeight: '1.7',
-                    color: '#333'
-                  }}
-                />
-              </article>
-
-              {/* Buy Me a Coffee Button */}
-              <div className="mt-12 mb-12 text-center">
-                <div className="bg-gradient-to-r from-[#f7f0e6] to-[#fffaf3] border border-[#eadfce] rounded-lg p-8">
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: '#453c31', fontFamily: 'Georgia, serif' }}>
-                    Enjoyed this article?
-                  </h3>
-                  <p className="text-[#675b4d] mb-6 max-w-2xl mx-auto">
-                    If you found this content valuable, consider supporting our work by buying us a coffee. 
-                    Your support helps us create more quality content!
-                  </p>
-                  <a 
-                    href="https://ko-fi.com/ta7leel" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-8 py-4 rounded-full font-bold text-white transition-all duration-300 hover:opacity-90 hover:scale-105 shadow-lg text-lg"
-                    style={{ backgroundColor: '#a75d37' }}
-                  >
-                    <svg 
-                      className="w-6 h-6 mr-3" 
-                      viewBox="0 0 24 24" 
-                      fill="currentColor"
-                    >
-                      <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
-                    </svg>
-                    Buy me a coffee
-                  </a>
-                </div>
-              </div>
-
-              {/* Related Articles */}
-              <div className="mt-12 pt-8 border-t border-[#eadfce]">
-                <h3 className="text-2xl font-bold text-[#453c31] mb-6" style={{ fontFamily: 'Georgia, serif' }}>
-                  More from BookBriefs
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {blogPosts.filter(post => post.id !== selectedPost.id).slice(0, 4).map((post) => (
-                    <div key={post.id} className="group cursor-pointer" onClick={() => {
-                      setSelectedPost(post);
-                      window.scrollTo(0, 0);
-                    }}>
-                      <div className="flex space-x-4">
-                        <picture className="w-24 h-20 flex-shrink-0">
-                          <source 
-                            srcSet={post.imageUrl} 
-                            type="image/webp"
-                          />
-                          <img 
-                            src={post.imageUrl.replace('.webp', '.png')} 
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMTAwIDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zNSAyNUg2NVY1NUgzNVYyNVoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
-                            }}
-                          />
-                        </picture>
-                        <div className="flex-1">
-                          <h4 className="text-sm font-bold text-[#453c31] group-hover:text-[#a75d37] transition-colors line-clamp-2 mb-1" 
-                              style={{ fontFamily: 'Georgia, serif' }}>
-                            {post.title}
-                          </h4>
-                          <p className="text-xs text-[#675b4d] mb-1">{formatDate(post.date)}</p>
-                          <p className="text-xs text-[#7a6f62] line-clamp-2">{post.excerpt}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="blog-editorial-shell">
+      {selectedPost ? (
+        <BlogArticleReader
+          post={selectedPost}
+          contentHtml={sanitizedArticleContent}
+          relatedPosts={relatedPosts}
+          readingProgress={readingProgress}
+          shareLabel={shareLabel}
+          onBack={closePostModal}
+          onShare={shareArticle}
+          onOpenPost={openPostModal}
+          formatDate={formatDate}
+          articleRef={articleRef}
+        />
+      ) : (
+        <BlogLibrary
+          posts={filteredPosts}
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+          onOpenPost={openPostModal}
+          formatDate={formatDate}
+        />
       )}
     </div>
   );

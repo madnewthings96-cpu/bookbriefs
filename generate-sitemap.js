@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Import books data - we'll read from the compiled constants
-const DOMAIN = 'https://ta7leel.site';
+const DOMAIN = 'https://www.ta7leel.pro';
 const HASH_ROUTING = false; // Set to false for clean URLs (better for SEO)
 const TODAY = new Date().toISOString().split('T')[0];
 

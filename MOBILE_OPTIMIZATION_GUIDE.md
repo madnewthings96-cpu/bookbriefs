@@ -393,7 +393,7 @@ npm run dev -- --host
 npm install -g lighthouse
 
 # Run audit (deployed site)
-lighthouse https://ta7leel.site --only-categories=performance --form-factor=mobile
+lighthouse https://www.ta7leel.pro --only-categories=performance --form-factor=mobile
 
 # Target score: >85
 ```
@@ -422,7 +422,7 @@ cwebp -q 80 input.png -o output.webp
 for img in *.png; do cwebp -q 80 "$img" -o "${img%.png}.webp"; done
 
 # Test mobile performance
-lighthouse https://ta7leel.site --view --form-factor=mobile
+lighthouse https://www.ta7leel.pro --view --form-factor=mobile
 
 # Check bundle size
 npm run build && du -sh dist/assets/*

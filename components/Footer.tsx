@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Coffee, Instagram, Send, Youtube } from 'lucide-react';
+import { ArrowRight, Coffee, Instagram, Send, Youtube } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -14,23 +14,23 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-[#e5d8c7] text-gray-950">
+    <footer className="bg-forest-950 text-forest-100 border-t border-forest-900/60">
       <div className="mx-auto max-w-7xl">
-        <section className="px-5 py-12 text-center sm:px-8 sm:py-16 lg:py-20">
-          <h2 className="mx-auto max-w-2xl text-4xl font-bold leading-[0.95] tracking-tight text-gray-950 text-balance sm:text-5xl md:text-6xl">
+        <section className="px-5 py-14 text-center sm:px-8 sm:py-18 lg:py-20">
+          <h2 className="mx-auto max-w-2xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl md:text-6xl">
             You don’t have to read it all alone.
           </h2>
-          <p className="mx-auto mt-5 max-w-xs text-sm leading-5 text-gray-700 text-pretty">
-            The best ideas are easier to keep when they are clear, short, and ready when you are.
+          <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-forest-200/80 text-pretty">
+            The best ideas are easier to retain when they are clear, concise, and accessible whenever you need them.
           </p>
 
-          <div className="mt-5 flex justify-center -space-x-2" aria-hidden="true">
+          <div className="mt-6 flex justify-center -space-x-2" aria-hidden="true">
             {readerStack.map((src) => (
               <img
                 key={src}
                 src={src}
                 alt=""
-                className="h-10 w-10 rounded-full object-cover book-cover-outline shadow-[0_1px_2px_rgba(17,24,39,0.08),0_8px_18px_rgba(17,24,39,0.12)]"
+                className="h-11 w-11 rounded-full object-cover ring-2 ring-forest-900 shadow-md transition-transform duration-200 hover:-translate-y-1"
                 loading="lazy"
                 decoding="async"
               />
@@ -39,57 +39,72 @@ const Footer: React.FC = () => {
 
           <Link
             to="/summaries"
-            className="pressable mx-auto mt-12 flex min-h-12 w-full max-w-5xl items-center justify-between rounded-lg bg-white px-4 py-3 text-left text-sm font-semibold text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.06),0_14px_34px_rgba(17,24,39,0.08)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-gray-50"
+            className="pressable mx-auto mt-10 flex min-h-12 w-full max-w-3xl items-center justify-between rounded-full bg-forest-900/90 px-6 py-3.5 text-left text-sm font-bold text-white border border-forest-700/60 shadow-card-rest transition-all duration-200 hover:bg-forest-800 hover:border-forest-600"
           >
             <span className="flex items-center gap-3">
-              <span className="h-1.5 w-1.5 rounded-full bg-gray-950" aria-hidden="true" />
-              Start reading smarter
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+              <span>Start reading smarter with Ta7leel</span>
             </span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <ArrowRight className="h-4 w-4 text-emerald-300" aria-hidden="true" />
           </Link>
         </section>
 
-        <section className="grid border-t border-gray-950/55 md:grid-cols-2">
+        <section className="grid border-t border-forest-900/80 md:grid-cols-2">
           <div className="flex min-h-[190px] flex-col justify-between px-5 py-8 sm:px-10 md:min-h-[220px]">
-            <Link to="/" className="inline-flex items-center gap-3 text-gray-950">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-transparent">
-                <BookOpen className="h-12 w-12 stroke-[1.6]" aria-hidden="true" />
-              </span>
-              <span className="text-4xl font-semibold tracking-tight">BookBriefs</span>
+            <Link
+              to="/"
+              className="group inline-flex w-fit flex-col items-start gap-2 rounded-xl text-white outline-none transition-opacity duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-4 focus-visible:ring-offset-forest-950"
+            >
+              <img
+                src="/images/ta7leel-navbar-logo-mind-leaf.png"
+                alt="Ta7leel"
+                className="h-auto w-44 object-contain object-left brightness-0 invert"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs text-forest-300/80 font-medium">BookBriefs · High-Signal Reading</span>
+              </div>
             </Link>
-            <p className="mt-10 text-xs text-gray-700">©{currentYear} BookBriefs, Inc. All Rights Reserved.</p>
+            <p className="mt-8 text-xs text-forest-400/80">©{currentYear} Ta7leel (BookBriefs). All Rights Reserved.</p>
           </div>
 
-          <div className="grid min-h-[190px] border-t border-gray-950/55 md:min-h-[220px] md:border-l md:border-t-0 md:border-gray-950/55">
-            <div className="px-5 py-8 sm:px-20">
-              <nav className="space-y-4 text-sm font-medium text-gray-800" aria-label="Social links">
-                <a href="https://x.com/Ta7leel007" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-gray-950">
+          <div className="grid min-h-[190px] border-t border-forest-900/80 md:min-h-[220px] md:border-l md:border-t-0 md:border-forest-900/80">
+            <div className="px-5 py-8 sm:px-16">
+              <nav className="grid grid-cols-2 gap-3 text-sm font-semibold text-forest-200" aria-label="Social links">
+                <a href="https://x.com/Ta7leel007" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-white">
                   <span className="inline-flex h-4 w-4 items-center justify-center text-xs font-bold" aria-hidden="true">𝕏</span>
-                  X
+                  X / Twitter
                 </a>
-                <a href="https://www.youtube.com/@ta7leeel" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-gray-950">
-                  <Youtube className="h-4 w-4" aria-hidden="true" />
+                <a href="https://www.youtube.com/@ta7leeel" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-white">
+                  <Youtube className="h-4 w-4 text-red-400" aria-hidden="true" />
                   YouTube
                 </a>
-                <a href="https://ko-fi.com/ta7leel" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-gray-950">
-                  <Coffee className="h-4 w-4" aria-hidden="true" />
+                <a href="https://ko-fi.com/ta7leel" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-white">
+                  <Coffee className="h-4 w-4 text-amber-400" aria-hidden="true" />
                   Ko-fi
                 </a>
-                <a href="https://t.me/MadMarkets" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-gray-950">
-                  <Send className="h-4 w-4" aria-hidden="true" />
+                <a href="https://t.me/MadMarkets" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-white">
+                  <Send className="h-4 w-4 text-sky-400" aria-hidden="true" />
                   Telegram
                 </a>
-                <a href="https://www.instagram.com/ta7leel007" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-gray-950">
-                  <Instagram className="h-4 w-4" aria-hidden="true" />
+                <a href="https://www.instagram.com/ta7leel007" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 transition-colors duration-200 hover:text-white">
+                  <Instagram className="h-4 w-4 text-pink-400" aria-hidden="true" />
                   Instagram
                 </a>
               </nav>
             </div>
 
-            <div className="self-end px-5 pb-6 sm:px-20">
-              <Link to="/privacy-policy" className="text-xs font-medium text-gray-700 transition-colors duration-200 hover:text-gray-950">
-                Privacy Notice
-              </Link>
+            <div className="self-end px-5 pb-6 sm:px-16">
+              <div className="flex items-center gap-4 text-xs font-medium text-forest-400/80">
+                <Link to="/privacy-policy" className="transition-colors duration-200 hover:text-white">
+                  Privacy Notice
+                </Link>
+                <span>·</span>
+                <Link to="/terms-of-use" className="transition-colors duration-200 hover:text-white">
+                  Terms of Use
+                </Link>
+              </div>
             </div>
           </div>
         </section>

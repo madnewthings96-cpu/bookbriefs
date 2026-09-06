@@ -70,7 +70,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
           contactPoint: {
             '@type': 'ContactPoint',
             contactType: 'Customer Service',
-            email: 'support@ta7leel.site',
+            email: 'support@ta7leel.pro',
           },
         };
 

@@ -244,10 +244,10 @@ These pages should link deeply to summary pages and be updated quarterly.
 
 ### Priority 0: Measurement Setup
 
-- Verify `https://ta7leel.site` in Google Search Console.
+- Verify `https://www.ta7leel.pro` in Google Search Console.
 - Submit:
-  - `https://ta7leel.site/sitemap.xml`
-  - `https://ta7leel.site/sitemap-ar.xml`
+  - `https://www.ta7leel.pro/sitemap.xml`
+  - `https://www.ta7leel.pro/sitemap-ar.xml`
   - future sitemap index once fixed.
 - Create GA4 conversions for:
   - signup

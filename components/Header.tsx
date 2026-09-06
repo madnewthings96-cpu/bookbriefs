@@ -1,55 +1,64 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   BarChart3,
   BookOpen,
+  Bookmark,
   Calculator,
   ChevronDown,
   Coffee,
+  Compass,
   Download,
   FileText,
-  Library,
+  LogOut,
   Menu,
   Newspaper,
   PenLine,
   Search,
-  Sparkles,
   Target,
   X,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
-import { useBooks } from '../contexts/BooksContext';
-import LanguageSelector from './LanguageSelector';
+import { searchBooks, SearchResult } from '../services/searchService';
+import {
+  getActiveNavigationGroup,
+  getNextNavigationMenu,
+  isCompactHeader,
+  NavigationGroupKey,
+} from './headerNavigation';
 import SearchResults from './SearchResults';
 import UserMenu from './UserMenu';
-import { searchBooks, SearchResult } from '../services/searchService';
-
-type MegaMenuKey = 'library' | 'tools' | 'learn';
 
 type HeaderIcon = React.ComponentType<{ className?: string }>;
 
-interface MegaMenuItem {
+interface NavigationItem {
   to: string;
   label: string;
   description: string;
   icon: HeaderIcon;
 }
 
-interface MegaMenuConfig {
+interface NavigationGroup {
+  number: string;
   label: string;
   eyebrow: string;
   headline: string;
-  items: MegaMenuItem[];
-  promo: {
+  items: NavigationItem[];
+  feature: {
     to: string;
     title: string;
-    body: string;
+    author: string;
+    insight: string;
     image: string;
   };
 }
+
+const menuTransition = { type: 'spring' as const, duration: 0.36, bounce: 0 };
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,23 +68,151 @@ const Header: React.FC = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [activeMegaMenu, setActiveMegaMenu] = useState<MegaMenuKey | null>(null);
+  const [activeMegaMenu, setActiveMegaMenu] = useState<NavigationGroupKey | null>(null);
+
   const headerRef = useRef<HTMLElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobilePanelRef = useRef<HTMLElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const desktopSearchTriggerRef = useRef<HTMLButtonElement>(null);
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+  const megaMenuTriggerRefs = useRef<Partial<Record<NavigationGroupKey, HTMLButtonElement | null>>>({});
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const menuCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuth();
+  const prefersReducedMotion = useReducedMotion();
+  const { isAuthenticated, logout } = useAuth();
   const { t, language } = useLanguage();
   const { isReaderMode } = useReaderMode();
   const { books } = useBooks();
 
-  const closeSearch = useCallback(() => {
+  const navigationGroups = useMemo<Record<NavigationGroupKey, NavigationGroup>>(
+    () => ({
+      library: {
+        number: '01',
+        label: 'Library',
+        eyebrow: 'Distilled knowledge',
+        headline: 'Find the idea worth carrying forward.',
+        items: [
+          {
+            to: '/summaries',
+            label: t('summaries'),
+            description: 'Browse the complete collection of concise, actionable book briefs.',
+            icon: BookOpen,
+          },
+          {
+            to: '/#reading-paths',
+            label: 'Reading paths',
+            description: 'Follow focused sequences for habits, wealth, psychology, and strategy.',
+            icon: Compass,
+          },
+          {
+            to: '/reading-challenge',
+            label: '30-day challenge',
+            description: 'Turn ten focused minutes into a learning habit that compounds.',
+            icon: Target,
+          },
+          {
+            to: '/downloads',
+            label: 'Downloads & guides',
+            description: 'Keep printable briefs, checklists, and visual cheat sheets close.',
+            icon: Download,
+          },
+        ],
+        feature: {
+          to: '/summary/atomic-habits',
+          title: 'Atomic Habits',
+          author: 'James Clear',
+          insight: 'Small changes become remarkable results when the system is built to last.',
+          image: '/images/atomic-habits.jpg',
+        },
+      },
+      tools: {
+        number: '02',
+        label: 'Tools',
+        eyebrow: 'Ideas in practice',
+        headline: 'Turn useful thinking into measurable action.',
+        items: [
+          {
+            to: '/calculators',
+            label: t('calculators'),
+            description: 'Model compound growth, FIRE targets, position size, and pip value.',
+            icon: Calculator,
+          },
+          {
+            to: '/finance-tracker',
+            label: 'Finance tracker',
+            description: 'See your net worth, income, and financial runway in one place.',
+            icon: BarChart3,
+          },
+          {
+            to: '/trading-journal',
+            label: 'Trading journal',
+            description: 'Review decisions, risk, and emotional discipline across every trade.',
+            icon: PenLine,
+          },
+        ],
+        feature: {
+          to: '/calculators/compound-interest',
+          title: 'The Psychology of Money',
+          author: 'Morgan Housel',
+          insight: 'Compounding works best when patience has enough room to do the heavy lifting.',
+          image: '/images/the psychology of money.jpg',
+        },
+      },
+      learn: {
+        number: '03',
+        label: 'Learn',
+        eyebrow: 'Beyond the brief',
+        headline: 'Connect books to the world around you.',
+        items: [
+          {
+            to: '/blog',
+            label: 'Essays & blog',
+            description: 'Explore practical essays that connect ideas across books and life.',
+            icon: FileText,
+          },
+          {
+            to: '/news',
+            label: 'Market & news',
+            description: 'Scan the global and market shifts that deserve your attention.',
+            icon: Newspaper,
+          },
+          {
+            to: '/about',
+            label: t('about'),
+            description: 'Read why Ta7leel values clarity, signal, and ideas you can use.',
+            icon: Bookmark,
+          },
+        ],
+        feature: {
+          to: '/about',
+          title: 'The Ta7leel philosophy',
+          author: 'Our editorial standard',
+          insight: 'Clarity over volume. Depth without noise. One useful idea at a time.',
+          image: '/images/reading.jpg',
+        },
+      },
+    }),
+    [t],
+  );
+
+  const activeRouteGroup = getActiveNavigationGroup(location.pathname);
+  const activeMenu = activeMegaMenu ? navigationGroups[activeMegaMenu] : null;
+
+  const closeSearch = useCallback((restoreFocus = false) => {
     setIsSearchExpanded(false);
     setSearchQuery('');
     setSearchResults([]);
     setIsSearchFocused(false);
-    searchInputRef.current?.blur();
+    desktopSearchInputRef.current?.blur();
+    mobileSearchInputRef.current?.blur();
+
+    if (restoreFocus && window.matchMedia('(min-width: 1024px)').matches) {
+      window.requestAnimationFrame(() => desktopSearchTriggerRef.current?.focus());
+    }
   }, []);
 
   const closeMenus = useCallback(() => {
@@ -83,75 +220,129 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   }, []);
 
-  const handleSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      const results = searchBooks(searchQuery, language, books);
+  const openSearch = useCallback(() => {
+    setActiveMegaMenu(null);
+
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      setIsSearchExpanded(true);
+      window.requestAnimationFrame(() => desktopSearchInputRef.current?.focus());
+      return;
+    }
+
+    setIsMenuOpen(true);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => mobileSearchInputRef.current?.focus());
+    });
+  }, []);
+
+  const handleSearch = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      const query = searchQuery.trim();
+      if (!query) return;
+
+      const results = searchBooks(query, language, books);
       if (results.length > 0) {
         navigate(results[0].path);
         closeSearch();
+        closeMenus();
       }
-    }
-  }, [books, closeSearch, language, navigate, searchQuery]);
+    },
+    [books, closeMenus, closeSearch, language, navigate, searchQuery],
+  );
 
-  const handleSearchInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    setIsSearching(true);
+  const handleSearchInput = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const query = event.target.value;
+      setSearchQuery(query);
+      setIsSearching(true);
 
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
-    searchTimeoutRef.current = setTimeout(() => {
-      if (query.trim()) {
-        const results = searchBooks(query, language, books);
-        setSearchResults(results);
-      } else {
-        setSearchResults([]);
-      }
-      setIsSearching(false);
-    }, 300);
-  }, [books, language]);
+      searchTimeoutRef.current = setTimeout(() => {
+        setSearchResults(query.trim() ? searchBooks(query, language, books) : []);
+        setIsSearching(false);
+      }, 150);
+    },
+    [books, language],
+  );
+
+  const clearMenuCloseTimer = useCallback(() => {
+    if (menuCloseTimeoutRef.current) clearTimeout(menuCloseTimeoutRef.current);
+  }, []);
+
+  const scheduleMenuClose = useCallback(() => {
+    clearMenuCloseTimer();
+    menuCloseTimeoutRef.current = setTimeout(() => setActiveMegaMenu(null), 140);
+  }, [clearMenuCloseTimer]);
 
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === '/' && !isSearchFocused) {
-        e.preventDefault();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        openSearch();
+      }
+
+      if (event.key === 'Escape') {
+        const megaMenuTrigger = activeMegaMenu ? megaMenuTriggerRefs.current[activeMegaMenu] : null;
         setActiveMegaMenu(null);
-        setIsSearchExpanded(true);
-        setTimeout(() => searchInputRef.current?.focus(), 100);
-      } else if (e.key === 'Escape') {
-        setActiveMegaMenu(null);
-        if (isSearchFocused || isSearchExpanded) {
-          closeSearch();
+        setIsMenuOpen(false);
+        if (isSearchExpanded || isSearchFocused) {
+          closeSearch(true);
+        } else if (megaMenuTrigger) {
+          window.requestAnimationFrame(() => megaMenuTrigger.focus());
         }
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [closeSearch, isSearchFocused, isSearchExpanded]);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [activeMegaMenu, closeSearch, isSearchExpanded, isSearchFocused, openSearch]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 20;
-      if (scrolled !== isScrolled) {
-        setIsScrolled(scrolled);
-
-        if (isReaderMode) {
-          if (scrolled) {
-            document.body.classList.add('scrolled');
-          } else {
-            document.body.classList.remove('scrolled');
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(isCompactHeader(window.scrollY));
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isReaderMode, isScrolled]);
+  }, []);
+
+  useEffect(() => {
+    closeMenus();
+    setIsSearchExpanded(false);
+    setIsSearchFocused(false);
+  }, [closeMenus, location.pathname, location.hash]);
+
+  useEffect(() => {
+    const encodedTarget = location.hash.replace(/^#/, '');
+    if (!encodedTarget) return;
+
+    let frameId = 0;
+    let attempts = 0;
+    let targetId = encodedTarget;
+
+    try {
+      targetId = decodeURIComponent(encodedTarget);
+    } catch {
+      // Use the literal hash when it is not valid URI-encoded text.
+    }
+
+    const scrollToTarget = () => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start',
+        });
+        return;
+      }
+
+      attempts += 1;
+      if (attempts < 30) frameId = window.requestAnimationFrame(scrollToTarget);
+    };
+
+    frameId = window.requestAnimationFrame(scrollToTarget);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [location.hash, location.pathname, prefersReducedMotion]);
 
   useEffect(() => {
     if (!activeMegaMenu) return;
@@ -167,532 +358,599 @@ const Header: React.FC = () => {
   }, [activeMegaMenu]);
 
   useEffect(() => {
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+    if (!isMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = 'hidden';
+
+    const focusFrame = window.requestAnimationFrame(() => mobileCloseButtonRef.current?.focus());
+
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !mobilePanelRef.current) return;
+
+      const focusable = Array.from(
+        mobilePanelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => !element.hasAttribute('hidden'));
+
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
+    };
+
+    document.addEventListener('keydown', trapFocus);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown', trapFocus);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+      if (menuCloseTimeoutRef.current) clearTimeout(menuCloseTimeoutRef.current);
     };
   }, []);
 
-  const megaMenus: Record<MegaMenuKey, MegaMenuConfig> = {
-    library: {
-      label: 'Library',
-      eyebrow: '10-minute reading',
-      headline: 'Find the next idea worth applying.',
-      items: [
-        {
-          to: '/summaries',
-          label: t('summaries'),
-          description: 'Browse every book summary in the library.',
-          icon: BookOpen,
-        },
-        {
-          to: '/summaries',
-          label: 'Most read books',
-          description: 'Start with the summaries readers return to most.',
-          icon: Library,
-        },
-        {
-          to: '/reading-challenge',
-          label: 'Reading Challenge',
-          description: 'Set a monthly target and track your progress.',
-          icon: Target,
-        },
-        {
-          to: '/downloads',
-          label: 'Downloads',
-          description: 'Keep your saved summaries and resources together.',
-          icon: Download,
-        },
-      ],
-      promo: {
-        to: '/summary/atomic-habits',
-        title: 'Start with Atomic Habits',
-        body: 'A practical first read for building systems that compound.',
-        image: '/images/atomic-habits.jpg',
-      },
-    },
-    tools: {
-      label: 'Tools',
-      eyebrow: 'Practical utilities',
-      headline: 'Turn insights into decisions.',
-      items: [
-        {
-          to: '/calculators',
-          label: t('calculators'),
-          description: 'Run position size, compound interest, FIRE, and pip calculations.',
-          icon: Calculator,
-        },
-        {
-          to: '/finance-tracker',
-          label: 'Finance Tracker',
-          description: 'Track goals, deposits, and progress in one view.',
-          icon: BarChart3,
-        },
-        {
-          to: '/trading-journal',
-          label: 'Trading Journal',
-          description: 'Log trades and review the patterns behind your performance.',
-          icon: PenLine,
-        },
-        {
-          to: '/summaries',
-          label: 'Money books',
-          description: 'Read summaries on investing, markets, and wealth building.',
-          icon: Sparkles,
-        },
-      ],
-      promo: {
-        to: '/finance-tracker',
-        title: 'Build a clearer money system',
-        body: 'Pair finance tools with book insights and track the plan.',
-        image: '/images/the psychology of money.jpg',
-      },
-    },
-    learn: {
-      label: 'Learn',
-      eyebrow: 'Updates and essays',
-      headline: 'Keep the habit going between books.',
-      items: [
-        {
-          to: '/blog',
-          label: 'Blog',
-          description: 'Read practical essays and book-driven guides.',
-          icon: FileText,
-        },
-        {
-          to: '/news',
-          label: 'News',
-          description: 'Follow market and learning updates worth scanning.',
-          icon: Newspaper,
-        },
-        {
-          to: '/about',
-          label: t('about'),
-          description: 'Learn why BookBriefs exists and what it is built for.',
-          icon: BookOpen,
-        },
-        {
-          to: '/summaries',
-          label: 'New summaries',
-          description: 'Check the latest books added to the library.',
-          icon: Sparkles,
-        },
-      ],
-      promo: {
-        to: '/blog',
-        title: 'Read beyond the summary',
-        body: 'Use the blog to connect ideas across books, money, and habits.',
-        image: '/images/reading.jpg',
-      },
-    },
+  const isNavigationGroupActive = (key: NavigationGroupKey) => {
+    const isAllBooksRoute = location.pathname === '/summaries';
+    return activeMegaMenu === key || (activeRouteGroup === key && !(key === 'library' && isAllBooksRoute));
   };
 
-  const desktopMenuKeys = Object.keys(megaMenus) as MegaMenuKey[];
-
-  const mobileLinks: MegaMenuItem[] = [
-    { to: '/summaries', label: t('summaries'), description: '', icon: BookOpen },
-    { to: '/blog', label: 'Blog', description: '', icon: FileText },
-    { to: '/calculators', label: t('calculators'), description: '', icon: Calculator },
-    { to: '/news', label: 'News', description: '', icon: Newspaper },
-    { to: '/finance-tracker', label: 'Finance Tracker', description: '', icon: BarChart3 },
-    { to: '/trading-journal', label: 'Trading Journal', description: '', icon: PenLine },
-  ];
-
-  const routeGroups: Record<MegaMenuKey, string[]> = {
-    library: ['/summaries', '/summary', '/reading-challenge', '/downloads'],
-    tools: ['/calculators', '/finance-tracker', '/trading-journal'],
-    learn: ['/blog', '/news', '/about'],
+  const navButtonClassName = (key: NavigationGroupKey) => {
+    const isActive = isNavigationGroupActive(key);
+    return `group relative flex min-h-11 items-center gap-1.5 rounded-[14px] px-3.5 text-[13px] font-semibold tracking-[-0.01em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
+      isActive ? 'text-[#123D2F]' : 'text-[#53675E] hover:-translate-y-px hover:text-[#123D2F]'
+    }`;
   };
 
-  const isGroupActive = (key: MegaMenuKey) =>
-    routeGroups[key].some((route) => location.pathname === route || location.pathname.startsWith(`${route}/`));
-
-  const navButtonClassName = (key: MegaMenuKey) =>
-    `inline-flex h-10 items-center gap-1 rounded-full px-3 text-sm font-semibold transition-[background-color,color,box-shadow] duration-200 ${
-      activeMegaMenu === key || isGroupActive(key)
-        ? 'bg-white text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_8px_18px_rgba(89,69,45,0.10)]'
-        : 'text-[#574f43] hover:bg-white/65 hover:text-gray-950'
-    }`;
-
-  const mobileLinkClassName = ({ isActive }: { isActive: boolean }) =>
-    `flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-[background-color,color,transform] duration-200 active:scale-[0.98] ${
-      isActive
-        ? 'bg-white text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_8px_20px_rgba(89,69,45,0.10)]'
-        : 'text-[#574f43] hover:bg-white/70 hover:text-gray-950'
-    }`;
-
-  const headerClassName = `group sticky top-0 z-50 border-b backdrop-blur-xl transition-[padding,box-shadow,background-color,border-color,backdrop-filter] duration-300 ${
-    isReaderMode
-      ? 'border-gray-200/70 bg-white/90 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_8px_24px_rgba(17,24,39,0.06)] hover:bg-white/50'
-      : isScrolled
-        ? 'border-[#e8dfd3]/50 bg-white/50 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_14px_36px_rgba(89,69,45,0.12)]'
-        : 'border-[#e5d8c7] bg-[#f7f0e6]/95 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_8px_24px_rgba(89,69,45,0.08)] hover:bg-[#f7f0e6]/50'
-  } ${isReaderMode && isScrolled ? 'py-2' : 'py-0'}`;
-
-  const activeMenu = activeMegaMenu ? megaMenus[activeMegaMenu] : null;
+  const animationDuration = prefersReducedMotion ? 0.01 : undefined;
 
   return (
-    <header
-      ref={headerRef}
-      className={headerClassName}
-      onMouseLeave={() => setActiveMegaMenu(null)}
-    >
-      {!isReaderMode && (
-        <div className={`hidden border-b border-white/15 text-white transition-colors duration-300 group-hover:bg-[#a75d37]/50 md:block ${isScrolled ? 'bg-[#a75d37]/50' : 'bg-[#a75d37]'}`}>
-          <div className="mx-auto flex h-7 max-w-7xl items-center justify-center px-4 text-[11px] font-semibold sm:px-6 lg:px-8">
+    <>
+      <div className="h-[76px] sm:h-[84px]" aria-hidden="true" />
+
+      <div
+        className={`pointer-events-none fixed inset-x-0 z-[70] px-0 transition-[top,padding] duration-300 ease-out ${
+          isScrolled ? 'top-3 px-3 sm:px-5' : 'top-0'
+        }`}
+      >
+        <header
+          ref={headerRef}
+          data-testid="reading-ribbon"
+          data-compact={isScrolled ? 'true' : 'false'}
+          className={`reading-ribbon-grain pointer-events-auto relative mx-auto text-[#123D2F] transition-[max-width,min-height,border-radius,background-color,box-shadow] duration-300 ease-out ${
+            isScrolled
+              ? 'min-h-[60px] max-w-[1180px] rounded-[24px] bg-[#FBF8F1]/[0.94] shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_2px_4px_rgba(9,37,28,0.04),0_18px_48px_rgba(9,37,28,0.14)] backdrop-blur-2xl'
+              : 'min-h-[76px] max-w-[1440px] rounded-none bg-[#FBF8F1] shadow-[0_1px_0_rgba(18,61,47,0.09),0_10px_28px_rgba(9,37,28,0.03)] sm:min-h-[84px]'
+          }`}
+          onMouseEnter={clearMenuCloseTimer}
+          onMouseLeave={scheduleMenuClose}
+        >
+          <div
+            className={`relative z-10 flex items-center justify-between transition-[height,padding] duration-300 ease-out ${
+              isScrolled ? 'h-[60px] px-2.5 sm:px-3.5' : 'h-[76px] px-4 sm:h-[84px] sm:px-7 lg:px-9'
+            }`}
+          >
             <Link
-              to="/summaries"
-              className="inline-flex items-center gap-2 text-white/95 underline-offset-4 transition-colors duration-200 hover:text-white hover:underline"
-            >
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              New summaries added weekly. Read the next big idea in 10 minutes.
-            </Link>
-          </div>
-        </div>
-      )}
-
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between gap-3 lg:h-16">
-          <div className="flex min-w-0 items-center">
-            <NavLink
               to="/"
-              className="group flex min-h-11 min-w-0 items-center gap-3 rounded-2xl pr-2 transition-transform duration-200 active:scale-[0.98]"
-              onClick={() => setActiveMegaMenu(null)}
-              aria-label="BookBriefs home"
+              className="group flex min-h-11 shrink-0 items-center rounded-[16px] outline-none transition-transform duration-150 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]"
+              onClick={closeMenus}
+              aria-label="Ta7leel home"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-transparent text-[#374151] transition-transform duration-200 group-hover:-translate-y-0.5">
-                <BookOpen className="h-9 w-9 stroke-[1.7]" aria-hidden="true" />
-              </span>
-              <span className="logo-text hidden min-w-0 flex-col items-center leading-none text-center sm:flex">
-                <span className="block truncate text-[22px] font-semibold tracking-tight text-[#374151]">BookBriefs</span>
-                <span className="mt-0.5 hidden text-center text-[14px] font-semibold italic tracking-tight text-[#374151] lg:block" style={{ fontFamily: '"Newsreader", serif' }}>
-                  Ta7leel
-                </span>
-              </span>
-            </NavLink>
+              <img
+                src="/images/ta7leel-navbar-logo-mind-leaf.png"
+                alt=""
+                className={`w-auto object-contain transition-[height,filter,transform] duration-300 ease-out group-hover:scale-[1.025] group-hover:drop-shadow-[0_5px_8px_rgba(9,37,28,0.12)] ${
+                  isScrolled ? 'h-9 sm:h-10' : 'h-10 sm:h-11'
+                }`}
+              />
+            </Link>
 
-            <nav className="ml-7 hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-              {desktopMenuKeys.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={navButtonClassName(key)}
-                  onMouseEnter={() => {
-                    closeSearch();
-                    setActiveMegaMenu(key);
-                  }}
-                  onFocus={() => setActiveMegaMenu(key)}
-                  onClick={() => {
-                    closeSearch();
-                    setActiveMegaMenu(key);
-                  }}
-                  aria-expanded={activeMegaMenu === key}
-                  aria-controls="desktop-mega-menu"
+            {!isReaderMode && !isSearchExpanded && (
+              <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center lg:flex" aria-label="Primary navigation">
+                {(Object.keys(navigationGroups) as NavigationGroupKey[]).map((key) => {
+                  const isActive = isNavigationGroupActive(key);
+                  return (
+                    <button
+                      ref={(element) => {
+                        megaMenuTriggerRefs.current[key] = element;
+                      }}
+                      id={`nav-trigger-${key}`}
+                      key={key}
+                      type="button"
+                      className={navButtonClassName(key)}
+                      onMouseEnter={() => {
+                        closeSearch();
+                        setActiveMegaMenu(key);
+                      }}
+                      onClick={() => {
+                        closeSearch();
+                        setActiveMegaMenu((current) => getNextNavigationMenu(current, key));
+                      }}
+                      aria-haspopup="true"
+                      aria-expanded={activeMegaMenu === key}
+                      aria-controls="desktop-mega-menu"
+                    >
+                      <span>{navigationGroups[key].label}</span>
+                      <ChevronDown
+                        className={`h-3.5 w-3.5 transition-[transform,color] duration-200 ${
+                          activeMegaMenu === key ? 'rotate-180 text-[#C49552]' : 'text-[#8A998F]'
+                        }`}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className={`reading-ribbon-marker absolute bottom-0 left-1/2 h-2.5 w-4 -translate-x-1/2 bg-[#C49552] transition-[opacity,transform] duration-200 ${
+                          isActive ? 'translate-y-1 opacity-100' : 'translate-y-2 opacity-0'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
+
+                <NavLink
+                  to="/summaries"
+                  end
+                  className={({ isActive }) =>
+                    `group relative flex min-h-11 items-center rounded-[14px] px-3.5 text-[13px] font-semibold tracking-[-0.01em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
+                      isActive
+                        ? 'text-[#123D2F]'
+                        : 'text-[#53675E] hover:-translate-y-px hover:text-[#123D2F]'
+                    }`
+                  }
                 >
-                  {megaMenus[key].label}
-                  <ChevronDown
-                    className={`h-3.5 w-3.5 transition-transform duration-200 ${activeMegaMenu === key ? 'rotate-180' : ''}`}
-                    aria-hidden="true"
-                  />
-                </button>
-              ))}
-            </nav>
-          </div>
+                  {({ isActive }) => (
+                    <>
+                      All books
+                      <span
+                        className={`reading-ribbon-marker absolute bottom-0 left-1/2 h-2.5 w-4 -translate-x-1/2 bg-[#C49552] transition-[opacity,transform] duration-200 ${
+                          isActive ? 'translate-y-1 opacity-100' : 'translate-y-2 opacity-0'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </>
+                  )}
+                </NavLink>
+              </nav>
+            )}
 
-          <div className="flex shrink-0 items-center gap-2">
-            <div className="relative hidden sm:block">
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <div className="relative hidden lg:block">
+                {isSearchExpanded ? (
+                  <motion.form
+                    initial={{ opacity: 0, scale: 0.96, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                    transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                    onSubmit={handleSearch}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={(event) => {
+                      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsSearchFocused(false);
+                    }}
+                  >
+                    <div className="relative w-56 xl:w-64">
+                      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#718178]" aria-hidden="true" />
+                      <input
+                        ref={desktopSearchInputRef}
+                        type="search"
+                        value={searchQuery}
+                        onChange={handleSearchInput}
+                        placeholder="Search the library"
+                        className="h-11 w-full rounded-[16px] bg-white/80 py-2 pl-10 pr-10 text-[13px] font-medium text-[#09251C] shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_2px_5px_rgba(9,37,28,0.05)] outline-none placeholder:text-[#596C62] focus:shadow-[0_0_0_2px_rgba(196,149,82,0.55),0_5px_14px_rgba(9,37,28,0.08)]"
+                        aria-label="Search the Ta7leel library"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => closeSearch(true)}
+                        className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[10px] text-[#718178] transition-[background-color,color,transform] duration-150 hover:bg-[#EAE3D6] hover:text-[#123D2F] active:scale-[0.96]"
+                        aria-label="Close search"
+                      >
+                        <X className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                      {isSearchFocused && searchQuery.trim() !== '' && (
+                        <SearchResults
+                          results={searchResults}
+                          onClose={closeSearch}
+                          isVisible
+                          isLoading={isSearching}
+                        />
+                      )}
+                    </div>
+                  </motion.form>
+                ) : (
+                  <button
+                    ref={desktopSearchTriggerRef}
+                    type="button"
+                    onClick={openSearch}
+                    className="group flex h-11 items-center gap-2 rounded-[16px] px-3 text-[#53675E] outline-none transition-[background-color,color,transform] duration-150 hover:bg-[#F0EADF] hover:text-[#123D2F] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                    aria-label="Search summaries"
+                  >
+                    <Search className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden text-xs font-semibold xl:inline">Search</span>
+                    <kbd className="hidden rounded-md bg-white/75 px-1.5 py-1 font-sans text-[9px] font-bold tracking-wide text-[#53675E] shadow-[0_0_0_1px_rgba(18,61,47,0.09)] xl:inline">
+                      ⌘K
+                    </kbd>
+                  </button>
+                )}
+              </div>
+
+              {!isAuthenticated && (
+                <NavLink
+                  to="/login"
+                  className="hidden min-h-11 items-center rounded-[14px] px-2.5 text-xs font-semibold text-[#53675E] outline-none transition-[color,transform] duration-150 hover:text-[#123D2F] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] lg:flex"
+                >
+                  {t('login')}
+                </NavLink>
+              )}
+
+              <Link
+                to="/summaries"
+                className="group relative hidden h-11 items-center gap-2 overflow-hidden rounded-[16px] bg-[#123D2F] pl-4 pr-3.5 text-xs font-bold text-[#FBF8F1] shadow-[0_1px_2px_rgba(9,37,28,0.12),0_8px_20px_rgba(9,37,28,0.16)] outline-none transition-[background-color,box-shadow,transform] duration-150 ease-out hover:bg-[#0D3327] hover:shadow-[0_1px_2px_rgba(9,37,28,0.14),0_12px_26px_rgba(9,37,28,0.22)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1] sm:flex"
+              >
+                <span className="absolute inset-y-0 left-0 w-1 bg-[#C49552]" aria-hidden="true" />
+                <span>Explore library</span>
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+
+              {isAuthenticated && (
+                <div className="hidden lg:block">
+                  <UserMenu />
+                </div>
+              )}
+
               <button
+                ref={mobileMenuButtonRef}
+                type="button"
                 onClick={() => {
                   setActiveMegaMenu(null);
-                  setIsSearchExpanded(!isSearchExpanded);
-                  if (!isSearchExpanded) {
-                    setTimeout(() => searchInputRef.current?.focus(), 100);
-                  }
+                  setIsMenuOpen((current) => !current);
                 }}
-                className={`pressable flex h-10 w-10 items-center justify-center rounded-xl transition-[transform,background-color,color,box-shadow] duration-200 ${
-                  isSearchExpanded
-                    ? 'bg-white text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.05),0_8px_20px_rgba(89,69,45,0.10)]'
-                    : 'bg-white/55 text-[#574f43] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.07)] hover:bg-white hover:text-gray-950'
-                }`}
-                aria-label={isSearchExpanded ? 'Close search' : 'Open search'}
+                className="relative flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#F0EADF] text-[#123D2F] shadow-[0_0_0_1px_rgba(18,61,47,0.07)] outline-none transition-[background-color,transform] duration-150 hover:bg-[#E8DFD0] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] lg:hidden"
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-navigation"
               >
-                {isSearchExpanded ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
+                <span
+                  className={`absolute flex items-center justify-center transition-[opacity,filter,scale] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
+                    isMenuOpen ? 'scale-100 opacity-100 blur-0' : 'scale-[0.25] opacity-0 blur-[4px]'
+                  }`}
+                >
+                  <X className="h-[18px] w-[18px]" aria-hidden="true" />
+                </span>
+                <span
+                  className={`flex items-center justify-center transition-[opacity,filter,scale] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
+                    isMenuOpen ? 'scale-[0.25] opacity-0 blur-[4px]' : 'scale-100 opacity-100 blur-0'
+                  }`}
+                >
+                  <Menu className="h-[18px] w-[18px]" aria-hidden="true" />
+                </span>
               </button>
+            </div>
+          </div>
 
-              <form
-                onSubmit={handleSearch}
-                className={`absolute right-0 top-12 z-50 transition-[opacity,transform] duration-300 ease-in-out ${
-                  isSearchExpanded
-                    ? 'translate-y-0 opacity-100 pointer-events-auto'
-                    : '-translate-y-2 opacity-0 pointer-events-none'
-                }`}
+          <AnimatePresence initial={false}>
+            {activeMenu && !isReaderMode ? (
+              <motion.div
+                id="desktop-mega-menu"
+                role="region"
+                aria-labelledby={`nav-trigger-${activeMegaMenu}`}
+                initial={{ opacity: 0, y: -10, scale: 0.985, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -8, scale: 0.99, filter: 'blur(4px)' }}
+                style={{ x: '-50%' }}
+                transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                className="absolute left-1/2 top-[calc(100%+10px)] hidden w-[min(1020px,calc(100vw-32px))] overflow-hidden rounded-[28px] bg-[#FBF8F1] p-2 text-[#123D2F] shadow-[0_0_0_1px_rgba(18,61,47,0.11),0_2px_5px_rgba(9,37,28,0.05),0_28px_70px_rgba(9,37,28,0.18)] lg:block"
+                onMouseEnter={clearMenuCloseTimer}
+                onMouseLeave={scheduleMenuClose}
               >
-                <div className="relative w-[22rem]">
+                <div className="grid grid-cols-[1.45fr_0.75fr] gap-2">
+                  <div className="rounded-[20px] bg-[#F1EBDD] p-6">
+                    <div className="mb-5 flex items-end justify-between gap-6 border-b border-[#123D2F]/10 pb-4">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#715B38]">
+                          Index {activeMenu.number} · {activeMenu.eyebrow}
+                        </p>
+                        <p className="mt-2 max-w-md font-['Bricolage_Grotesque'] text-[22px] font-semibold leading-[1.08] tracking-[-0.04em] text-[#09251C]">
+                          {activeMenu.headline}
+                        </p>
+                      </div>
+                      <span className="shrink-0 font-serif text-sm italic text-[#53675E]">Choose a direction</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                      {activeMenu.items.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <NavLink
+                            key={item.to}
+                            to={item.to}
+                            onClick={closeMenus}
+                            className="group flex min-h-[86px] gap-3 rounded-[16px] p-3 outline-none transition-[background-color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:bg-[#FBF8F1] hover:shadow-[0_0_0_1px_rgba(18,61,47,0.07),0_5px_12px_rgba(9,37,28,0.06)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                          >
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-[#DDE7DF] text-[#1E5A45] shadow-[inset_0_0_0_1px_rgba(18,61,47,0.06)] transition-[background-color,color,transform] duration-200 group-hover:-rotate-2 group-hover:bg-[#123D2F] group-hover:text-[#FBF8F1]">
+                              <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+                            </span>
+                            <span className="min-w-0 pt-0.5">
+                              <span className="block text-[13px] font-bold tracking-[-0.015em] text-[#123D2F]">{item.label}</span>
+                              <span className="mt-1 block text-pretty text-[11px] leading-[1.5] text-[#53675E]">{item.description}</span>
+                            </span>
+                          </NavLink>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <Link
+                    to={activeMenu.feature.to}
+                    onClick={closeMenus}
+                    className="group relative flex min-h-[310px] flex-col justify-between overflow-hidden rounded-[20px] bg-[#123D2F] p-5 text-[#FBF8F1] outline-none transition-[background-color,transform] duration-200 ease-out hover:-translate-y-px hover:bg-[#0D3327] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]"
+                  >
+                    <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-[#C49552]/20 blur-3xl" aria-hidden="true" />
+                    <div className="relative flex items-center justify-between">
+                      <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#E3BE7D]">From the shelves</span>
+                      <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                    </div>
+
+                    <div className="relative my-5 flex items-center gap-4">
+                      <img
+                        src={activeMenu.feature.image}
+                        alt=""
+                        className="h-28 w-[76px] shrink-0 rounded-[10px] object-cover shadow-[0_14px_28px_rgba(0,0,0,0.28)] outline outline-1 -outline-offset-1 outline-white/10 transition-transform duration-300 group-hover:-rotate-2 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                      <div>
+                        <p className="font-['Bricolage_Grotesque'] text-lg font-semibold leading-tight tracking-[-0.035em]">{activeMenu.feature.title}</p>
+                        <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#C7D2CB]">{activeMenu.feature.author}</p>
+                      </div>
+                    </div>
+
+                    <blockquote className="relative border-t border-[#FBF8F1]/15 pt-4 font-serif text-[15px] italic leading-[1.45] text-[#F3E9D8]">
+                      “{activeMenu.feature.insight}”
+                    </blockquote>
+                  </Link>
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </header>
+      </div>
+
+      <AnimatePresence initial={false}>
+        {isMenuOpen ? (
+          <motion.aside
+            ref={mobilePanelRef}
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
+            initial={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+            transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+            className="reading-ribbon-grain fixed inset-0 z-[90] flex flex-col overflow-hidden bg-[#FBF8F1] text-[#123D2F] lg:hidden"
+          >
+            <div className="flex h-[76px] shrink-0 items-center justify-between border-b border-[#123D2F]/10 px-4 sm:h-[84px] sm:px-6">
+              <Link
+                to="/"
+                className="group flex min-h-11 items-center rounded-[16px] outline-none transition-transform duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                onClick={closeMenus}
+                aria-label="Ta7leel home"
+              >
+                <img
+                  src="/images/ta7leel-navbar-logo-mind-leaf.png"
+                  alt=""
+                  className="h-10 w-auto object-contain transition-[filter,transform] duration-200 group-hover:scale-[1.025] group-hover:drop-shadow-[0_5px_8px_rgba(9,37,28,0.12)] sm:h-11"
+                />
+              </Link>
+
+              <button
+                ref={mobileCloseButtonRef}
+                type="button"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#F0EADF] text-[#123D2F] outline-none transition-[background-color,transform] duration-150 hover:bg-[#E8DFD0] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                aria-label="Close menu"
+              >
+                <X className="h-[18px] w-[18px]" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#123D2F] px-4 pb-10 pt-5 text-[#FBF8F1] sm:px-6">
+              <motion.div
+                initial="closed"
+                animate="open"
+                variants={{
+                  closed: {},
+                  open: { transition: { staggerChildren: prefersReducedMotion ? 0 : 0.07 } },
+                }}
+                className="mx-auto max-w-2xl"
+              >
+                <motion.form
+                  variants={{
+                    closed: { opacity: 0, y: 10, filter: 'blur(4px)' },
+                    open: { opacity: 1, y: 0, filter: 'blur(0px)' },
+                  }}
+                  transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                  onSubmit={handleSearch}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsSearchFocused(false);
+                  }}
+                  className={`relative z-20 transition-[margin] duration-200 ${
+                    isSearchFocused && searchQuery.trim() !== '' ? 'mb-[7.25rem]' : 'mb-7'
+                  }`}
+                >
+                  <Search className="pointer-events-none absolute left-4 top-[22px] h-[18px] w-[18px] -translate-y-1/2 text-[#718178]" aria-hidden="true" />
                   <input
-                    ref={searchInputRef}
-                    type="text"
+                    ref={mobileSearchInputRef}
+                    type="search"
                     value={searchQuery}
                     onChange={handleSearchInput}
-                    onFocus={() => setIsSearchFocused(true)}
-                    onBlur={() => {
-                      setTimeout(() => {
-                        setIsSearchFocused(false);
-                        setSearchResults([]);
-                      }, 200);
-                    }}
-                    placeholder="Search books..."
-                    className="w-full rounded-2xl bg-white py-2.5 pl-10 pr-12 text-sm text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.08),0_18px_40px_rgba(89,69,45,0.18)] outline-none ring-1 ring-gray-950/5 placeholder:text-gray-400 transition-[box-shadow,background-color,color] duration-200 focus:ring-2 focus:ring-orange-400/45"
+                    placeholder="Search books, authors, or ideas"
+                    className="h-11 w-full rounded-[16px] bg-white py-2 pl-11 pr-4 text-sm font-medium text-[#09251C] shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_3px_10px_rgba(9,37,28,0.05)] outline-none placeholder:text-[#596C62] focus:shadow-[0_0_0_2px_rgba(196,149,82,0.55),0_5px_14px_rgba(9,37,28,0.08)]"
+                    aria-label="Search the Ta7leel library"
                   />
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-                  <button
-                    type="button"
-                    onClick={closeSearch}
-                    className="pressable absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl text-gray-400 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-700"
-                    aria-label="Close search"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-
-                  {(isSearchFocused && searchQuery.trim() !== '') && (
+                  {isSearchFocused && searchQuery.trim() !== '' && (
                     <SearchResults
                       results={searchResults}
                       onClose={() => {
-                        setSearchQuery('');
-                        setSearchResults([]);
-                        setIsSearchFocused(false);
+                        closeSearch();
+                        closeMenus();
                       }}
-                      isVisible={true}
+                      isVisible
                       isLoading={isSearching}
                     />
                   )}
+                </motion.form>
 
-                  {isSearchFocused && !searchQuery && (
-                    <div className="pointer-events-none absolute right-14 top-1/2 -translate-y-1/2 text-xs text-gray-500">
-                      <kbd className="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600 shadow-[inset_0_0_0_1px_rgba(17,24,39,0.08)]">
-                        Esc
-                      </kbd>
-                    </div>
-                  )}
+                <div className="grid gap-7 sm:grid-cols-3 sm:gap-4">
+                  {(Object.keys(navigationGroups) as NavigationGroupKey[]).map((key) => {
+                    const group = navigationGroups[key];
+                    return (
+                      <motion.section
+                        key={key}
+                        variants={{
+                          closed: { opacity: 0, y: 12, filter: 'blur(4px)' },
+                          open: { opacity: 1, y: 0, filter: 'blur(0px)' },
+                        }}
+                        transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                        aria-labelledby={`mobile-group-${key}`}
+                      >
+                        <div className="mb-2.5 flex items-center gap-2 border-b border-[#FBF8F1]/15 pb-2">
+                          <span className="font-serif text-xs italic text-[#E3BE7D]">{group.number}</span>
+                          <h2 id={`mobile-group-${key}`} className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#CAD8D0]">
+                            {group.label}
+                          </h2>
+                        </div>
+                        <nav className="grid gap-1" aria-label={`${group.label} navigation`}>
+                          {group.items.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                              <NavLink
+                                key={item.to}
+                                to={item.to}
+                                onClick={closeMenus}
+                                className={({ isActive }) =>
+                                  `group flex min-h-12 items-center gap-3 rounded-[16px] px-3 py-2 text-sm font-semibold outline-none transition-[background-color,color,transform] duration-150 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
+                                    isActive
+                                      ? 'bg-[#FBF8F1]/14 text-[#FBF8F1] shadow-[inset_0_0_0_1px_rgba(251,248,241,0.08)]'
+                                      : 'text-[#D9E3DD] hover:bg-[#FBF8F1]/10 hover:text-white'
+                                  }`
+                                }
+                              >
+                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-[#FBF8F1]/10 text-[#E3BE7D] shadow-[inset_0_0_0_1px_rgba(251,248,241,0.08)] transition-[background-color,color,transform] duration-150 group-hover:-rotate-2 group-hover:bg-[#FBF8F1] group-hover:text-[#123D2F]">
+                                  <Icon className="h-4 w-4" aria-hidden="true" />
+                                </span>
+                                <span>{item.label}</span>
+                              </NavLink>
+                            );
+                          })}
+                        </nav>
+                      </motion.section>
+                    );
+                  })}
                 </div>
-              </form>
-            </div>
 
-            <a
-              href="https://ko-fi.com/ta7leel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pressable hidden min-h-10 items-center gap-2 rounded-xl bg-[#a75d37] px-3 py-2 text-sm font-bold text-white shadow-[0_1px_2px_rgba(89,69,45,0.10),0_10px_22px_rgba(167,93,55,0.24)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-[#8f4f2f] xl:inline-flex"
-            >
-              <Coffee className="h-4 w-4" aria-hidden="true" />
-              Support
-            </a>
-
-            <div className="hidden items-center md:flex">
-              <LanguageSelector />
-            </div>
-
-            {!isAuthenticated && (
-              <div className="hidden items-center gap-1 md:flex">
-                <NavLink to="/login" className="inline-flex min-h-10 items-center rounded-full px-3 py-2 text-sm font-semibold text-[#574f43] transition-[background-color,color] duration-200 hover:bg-white/60 hover:text-gray-950">
-                  {t('login')}
-                </NavLink>
-                <NavLink
-                  to="/signup"
-                  className="pressable inline-flex min-h-10 items-center rounded-xl bg-[#a75d37] px-5 py-2 text-sm font-bold text-white shadow-[0_1px_2px_rgba(89,69,45,0.12),0_12px_26px_rgba(167,93,55,0.28)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-[#8f4f2f] hover:shadow-[0_1px_2px_rgba(89,69,45,0.12),0_16px_32px_rgba(167,93,55,0.34)]"
-                >
-                  {t('signup')}
-                </NavLink>
-              </div>
-            )}
-
-            <div className="hidden md:block">
-              <UserMenu />
-            </div>
-
-            <button
-              onClick={() => {
-                setActiveMegaMenu(null);
-                setIsMenuOpen(!isMenuOpen);
-              }}
-              type="button"
-              className="pressable inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/60 text-[#574f43] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.07)] transition-[transform,background-color,color,box-shadow] duration-200 hover:bg-white hover:text-gray-950 focus:outline-none md:hidden"
-              aria-controls="mobile-menu"
-              aria-expanded={isMenuOpen}
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {activeMenu && !isReaderMode && (
-        <div
-          id="desktop-mega-menu"
-          className="hidden border-t border-[#e8dfd3] bg-[#fbf6ed]/98 shadow-[0_18px_42px_rgba(89,69,45,0.14)] backdrop-blur-xl lg:block"
-        >
-          <div className="mx-auto grid max-w-7xl grid-cols-[1fr_260px] gap-8 px-8 py-5">
-            <div className="grid grid-cols-[190px_1fr] gap-6">
-              <div className="pt-1">
-                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#a75d37]">{activeMenu.eyebrow}</p>
-                <p className="mt-3 max-w-[14rem] text-2xl font-black leading-tight text-[#25301f]">{activeMenu.headline}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[#e7dccd] bg-[#e7dccd]">
-                {activeMenu.items.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <NavLink
-                      key={`${activeMegaMenu}-${item.label}`}
-                      to={item.to}
-                      onClick={() => setActiveMegaMenu(null)}
-                      className="group flex min-h-[92px] gap-4 bg-[#fbf6ed] p-4 transition-[background-color] duration-200 hover:bg-white"
-                    >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#a75d37] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.07)] transition-[background-color,color] duration-200 group-hover:bg-[#25301f] group-hover:text-white">
-                        <Icon className="h-4.5 w-4.5" aria-hidden="true" />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-sm font-black text-gray-950">{item.label}</span>
-                        <span className="mt-1 block text-xs leading-5 text-[#6f6558]">{item.description}</span>
-                      </span>
-                    </NavLink>
-                  );
-                })}
-              </div>
-            </div>
-
-            <Link
-              to={activeMenu.promo.to}
-              onClick={() => setActiveMegaMenu(null)}
-              className="group grid grid-cols-[1fr_76px] items-center gap-4 rounded-2xl border border-[#e7dccd] bg-white p-4 text-left shadow-[0_1px_2px_rgba(17,24,39,0.04),0_12px_28px_rgba(89,69,45,0.10)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(17,24,39,0.05),0_16px_36px_rgba(89,69,45,0.16)]"
-            >
-              <span>
-                <span className="block text-lg font-black leading-tight text-[#25301f]">{activeMenu.promo.title}</span>
-                <span className="mt-2 block text-xs leading-5 text-[#6f6558]">{activeMenu.promo.body}</span>
-                <span className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[#a75d37]">
-                  Open
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
-                </span>
-              </span>
-              <img
-                src={activeMenu.promo.image}
-                alt=""
-                className="h-24 w-[76px] rounded-xl object-cover shadow-[0_10px_24px_rgba(17,24,39,0.18)]"
-                loading="lazy"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {isMenuOpen && (
-        <div className="border-t border-[#e5d8c7] bg-[#f7f0e6] shadow-[0_14px_34px_rgba(89,69,45,0.14)] md:hidden" id="mobile-menu">
-          <div className="px-4 pb-4 pt-3">
-            <form onSubmit={handleSearch} className="mb-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchInput}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => {
-                    setTimeout(() => {
-                      setIsSearchFocused(false);
-                      setSearchResults([]);
-                    }, 200);
+                <motion.div
+                  variants={{
+                    closed: { opacity: 0, y: 12, filter: 'blur(4px)' },
+                    open: { opacity: 1, y: 0, filter: 'blur(0px)' },
                   }}
-                  placeholder="Search books..."
-                  className="w-full rounded-2xl bg-white py-3 pl-10 pr-4 text-sm font-medium text-gray-950 shadow-[0_1px_2px_rgba(17,24,39,0.06),0_12px_26px_rgba(89,69,45,0.12)] outline-none ring-1 ring-gray-950/5 placeholder:text-gray-400 transition-[box-shadow,background-color] duration-200 focus:ring-2 focus:ring-orange-400/45"
-                />
-                {(isSearchFocused && searchQuery.trim() !== '') && (
-                  <SearchResults
-                    results={searchResults}
-                    onClose={() => {
-                      setSearchQuery('');
-                      setSearchResults([]);
-                      setIsSearchFocused(false);
-                    }}
-                    isVisible={true}
-                    isLoading={isSearching}
-                  />
-                )}
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-              </div>
-            </form>
+                  transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                  className="mt-8 rounded-[24px] bg-[#09291F] p-2 shadow-[0_14px_34px_rgba(4,18,13,0.24)] ring-1 ring-inset ring-[#FBF8F1]/10"
+                >
+                  <div className="flex flex-col gap-2 rounded-[16px] border border-[#FBF8F1]/10 p-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="px-1 py-1">
+                      <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#E3BE7D]">Your next ten minutes</p>
+                      <p className="mt-1 font-['Bricolage_Grotesque'] text-lg font-semibold tracking-[-0.035em] text-[#FBF8F1]">Carry one useful idea forward.</p>
+                    </div>
+                    <Link
+                      to="/summaries"
+                      onClick={closeMenus}
+                      className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#FBF8F1] pl-4 pr-3.5 text-xs font-bold text-[#123D2F] outline-none transition-[background-color,transform] duration-150 hover:bg-white active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#E3BE7D]"
+                    >
+                      Explore library
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </motion.div>
 
-            <nav className="grid gap-1" aria-label="Mobile primary navigation">
-              {mobileLinks.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <NavLink key={item.to} to={item.to} className={mobileLinkClassName} onClick={closeMenus}>
-                    <Icon className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>{item.label}</span>
-                  </NavLink>
-                );
-              })}
-            </nav>
-
-            <a
-              href="https://ko-fi.com/ta7leel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pressable mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#a75d37] px-4 py-3 text-sm font-bold text-white shadow-[0_1px_2px_rgba(89,69,45,0.10),0_10px_22px_rgba(167,93,55,0.24)] transition-[transform,box-shadow,background-color] duration-200 hover:bg-[#8f4f2f]"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Coffee className="h-4 w-4" aria-hidden="true" />
-              Support BookBriefs
-            </a>
-
-            <div className="mt-3 space-y-1 border-t border-[#e5d8c7] pt-3">
-              {isAuthenticated ? (
-                <>
-                  <span className="block truncate px-3 py-2 text-sm font-semibold text-[#6f6558]">
-                    {user?.email || t('welcome')}
-                  </span>
-                  <NavLink to="/profile" className={mobileLinkClassName} onClick={closeMenus}>
-                    <BookOpen className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>{t('profile')}</span>
-                  </NavLink>
-                  <NavLink to="/reading-challenge" className={mobileLinkClassName} onClick={closeMenus}>
-                    <Target className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>Reading Challenge</span>
-                  </NavLink>
-                  <NavLink to="/downloads" className={mobileLinkClassName} onClick={closeMenus}>
-                    <Download className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>Downloads</span>
-                  </NavLink>
-                  <button
-                    onClick={() => {
-                      logout();
-                      closeMenus();
-                    }}
-                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#574f43] transition-[background-color,color,transform] duration-200 hover:bg-white/70 hover:text-gray-950 active:scale-[0.98]"
+                <motion.div
+                  variants={{
+                    closed: { opacity: 0, y: 12, filter: 'blur(4px)' },
+                    open: { opacity: 1, y: 0, filter: 'blur(0px)' },
+                  }}
+                  transition={{ ...menuTransition, duration: animationDuration ?? menuTransition.duration }}
+                  className="mt-4 flex flex-wrap items-center justify-between gap-2 px-1"
+                >
+                  <div className="flex items-center gap-1">
+                    {isAuthenticated ? (
+                      <>
+                        <NavLink
+                          to="/profile"
+                          onClick={closeMenus}
+                          className="flex min-h-11 items-center rounded-[14px] px-3 text-xs font-semibold text-[#D4E0D8] outline-none transition-[background-color,color,transform] duration-150 hover:bg-[#FBF8F1]/10 hover:text-white active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#E3BE7D]"
+                        >
+                          My profile
+                        </NavLink>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            closeMenus();
+                          }}
+                          className="flex min-h-11 items-center gap-1.5 rounded-[14px] px-3 text-xs font-semibold text-[#F5B7AA] outline-none transition-[background-color,transform] duration-150 hover:bg-[#F5B7AA]/10 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#F5B7AA]"
+                        >
+                          <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+                          {t('logout')}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <NavLink
+                          to="/login"
+                          onClick={closeMenus}
+                          className="flex min-h-11 items-center rounded-[14px] px-3 text-xs font-semibold text-[#D4E0D8] outline-none transition-[background-color,color,transform] duration-150 hover:bg-[#FBF8F1]/10 hover:text-white active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#E3BE7D]"
+                        >
+                          {t('login')}
+                        </NavLink>
+                        <NavLink
+                          to="/signup"
+                          onClick={closeMenus}
+                          className="flex min-h-11 items-center rounded-[14px] px-3 text-xs font-semibold text-[#FBF8F1] outline-none transition-[background-color,transform] duration-150 hover:bg-[#FBF8F1]/10 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#E3BE7D]"
+                        >
+                          {t('signup')}
+                        </NavLink>
+                      </>
+                    )}
+                  </div>
+                  <a
+                    href="https://ko-fi.com/ta7leel"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-11 items-center gap-2 rounded-[14px] px-3 text-xs font-semibold text-[#D4E0D8] outline-none transition-[background-color,color,transform] duration-150 hover:bg-[#FBF8F1]/10 hover:text-white active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#E3BE7D]"
                   >
-                    <X className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>{t('logout')}</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <NavLink to="/login" className={mobileLinkClassName} onClick={closeMenus}>
-                    <BookOpen className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>{t('login')}</span>
-                  </NavLink>
-                  <NavLink to="/signup" className={mobileLinkClassName} onClick={closeMenus}>
-                    <Sparkles className="h-4.5 w-4.5 text-[#a75d37]" aria-hidden="true" />
-                    <span>{t('signup')}</span>
-                  </NavLink>
-                </>
-              )}
+                    <Coffee className="h-4 w-4 text-[#9A6D35]" aria-hidden="true" />
+                    Support Ta7leel
+                  </a>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      )}
-    </header>
+          </motion.aside>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 };
 

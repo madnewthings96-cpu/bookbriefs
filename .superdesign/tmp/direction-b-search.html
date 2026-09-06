@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookBriefs · Ta7leel — البحث أولاً</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Bricolage+Grotesque:wght@500;600;700&amp;family=Lato:wght@400;700;900&amp;family=Newsreader:ital,wght@1,600&amp;display=swap" rel="stylesheet">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --canvas: #fffaf3;
+      --quiet: #f7f0e6;
+      --menu: #fbf6ed;
+      --sand: #e5d8c7;
+      --copper: #a75d37;
+      --copper-dark: #8f4f2f;
+      --ink: #25301f;
+      --body: #574f43;
+      --muted: #7a6f62;
+      --rule: #d7c7b3;
+      --soft-rule: #e7dccd;
+      --white: #ffffff;
+      --shadow-soft: 0 1px 2px rgba(17, 24, 39, .04), 0 16px 40px rgba(89, 69, 45, .09);
+      --shadow-search: 0 1px 2px rgba(17, 24, 39, .05), 0 24px 70px rgba(89, 69, 45, .15);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--canvas);
+    }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: "Lato", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .page-root { min-height: 100vh; overflow: clip; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      inset-block-start: 12px;
+      inset-inline-start: 12px;
+      min-height: 44px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: var(--white);
+      transform: translateY(-140%);
+      transition: transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    :focus-visible {
+      outline: 3px solid rgba(167, 93, 55, .42);
+      outline-offset: 3px;
+    }
+
+    .announcement {
+      min-height: 30px;
+      background: var(--copper);
+      color: var(--white);
+      border-block-end: 1px solid rgba(255, 255, 255, .16);
+    }
+
+    .announcement a {
+      display: flex;
+      min-height: 30px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 5px 20px;
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .01em;
+      text-align: center;
+    }
+
+    .site-header {
+      position: sticky;
+      z-index: 40;
+      inset-block-start: 0;
+      border-block-end: 1px solid rgba(229, 216, 199, .92);
+      background: rgba(247, 240, 230, .94);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 8px 24px rgba(89, 69, 45, .07);
+      backdrop-filter: blur(18px);
+    }
+
+    .header-inner,
+    .section-inner {
+      width: min(1280px, calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    .header-inner {
+      display: flex;
+      min-height: 70px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .header-leading,
+    .header-actions,
+    .brand-lockup,
+    .brand-copy,
+    .primary-nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-leading { min-width: 0; gap: 34px; }
+    .header-actions { gap: 8px; }
+
+    .brand-lockup {
+      min-height: 48px;
+      gap: 11px;
+      border-radius: 16px;
+      padding: 4px 4px 4px 8px;
+      direction: ltr;
+      transition: transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .brand-lockup:active { transform: scale(.96); }
+
+    .brand-lockup iconify-icon {
+      width: 38px;
+      height: 38px;
+      color: #374151;
+      flex: none;
+    }
+
+    .brand-copy {
+      flex-direction: column;
+      justify-content: center;
+      color: #374151;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .brand-name { font-size: 22px; font-weight: 700; letter-spacing: -.03em; }
+    .brand-subtitle { margin-block-start: 4px; font-family: "Newsreader", serif; font-size: 14px; font-style: italic; font-weight: 600; }
+
+    .primary-nav { gap: 2px; }
+
+    .primary-nav a {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      padding-inline: 14px;
+      border-radius: 999px;
+      color: var(--body);
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .primary-nav a:hover { background: rgba(255, 255, 255, .7); color: #111827; }
+    .primary-nav a:active { transform: scale(.96); }
+
+    .icon-button,
+    .support-button {
+      display: inline-flex;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1), box-shadow 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .icon-button {
+      background: rgba(255, 255, 255, .62);
+      color: var(--body);
+      box-shadow: inset 0 0 0 1px rgba(89, 69, 45, .08);
+    }
+
+    .icon-button:hover { background: var(--white); color: #111827; }
+    .icon-button:active, .support-button:active { transform: scale(.96); }
+    .icon-button iconify-icon { width: 18px; height: 18px; }
+
+    .mobile-nav { display: none; position: relative; }
+    .mobile-nav summary {
+      display: flex;
+      width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .62);
+      color: var(--body);
+      box-shadow: inset 0 0 0 1px rgba(89, 69, 45, .08);
+      cursor: pointer;
+      list-style: none;
+    }
+    .mobile-nav summary::-webkit-details-marker { display: none; }
+    .mobile-nav-panel {
+      position: absolute;
+      z-index: 60;
+      inset-block-start: 52px;
+      left: 0;
+      width: min(280px, calc(100vw - 32px));
+      padding: 10px;
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      background: var(--menu);
+      box-shadow: var(--shadow-search);
+    }
+    .mobile-nav-panel a {
+      display: flex;
+      min-height: 44px;
+      align-items: center;
+      border-radius: 12px;
+      padding-inline: 14px;
+      color: var(--body);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .mobile-nav-panel a:hover { background: var(--white); color: var(--ink); }
+
+    .support-button {
+      padding-inline: 17px;
+      background: var(--copper);
+      color: var(--white);
+      box-shadow: 0 1px 2px rgba(89, 69, 45, .12), 0 10px 22px rgba(167, 93, 55, .22);
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .support-button:hover { background: var(--copper-dark); }
+
+    .discovery-stage {
+      background: var(--canvas);
+      border-block-end: 1px solid rgba(215, 199, 179, .62);
+    }
+
+    .discovery-inner {
+      width: min(1180px, calc(100% - 48px));
+      margin-inline: auto;
+      padding-block: 58px 48px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      min-height: 36px;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--sand);
+      color: #7a4a31;
+      box-shadow: inset 0 0 0 1px rgba(89, 69, 45, .07);
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hero-title {
+      max-width: 960px;
+      margin: 22px auto 0;
+      color: #111827;
+      font-family: "Amiri", serif;
+      font-size: clamp(52px, 6.2vw, 78px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 700px;
+      margin: 14px auto 0;
+      color: #675b4d;
+      font-size: 16px;
+      line-height: 1.8;
+      text-wrap: pretty;
+    }
+
+    .search-shell {
+      max-width: 940px;
+      margin: 30px auto 0;
+      overflow: hidden;
+      border: 1px solid rgba(215, 199, 179, .88);
+      border-radius: 24px;
+      background: var(--white);
+      box-shadow: var(--shadow-search);
+      text-align: start;
+    }
+
+    .search-form { padding: 17px 17px 0; }
+
+    .search-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-block-end: 9px;
+      padding-inline: 3px;
+    }
+
+    .search-label {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .search-hint {
+      color: var(--muted);
+      font-size: 11px;
+      direction: rtl;
+    }
+
+    .keycap {
+      display: inline-flex;
+      min-width: 22px;
+      min-height: 22px;
+      align-items: center;
+      justify-content: center;
+      margin-inline-start: 4px;
+      border: 1px solid var(--soft-rule);
+      border-radius: 6px;
+      background: var(--quiet);
+      color: var(--body);
+      direction: ltr;
+      font-weight: 700;
+      box-shadow: 0 1px 0 rgba(89, 69, 45, .08);
+    }
+
+    .search-control {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1fr) auto;
+      align-items: center;
+      min-height: 72px;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7), 0 8px 20px rgba(89, 69, 45, .07);
+    }
+
+    .search-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--copper);
+    }
+
+    .search-icon iconify-icon { width: 22px; height: 22px; }
+
+    .search-input {
+      width: 100%;
+      min-width: 0;
+      min-height: 70px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #111827;
+      font-family: "Amiri", "Lato", serif;
+      font-size: 21px;
+    }
+
+    .search-input::placeholder { color: #8b8175; opacity: 1; }
+
+    .search-submit {
+      min-height: 50px;
+      margin-inline-end: 9px;
+      padding-inline: 23px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--copper);
+      color: var(--white);
+      cursor: pointer;
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1), box-shadow 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .search-submit:hover { background: var(--copper-dark); box-shadow: 0 10px 20px rgba(167, 93, 55, .2); }
+    .search-submit:active { transform: scale(.96); }
+
+    .topic-shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 13px -17px 0;
+      padding: 11px 17px 13px;
+      border-block-start: 1px solid rgba(231, 220, 205, .9);
+      background: rgba(247, 240, 230, .86);
+    }
+
+    .topic-shortcuts span {
+      margin-inline-end: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .topic-shortcuts a {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      border: 1px solid rgba(215, 199, 179, .9);
+      border-radius: 999px;
+      padding-inline: 13px;
+      background: var(--white);
+      color: var(--body);
+      font-size: 12px;
+      font-weight: 700;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), border-color 180ms cubic-bezier(.2, 0, 0, 1), color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .topic-shortcuts a:hover { border-color: var(--copper); background: #fffaf3; color: var(--copper-dark); }
+    .topic-shortcuts a:active { transform: scale(.96); }
+
+    .search-results {
+      margin-block-start: 30px;
+      background: transparent;
+      text-align: start;
+    }
+
+    .results-head {
+      display: flex;
+      min-height: 45px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 3px 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .results-head strong { color: var(--ink); font-weight: 900; }
+
+    .results-head a {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      color: var(--copper-dark);
+      font-weight: 900;
+      transition: color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .results-head a:hover { color: var(--ink); }
+    .results-head a:active { transform: scale(.96); }
+
+    .results-list {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .result-row {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 10px 10px 14px;
+      border: 1px solid var(--soft-rule);
+      border-radius: 17px;
+      background: var(--white);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 12px 28px rgba(89, 69, 45, .08);
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), border-color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1), box-shadow 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .result-row:hover, .result-row[data-active="true"] {
+      border-color: var(--rule);
+      background: #fffdf9;
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .05), 0 18px 38px rgba(89, 69, 45, .13);
+      transform: translateY(-3px);
+    }
+
+    .result-row:active { transform: translateY(-1px) scale(.96); }
+
+    .result-cover {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      border-radius: 11px;
+      object-fit: cover;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1), 0 9px 18px rgba(37, 48, 31, .12);
+      outline: 1px solid rgba(0, 0, 0, .1);
+      outline-offset: -1px;
+    }
+
+    .result-copy { display: block; min-width: 0; }
+
+    .result-title {
+      display: block;
+      margin: 11px 0 0;
+      overflow: hidden;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .result-meta { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+    .result-arrow { display: none; }
+
+    .empty-results {
+      display: none;
+      min-height: 112px;
+      place-items: center;
+      padding: 24px;
+      border: 1px dashed var(--rule);
+      border-radius: 17px;
+      background: var(--white);
+      text-align: center;
+    }
+
+    .empty-results p { margin: 0 0 10px; color: var(--body); }
+
+    .empty-results button {
+      min-height: 40px;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--copper-dark);
+      cursor: pointer;
+      padding-inline: 14px;
+      font-weight: 700;
+    }
+
+    .section { padding-block: 62px; }
+    .section--white { background: var(--white); }
+    .section--quiet { background: var(--quiet); }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-block-end: 28px;
+    }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      color: var(--copper);
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #111827;
+      font-family: "Amiri", serif;
+      font-size: clamp(34px, 3.8vw, 48px);
+      line-height: 1.12;
+      letter-spacing: -.02em;
+      text-wrap: balance;
+    }
+
+    .section-note {
+      max-width: 540px;
+      margin: 8px 0 0;
+      color: #675b4d;
+      font-size: 14px;
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    .text-link {
+      display: inline-flex;
+      min-height: 44px;
+      flex: none;
+      align-items: center;
+      gap: 8px;
+      border-block-end: 1px solid var(--copper);
+      color: var(--copper-dark);
+      font-size: 13px;
+      font-weight: 900;
+      transition: color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .text-link:hover { color: var(--ink); }
+    .text-link:active { transform: scale(.96); }
+
+    .book-shelf {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .book-card {
+      display: block;
+      border-radius: 18px;
+      transition: transform 220ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .book-card:hover { transform: translateY(-4px); }
+    .book-card:active { transform: translateY(-1px) scale(.96); }
+
+    .cover-frame {
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--quiet);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, .06), 0 14px 30px rgba(89, 69, 45, .13);
+    }
+
+    .cover-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      outline: 1px solid rgba(0, 0, 0, .1);
+      outline-offset: -1px;
+      transition: transform 260ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .book-card:hover .cover-frame img { transform: scale(1.025); }
+    .book-title { margin: 12px 0 0; color: #111827; font-size: 14px; font-weight: 900; line-height: 1.4; }
+    .book-author { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+
+    .paths-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      background: var(--rule);
+      gap: 1px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .path-card {
+      position: relative;
+      min-height: 260px;
+      padding: 25px;
+      background: #fffdf9;
+      transition: background-color 200ms cubic-bezier(.2, 0, 0, 1), transform 200ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .path-card:hover { background: var(--white); }
+    .path-card:active { transform: scale(.98); }
+
+    .path-number {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: var(--sand);
+      color: var(--copper-dark);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: inset 0 0 0 1px rgba(89, 69, 45, .08);
+    }
+
+    .path-card h3 { margin: 24px 0 0; color: #111827; font-size: 19px; line-height: 1.4; }
+    .path-card p { margin: 9px 0 0; color: #675b4d; font-size: 13px; line-height: 1.7; }
+
+    .path-books {
+      position: absolute;
+      inset-block-end: 21px;
+      inset-inline: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--copper-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .mini-covers { display: flex; direction: ltr; padding-inline-start: 12px; }
+    .mini-covers img {
+      width: 31px;
+      height: 43px;
+      margin-inline-start: -10px;
+      border: 2px solid #fffdf9;
+      border-radius: 5px;
+      object-fit: cover;
+      outline: 1px solid rgba(0, 0, 0, .08);
+      box-shadow: 0 4px 10px rgba(89, 69, 45, .15);
+    }
+
+    .library-layout {
+      display: grid;
+      grid-template-columns: 1.38fr .62fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .category-list {
+      overflow: hidden;
+      border-block: 1px solid var(--rule);
+    }
+
+    .category-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) auto;
+      min-height: 78px;
+      align-items: center;
+      gap: 18px;
+      border-block-end: 1px solid var(--soft-rule);
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), padding-inline 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .category-row:last-child { border-block-end: 0; }
+    .category-row:hover { padding-inline: 14px; background: rgba(255, 255, 255, .7); }
+    .category-row:active { background: var(--sand); }
+
+    .category-index {
+      color: var(--copper);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      direction: ltr;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .category-name { color: #111827; font-family: "Amiri", serif; font-size: 25px; font-weight: 700; }
+    .category-description { display: block; margin-block-start: 2px; color: var(--muted); font-family: "Lato", sans-serif; font-size: 11px; font-weight: 400; }
+    .category-arrow { color: var(--copper); font-size: 22px; transform: scaleX(-1); }
+
+    .library-aside {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--rule);
+      border-radius: 22px;
+      padding: 28px;
+      background: var(--sand);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .library-aside .eyebrow { align-self: flex-start; background: rgba(255, 255, 255, .62); }
+    .library-aside h3 { margin: 24px 0 0; color: #111827; font-family: "Amiri", serif; font-size: 33px; line-height: 1.23; text-wrap: balance; }
+    .library-aside p { margin: 12px 0 0; color: var(--body); font-size: 13px; line-height: 1.75; }
+
+    .aside-link {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-block-start: 28px;
+      border-radius: 12px;
+      padding-inline: 17px;
+      background: var(--white);
+      color: var(--ink);
+      box-shadow: 0 10px 24px rgba(89, 69, 45, .1);
+      font-size: 13px;
+      font-weight: 900;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .aside-link:hover { background: var(--copper); color: var(--white); }
+    .aside-link:active { transform: scale(.96); }
+
+    .site-footer { background: var(--sand); color: #111827; }
+
+    .footer-cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 32px;
+      padding-block: 48px;
+      border-block-end: 1px solid rgba(37, 48, 31, .42);
+    }
+
+    .footer-cta h2 { margin: 0; font-family: "Amiri", serif; font-size: clamp(32px, 4vw, 50px); line-height: 1.15; letter-spacing: -.02em; }
+    .footer-cta p { max-width: 580px; margin: 6px 0 0; color: var(--body); font-size: 14px; line-height: 1.7; }
+
+    .footer-cta-link {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      gap: 10px;
+      border-radius: 12px;
+      padding-inline: 20px;
+      background: var(--copper);
+      color: var(--white);
+      box-shadow: 0 12px 28px rgba(167, 93, 55, .22);
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background-color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .footer-cta-link:hover { background: var(--copper-dark); }
+    .footer-cta-link:active { transform: scale(.96); }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1.85fr;
+      min-height: 260px;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-block: 38px;
+      padding-inline-end: 34px;
+      border-inline-end: 1px solid rgba(37, 48, 31, .42);
+    }
+
+    .footer-brand .brand-lockup { align-self: flex-start; padding: 0; }
+    .footer-brand-note { max-width: 330px; margin: 16px 0 0; color: var(--body); font-size: 12px; line-height: 1.7; }
+    .copyright { margin: 24px 0 0; color: var(--body); font-size: 11px; direction: ltr; text-align: right; }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+      padding: 38px 34px;
+    }
+
+    .footer-links h3 { margin: 0 0 16px; color: var(--ink); font-size: 12px; font-weight: 900; }
+    .footer-links a {
+      display: block;
+      width: fit-content;
+      min-height: 34px;
+      color: var(--body);
+      font-size: 12px;
+      line-height: 1.45;
+      transition: color 180ms cubic-bezier(.2, 0, 0, 1), transform 180ms cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .footer-links a:hover { color: var(--copper-dark); transform: translateX(-2px); }
+
+    @media (max-width: 1100px) {
+      .header-leading { gap: 18px; }
+      .primary-nav a { padding-inline: 10px; }
+      .support-button { display: none; }
+      .results-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .book-shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 30px; }
+      .paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .library-layout { grid-template-columns: 1fr .75fr; }
+    }
+
+    @media (max-width: 820px) {
+      .header-inner, .section-inner, .discovery-inner { width: min(100% - 32px, 1280px); }
+      .header-inner { min-height: 68px; gap: 8px; padding-block: 8px; }
+      .header-leading { width: 100%; justify-content: space-between; }
+      .primary-nav { display: none; }
+      .mobile-nav { display: block; }
+      .header-actions { position: absolute; inset-inline-end: 16px; inset-block-start: 12px; }
+      .header-leading { padding-inline-end: 108px; }
+      .discovery-inner { padding-block: 38px 45px; }
+      .results-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .paths-grid { grid-template-columns: 1fr; }
+      .library-layout { grid-template-columns: 1fr; }
+      .footer-cta { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand { border-inline-end: 0; border-block-end: 1px solid rgba(37, 48, 31, .42); padding-inline: 0; }
+      .footer-links { padding-inline: 0; }
+    }
+
+    @media (max-width: 560px) {
+      .announcement a { font-size: 11px; }
+      .brand-name { font-size: 19px; }
+      .brand-subtitle { font-size: 12px; }
+      .brand-lockup iconify-icon { width: 34px; height: 34px; }
+      .header-actions .header-search-button { display: none; }
+      .header-leading { padding-inline-end: 100px; }
+      .hero-title { font-size: 43px; }
+      .hero-copy { font-size: 15px; }
+      .search-shell { border-radius: 18px; }
+      .search-form { padding: 13px 13px 0; }
+      .search-hint { display: none; }
+      .search-control { grid-template-columns: 44px minmax(0, 1fr); min-height: 60px; border-radius: 14px; }
+      .search-input { min-height: 58px; font-size: 18px; }
+      .search-submit { grid-column: 1 / -1; width: calc(100% - 18px); min-height: 44px; margin: 0 9px 9px; }
+      .topic-shortcuts { align-items: flex-start; margin-inline: -13px; padding-inline: 13px; }
+      .topic-shortcuts > span { width: 100%; }
+      .results-head { align-items: center; }
+      .results-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .book-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      .section { padding-block: 46px; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+      .library-aside { padding: 22px; }
+      .category-row { grid-template-columns: 42px minmax(0, 1fr) 20px; gap: 10px; }
+      .category-name { font-size: 21px; }
+      .footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchData = [
+        { id: "atomic-habits", title: "Atomic Habits", author: "James Clear", category: "تطوير الذات والعادات", keywords: "عادات تطوير الذات إنتاجية جيمس كلير", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg", url: "https://www.ta7leel.pro/summary/atomic-habits" },
+        { id: "the-psychology-of-money", title: "The Psychology of Money", author: "Morgan Housel", category: "المال والاستثمار", keywords: "مال استثمار ثروة مورغان هاوسل", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg", url: "https://www.ta7leel.pro/summary/the-psychology-of-money" },
+        { id: "trading-in-the-zone", title: "Trading in the Zone", author: "Mark Douglas", category: "التداول وعلم النفس", keywords: "تداول نفسية الأسواق مارك دوغلاس", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg", url: "https://www.ta7leel.pro/summary/trading-in-the-zone" },
+        { id: "thinking-fast-and-slow", title: "Thinking, Fast and Slow", author: "Daniel Kahneman", category: "علم النفس والتفكير", keywords: "تفكير علم النفس قرارات دانيال كانيمان", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg", url: "https://www.ta7leel.pro/summary/thinking-fast-and-slow" },
+        { id: "rich-dad-poor-dad", title: "Rich Dad Poor Dad", author: "Robert T. Kiyosaki", category: "المال والأعمال", keywords: "مال أعمال أب غني روبرت كيوساكي", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg", url: "https://www.ta7leel.pro/summary/rich-dad-poor-dad" },
+        { id: "sapiens", title: "Sapiens", author: "Yuval Noah Harari", category: "التاريخ والتفكير", keywords: "تاريخ إنسان تفكير يوفال هراري", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg", url: "https://www.ta7leel.pro/summary/sapiens" },
+        { id: "the-intelligent-investor", title: "The Intelligent Investor", author: "Benjamin Graham", category: "الاستثمار", keywords: "استثمار قيمة بنجامين غراهام", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-intelligent-investor/the_intelligent_investor.jpg", url: "https://www.ta7leel.pro/summary/the-intelligent-investor" },
+        { id: "the-mental-game-of-trading", title: "The Mental Game of Trading", author: "Jared Tendler", category: "التداول وعلم النفس", keywords: "تداول نفسية جاريد تندلر", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-mental-game/the_mental_game_of_trading.jpg", url: "https://www.ta7leel.pro/summary/the-mental-game-of-trading" },
+        { id: "best-loser-wins", title: "Best Loser Wins", author: "Tom Hougaard", category: "التداول", keywords: "تداول خسارة توم هوغارد", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-best-loser/best_loser_wins.jpg", url: "https://www.ta7leel.pro/summary/best-loser-wins" },
+        { id: "the-subtle-art-of-not-giving-a-f", title: "The Subtle Art of Not Giving a F*ck", author: "Mark Manson", category: "تطوير الذات", keywords: "تطوير الذات مارك مانسون", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-subtle-art/the_subtle_art.jpg", url: "https://www.ta7leel.pro/summary/the-subtle-art-of-not-giving-a-f" },
+        { id: "the-7-habits-of-highly-effective-people", title: "The 7 Habits of Highly Effective People", author: "Stephen R. Covey", category: "تطوير الذات", keywords: "عادات فعالية ستيفن كوفي", image: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-seven-habits/the_7_habits_of_highly_effective_people.jpg", url: "https://www.ta7leel.pro/summary/the-7-habits-of-highly-effective-people" }
+      ];
+
+      const input = document.getElementById("library-search");
+      const form = document.getElementById("library-search-form");
+      const list = document.getElementById("search-results-list");
+      const status = document.getElementById("search-result-status");
+      const empty = document.getElementById("empty-results");
+      const clearButton = document.getElementById("clear-search");
+      let activeIndex = -1;
+
+      function normalize(value) {
+        return value.toLocaleLowerCase("ar").normalize("NFKD").replace(/[\u064B-\u065F]/g, "").trim();
+      }
+
+      function visibleItems() {
+        return Array.from(list.querySelectorAll("a.result-row"));
+      }
+
+      function setActive(index) {
+        const items = visibleItems();
+        if (!items.length) return;
+        activeIndex = (index + items.length) % items.length;
+        items.forEach(function (item, itemIndex) {
+          item.dataset.active = itemIndex === activeIndex ? "true" : "false";
+        });
+        items[activeIndex].focus();
+      }
+
+      function render() {
+        const query = normalize(input.value);
+        const matches = query
+          ? searchData.filter(function (book) {
+              return normalize([book.title, book.author, book.category, book.keywords].join(" ")).includes(query);
+            }).slice(0, 6)
+          : searchData.slice(0, 5);
+
+        list.replaceChildren();
+        matches.forEach(function (book) {
+          const link = document.createElement("a");
+          link.id = "search-result-" + book.id;
+          link.className = "result-row";
+          link.href = book.url;
+          link.dir = "auto";
+
+          const cover = document.createElement("img");
+          cover.className = "result-cover";
+          cover.src = book.image;
+          cover.alt = "غلاف كتاب " + book.title;
+
+          const copy = document.createElement("span");
+          copy.className = "result-copy";
+          const title = document.createElement("span");
+          title.className = "result-title";
+          const titleBdi = document.createElement("bdi");
+          titleBdi.textContent = book.title;
+          title.appendChild(titleBdi);
+
+          const meta = document.createElement("span");
+          meta.className = "result-meta";
+          const authorBdi = document.createElement("bdi");
+          authorBdi.textContent = book.author;
+          meta.appendChild(authorBdi);
+          meta.appendChild(document.createTextNode(" · " + book.category));
+          copy.append(title, meta);
+
+          const arrow = document.createElement("iconify-icon");
+          arrow.className = "result-arrow";
+          arrow.setAttribute("icon", "lucide:arrow-left");
+          arrow.setAttribute("aria-hidden", "true");
+
+          link.append(cover, copy, arrow);
+          list.appendChild(link);
+        });
+
+        list.style.display = matches.length ? "grid" : "none";
+        empty.style.display = matches.length ? "none" : "grid";
+        status.textContent = query
+          ? (matches.length ? matches.length + " نتائج مطابقة" : "لا توجد نتائج مطابقة")
+          : "5 اختيارات من المكتبة";
+        activeIndex = -1;
+      }
+
+      input.addEventListener("input", render);
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setActive(activeIndex + 1);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setActive(activeIndex - 1);
+        } else if (event.key === "Escape") {
+          input.value = "";
+          render();
+          input.focus();
+        }
+      });
+
+      list.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          setActive(activeIndex + 1);
+        } else if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+          event.preventDefault();
+          setActive(activeIndex - 1);
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          input.focus();
+        }
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const items = visibleItems();
+        if (items.length) {
+          activeIndex = 0;
+          items[0].dataset.active = "true";
+          items[0].focus();
+          status.textContent = "اختر نتيجة لفتح الملخص";
+        }
+      });
+
+      clearButton.addEventListener("click", function () {
+        input.value = "";
+        render();
+        input.focus();
+      });
+
+      document.addEventListener("keydown", function (event) {
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (event.key === "/" && tag !== "INPUT" && tag !== "TEXTAREA") {
+          event.preventDefault();
+          input.focus();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="top" class="page-root">
+    <a id="skip-to-main-link" class="skip-link" href="#main-content">انتقل إلى المحتوى</a>
+
+    <div class="announcement">
+      <a id="announcement-weekly-summaries-link" href="#popular">
+        <iconify-icon icon="lucide:sparkles" aria-hidden="true"></iconify-icon>
+        <span>ملخصات جديدة كل أسبوع · اكتشف فكرتك التالية في عشر دقائق</span>
+      </a>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-leading">
+          <a id="header-brand-home-link" class="brand-lockup" href="#top" aria-label="BookBriefs Ta7leel — الصفحة الرئيسية">
+            <iconify-icon icon="lucide:book-open" width="38" height="38" aria-hidden="true"></iconify-icon>
+            <span class="brand-copy">
+              <span class="brand-name">BookBriefs</span>
+              <span class="brand-subtitle">Ta7leel</span>
+            </span>
+          </a>
+
+          <nav class="primary-nav" aria-label="التنقل الرئيسي">
+            <a id="header-nav-discover-link" href="#discover">البحث</a>
+            <a id="header-nav-popular-link" href="#popular">اختيارات الكتب</a>
+            <a id="header-nav-paths-link" href="#paths">مسارات القراءة</a>
+            <a id="header-nav-categories-link" href="#categories">التصنيفات</a>
+            <a id="header-nav-blog-link" href="https://www.ta7leel.pro/blog">المقالات</a>
+          </nav>
+        </div>
+
+        <div class="header-actions">
+          <details class="mobile-nav">
+            <summary aria-label="افتح قائمة التنقل"><iconify-icon icon="lucide:menu" aria-hidden="true"></iconify-icon></summary>
+            <nav class="mobile-nav-panel" aria-label="التنقل للشاشات الصغيرة">
+              <a id="mobile-header-nav-discover-link" href="#discover">البحث</a>
+              <a id="mobile-header-nav-popular-link" href="#popular">اختيارات الكتب</a>
+              <a id="mobile-header-nav-paths-link" href="#paths">مسارات القراءة</a>
+              <a id="mobile-header-nav-categories-link" href="#categories">التصنيفات</a>
+              <a id="mobile-header-nav-blog-link" href="https://www.ta7leel.pro/blog">المقالات</a>
+            </nav>
+          </details>
+          <button class="icon-button header-search-button" type="button" aria-label="الانتقال إلى البحث" onclick="document.getElementById('library-search').focus()">
+            <iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>
+          </button>
+          <a id="header-support-link" class="support-button" href="https://ko-fi.com/ta7leel">ادعم المشروع</a>
+          <a id="header-library-link" class="icon-button" href="https://www.ta7leel.pro/summaries" aria-label="فتح مكتبة الملخصات">
+            <iconify-icon icon="lucide:book-open" aria-hidden="true"></iconify-icon>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section id="discover" class="discovery-stage" aria-labelledby="discover-title">
+        <div class="discovery-inner">
+          <p class="eyebrow"><iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon> ملخصات كتب في عشر دقائق</p>
+          <h1 id="discover-title" class="hero-title">الفكرة التي تبحث عنها،<br>في عشر دقائق.</h1>
+          <p class="hero-copy">ابحث باسم كتاب أو مؤلف أو موضوع، ثم انتقل مباشرة إلى ملخص واضح دون حشو.</p>
+
+          <div class="search-shell">
+            <form id="library-search-form" class="search-form" role="search" novalidate>
+              <div class="search-label-row">
+                <label class="search-label" for="library-search">ابحث في المكتبة</label>
+                <span class="search-hint">كتاب، مؤلف، أو موضوع <span class="keycap">/</span></span>
+              </div>
+              <div class="search-control">
+                <span class="search-icon" aria-hidden="true">
+                  <iconify-icon icon="lucide:search"></iconify-icon>
+                </span>
+                <input id="library-search" class="search-input" name="q" type="search" dir="auto" autocomplete="off" aria-controls="search-results-list" aria-describedby="search-result-status" placeholder="مثلاً: العادات، الاستثمار، أو Atomic Habits">
+                <button class="search-submit" type="submit">بحث</button>
+              </div>
+              <div class="topic-shortcuts" aria-label="مسارات بحث سريعة">
+                <span>استكشف حسب نيتك:</span>
+                <a id="search-topic-trading-link" href="https://www.ta7leel.pro/ar/categories/trading-books">التداول</a>
+                <a id="search-topic-investing-link" href="https://www.ta7leel.pro/ar/categories/investing-books">الاستثمار</a>
+                <a id="search-topic-business-link" href="https://www.ta7leel.pro/ar/categories/business-books">الأعمال</a>
+                <a id="search-topic-self-development-link" href="https://www.ta7leel.pro/ar/categories/self-development-books">تطوير الذات</a>
+                <a id="search-topic-psychology-link" href="https://www.ta7leel.pro/ar/categories/psychology-books">علم النفس</a>
+              </div>
+            </form>
+          </div>
+
+            <div id="popular" class="search-results" aria-label="نتائج البحث">
+              <div class="results-head">
+                <strong id="search-result-status" role="status" aria-live="polite">5 اختيارات من المكتبة</strong>
+                <a id="hero-browse-full-library-link" href="https://www.ta7leel.pro/ar/book-summaries">عرض المكتبة كاملة <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              </div>
+              <div id="search-results-list" class="results-list">
+                <a id="search-result-atomic-habits" class="result-row" href="https://www.ta7leel.pro/summary/atomic-habits" dir="auto">
+                  <img class="result-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="غلاف كتاب Atomic Habits">
+                  <span class="result-copy"><span class="result-title"><bdi>Atomic Habits</bdi></span><span class="result-meta"><bdi>James Clear</bdi> · تطوير الذات والعادات</span></span>
+                  <iconify-icon class="result-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon>
+                </a>
+                <a id="search-result-the-psychology-of-money" class="result-row" href="https://www.ta7leel.pro/summary/the-psychology-of-money" dir="auto">
+                  <img class="result-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="غلاف كتاب The Psychology of Money">
+                  <span class="result-copy"><span class="result-title"><bdi>The Psychology of Money</bdi></span><span class="result-meta"><bdi>Morgan Housel</bdi> · المال والاستثمار</span></span>
+                  <iconify-icon class="result-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon>
+                </a>
+                <a id="search-result-trading-in-the-zone" class="result-row" href="https://www.ta7leel.pro/summary/trading-in-the-zone" dir="auto">
+                  <img class="result-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="غلاف كتاب Trading in the Zone">
+                  <span class="result-copy"><span class="result-title"><bdi>Trading in the Zone</bdi></span><span class="result-meta"><bdi>Mark Douglas</bdi> · التداول وعلم النفس</span></span>
+                  <iconify-icon class="result-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon>
+                </a>
+                <a id="search-result-thinking-fast-and-slow" class="result-row" href="https://www.ta7leel.pro/summary/thinking-fast-and-slow" dir="auto">
+                  <img class="result-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="غلاف كتاب Thinking, Fast and Slow">
+                  <span class="result-copy"><span class="result-title"><bdi>Thinking, Fast and Slow</bdi></span><span class="result-meta"><bdi>Daniel Kahneman</bdi> · علم النفس والتفكير</span></span>
+                  <iconify-icon class="result-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon>
+                </a>
+                <a id="search-result-rich-dad-poor-dad" class="result-row" href="https://www.ta7leel.pro/summary/rich-dad-poor-dad" dir="auto">
+                  <img class="result-cover" src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg" alt="غلاف كتاب Rich Dad Poor Dad">
+                  <span class="result-copy"><span class="result-title"><bdi>Rich Dad Poor Dad</bdi></span><span class="result-meta"><bdi>Robert T. Kiyosaki</bdi> · المال والأعمال</span></span>
+                  <iconify-icon class="result-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon>
+                </a>
+              </div>
+              <div id="empty-results" class="empty-results">
+                <div>
+                  <p>لم نجد عنواناً مطابقاً في هذه العينة.</p>
+                  <button id="clear-search" type="button">مسح البحث</button>
+                </div>
+              </div>
+            </div>
+        </div>
+      </section>
+
+      <section id="paths" class="section section--quiet" aria-labelledby="paths-title">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">لا تعرف من أين تبدأ؟</p>
+              <h2 id="paths-title" class="section-title">اختر النتيجة، ثم ابدأ القراءة.</h2>
+              <p class="section-note">مسارات قائمة على الكتب الموجودة فعلاً في المكتبة، من هدف واضح إلى تصنيف مفيد.</p>
+            </div>
+          </div>
+
+          <div class="paths-grid">
+            <a id="path-better-habits-link" class="path-card" href="https://www.ta7leel.pro/ar/categories/self-development-books">
+              <span class="path-number">01</span>
+              <h3>ابنِ عادات أفضل</h3>
+              <p>أنظمة صغيرة، انضباط عملي، وتغيير يستمر.</p>
+              <span class="path-books"><span>ابدأ المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></span><span class="mini-covers" aria-hidden="true"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt=""><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-seven-habits/the_7_habits_of_highly_effective_people.jpg" alt=""></span></span>
+            </a>
+            <a id="path-understand-money-link" class="path-card" href="https://www.ta7leel.pro/ar/categories/investing-books">
+              <span class="path-number">02</span>
+              <h3>افهم المال</h3>
+              <p>نماذج ذهنية للادخار والثروة والاستثمار طويل الأمد.</p>
+              <span class="path-books"><span>ابدأ المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></span><span class="mini-covers" aria-hidden="true"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt=""><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg" alt=""></span></span>
+            </a>
+            <a id="path-trader-thinking-link" class="path-card" href="https://www.ta7leel.pro/ar/categories/trading-books">
+              <span class="path-number">03</span>
+              <h3>فكّر كمتداول</h3>
+              <p>المخاطر، الانضباط، والقرار تحت ضغط السوق.</p>
+              <span class="path-books"><span>ابدأ المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></span><span class="mini-covers" aria-hidden="true"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt=""><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-mental-game/the_mental_game_of_trading.jpg" alt=""></span></span>
+            </a>
+            <a id="path-sharpen-thinking-link" class="path-card" href="https://www.ta7leel.pro/ar/categories/psychology-books">
+              <span class="path-number">04</span>
+              <h3>شحّذ تفكيرك</h3>
+              <p>افهم البشر والتحيزات واتخذ قرارات أوضح.</p>
+              <span class="path-books"><span>ابدأ المسار <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></span><span class="mini-covers" aria-hidden="true"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt=""><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg" alt=""></span></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="categories" class="section section--white" aria-labelledby="categories-title">
+        <div class="section-inner">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">تصفّح المكتبة</p>
+              <h2 id="categories-title" class="section-title">ادخل من الباب الأقرب إلى اهتمامك.</h2>
+              <p class="section-note">روابط مباشرة إلى محاور التصنيف الحالية — مفيدة للقرّاء وقابلة للاكتشاف دون الاعتماد على البحث وحده.</p>
+            </div>
+          </div>
+
+          <div class="library-layout">
+            <nav class="category-list" aria-label="تصنيفات الكتب">
+              <a id="category-trading-books-link" class="category-row" href="https://www.ta7leel.pro/ar/categories/trading-books"><span class="category-index">01</span><span class="category-name">كتب التداول<span class="category-description">نفسية السوق، إدارة المخاطر، والانضباط</span></span><iconify-icon class="category-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              <a id="category-investing-books-link" class="category-row" href="https://www.ta7leel.pro/ar/categories/investing-books"><span class="category-index">02</span><span class="category-name">كتب الاستثمار<span class="category-description">الثروة، الأسواق، والاستثمار طويل الأمد</span></span><iconify-icon class="category-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              <a id="category-business-books-link" class="category-row" href="https://www.ta7leel.pro/ar/categories/business-books"><span class="category-index">03</span><span class="category-name">كتب الأعمال<span class="category-description">القيادة، الأنظمة، وبناء الشركات</span></span><iconify-icon class="category-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              <a id="category-self-development-books-link" class="category-row" href="https://www.ta7leel.pro/ar/categories/self-development-books"><span class="category-index">04</span><span class="category-name">تطوير الذات<span class="category-description">العادات، التركيز، والنمو الشخصي</span></span><iconify-icon class="category-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+              <a id="category-psychology-books-link" class="category-row" href="https://www.ta7leel.pro/ar/categories/psychology-books"><span class="category-index">05</span><span class="category-name">علم النفس<span class="category-description">السلوك، القرارات، وفهم الناس</span></span><iconify-icon class="category-arrow" icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </nav>
+
+            <aside class="library-aside" aria-labelledby="library-aside-title">
+              <div>
+                <p class="eyebrow">كل الملخصات في مكان واحد</p>
+                <h3 id="library-aside-title">هل تريد رؤية الرف كاملاً؟</h3>
+                <p>انتقل إلى صفحة المكتبة لتصفية الكتب والبحث داخل المجموعة الحالية.</p>
+              </div>
+              <a id="categories-open-full-library-link" class="aside-link" href="https://www.ta7leel.pro/ar/book-summaries"><span>فتح مكتبة الملخصات</span><iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="section-inner">
+        <section class="footer-cta" aria-labelledby="footer-cta-title">
+          <div>
+            <h2 id="footer-cta-title">كتاب واحد. فكرة واحدة. بداية مفيدة.</h2>
+            <p>اختر ملخصاً من المكتبة الحالية وابدأ بما يمكنك تطبيقه اليوم.</p>
+          </div>
+          <a id="footer-start-reading-link" class="footer-cta-link" href="https://www.ta7leel.pro/ar/book-summaries">ابدأ القراءة <iconify-icon icon="lucide:arrow-left" aria-hidden="true"></iconify-icon></a>
+        </section>
+
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div>
+              <a id="footer-brand-home-link" class="brand-lockup" href="#top" aria-label="BookBriefs Ta7leel — العودة للأعلى">
+                <iconify-icon icon="lucide:book-open" width="38" height="38" aria-hidden="true"></iconify-icon>
+                <span class="brand-copy"><span class="brand-name">BookBriefs</span><span class="brand-subtitle">Ta7leel</span></span>
+              </a>
+              <p class="footer-brand-note">ملخصات كتب تساعدك على الوصول إلى الأفكار المهمة بسرعة ووضوح.</p>
+            </div>
+            <p class="copyright">© 2026 BookBriefs. All rights reserved.</p>
+          </div>
+
+          <div class="footer-links">
+            <nav aria-label="روابط المكتبة">
+              <h3>المكتبة</h3>
+              <a id="footer-summaries-link" href="https://www.ta7leel.pro/ar/book-summaries">كل الملخصات</a>
+              <a id="footer-reading-challenge-link" href="https://www.ta7leel.pro/reading-challenge">تحدي القراءة</a>
+              <a id="footer-downloads-link" href="https://www.ta7leel.pro/downloads">التنزيلات</a>
+            </nav>
+            <nav aria-label="روابط التصنيفات">
+              <h3>التصنيفات</h3>
+              <a id="footer-trading-category-link" href="https://www.ta7leel.pro/ar/categories/trading-books">التداول</a>
+              <a id="footer-investing-category-link" href="https://www.ta7leel.pro/ar/categories/investing-books">الاستثمار</a>
+              <a id="footer-self-development-category-link" href="https://www.ta7leel.pro/ar/categories/self-development-books">تطوير الذات</a>
+            </nav>
+            <nav aria-label="روابط الأدوات والتعلّم">
+              <h3>الأدوات والتعلّم</h3>
+              <a id="footer-calculators-link" href="https://www.ta7leel.pro/calculators">الحاسبات</a>
+              <a id="footer-blog-link" href="https://www.ta7leel.pro/blog">المقالات</a>
+              <a id="footer-news-link" href="https://www.ta7leel.pro/news">الأخبار</a>
+            </nav>
+            <nav aria-label="روابط عن الموقع والقانونية">
+              <h3>عن الموقع</h3>
+              <a id="footer-about-link" href="https://www.ta7leel.pro/about">من نحن</a>
+              <a id="footer-privacy-link" href="https://www.ta7leel.pro/privacy-policy">الخصوصية</a>
+              <a id="footer-terms-link" href="https://www.ta7leel.pro/terms-of-use">الشروط</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

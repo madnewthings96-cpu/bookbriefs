@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
+import { SITE_URL } from '../utils/seoConfig';
 
 interface SEOHeadProps {
     title: string;
@@ -16,7 +17,6 @@ interface SEOHeadProps {
 }
 
 const SITE_NAME = 'تحليل - Ta7leel';
-const BASE_URL = 'https://ta7leel.site';
 const DEFAULT_IMAGE = '/images/og-default.jpg';
 const DEFAULT_KEYWORDS = 'book summaries, business books, self-help books, ملخصات كتب, كتب أعمال, تطوير ذاتي';
 
@@ -33,8 +33,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     noindex = false,
 }) => {
     const location = useLocation();
-    const currentUrl = canonical || `${BASE_URL}${location.pathname}`;
-    const fullImageUrl = image.startsWith('http') ? image : `${BASE_URL}${image}`;
+    const currentUrl = canonical || `${SITE_URL}${location.pathname}`;
+    const fullImageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
     return (
         <Helmet>

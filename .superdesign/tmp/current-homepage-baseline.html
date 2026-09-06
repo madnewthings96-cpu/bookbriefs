@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookBriefs — Current Homepage Baseline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Lato:wght@400;700;900&family=Newsreader:ital,opsz,wght@1,6..72,600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <style>
+    :root{--cream:#f7f0e6;--paper:#fffaf3;--sand:#e5d8c7;--copper:#a75d37;--copper-dark:#8f4f2f;--ink:#111827;--warm:#675b4d;--rule:#d7c7b3}
+    *{box-sizing:border-box}html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}body{margin:0;background:var(--paper);font-family:Lato,sans-serif;color:var(--ink)}
+    button,a.inline-flex,.control{font-family:"Bricolage Grotesque",sans-serif}a{text-decoration:none}.press{transition:transform 180ms cubic-bezier(.2,0,0,1),box-shadow 200ms cubic-bezier(.2,0,0,1),background-color 200ms}.press:active{transform:scale(.96)}
+    .book-cover{outline:1px solid rgba(0,0,0,.10);outline-offset:-1px}.warm-shadow{box-shadow:0 1px 2px rgba(17,24,39,.05),0 18px 40px rgba(89,69,45,.12)}
+    .testimonial-track{animation:slide 36s linear infinite}.testimonial-track:hover{animation-play-state:paused}@keyframes slide{to{transform:translateX(-50%)}}
+    .mobile-dock{display:none}.search-panel[hidden]{display:none!important}
+    @media(max-width:1023px){.desktop-nav{display:none!important}.desktop-actions .support{display:none}.hero-grid{grid-template-columns:1fr!important}.hero-art{min-height:430px}.path-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.preview-grid{grid-template-columns:1fr!important}.footer-grid{grid-template-columns:1fr!important}}
+    @media(max-width:767px){.announcement{display:none}.wordmark-copy{display:none}.desktop-search{display:none}.hero{padding-top:24px!important}.hero-art{min-height:320px}.hero-stats,.secondary-cta{display:none!important}.how-grid,.most-grid,.path-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.how-grid article:last-child,.most-grid article:last-child{grid-column:1/-1}.mobile-dock{display:flex}.footer-links{grid-template-columns:1fr!important}.footer-cta{font-size:2.5rem!important}.page-bottom{padding-bottom:88px}.testimonial-track{animation:none;transform:none;display:grid!important;grid-template-columns:1fr!important}.testimonial-track article:nth-child(n+4){display:none}.testimonial-shell{overflow:visible!important}}
+    @media(max-width:520px){.hero-title{font-size:3.05rem!important}.hero-actions{display:block!important}.hero-actions a{width:100%;margin-top:10px}.how-grid,.most-grid,.path-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.most-grid h3{font-size:.82rem}.path-covers img{width:38px!important;height:56px!important}.preview-card{padding:20px!important}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.testimonial-track{animation:none}}
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded',()=>{
+      const panel=document.getElementById('baseline-search-panel');
+      const input=document.getElementById('baseline-search-input');
+      const result=document.getElementById('baseline-search-result');
+      const open=document.getElementById('baseline-search-open');
+      const close=document.getElementById('baseline-search-close');
+      const toggle=(show)=>{panel.hidden=!show;if(show)setTimeout(()=>input.focus(),20)};
+      open.addEventListener('click',()=>toggle(true));close.addEventListener('click',()=>toggle(false));
+      input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();result.hidden=!q;result.querySelector('strong').textContent=q.includes('money')?'The Psychology of Money':'Atomic Habits';result.querySelector('span').textContent=q.includes('money')?'Morgan Housel · Finance':'James Clear · Personal Development'});
+      document.addEventListener('keydown',(e)=>{if(e.key==='/'&&document.activeElement!==input){e.preventDefault();toggle(true)}if(e.key==='Escape')toggle(false)});
+      document.getElementById('baseline-mobile-menu').addEventListener('click',()=>document.getElementById('baseline-mobile-links').classList.toggle('hidden'));
+    });
+  </script>
+</head>
+<body>
+  <div class="page-bottom min-h-screen overflow-x-hidden bg-[#fffaf3]">
+    <header class="sticky top-0 z-50 border-b border-[#e5d8c7] bg-[#f7f0e6]/95 backdrop-blur-xl warm-shadow">
+      <div class="announcement h-7 border-b border-white/15 bg-[#a75d37] text-white">
+        <a id="baseline-announcement-link" href="#most-read" class="mx-auto flex h-full max-w-7xl items-center justify-center gap-2 px-4 text-[11px] font-bold text-white">
+          <iconify-icon icon="lucide:sparkles" aria-hidden="true"></iconify-icon>
+          New summaries added weekly. Read the next big idea in 10 minutes.
+        </a>
+      </div>
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-3">
+          <div class="flex min-w-0 items-center gap-7">
+            <a id="baseline-home-link" href="#top" class="flex min-h-11 min-w-0 items-center gap-3 rounded-2xl pe-2">
+              <iconify-icon icon="lucide:book-open" class="text-4xl text-[#374151]" aria-hidden="true"></iconify-icon>
+              <span class="wordmark-copy flex flex-col items-center leading-none text-center">
+                <span class="text-[22px] font-bold tracking-tight text-[#374151]">BookBriefs</span>
+                <span class="mt-0.5 text-[14px] font-semibold italic text-[#374151]" style="font-family:Newsreader,serif">Ta7leel</span>
+              </span>
+            </a>
+            <nav class="desktop-nav flex items-center gap-1" aria-label="Primary navigation">
+              <a id="baseline-library-link" href="#most-read" class="inline-flex h-10 items-center gap-1 rounded-full px-3 text-sm font-bold text-[#574f43] hover:bg-white">Library <iconify-icon icon="lucide:chevron-down"></iconify-icon></a>
+              <a id="baseline-tools-link" href="#preview" class="inline-flex h-10 items-center gap-1 rounded-full px-3 text-sm font-bold text-[#574f43] hover:bg-white">Tools <iconify-icon icon="lucide:chevron-down"></iconify-icon></a>
+              <a id="baseline-learn-link" href="#reading-paths" class="inline-flex h-10 items-center gap-1 rounded-full px-3 text-sm font-bold text-[#574f43] hover:bg-white">Learn <iconify-icon icon="lucide:chevron-down"></iconify-icon></a>
+            </nav>
+          </div>
+          <div class="desktop-actions flex items-center gap-2">
+            <button id="baseline-search-open" type="button" class="press desktop-search flex h-10 w-10 items-center justify-center rounded-xl bg-white/60 text-[#574f43] shadow-inner" aria-label="Open search"><iconify-icon icon="lucide:search"></iconify-icon></button>
+            <a id="baseline-support-link" href="https://ko-fi.com/ta7leel" class="press support inline-flex min-h-10 items-center gap-2 rounded-xl bg-[#a75d37] px-4 py-2 text-sm font-bold text-white"><iconify-icon icon="lucide:coffee"></iconify-icon>Support</a>
+            <button id="baseline-user-menu" type="button" class="press hidden h-10 w-10 items-center justify-center rounded-xl bg-white/60 text-[#574f43] shadow-inner md:flex" aria-label="User menu"><iconify-icon icon="lucide:menu"></iconify-icon></button>
+            <button id="baseline-mobile-menu" type="button" class="press flex h-10 w-10 items-center justify-center rounded-xl bg-white/60 text-[#574f43] shadow-inner lg:hidden" aria-label="Open main menu"><iconify-icon icon="lucide:menu"></iconify-icon></button>
+          </div>
+        </div>
+        <div id="baseline-mobile-links" class="hidden border-t border-[#e5d8c7] pb-4 pt-3 lg:hidden">
+          <nav class="grid grid-cols-2 gap-2" aria-label="Mobile primary navigation">
+            <a id="baseline-mobile-summaries" href="#most-read" class="rounded-xl bg-white px-4 py-3 text-sm font-bold text-[#574f43]">Summaries</a>
+            <a id="baseline-mobile-blog" href="#reading-paths" class="rounded-xl bg-white px-4 py-3 text-sm font-bold text-[#574f43]">Blog</a>
+          </nav>
+        </div>
+        <div id="baseline-search-panel" class="search-panel relative pb-3" hidden>
+          <div class="ms-auto w-full max-w-[22rem]">
+            <label for="baseline-search-input" class="sr-only">Search books</label>
+            <div class="relative">
+              <input id="baseline-search-input" type="search" dir="auto" placeholder="Search books..." class="w-full rounded-2xl bg-white py-3 ps-10 pe-12 text-sm text-gray-950 shadow-xl outline-none ring-2 ring-orange-300" />
+              <iconify-icon icon="lucide:search" class="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-gray-400"></iconify-icon>
+              <button id="baseline-search-close" type="button" class="absolute end-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl text-gray-500" aria-label="Close search"><iconify-icon icon="lucide:x"></iconify-icon></button>
+            </div>
+            <button id="baseline-search-result" type="button" class="mt-2 w-full rounded-xl bg-white p-4 text-start shadow-xl" hidden><strong class="block text-sm text-gray-950">Atomic Habits</strong><span class="mt-1 block text-xs text-gray-500">James Clear · Personal Development</span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero relative overflow-hidden bg-[#f7f0e6] px-4 pb-10 pt-8 sm:px-6 lg:px-8">
+        <div class="hero-grid mx-auto grid max-w-7xl grid-cols-[1.02fr_.98fr] items-center gap-10">
+          <div class="relative z-10 py-5">
+            <div class="mb-5 inline-flex min-h-10 items-center gap-2 rounded-full bg-[#e5d8c7] px-4 py-2 warm-shadow">
+              <span class="flex items-center gap-0.5 text-amber-400" aria-label="Five stars"><iconify-icon icon="lucide:star" class="fill-current"></iconify-icon><iconify-icon icon="lucide:star" class="fill-current"></iconify-icon><iconify-icon icon="lucide:star" class="fill-current"></iconify-icon><iconify-icon icon="lucide:star" class="fill-current"></iconify-icon><iconify-icon icon="lucide:star" class="fill-current"></iconify-icon></span><span class="text-sm font-black text-[#453c31]">5,000+ readers</span>
+            </div>
+            <h1 class="hero-title max-w-[680px] text-[4.6rem] font-black leading-[.91] tracking-[-.045em] text-gray-950">Meet your shortcut to the best ideas in books.</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-8 text-[#675b4d]">BookBriefs turns powerful business, money, psychology, and self-growth books into clear 10-minute reads you can actually remember.</p>
+            <div class="hero-actions mt-7 flex gap-3">
+              <a id="baseline-read-now" href="#most-read" class="press inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#a75d37] px-7 py-3 text-base font-bold text-white shadow-[0_18px_38px_rgba(167,93,55,.28)]">إقرأ الآن <iconify-icon icon="lucide:arrow-right"></iconify-icon></a>
+              <a id="baseline-calculator-cta" href="#preview" class="press secondary-cta inline-flex min-h-12 items-center justify-center rounded-full bg-white/70 px-6 py-3 text-base font-black text-[#453c31] warm-shadow">Use Calculator</a>
+            </div>
+            <div class="hero-stats mt-7 grid max-w-2xl grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-white/60 px-4 py-4 shadow-inner"><strong class="block text-2xl font-black text-gray-950">100+</strong><span class="text-xs font-bold uppercase tracking-wider text-[#7a6f62]">book summaries</span></div>
+              <div class="rounded-2xl bg-white/60 px-4 py-4 shadow-inner"><strong class="block text-2xl font-black text-gray-950">10 min</strong><span class="text-xs font-bold uppercase tracking-wider text-[#7a6f62]">average read</span></div>
+              <div class="rounded-2xl bg-white/60 px-4 py-4 shadow-inner"><strong class="block text-2xl font-black text-gray-950">Weekly</strong><span class="text-xs font-bold uppercase tracking-wider text-[#7a6f62]">new ideas</span></div>
+            </div>
+          </div>
+          <div class="hero-art relative min-h-[540px]">
+            <div class="absolute left-1/2 top-1/2 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e5d8c7]/80 blur-3xl"></div>
+            <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/homepage-hero/girl_book_new.webp" alt="Girl surrounded by books" class="relative z-10 mx-auto h-auto w-full max-w-[620px] select-none drop-shadow-[0_24px_44px_rgba(89,69,45,.18)]" />
+            <div class="absolute end-0 top-8 z-20 hidden max-w-[205px] rounded-2xl bg-white/90 p-4 warm-shadow md:block"><span class="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-[#a75d37] text-white"><iconify-icon icon="lucide:clock-3"></iconify-icon></span><p class="text-sm font-black leading-5 text-gray-950">A full book idea before your coffee gets cold.</p></div>
+            <div class="absolute bottom-3 start-0 z-20 hidden max-w-[250px] rounded-2xl bg-white/90 p-4 warm-shadow sm:block"><div class="flex -space-x-3"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="" class="book-cover h-16 w-11 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="" class="book-cover h-16 w-11 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg" alt="" class="book-cover h-16 w-11 rounded-lg object-cover" /></div><p class="mt-3 text-xs font-black uppercase tracking-widest text-[#a75d37]">Today’s path</p><p class="mt-1 text-sm font-black text-gray-950">Habits, money, focus, decision-making</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+            <div><p class="inline-flex rounded-full bg-[#e5d8c7] px-3 py-1.5 text-xs font-black uppercase tracking-[.14em] text-[#7a4a31]">From shelf to insight</p><h2 class="mt-4 text-5xl font-black leading-[.95] tracking-tight text-gray-950">Finish more books without collecting more tabs.</h2><p class="mt-5 text-base leading-7 text-[#675b4d]">Use the same simple flow every time you want a useful idea: choose the goal, read the brief, then save what you can apply.</p><div class="mt-6 flex flex-wrap gap-3"><a id="baseline-explore-summaries" href="#most-read" class="press inline-flex min-h-12 items-center rounded-xl bg-[#a75d37] px-6 text-sm font-black text-white">Explore summaries</a><a id="baseline-reading-challenge" href="#reading-paths" class="press inline-flex min-h-12 items-center rounded-xl bg-[#f7f0e6] px-6 text-sm font-black text-[#453c31]">Build a reading habit</a></div></div>
+            <div class="how-grid grid grid-cols-3 gap-4">
+              <article class="min-h-[250px] rounded-2xl bg-[#f7f0e6] p-5 warm-shadow"><div class="flex items-center justify-between"><span class="font-black text-[#a75d37]">01</span><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#a75d37]"><iconify-icon icon="lucide:target"></iconify-icon></span></div><h3 class="mt-12 text-xl font-black text-gray-950">Pick the outcome</h3><p class="mt-3 text-sm leading-6 text-[#675b4d]">Choose a book, topic, or reading path based on what you want to improve next.</p></article>
+              <article class="min-h-[250px] rounded-2xl bg-[#f7f0e6] p-5 warm-shadow"><div class="flex items-center justify-between"><span class="font-black text-[#a75d37]">02</span><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#a75d37]"><iconify-icon icon="lucide:book-open"></iconify-icon></span></div><h3 class="mt-12 text-xl font-black text-gray-950">Read the distilled brief</h3><p class="mt-3 text-sm leading-6 text-[#675b4d]">Get the core argument, best ideas, and practical takeaways without filler.</p></article>
+              <article class="min-h-[250px] rounded-2xl bg-[#f7f0e6] p-5 warm-shadow"><div class="flex items-center justify-between"><span class="font-black text-[#a75d37]">03</span><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#a75d37]"><iconify-icon icon="lucide:check-circle-2"></iconify-icon></span></div><h3 class="mt-12 text-xl font-black text-gray-950">Keep the useful ideas</h3><p class="mt-3 text-sm leading-6 text-[#675b4d]">Turn the best insights into saved notes, challenges, and repeatable actions.</p></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="most-read" class="bg-[#fffaf3] px-4 py-10 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-7 flex items-end justify-between gap-5"><div><p class="text-xs font-black uppercase tracking-[.14em] text-[#a75d37]">Most read this week</p><h2 class="mt-3 text-4xl font-black tracking-tight text-gray-950">Start with books readers keep opening.</h2><p class="mt-3 text-[#675b4d]">A quick shelf of high-signal summaries across habits, thinking, trading, and work.</p></div><a id="baseline-browse-library" href="#reading-paths" class="press hidden min-h-11 items-center rounded-xl bg-[#a75d37] px-5 text-sm font-bold text-white sm:inline-flex">Browse library</a></div>
+          <div class="most-grid grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <article><a id="baseline-book-atomic" href="#preview" class="block overflow-hidden rounded-[18px] bg-white warm-shadow"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="Cover of Atomic Habits" class="book-cover aspect-[3/4] w-full object-cover" /><div class="p-4"><p class="text-[11px] font-black uppercase text-[#a75d37]">Personal Development</p><h3 class="mt-2 line-clamp-2 text-base font-black text-gray-950">Atomic Habits</h3><p class="mt-1 text-xs text-[#675b4d]">James Clear</p></div></a></article>
+            <article><a id="baseline-book-money" href="#preview" class="block overflow-hidden rounded-[18px] bg-white warm-shadow"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="Cover of The Psychology of Money" class="book-cover aspect-[3/4] w-full object-cover" /><div class="p-4"><p class="text-[11px] font-black uppercase text-[#a75d37]">Finance</p><h3 class="mt-2 line-clamp-2 text-base font-black text-gray-950">The Psychology of Money</h3><p class="mt-1 text-xs text-[#675b4d]">Morgan Housel</p></div></a></article>
+            <article><a id="baseline-book-trading" href="#preview" class="block overflow-hidden rounded-[18px] bg-white warm-shadow"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="Cover of Trading in the Zone" class="book-cover aspect-[3/4] w-full object-cover" /><div class="p-4"><p class="text-[11px] font-black uppercase text-[#a75d37]">Trading</p><h3 class="mt-2 line-clamp-2 text-base font-black text-gray-950">Trading in the Zone</h3><p class="mt-1 text-xs text-[#675b4d]">Mark Douglas</p></div></a></article>
+            <article><a id="baseline-book-thinking" href="#preview" class="block overflow-hidden rounded-[18px] bg-white warm-shadow"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="Cover of Thinking Fast and Slow" class="book-cover aspect-[3/4] w-full object-cover" /><div class="p-4"><p class="text-[11px] font-black uppercase text-[#a75d37]">Psychology</p><h3 class="mt-2 line-clamp-2 text-base font-black text-gray-950">Thinking, Fast and Slow</h3><p class="mt-1 text-xs text-[#675b4d]">Daniel Kahneman</p></div></a></article>
+            <article><a id="baseline-book-investor" href="#preview" class="block overflow-hidden rounded-[18px] bg-white warm-shadow"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-intelligent-investor/the_intelligent_investor.jpg" alt="Cover of The Intelligent Investor" class="book-cover aspect-[3/4] w-full object-cover" /><div class="p-4"><p class="text-[11px] font-black uppercase text-[#a75d37]">Investing</p><h3 class="mt-2 line-clamp-2 text-base font-black text-gray-950">The Intelligent Investor</h3><p class="mt-1 text-xs text-[#675b4d]">Benjamin Graham</p></div></a></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="reading-paths" class="bg-[#f7f0e6] px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-8 flex items-end justify-between gap-5"><div><p class="inline-flex rounded-full bg-white/80 px-3 py-1.5 text-xs font-black uppercase tracking-[.14em] text-[#a75d37]">Start with intent</p><h2 class="mt-4 text-5xl font-black tracking-tight text-gray-950">Choose a path, not a random book.</h2><p class="mt-4 max-w-2xl text-[#675b4d]">Pick the outcome you care about and follow a short sequence of summaries that build on each other.</p></div><a id="baseline-all-summaries" href="#preview" class="press hidden min-h-11 items-center rounded-xl bg-[#a75d37] px-5 text-sm font-bold text-white md:inline-flex">Browse all summaries</a></div>
+          <div class="path-grid grid grid-cols-4 gap-4">
+            <article class="rounded-2xl bg-white/90 p-5 warm-shadow"><h3 class="text-xl font-black text-gray-950">Build better habits</h3><p class="mt-2 min-h-[48px] text-sm leading-6 text-[#675b4d]">Routines, discipline, and identity-based change.</p><div class="path-covers mt-5 flex -space-x-3"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="Atomic Habits" class="book-cover h-20 w-14 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-seven-habits/the_7_habits_of_highly_effective_people.jpg" alt="The 7 Habits" class="book-cover h-20 w-14 rounded-lg object-cover" /></div><a id="baseline-path-habits" href="#preview" class="press mt-5 inline-flex min-h-10 items-center rounded-xl bg-[#f7f0e6] px-4 text-sm font-bold text-[#453c31]">Start this path</a></article>
+            <article class="rounded-2xl bg-white/90 p-5 warm-shadow"><h3 class="text-xl font-black text-gray-950">Understand money</h3><p class="mt-2 min-h-[48px] text-sm leading-6 text-[#675b4d]">Mental models behind wealth, saving, and investing.</p><div class="path-covers mt-5 flex -space-x-3"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="The Psychology of Money" class="book-cover h-20 w-14 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-rich-dad/rich_dad_poor_dad.jpg" alt="Rich Dad Poor Dad" class="book-cover h-20 w-14 rounded-lg object-cover" /></div><a id="baseline-path-money" href="#preview" class="press mt-5 inline-flex min-h-10 items-center rounded-xl bg-[#f7f0e6] px-4 text-sm font-bold text-[#453c31]">Start this path</a></article>
+            <article class="rounded-2xl bg-white/90 p-5 warm-shadow"><h3 class="text-xl font-black text-gray-950">Think like a trader</h3><p class="mt-2 min-h-[48px] text-sm leading-6 text-[#675b4d]">Risk, psychology, and better decisions.</p><div class="path-covers mt-5 flex -space-x-3"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="Trading in the Zone" class="book-cover h-20 w-14 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-mental-game/the_mental_game_of_trading.jpg" alt="The Mental Game of Trading" class="book-cover h-20 w-14 rounded-lg object-cover" /></div><a id="baseline-path-trading" href="#preview" class="press mt-5 inline-flex min-h-10 items-center rounded-xl bg-[#f7f0e6] px-4 text-sm font-bold text-[#453c31]">Start this path</a></article>
+            <article class="rounded-2xl bg-white/90 p-5 warm-shadow"><h3 class="text-xl font-black text-gray-950">Sharpen your thinking</h3><p class="mt-2 min-h-[48px] text-sm leading-6 text-[#675b4d]">Understand people, history, and judgment.</p><div class="path-covers mt-5 flex -space-x-3"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg" alt="Sapiens" class="book-cover h-20 w-14 rounded-lg object-cover" /><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="Thinking Fast and Slow" class="book-cover h-20 w-14 rounded-lg object-cover" /></div><a id="baseline-path-thinking" href="#preview" class="press mt-5 inline-flex min-h-10 items-center rounded-xl bg-[#f7f0e6] px-4 text-sm font-bold text-[#453c31]">Start this path</a></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="preview" class="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div class="preview-grid mx-auto grid max-w-7xl grid-cols-[1.08fr_.92fr] gap-12 lg:items-center">
+          <div class="preview-card rounded-2xl bg-[#f7f0e6] p-8 warm-shadow"><div class="flex flex-col gap-6 sm:flex-row"><img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="Atomic Habits book cover" class="book-cover h-64 w-44 shrink-0 self-center rounded-xl object-cover shadow-xl" /><div><p class="inline-flex rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-[#a75d37]">10 min read</p><h2 class="mt-4 text-4xl font-black tracking-tight text-gray-950">Preview a real summary.</h2><p class="mt-4 text-base leading-7 text-[#6f6558]">Before someone commits, show them the actual shape of the product: concise ideas, useful takeaways, and actions they can try immediately.</p><div class="mt-5 rounded-xl bg-white p-5"><p class="text-xs font-black uppercase text-[#a75d37]">Atomic Habits in one idea</p><p class="mt-2 text-sm leading-6 text-[#453c31]">Small habits compound because they change the system you live by. Make the next good action obvious, easy, and repeatable.</p></div></div></div></div>
+          <div><p class="inline-flex rounded-full bg-[#f7f0e6] px-3 py-1.5 text-xs font-black uppercase tracking-[.14em] text-[#a75d37]">What readers get</p><h2 class="mt-4 text-5xl font-black leading-[.96] tracking-tight text-gray-950">Show the useful part before asking for the click.</h2><p class="mt-5 text-base leading-7 text-[#675b4d]">Each summary should feel like a clear thinking tool: fast enough to finish, structured enough to remember, and practical enough to use.</p><ul class="mt-6 space-y-3 text-sm font-bold text-[#453c31]"><li class="flex gap-3"><iconify-icon icon="lucide:check-circle-2" class="mt-0.5 text-[#a75d37]"></iconify-icon>The core argument in plain language</li><li class="flex gap-3"><iconify-icon icon="lucide:check-circle-2" class="mt-0.5 text-[#a75d37]"></iconify-icon>3–5 takeaways worth remembering</li><li class="flex gap-3"><iconify-icon icon="lucide:check-circle-2" class="mt-0.5 text-[#a75d37]"></iconify-icon>Practical actions to apply this week</li></ul><div class="mt-7 flex gap-3"><a id="baseline-read-atomic" href="#testimonials" class="press inline-flex min-h-12 items-center rounded-xl bg-[#a75d37] px-6 text-sm font-black text-white">Read Atomic Habits</a><a id="baseline-see-books" href="#most-read" class="press inline-flex min-h-12 items-center rounded-xl bg-[#f7f0e6] px-6 text-sm font-black text-[#453c31]">See all books</a></div></div>
+        </div>
+      </section>
+
+      <section id="testimonials" class="bg-[#fffaf3] py-16">
+        <div class="mx-auto max-w-7xl px-4 text-center"><p class="text-xs font-black uppercase tracking-[.16em] text-[#a75d37]">Reader notes</p><h2 class="mt-4 text-5xl font-black tracking-tight text-gray-950">The kind of reading habit people keep.</h2><p class="mx-auto mt-4 max-w-2xl text-[#675b4d]">Shorter sessions, clearer takeaways, and fewer unfinished books sitting in the queue.</p></div>
+        <div class="testimonial-shell mt-10 overflow-hidden"><div class="testimonial-track flex w-max gap-5 px-5">
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=2" alt="Reader" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><div class="text-start"><strong class="block text-sm text-gray-950">Maya</strong><span class="text-xs text-[#675b4d]">Daily reader</span></div></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“BookBriefs transformed my commute. I finish the idea and still have time to think about how to use it.”</p></article>
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=5" alt="Reader" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><div class="text-start"><strong class="block text-sm text-gray-950">Omar</strong><span class="text-xs text-[#675b4d]">Founder</span></div></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“The structure makes it easy to remember the one or two ideas that actually matter.”</p></article>
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=8" alt="Reader" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><div class="text-start"><strong class="block text-sm text-gray-950">Lina</strong><span class="text-xs text-[#675b4d]">Student</span></div></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“I use the reading paths whenever I know the outcome I want but not the right book.”</p></article>
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow" aria-hidden="true"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=2" alt="" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><strong class="text-sm text-gray-950">Maya</strong></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“BookBriefs transformed my commute. I finish the idea and still have time to think.”</p></article>
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow" aria-hidden="true"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=5" alt="" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><strong class="text-sm text-gray-950">Omar</strong></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“The structure makes it easy to remember the ideas that matter.”</p></article>
+          <article class="w-[360px] rounded-2xl bg-white p-6 warm-shadow" aria-hidden="true"><div class="flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=8" alt="" class="h-10 w-10 rounded-full object-cover ring-2 ring-[#e5d8c7]" /><strong class="text-sm text-gray-950">Lina</strong></div><p class="mt-5 text-start text-sm leading-6 text-[#453c31]">“I use the reading paths whenever I know the outcome I want.”</p></article>
+        </div></div>
+      </section>
+    </main>
+
+    <footer class="bg-[#e5d8c7] text-gray-950">
+      <section class="mx-auto max-w-7xl px-5 py-16 text-center lg:py-20"><h2 class="footer-cta mx-auto max-w-3xl text-6xl font-bold leading-[.95] tracking-tight text-gray-950">You don’t have to read it all alone.</h2><p class="mx-auto mt-5 max-w-sm text-sm leading-6 text-gray-700">The best ideas are easier to keep when they are clear, short, and ready when you are.</p><a id="baseline-footer-start" href="#most-read" class="press mx-auto mt-10 flex min-h-12 w-full max-w-5xl items-center justify-between rounded-lg bg-white px-4 py-3 text-start text-sm font-semibold text-gray-950 warm-shadow"><span>Start reading smarter</span><iconify-icon icon="lucide:arrow-right"></iconify-icon></a></section>
+      <section class="footer-grid mx-auto grid max-w-7xl border-t border-gray-950/55 md:grid-cols-2"><div class="flex min-h-[220px] flex-col justify-between px-8 py-8"><a id="baseline-footer-home" href="#top" class="inline-flex items-center gap-3 text-gray-950"><iconify-icon icon="lucide:book-open" class="text-5xl"></iconify-icon><span class="text-4xl font-semibold tracking-tight">BookBriefs</span></a><p class="mt-10 text-xs text-gray-700">©2026 BookBriefs, Inc. All Rights Reserved.</p></div><div class="footer-links grid min-h-[220px] grid-cols-2 border-t border-gray-950/55 md:border-l md:border-t-0"><nav class="space-y-4 px-8 py-8 text-sm font-medium text-gray-800" aria-label="Social links"><a id="baseline-social-x" href="https://x.com/Ta7leel007" class="block">X</a><a id="baseline-social-youtube" href="https://www.youtube.com/@ta7leeel" class="block">YouTube</a><a id="baseline-social-kofi" href="https://ko-fi.com/ta7leel" class="block">Ko-fi</a></nav><nav class="space-y-4 px-8 py-8 text-sm font-medium text-gray-800" aria-label="Legal links"><a id="baseline-footer-privacy" href="#privacy" class="block">Privacy Notice</a></nav></div></section>
+    </footer>
+
+    <nav class="mobile-dock fixed bottom-4 left-4 right-4 z-50 items-center justify-between rounded-[28px] bg-[#e5d8c7] px-2 py-1 shadow-2xl" aria-label="Mobile primary">
+      <a id="baseline-dock-home" href="#top" class="flex min-h-11 items-center gap-2 rounded-2xl bg-white px-3 text-[11px] font-bold uppercase"><iconify-icon icon="lucide:home"></iconify-icon>Home</a>
+      <a id="baseline-dock-books" href="#most-read" class="flex h-11 w-11 items-center justify-center rounded-2xl text-gray-600" aria-label="Summaries"><iconify-icon icon="lucide:book-open"></iconify-icon></a>
+      <a id="baseline-dock-blog" href="#reading-paths" class="flex h-11 w-11 items-center justify-center rounded-2xl text-gray-600" aria-label="Blog"><iconify-icon icon="lucide:file-text"></iconify-icon></a>
+      <a id="baseline-dock-calculators" href="#preview" class="flex h-11 w-11 items-center justify-center rounded-2xl text-gray-600" aria-label="Calculators"><iconify-icon icon="lucide:calculator"></iconify-icon></a>
+      <a id="baseline-dock-news" href="#testimonials" class="flex h-11 w-11 items-center justify-center rounded-2xl text-gray-600" aria-label="News"><iconify-icon icon="lucide:newspaper"></iconify-icon></a>
+    </nav>
+  </div>
+</body>
+</html>

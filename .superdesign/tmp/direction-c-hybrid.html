@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookBriefs / Ta7leel — اتجاه C: اكتشاف هجين موجّه</title>
+  <meta name="description" content="تصور عربي أول لواجهة BookBriefs يوازن بين البحث المباشر والاكتشاف الموجّه." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Bricolage+Grotesque:wght@400;600;700;800&amp;family=Lato:wght@400;700;900&amp;family=Newsreader:ital,wght@1,600&amp;display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #fffaf3;
+      --quiet: #f7f0e6;
+      --menu: #fbf6ed;
+      --sand: #e5d8c7;
+      --copper: #a75d37;
+      --copper-hover: #8f4f2f;
+      --ink: #25301f;
+      --ink-soft: #453c31;
+      --body: #675b4d;
+      --muted: #7a6f62;
+      --rule: #d7c7b3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--canvas);
+      color: var(--ink-soft);
+      font-family: "Lato", "Tahoma", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-block-start: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      text-wrap: balance;
+    }
+
+    p {
+      text-wrap: pretty;
+    }
+
+    button,
+    input,
+    summary,
+    .ui-font {
+      font-family: "Bricolage Grotesque", "Lato", sans-serif;
+    }
+
+    .arabic-display {
+      font-family: "Amiri", "Tahoma", serif;
+    }
+
+    .interactive {
+      min-height: 44px;
+      transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+      transition-duration: 220ms;
+      transition-timing-function: cubic-bezier(.2, 0, 0, 1);
+    }
+
+    .interactive:hover {
+      transform: translateY(-2px);
+    }
+
+    .interactive:active {
+      transform: scale(.96);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid rgba(167, 93, 55, .34);
+      outline-offset: 3px;
+    }
+
+    .book-cover {
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, .10),
+        0 3px 5px rgba(17, 24, 39, .10),
+        0 18px 32px rgba(89, 69, 45, .16);
+    }
+
+    .book-card:hover .book-cover {
+      transform: translateY(-3px);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, .10),
+        0 4px 8px rgba(17, 24, 39, .12),
+        0 22px 38px rgba(89, 69, 45, .20);
+    }
+
+    .book-cover {
+      transition-property: transform, box-shadow;
+      transition-duration: 240ms;
+      transition-timing-function: cubic-bezier(.2, 0, 0, 1);
+    }
+
+    details > summary {
+      list-style: none;
+    }
+
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .search-results[hidden],
+    .search-option[hidden],
+    .search-empty[hidden] {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .interactive,
+      .book-cover {
+        transition-duration: 0.01ms;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("library-search-form");
+      const input = document.getElementById("library-search");
+      const panel = document.getElementById("search-results-panel");
+      const status = document.getElementById("search-results-status");
+      const empty = document.getElementById("search-results-empty");
+      const options = Array.from(document.querySelectorAll("[data-search-option]"));
+
+      function updateResults() {
+        const query = input.value.trim().toLocaleLowerCase("ar");
+        if (!query) {
+          panel.hidden = true;
+          options.forEach(function (option) { option.hidden = false; });
+          empty.hidden = true;
+          status.textContent = "";
+          return;
+        }
+
+        let matches = 0;
+        options.forEach(function (option) {
+          const searchable = option.getAttribute("data-search-option").toLocaleLowerCase("ar");
+          const isMatch = searchable.includes(query);
+          option.hidden = !isMatch;
+          if (isMatch) matches += 1;
+        });
+
+        panel.hidden = false;
+        empty.hidden = matches !== 0;
+        status.textContent = matches === 0
+          ? "لا توجد نتيجة مطابقة في الاختيارات الظاهرة."
+          : "عدد النتائج المطابقة: " + matches;
+      }
+
+      input.addEventListener("input", updateResults);
+      input.addEventListener("focus", updateResults);
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          panel.hidden = true;
+          input.blur();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        const target = event.target;
+        const isTyping = target instanceof HTMLElement && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+        if (event.key === "/" && !isTyping) {
+          event.preventDefault();
+          input.focus();
+        }
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        updateResults();
+        const firstMatch = options.find(function (option) { return !option.hidden; });
+        if (firstMatch && input.value.trim()) {
+          firstMatch.focus();
+        } else {
+          document.getElementById("library-all-summaries-link").focus();
+        }
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!form.contains(event.target)) panel.hidden = true;
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="bookbriefs-homepage" class="min-h-screen overflow-x-hidden bg-[#fffaf3]">
+    <a id="skip-to-main-content-link" href="#main-content" class="interactive fixed right-4 top-3 z-[100] -translate-y-24 rounded-xl bg-[#25301f] px-4 py-3 font-bold text-white focus:translate-y-0">
+      انتقل إلى المحتوى
+    </a>
+
+    <header class="sticky top-0 z-50 border-b border-[#d7c7b3]/80 bg-[#f7f0e6]/95 shadow-[0_1px_2px_rgba(17,24,39,0.04),0_10px_28px_rgba(89,69,45,0.07)] backdrop-blur-md">
+      <div class="mx-auto flex min-h-[72px] max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
+        <a id="header-brand-home-link" href="#page-top" data-route="/" class="interactive flex min-h-11 shrink-0 items-center gap-3 rounded-2xl px-1 text-[#374151]" dir="ltr" aria-label="BookBriefs Ta7leel — الصفحة الرئيسية">
+          <span class="iconify h-9 w-9" data-icon="lucide:book-open" data-width="36" data-height="36" aria-hidden="true"></span>
+          <span class="flex flex-col items-center leading-none text-center">
+            <span class="text-[22px] font-semibold tracking-tight">BookBriefs</span>
+            <span class="mt-1 text-[14px] font-semibold italic tracking-tight" style="font-family: Newsreader, serif;">Ta7leel</span>
+          </span>
+        </a>
+
+        <nav class="hidden items-center gap-1 lg:flex" aria-label="التنقل الرئيسي">
+          <a id="header-library-link" href="#most-read" data-route="/summaries" class="interactive inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold text-[#574f43] hover:bg-white hover:text-[#25301f]">المكتبة</a>
+          <a id="header-categories-link" href="#category-hubs" class="interactive inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold text-[#574f43] hover:bg-white hover:text-[#25301f]">التصنيفات</a>
+          <a id="header-tools-link" href="#tools-links" data-route="/calculators" class="interactive inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold text-[#574f43] hover:bg-white hover:text-[#25301f]">الأدوات</a>
+          <a id="header-learn-link" href="#learn-more" data-route="/blog" class="interactive inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold text-[#574f43] hover:bg-white hover:text-[#25301f]">تعلّم</a>
+        </nav>
+
+        <div class="hidden items-center gap-2 sm:flex">
+          <a id="header-search-shortcut-link" href="#library-search" class="interactive inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#d7c7b3] bg-white/70 px-4 text-sm font-bold text-[#574f43] hover:bg-white">
+            <span class="iconify h-4 w-4" data-icon="lucide:search" aria-hidden="true"></span>
+            ابحث
+            <kbd class="rounded-md border border-[#d7c7b3] bg-[#fbf6ed] px-1.5 py-0.5 text-[11px] font-bold text-[#7a6f62]">/</kbd>
+          </a>
+          <a id="header-reading-challenge-link" href="#reading-challenge" data-route="/reading-challenge" class="interactive inline-flex min-h-11 items-center rounded-xl bg-[#a75d37] px-4 text-sm font-bold text-white shadow-[0_10px_24px_rgba(167,93,55,0.22)] hover:bg-[#8f4f2f]">تحدّي القراءة</a>
+        </div>
+
+        <details class="relative lg:hidden">
+          <summary class="interactive flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[#d7c7b3] bg-white/70 text-[#574f43]" aria-label="افتح قائمة التنقل">
+            <span class="iconify h-5 w-5" data-icon="lucide:menu" aria-hidden="true"></span>
+          </summary>
+          <nav class="absolute left-0 top-14 w-72 rounded-2xl border border-[#d7c7b3] bg-[#fbf6ed] p-3 shadow-[0_20px_48px_rgba(89,69,45,0.18)]" aria-label="التنقل للشاشات الصغيرة">
+            <a id="mobile-library-link" href="#most-read" data-route="/summaries" class="interactive flex min-h-11 items-center rounded-xl px-4 text-sm font-bold hover:bg-white">المكتبة</a>
+            <a id="mobile-categories-link" href="#category-hubs" class="interactive flex min-h-11 items-center rounded-xl px-4 text-sm font-bold hover:bg-white">التصنيفات</a>
+            <a id="mobile-tools-link" href="#tools-links" data-route="/calculators" class="interactive flex min-h-11 items-center rounded-xl px-4 text-sm font-bold hover:bg-white">الأدوات</a>
+            <a id="mobile-blog-link" href="#learn-more" data-route="/blog" class="interactive flex min-h-11 items-center rounded-xl px-4 text-sm font-bold hover:bg-white">المدونة والأخبار</a>
+            <a id="mobile-reading-challenge-link" href="#reading-challenge" data-route="/reading-challenge" class="interactive mt-2 flex min-h-11 items-center justify-center rounded-xl bg-[#a75d37] px-4 text-sm font-bold text-white">تحدّي القراءة</a>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section id="page-top" class="border-b border-[#e7dccd] bg-[#f7f0e6]">
+        <div class="mx-auto max-w-7xl px-4 pb-7 pt-7 sm:px-6 sm:pb-8 sm:pt-8 lg:px-8">
+          <div class="mx-auto max-w-5xl text-center">
+            <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-[#e5d8c7] px-3 py-2 text-xs font-bold text-[#7a4a31] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.06)]">
+              <span class="iconify h-4 w-4" data-icon="lucide:sparkles" aria-hidden="true"></span>
+              ملخصات عملية · قراءة في 10 دقائق
+            </div>
+
+            <h1 class="arabic-display mx-auto max-w-5xl text-[3rem] font-bold leading-[.98] tracking-[-0.035em] text-[#25301f] sm:text-6xl lg:text-[4.65rem]">
+              الفكرة التي تحتاجها، في عشر دقائق.
+            </h1>
+            <p class="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#675b4d] sm:text-lg">
+              ابحث باسم الكتاب أو المؤلف، أو ابدأ من هدف واضح ثم انتقل مباشرة إلى الملخص.
+            </p>
+
+            <form id="library-search-form" action="#most-read" role="search" class="relative mx-auto mt-5 max-w-4xl text-start">
+              <label for="library-search" class="mb-2 block text-sm font-black text-[#453c31]">ابحث في مكتبة BookBriefs</label>
+              <div class="overflow-hidden rounded-[22px] border border-[#d7c7b3] bg-white shadow-[0_1px_2px_rgba(17,24,39,0.05),0_18px_42px_rgba(89,69,45,0.14)]">
+                <div class="flex p-2">
+                  <span class="iconify mx-3 my-auto h-6 w-6 shrink-0 text-[#a75d37]" data-icon="lucide:search" aria-hidden="true"></span>
+                  <input id="library-search" name="q" type="search" dir="auto" autocomplete="off" aria-controls="search-results-panel" aria-describedby="search-helper-text search-results-status" placeholder="اسم الكتاب أو المؤلف — مثال: Atomic Habits" class="min-h-14 min-w-0 flex-1 bg-transparent px-1 text-right text-base text-gray-950 outline-none placeholder:text-[#9a8d7e]" />
+                  <button type="submit" class="interactive min-h-14 shrink-0 rounded-[15px] bg-[#a75d37] px-5 text-sm font-black text-white shadow-[0_10px_24px_rgba(167,93,55,0.22)] hover:bg-[#8f4f2f] sm:px-8">بحث</button>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-[#e7dccd] bg-[#fbf6ed] px-3 py-2.5 text-sm sm:px-4">
+                  <span class="font-bold text-[#7a6f62]">ابدأ بهدف:</span>
+                  <a id="hero-most-read-shortcut-link" href="#most-read" class="interactive inline-flex min-h-11 items-center rounded-full border border-[#d7c7b3] bg-white px-3 font-bold text-[#574f43] hover:border-[#a75d37] hover:text-[#a75d37]">الأكثر قراءة</a>
+                  <a id="hero-habits-shortcut-link" href="#reading-paths" data-route="/summary/atomic-habits" class="interactive inline-flex min-h-11 items-center rounded-full border border-[#d7c7b3] bg-white px-3 font-bold text-[#574f43] hover:border-[#a75d37] hover:text-[#a75d37]">بناء العادات</a>
+                  <a id="hero-money-shortcut-link" href="#category-investing-books" data-route="/ar/categories/investing-books" class="interactive inline-flex min-h-11 items-center rounded-full border border-[#d7c7b3] bg-white px-3 font-bold text-[#574f43] hover:border-[#a75d37] hover:text-[#a75d37]">فهم المال</a>
+                  <a id="hero-trading-shortcut-link" href="#category-trading-books" data-route="/ar/categories/trading-books" class="interactive inline-flex min-h-11 items-center rounded-full border border-[#d7c7b3] bg-white px-3 font-bold text-[#574f43] hover:border-[#a75d37] hover:text-[#a75d37]">التداول</a>
+                  <a id="hero-self-development-shortcut-link" href="#category-self-development-books" data-route="/ar/categories/self-development-books" class="interactive inline-flex min-h-11 items-center rounded-full border border-[#d7c7b3] bg-white px-3 font-bold text-[#574f43] hover:border-[#a75d37] hover:text-[#a75d37]">تطوير الذات</a>
+                </div>
+              </div>
+              <p id="search-helper-text" class="mt-1.5 text-xs leading-5 text-[#7a6f62]">جرّب عنوان كتاب أو اسم مؤلف. النتائج في هذا التصور مرتبطة بالكتب الظاهرة أدناه.</p>
+
+              <div id="search-results-panel" class="search-results absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-[#d7c7b3] bg-white p-2 shadow-[0_24px_56px_rgba(89,69,45,0.20)]" hidden>
+                <p id="search-results-status" class="sr-only" aria-live="polite"></p>
+                <a id="search-result-atomic-habits-link" href="#book-atomic-habits" data-route="/summary/atomic-habits" data-search-option="atomic habits james clear العادات الذرية جيمس كلير" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">Atomic Habits</bdi><span class="me-2 text-[#7a6f62]">James Clear</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="search-result-four-hour-workweek-link" href="#all-summaries" data-route="/summary/the-4-hour-workweek" data-search-option="the 4-hour workweek timothy ferriss أربع ساعات عمل تيموثي فيريس" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">The 4-Hour Workweek</bdi><span class="me-2 text-[#7a6f62]">Timothy Ferriss</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="search-result-trading-zone-link" href="#book-trading-zone" data-route="/summary/trading-in-the-zone" data-search-option="trading in the zone mark douglas التداول في المنطقة مارك دوغلاس" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">Trading in the Zone</bdi><span class="me-2 text-[#7a6f62]">Mark Douglas</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="search-result-thinking-fast-slow-link" href="#book-thinking-fast-slow" data-route="/summary/thinking-fast-and-slow" data-search-option="thinking fast and slow daniel kahneman التفكير السريع والبطيء دانيال كانيمان" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">Thinking, Fast and Slow</bdi><span class="me-2 text-[#7a6f62]">Daniel Kahneman</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="search-result-market-wizards-link" href="#all-summaries" data-route="/summary/marketwizards" data-search-option="market wizards jack d schwager سحرة السوق جاك شواجر" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">Market Wizards</bdi><span class="me-2 text-[#7a6f62]">Jack D. Schwager</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="search-result-disciplined-trader-link" href="#all-summaries" data-route="/summary/the-disciplined-trader" data-search-option="the disciplined trader mark douglas المتداول المنضبط مارك دوغلاس" class="search-option interactive flex min-h-12 items-center justify-between rounded-xl px-4 text-sm hover:bg-[#f7f0e6]">
+                  <span><bdi dir="auto" class="font-black text-gray-950">The Disciplined Trader</bdi><span class="me-2 text-[#7a6f62]">Mark Douglas</span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <div id="search-results-empty" class="search-empty rounded-xl bg-[#f7f0e6] p-4" hidden>
+                  <p class="mb-2 text-sm font-bold text-[#453c31]">لا توجد مطابقة في هذه المجموعة المصغّرة.</p>
+                  <a id="search-empty-library-link" href="#all-summaries" data-route="/summaries" class="interactive inline-flex min-h-11 items-center gap-2 text-sm font-black text-[#a75d37]">افتح كل الملخصات <span class="iconify h-4 w-4" data-icon="lucide:arrow-left" aria-hidden="true"></span></a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="most-read" class="bg-[#fffaf3] py-8 md:py-9">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="mb-2 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[.10em] text-[#a75d37]">
+                <span class="iconify h-4 w-4" data-icon="lucide:trending-up" aria-hidden="true"></span>
+                الأكثر قراءة هذا الأسبوع
+              </p>
+              <h2 class="arabic-display text-3xl font-bold leading-tight text-[#25301f] md:text-4xl">ابدأ بكتاب يواصل القرّاء فتحه.</h2>
+            </div>
+            <a id="library-all-summaries-link" href="#all-summaries" data-route="/summaries" class="interactive inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-[#d7c7b3] bg-white px-5 text-sm font-black text-[#453c31] shadow-[0_10px_24px_rgba(89,69,45,0.07)] hover:border-[#a75d37] hover:text-[#a75d37]">
+              كل الملخصات
+              <span class="iconify h-4 w-4" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <a id="book-atomic-habits" href="#all-summaries" data-route="/summary/atomic-habits" class="book-card group interactive grid min-h-[174px] grid-cols-[100px_1fr] gap-4 rounded-[18px] border border-[#e7dccd] bg-white p-3 hover:border-[#d7c7b3] sm:grid-cols-[92px_1fr]" aria-label="اقرأ ملخص Atomic Habits">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="غلاف Atomic Habits" class="book-cover aspect-[2/3] w-[100px] rounded-[12px] object-cover sm:w-[92px]" loading="lazy" />
+              <div class="self-center">
+                <h3 class="text-sm font-black leading-5 text-gray-950"><bdi dir="auto">Atomic Habits</bdi></h3>
+                <p class="mt-1 text-xs font-bold text-[#7a6f62]"><bdi dir="auto">James Clear</bdi></p>
+                <p class="mt-3 text-xs leading-5 text-[#675b4d]">العادات وتغيير السلوك.</p>
+              </div>
+            </a>
+
+            <a id="book-trading-zone" href="#all-summaries" data-route="/summary/trading-in-the-zone" class="book-card group interactive grid min-h-[174px] grid-cols-[100px_1fr] gap-4 rounded-[18px] border border-[#e7dccd] bg-white p-3 hover:border-[#d7c7b3] sm:grid-cols-[92px_1fr]" aria-label="اقرأ ملخص Trading in the Zone">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="غلاف Trading in the Zone" class="book-cover aspect-[2/3] w-[100px] rounded-[12px] object-cover sm:w-[92px]" loading="lazy" />
+              <div class="self-center">
+                <h3 class="text-sm font-black leading-5 text-gray-950"><bdi dir="auto">Trading in the Zone</bdi></h3>
+                <p class="mt-1 text-xs font-bold text-[#7a6f62]"><bdi dir="auto">Mark Douglas</bdi></p>
+                <p class="mt-3 text-xs leading-5 text-[#675b4d]">نفسية التداول والانضباط.</p>
+              </div>
+            </a>
+
+            <a id="book-thinking-fast-slow" href="#all-summaries" data-route="/summary/thinking-fast-and-slow" class="book-card group interactive grid min-h-[174px] grid-cols-[100px_1fr] gap-4 rounded-[18px] border border-[#e7dccd] bg-white p-3 hover:border-[#d7c7b3] sm:grid-cols-[92px_1fr]" aria-label="اقرأ ملخص Thinking, Fast and Slow">
+              <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-fast-slow/fast_and_slow.jpg" alt="غلاف Thinking, Fast and Slow" class="book-cover aspect-[2/3] w-[100px] rounded-[12px] object-cover sm:w-[92px]" loading="lazy" />
+              <div class="self-center">
+                <h3 class="text-sm font-black leading-5 text-gray-950"><bdi dir="auto">Thinking, Fast and Slow</bdi></h3>
+                <p class="mt-1 text-xs font-bold text-[#7a6f62]"><bdi dir="auto">Daniel Kahneman</bdi></p>
+                <p class="mt-3 text-xs leading-5 text-[#675b4d]">التحيّزات وصنع القرار.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="guided-discovery" class="border-y border-[#e7dccd] bg-white py-12 md:py-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mb-8 max-w-3xl">
+            <p class="mb-2 text-xs font-black uppercase tracking-[.10em] text-[#a75d37]">اكتشاف موجّه</p>
+            <h2 class="arabic-display text-4xl font-bold leading-tight text-[#25301f] md:text-5xl">اختر موضوعًا، أو اتبع مسارًا قصيرًا.</h2>
+            <p class="mt-3 text-base leading-8 text-[#675b4d]">لا يعتمد الوصول إلى المحتوى على البحث وحده؛ التصنيفات والمسارات روابط مباشرة إلى الكتب الموجودة.</p>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-[1.35fr_.65fr]">
+            <div id="category-hubs" class="rounded-[24px] border border-[#d7c7b3] bg-[#f7f0e6] p-5 sm:p-6">
+              <div class="mb-5 flex items-center justify-between gap-4">
+                <div>
+                  <h3 class="text-xl font-black text-[#25301f]">تصفّح حسب التصنيف</h3>
+                  <p class="mt-1 text-sm leading-6 text-[#675b4d]">بوابات قابلة للوصول والفهرسة إلى رفوف المكتبة.</p>
+                </div>
+                <span class="iconify h-7 w-7 shrink-0 text-[#a75d37]" data-icon="lucide:library" aria-hidden="true"></span>
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a id="category-trading-books-link" href="#category-trading-books" data-route="/ar/categories/trading-books" class="interactive group min-h-[128px] rounded-[18px] border border-[#e7dccd] bg-white p-4 hover:border-[#a75d37] hover:shadow-[0_14px_32px_rgba(89,69,45,0.10)]">
+                  <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:candlestick-chart" aria-hidden="true"></span>
+                  <h3 class="mt-4 text-base font-black text-gray-950">كتب التداول</h3>
+                  <p class="mt-1 text-sm leading-6 text-[#675b4d]">النفسية، المخاطر، والانضباط في القرار.</p>
+                </a>
+                <a id="category-investing-books-link" href="#category-investing-books" data-route="/ar/categories/investing-books" class="interactive group min-h-[128px] rounded-[18px] border border-[#e7dccd] bg-white p-4 hover:border-[#a75d37] hover:shadow-[0_14px_32px_rgba(89,69,45,0.10)]">
+                  <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:landmark" aria-hidden="true"></span>
+                  <h3 class="mt-4 text-base font-black text-gray-950">كتب الاستثمار</h3>
+                  <p class="mt-1 text-sm leading-6 text-[#675b4d]">مبادئ بناء الثروة والنظر طويل الأجل.</p>
+                </a>
+                <a id="category-business-books-link" href="#category-business-books" data-route="/ar/categories/business-books" class="interactive group min-h-[128px] rounded-[18px] border border-[#e7dccd] bg-white p-4 hover:border-[#a75d37] hover:shadow-[0_14px_32px_rgba(89,69,45,0.10)]">
+                  <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:briefcase-business" aria-hidden="true"></span>
+                  <h3 class="mt-4 text-base font-black text-gray-950">كتب الأعمال</h3>
+                  <p class="mt-1 text-sm leading-6 text-[#675b4d]">الاستراتيجية، القيادة، وبناء أنظمة أفضل.</p>
+                </a>
+                <a id="category-self-development-books-link" href="#category-self-development-books" data-route="/ar/categories/self-development-books" class="interactive group min-h-[128px] rounded-[18px] border border-[#e7dccd] bg-white p-4 hover:border-[#a75d37] hover:shadow-[0_14px_32px_rgba(89,69,45,0.10)]">
+                  <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:target" aria-hidden="true"></span>
+                  <h3 class="mt-4 text-base font-black text-gray-950">تطوير الذات</h3>
+                  <p class="mt-1 text-sm leading-6 text-[#675b4d]">العادات، التركيز، والانضباط اليومي.</p>
+                </a>
+                <a id="category-psychology-books-link" href="#category-psychology-books" data-route="/ar/categories/psychology-books" class="interactive group min-h-[128px] rounded-[18px] border border-[#e7dccd] bg-white p-4 hover:border-[#a75d37] hover:shadow-[0_14px_32px_rgba(89,69,45,0.10)] sm:col-span-2">
+                  <div class="flex items-start justify-between gap-5">
+                    <div>
+                      <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:brain" aria-hidden="true"></span>
+                      <h3 class="mt-4 text-base font-black text-gray-950">كتب علم النفس</h3>
+                      <p class="mt-1 text-sm leading-6 text-[#675b4d]">التحيّزات والسلوك وفهم ما يحرّك قراراتنا.</p>
+                    </div>
+                    <span class="iconify mt-auto h-5 w-5 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <aside id="reading-paths" class="rounded-[24px] border border-[#d7c7b3] bg-[#fbf6ed] p-5 sm:p-6">
+              <div class="mb-5">
+                <p class="mb-2 text-xs font-black uppercase tracking-[.10em] text-[#a75d37]">مسارات القراءة</p>
+                <h3 class="text-xl font-black text-[#25301f]">ابدأ من النتيجة التي تريدها</h3>
+              </div>
+              <div class="space-y-3">
+                <a id="reading-path-habits-link" href="#book-atomic-habits" data-route="/summary/atomic-habits" class="interactive flex min-h-[74px] items-center gap-3 rounded-[16px] border border-[#e7dccd] bg-white p-3 hover:border-[#a75d37]">
+                  <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-atomic-habits/atomic-habits.jpg" alt="" class="book-cover h-14 w-10 shrink-0 rounded-lg object-cover" loading="lazy" aria-hidden="true" />
+                  <span class="min-w-0 flex-1"><span class="block text-sm font-black text-gray-950">ابنِ عادات أفضل</span><span class="mt-1 block truncate text-xs text-[#7a6f62]"><bdi dir="auto">Atomic Habits</bdi></span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="reading-path-money-link" href="#all-summaries" data-route="/summary/the-psychology-of-money" class="interactive flex min-h-[74px] items-center gap-3 rounded-[16px] border border-[#e7dccd] bg-white p-3 hover:border-[#a75d37]">
+                  <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-psychology-money/the_psychology_of_money.jpg" alt="" class="book-cover h-14 w-10 shrink-0 rounded-lg object-cover" loading="lazy" aria-hidden="true" />
+                  <span class="min-w-0 flex-1"><span class="block text-sm font-black text-gray-950">افهم المال</span><span class="mt-1 block truncate text-xs text-[#7a6f62]"><bdi dir="auto">The Psychology of Money</bdi></span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="reading-path-trader-link" href="#book-trading-zone" data-route="/summary/trading-in-the-zone" class="interactive flex min-h-[74px] items-center gap-3 rounded-[16px] border border-[#e7dccd] bg-white p-3 hover:border-[#a75d37]">
+                  <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-trading-zone/trading-in-the-zone.jpg" alt="" class="book-cover h-14 w-10 shrink-0 rounded-lg object-cover" loading="lazy" aria-hidden="true" />
+                  <span class="min-w-0 flex-1"><span class="block text-sm font-black text-gray-950">فكّر كمتداول</span><span class="mt-1 block truncate text-xs text-[#7a6f62]"><bdi dir="auto">Trading in the Zone</bdi></span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+                <a id="reading-path-thinking-link" href="#all-summaries" data-route="/summary/sapiens" class="interactive flex min-h-[74px] items-center gap-3 rounded-[16px] border border-[#e7dccd] bg-white p-3 hover:border-[#a75d37]">
+                  <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/c14d9ad4-da70-4796-b97d-1732024ff67f/content-assets/book-sapiens/sapiens.jpg" alt="" class="book-cover h-14 w-10 shrink-0 rounded-lg object-cover" loading="lazy" aria-hidden="true" />
+                  <span class="min-w-0 flex-1"><span class="block text-sm font-black text-gray-950">شحّذ طريقة تفكيرك</span><span class="mt-1 block truncate text-xs text-[#7a6f62]"><bdi dir="auto">Sapiens</bdi></span></span>
+                  <span class="iconify h-4 w-4 text-[#a75d37]" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+                </a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="new-in-library" class="bg-[#f7f0e6] py-12 md:py-14">
+        <div class="mx-auto grid max-w-7xl gap-5 px-4 sm:px-6 lg:grid-cols-[.85fr_1.15fr] lg:px-8">
+          <div class="flex flex-col justify-between rounded-[24px] bg-[#25301f] p-6 text-white shadow-[0_20px_44px_rgba(37,48,31,0.16)] sm:p-8">
+            <div>
+              <span class="iconify h-7 w-7 text-[#e5d8c7]" data-icon="lucide:sparkles" aria-hidden="true"></span>
+              <p class="mb-2 mt-6 text-xs font-black uppercase tracking-[.10em] text-[#e5d8c7]">جديد المكتبة</p>
+              <h2 class="arabic-display text-4xl font-bold leading-tight">الكتب الجديدة، من نفس باب المكتبة.</h2>
+              <p class="mt-3 max-w-xl text-sm leading-7 text-white/75">انتقل إلى صفحة الملخصات لمراجعة الإضافات الجديدة وكل الكتب المتاحة، من دون إنشاء قسم موازٍ أو ادعاء ترتيب غير موجود.</p>
+            </div>
+            <a id="new-library-all-summaries-link" href="#all-summaries" data-route="/summaries" class="interactive mt-7 inline-flex min-h-12 w-fit items-center gap-3 rounded-[14px] bg-white px-5 text-sm font-black text-[#25301f] hover:bg-[#e5d8c7]">
+              عرض الملخصات الجديدة
+              <span class="iconify h-5 w-5" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div id="learn-more" class="rounded-[24px] border border-[#d7c7b3] bg-white p-6 sm:p-8">
+            <div class="mb-6">
+              <p class="mb-2 text-xs font-black uppercase tracking-[.10em] text-[#a75d37]">بين كتاب وآخر</p>
+              <h2 class="arabic-display text-4xl font-bold leading-tight text-[#25301f]">واصل التعلّم خارج الملخص.</h2>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-3">
+              <a id="learn-blog-link" href="#blog-route" data-route="/blog" class="interactive rounded-[18px] border border-[#e7dccd] bg-[#fffaf3] p-4 hover:border-[#a75d37]">
+                <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:file-text" aria-hidden="true"></span>
+                <h3 class="mt-5 text-base font-black text-gray-950">المدونة</h3>
+                <p class="mt-2 text-sm leading-6 text-[#675b4d]">مقالات عملية وأدلة مبنية على أفكار الكتب.</p>
+              </a>
+              <a id="learn-news-link" href="#news-route" data-route="/news" class="interactive rounded-[18px] border border-[#e7dccd] bg-[#fffaf3] p-4 hover:border-[#a75d37]">
+                <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:newspaper" aria-hidden="true"></span>
+                <h3 class="mt-5 text-base font-black text-gray-950">الأخبار</h3>
+                <p class="mt-2 text-sm leading-6 text-[#675b4d]">تحديثات السوق والتعلّم التي تستحق المتابعة.</p>
+              </a>
+              <a id="learn-about-link" href="#about-route" data-route="/about" class="interactive rounded-[18px] border border-[#e7dccd] bg-[#fffaf3] p-4 hover:border-[#a75d37]">
+                <span class="iconify h-5 w-5 text-[#a75d37]" data-icon="lucide:book-open" aria-hidden="true"></span>
+                <h3 class="mt-5 text-base font-black text-gray-950">عن BookBriefs</h3>
+                <p class="mt-2 text-sm leading-6 text-[#675b4d]">لماذا وُجدت المنصة، ولمن صُمّمت.</p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reading-challenge" class="bg-white py-12 md:py-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-7 rounded-[24px] border border-[#d7c7b3] bg-[#e5d8c7] p-6 shadow-[0_16px_38px_rgba(89,69,45,0.10)] sm:p-8 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-start gap-4">
+              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-white text-[#a75d37] shadow-[inset_0_0_0_1px_rgba(89,69,45,0.08)]"><span class="iconify h-6 w-6" data-icon="lucide:target" aria-hidden="true"></span></span>
+              <div>
+                <p class="mb-1 text-xs font-black uppercase tracking-[.10em] text-[#7a4a31]">خطوة احتفاظ واحدة</p>
+                <h2 class="arabic-display text-3xl font-bold leading-tight text-[#25301f]">حوّل القراءة إلى عادة يمكن متابعتها.</h2>
+                <p class="mt-2 max-w-2xl text-sm leading-7 text-[#675b4d]">حدّد هدفًا شهريًا وراجع تقدّمك من صفحة تحدّي القراءة.</p>
+              </div>
+            </div>
+            <a id="reading-challenge-cta-link" href="#reading-challenge-route" data-route="/reading-challenge" class="interactive inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#a75d37] px-6 text-sm font-black text-white shadow-[0_12px_28px_rgba(167,93,55,0.24)] hover:bg-[#8f4f2f]">
+              ابدأ تحدّي القراءة
+              <span class="iconify h-5 w-5" data-icon="lucide:arrow-left" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="all-summaries" class="border-t border-[#25301f]/30 bg-[#e5d8c7] text-[#453c31]">
+      <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="grid gap-10 border-b border-[#25301f]/20 pb-10 md:grid-cols-[1.25fr_.75fr_.75fr_.75fr]">
+          <div>
+            <a id="footer-brand-home-link" href="#page-top" data-route="/" class="interactive inline-flex min-h-12 items-center gap-3 rounded-2xl text-[#374151]" dir="ltr" aria-label="BookBriefs Ta7leel — العودة إلى أعلى الصفحة">
+              <span class="iconify h-10 w-10" data-icon="lucide:book-open" data-width="40" data-height="40" aria-hidden="true"></span>
+              <span class="flex flex-col items-center leading-none text-center">
+                <span class="text-2xl font-semibold tracking-tight">BookBriefs</span>
+                <span class="mt-1 text-sm font-semibold italic" style="font-family: Newsreader, serif;">Ta7leel</span>
+              </span>
+            </a>
+            <p class="mt-4 max-w-sm text-sm leading-7 text-[#675b4d]">ملخصات كتب واضحة تساعدك على الوصول إلى الفكرة، تذكّرها، ثم تطبيق ما ينفعك منها.</p>
+          </div>
+
+          <nav aria-label="روابط المكتبة">
+            <h2 class="mb-3 text-sm font-black text-[#25301f]">المكتبة</h2>
+            <div class="space-y-1 text-sm font-bold text-[#675b4d]">
+              <a id="footer-summaries-link" href="#most-read" data-route="/summaries" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">كل الملخصات</a>
+              <a id="footer-book-summaries-link" href="#most-read" data-route="/book-summaries" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">Book Summaries</a>
+              <a id="footer-arabic-summaries-link" href="#most-read" data-route="/ar/book-summaries" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">الملخصات العربية</a>
+              <a id="footer-reading-challenge-link" href="#reading-challenge" data-route="/reading-challenge" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">تحدّي القراءة</a>
+              <a id="footer-downloads-link" href="#downloads-route" data-route="/downloads" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">التنزيلات</a>
+            </div>
+          </nav>
+
+          <nav id="tools-links" aria-label="روابط الأدوات">
+            <h2 class="mb-3 text-sm font-black text-[#25301f]">الأدوات</h2>
+            <div class="space-y-1 text-sm font-bold text-[#675b4d]">
+              <a id="footer-calculators-link" href="#calculators-route" data-route="/calculators" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">الحاسبات</a>
+              <a id="footer-finance-tracker-link" href="#finance-tracker-route" data-route="/finance-tracker" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">متتبّع المال</a>
+              <a id="footer-trading-journal-link" href="#trading-journal-route" data-route="/trading-journal" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">دفتر التداول</a>
+              <a id="footer-blog-link" href="#blog-route" data-route="/blog" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">المدونة</a>
+              <a id="footer-news-link" href="#news-route" data-route="/news" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">الأخبار</a>
+            </div>
+          </nav>
+
+          <nav aria-label="روابط الشركة والسياسات">
+            <h2 class="mb-3 text-sm font-black text-[#25301f]">BookBriefs</h2>
+            <div class="space-y-1 text-sm font-bold text-[#675b4d]">
+              <a id="footer-about-link" href="#about-route" data-route="/about" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">عن المنصة</a>
+              <a id="footer-privacy-policy-link" href="#privacy-policy-route" data-route="/privacy-policy" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">سياسة الخصوصية</a>
+              <a id="footer-terms-of-use-link" href="#terms-of-use-route" data-route="/terms-of-use" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">شروط الاستخدام</a>
+              <a id="footer-x-social-link" href="https://x.com/Ta7leel007" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">X / Ta7leel007</a>
+              <a id="footer-youtube-social-link" href="https://www.youtube.com/@ta7leeel" class="interactive flex min-h-10 items-center hover:text-[#a75d37]">YouTube</a>
+            </div>
+          </nav>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-6 text-xs font-bold text-[#675b4d] sm:flex-row sm:items-center sm:justify-between">
+          <p class="mb-0">© 2026 BookBriefs, Inc. All Rights Reserved.</p>
+          <a id="footer-support-kofi-link" href="https://ko-fi.com/ta7leel" class="interactive inline-flex min-h-10 w-fit items-center gap-2 hover:text-[#a75d37]">
+            <span class="iconify h-4 w-4" data-icon="lucide:heart" aria-hidden="true"></span>
+            ادعم BookBriefs
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <span id="category-trading-books" class="sr-only" aria-hidden="true"></span>
+    <span id="category-investing-books" class="sr-only" aria-hidden="true"></span>
+    <span id="category-business-books" class="sr-only" aria-hidden="true"></span>
+    <span id="category-self-development-books" class="sr-only" aria-hidden="true"></span>
+    <span id="category-psychology-books" class="sr-only" aria-hidden="true"></span>
+    <span id="blog-route" class="sr-only" aria-hidden="true"></span>
+    <span id="news-route" class="sr-only" aria-hidden="true"></span>
+    <span id="about-route" class="sr-only" aria-hidden="true"></span>
+    <span id="reading-challenge-route" class="sr-only" aria-hidden="true"></span>
+    <span id="downloads-route" class="sr-only" aria-hidden="true"></span>
+    <span id="calculators-route" class="sr-only" aria-hidden="true"></span>
+    <span id="finance-tracker-route" class="sr-only" aria-hidden="true"></span>
+    <span id="trading-journal-route" class="sr-only" aria-hidden="true"></span>
+    <span id="privacy-policy-route" class="sr-only" aria-hidden="true"></span>
+    <span id="terms-of-use-route" class="sr-only" aria-hidden="true"></span>
+  </div>
+</body>
+</html>

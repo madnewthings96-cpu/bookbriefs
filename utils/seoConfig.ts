@@ -1,4 +1,4 @@
-export const SITE_URL = 'https://ta7leel.site';
+export const SITE_URL = 'https://www.ta7leel.pro';
 export const BRAND_NAME = 'Ta7leel | تحليل';
 export const DEFAULT_OG_IMAGE = '/images/og-default.jpg';
 

@@ -1,0 +1,8 @@
+<nav class="mx-auto flex w-[358px] items-center justify-between rounded-[28px] bg-[#e5d8c7] px-2 py-1 text-gray-950 shadow-[0_15px_35px_-15px_rgba(89,69,45,0.45)]" aria-label="Mobile primary navigation">
+  <a :href="homeHref" class="flex min-h-11 items-center justify-center gap-2 rounded-2xl px-3 text-[11px] font-semibold uppercase" :class="{ 'bg-white shadow-inner': activeItem === 'home' }">Home</a>
+  <a :href="libraryHref" class="flex min-h-11 items-center justify-center rounded-2xl px-3 text-[11px] font-semibold uppercase" :class="{ 'bg-white shadow-inner': activeItem === 'summaries' }">Books</a>
+  <a :href="blogHref" class="flex min-h-11 items-center justify-center rounded-2xl px-3 text-[11px] font-semibold uppercase" :class="{ 'bg-white shadow-inner': activeItem === 'blog' }">Blog</a>
+  <a :href="calculatorsHref" class="flex min-h-11 items-center justify-center rounded-2xl px-3 text-[11px] font-semibold uppercase" :class="{ 'bg-white shadow-inner': activeItem === 'calculators' }">Tools</a>
+  <a :href="newsHref" class="flex min-h-11 items-center justify-center rounded-2xl px-3 text-[11px] font-semibold uppercase" :class="{ 'bg-white shadow-inner': activeItem === 'news' }">News</a>
+</nav>
+

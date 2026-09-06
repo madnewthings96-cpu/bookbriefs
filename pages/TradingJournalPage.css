@@ -1,0 +1,378 @@
+.trading-fieldbook {
+  --fieldbook-forest: #102e24;
+  --fieldbook-canopy: #234b3b;
+  --fieldbook-parchment: #f3efe4;
+  --fieldbook-paper: #fffdf7;
+  --fieldbook-brass: #c89a49;
+  --fieldbook-ink: #16231e;
+  --fieldbook-muted: #66766e;
+  --fieldbook-line: rgba(16, 46, 36, 0.12);
+  --fieldbook-profit: #2f8a67;
+  --fieldbook-loss: #c65b50;
+  background:
+    radial-gradient(circle at 8% 3%, rgba(200, 154, 73, 0.1), transparent 24rem),
+    radial-gradient(circle at 94% 18%, rgba(74, 103, 65, 0.1), transparent 31rem),
+    var(--fieldbook-parchment);
+  font-family: 'Plus Jakarta Sans', Manrope, sans-serif;
+}
+
+.trading-fieldbook::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.fieldbook-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.fieldbook-command {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 14%, rgba(92, 132, 104, 0.25), transparent 31%),
+    linear-gradient(135deg, #102e24 0%, #173d30 58%, #234b3b 100%);
+  box-shadow: 0 28px 70px rgba(16, 46, 36, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.fieldbook-command::after {
+  position: absolute;
+  right: -75px;
+  top: -95px;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(215, 174, 105, 0.11);
+  border-radius: 999px;
+  content: '';
+  box-shadow: 0 0 0 34px rgba(215, 174, 105, 0.035), 0 0 0 68px rgba(215, 174, 105, 0.022);
+}
+
+.fieldbook-command-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+.fieldbook-command h1,
+.fieldbook-command .font-serif,
+.trading-fieldbook .font-serif {
+  font-family: Newsreader, Georgia, serif;
+}
+
+.fieldbook-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.fieldbook-button:focus-visible,
+.fieldbook-tab:focus-visible,
+.fieldbook-support-link:focus-visible {
+  outline: 2px solid var(--fieldbook-brass);
+  outline-offset: 3px;
+}
+
+.fieldbook-button:hover {
+  transform: translateY(-1px);
+}
+
+.fieldbook-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.fieldbook-button-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+  color: #eef4ef;
+  backdrop-filter: blur(8px);
+}
+
+.fieldbook-button-secondary:hover {
+  border-color: rgba(215, 174, 105, 0.38);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.fieldbook-button-primary {
+  border: 1px solid #d9b574;
+  background: #d1a55e;
+  color: #102e24;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+.fieldbook-button-primary:hover {
+  background: #e0ba78;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+}
+
+.fieldbook-inkline {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  background: rgba(4, 27, 19, 0.25);
+  padding: 16px 18px 8px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.fieldbook-inkline polyline {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: fieldbook-draw-line 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes fieldbook-draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+.fieldbook-metrics > div {
+  min-height: 134px;
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 18px;
+  background: rgba(255, 253, 247, 0.92) !important;
+  padding: 18px !important;
+  box-shadow: 0 10px 32px rgba(16, 46, 36, 0.055) !important;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease !important;
+}
+
+.fieldbook-metrics > div:hover {
+  transform: translateY(-2px);
+  border-color: rgba(200, 154, 73, 0.38);
+  box-shadow: 0 15px 38px rgba(16, 46, 36, 0.09) !important;
+}
+
+.fieldbook-metrics > div > div > div:last-child {
+  border: 1px solid rgba(16, 46, 36, 0.08);
+  background: #e4eadf !important;
+  color: var(--fieldbook-canopy) !important;
+}
+
+.fieldbook-metrics p:first-child {
+  color: #66766e !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fieldbook-metrics .text-emerald-600 { color: var(--fieldbook-profit) !important; }
+.fieldbook-metrics .text-rose-600 { color: var(--fieldbook-loss) !important; }
+.fieldbook-metrics .text-gray-800 { color: var(--fieldbook-ink) !important; }
+
+.fieldbook-tab-shell {
+  position: sticky;
+  top: 76px;
+  z-index: 35;
+  overflow-x: auto;
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 18px;
+  background: rgba(255, 253, 247, 0.87);
+  padding: 5px;
+  box-shadow: 0 12px 38px rgba(16, 46, 36, 0.1);
+  backdrop-filter: blur(16px) saturate(130%);
+  scrollbar-width: none;
+}
+
+.fieldbook-tab-shell::-webkit-scrollbar { display: none; }
+
+.fieldbook-tabs {
+  display: flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 3px;
+}
+
+.fieldbook-tab {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 13px;
+  padding: 0 15px;
+  color: #617168;
+  font-size: 12px;
+  font-weight: 700;
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.fieldbook-tab:hover {
+  background: rgba(35, 75, 59, 0.06);
+  color: var(--fieldbook-canopy);
+}
+
+.fieldbook-tab:active { transform: scale(0.97); }
+
+.fieldbook-tab-active {
+  background: var(--fieldbook-forest) !important;
+  color: var(--fieldbook-paper) !important;
+  box-shadow: 0 8px 20px rgba(16, 46, 36, 0.2);
+}
+
+.fieldbook-tab-active::after {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--fieldbook-brass);
+  content: '';
+  transform: translateX(-50%);
+}
+
+.fieldbook-panel {
+  scroll-margin-top: 145px;
+}
+
+.fieldbook-panel .rounded-xl,
+.fieldbook-panel .rounded-lg.bg-white,
+.fieldbook-panel > .bg-white {
+  border-color: var(--fieldbook-line) !important;
+  background-color: rgba(255, 253, 247, 0.94) !important;
+  box-shadow: 0 12px 38px rgba(16, 46, 36, 0.065) !important;
+}
+
+.fieldbook-panel .rounded-xl {
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 18px !important;
+}
+
+.fieldbook-panel .bg-gray-50,
+.fieldbook-panel .bg-gray-100 {
+  background-color: #f0ede3 !important;
+}
+
+.fieldbook-panel .text-gray-950,
+.fieldbook-panel .text-gray-900,
+.fieldbook-panel .text-gray-800,
+.fieldbook-panel .text-gray-700 {
+  color: var(--fieldbook-ink) !important;
+}
+
+.fieldbook-panel .text-gray-600,
+.fieldbook-panel .text-gray-500,
+.fieldbook-panel .text-gray-400 {
+  color: var(--fieldbook-muted) !important;
+}
+
+.fieldbook-panel .text-orange-500,
+.fieldbook-panel .text-orange-600 { color: #9a713b !important; }
+.fieldbook-panel .bg-orange-50 { background-color: #f5ead4 !important; }
+.fieldbook-panel .bg-orange-500,
+.fieldbook-panel .hover\:bg-orange-600:hover { background-color: var(--fieldbook-canopy) !important; }
+.fieldbook-panel .text-emerald-600 { color: var(--fieldbook-profit) !important; }
+.fieldbook-panel .text-rose-600 { color: var(--fieldbook-loss) !important; }
+.fieldbook-panel .bg-emerald-500 { background-color: var(--fieldbook-profit) !important; }
+.fieldbook-panel .bg-rose-500 { background-color: var(--fieldbook-loss) !important; }
+
+.fieldbook-panel table thead {
+  background: var(--fieldbook-forest) !important;
+  color: var(--fieldbook-paper) !important;
+}
+
+.fieldbook-panel table thead * { color: inherit !important; }
+
+.fieldbook-panel table tbody tr {
+  border-color: rgba(16, 46, 36, 0.08) !important;
+  transition: background-color 150ms ease;
+}
+
+.fieldbook-panel table tbody tr:hover { background: rgba(200, 154, 73, 0.07) !important; }
+
+.fieldbook-support-link {
+  border-radius: 12px;
+  opacity: 0.72;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.fieldbook-support-link:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1023px) {
+  .fieldbook-tab-shell { top: 68px; }
+}
+
+@media (max-width: 767px) {
+  .trading-fieldbook { padding-bottom: 72px; }
+
+  .fieldbook-command {
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(16, 46, 36, 0.18);
+  }
+
+  .fieldbook-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .fieldbook-actions .fieldbook-button {
+    min-width: 0;
+    padding-inline: 11px;
+  }
+
+  .fieldbook-actions .fieldbook-button-primary {
+    grid-column: 1 / -1;
+  }
+
+  .fieldbook-inkline { padding-inline: 14px; }
+
+  .fieldbook-metrics {
+    display: flex !important;
+    overflow-x: auto;
+    margin-inline: -12px;
+    padding: 2px 12px 9px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .fieldbook-metrics::-webkit-scrollbar { display: none; }
+
+  .fieldbook-metrics > div {
+    min-width: 166px;
+    min-height: 124px;
+    scroll-snap-align: start;
+  }
+
+  .fieldbook-tab-shell {
+    top: 7px;
+    margin-inline: -6px;
+    border-radius: 16px;
+  }
+
+  .fieldbook-tab {
+    min-height: 44px;
+    padding-inline: 13px;
+  }
+
+  .fieldbook-panel { scroll-margin-top: 72px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fieldbook-inkline polyline { animation: none; stroke-dashoffset: 0; }
+  .fieldbook-button,
+  .fieldbook-tab,
+  .fieldbook-metrics > div,
+  .fieldbook-support-link { transition: none !important; }
+}

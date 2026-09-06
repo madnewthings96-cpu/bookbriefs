@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const baseUrl = 'https://ta7leel.site';
+const baseUrl = 'https://www.ta7leel.pro';
 const currentDate = new Date().toISOString().split('T')[0];
 
 // Arabic slugs for books

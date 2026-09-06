@@ -3,6 +3,7 @@ import { useFirebase } from '../App';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import useSEO from '../hooks/useSEO';
+import './TradingJournalPage.css';
 
 // Trading Components
 import StatCard from '../components/trading/StatCard';
@@ -18,6 +19,7 @@ import ExportReportModal from '../components/trading/ExportReportModal';
 import TradingReviewDrawer from '../components/trading/TradingReviewDrawer';
 import TradingCommandCenter from '../components/trading/TradingCommandCenter';
 import { BreakdownAnalytics, OverviewInsights, ReviewPanel } from '../components/trading/TradingAnalyticsPanels';
+import { getNextTradingTabIndex } from '../components/trading/tradingTabNavigation';
 
 // Utilities
 import {
@@ -147,6 +149,19 @@ const TradingJournalPage: React.FC = () => {
     const advancedStats = useMemo(() => calculateAdvancedStats(trades, startingBalance), [trades, startingBalance]);
     const setupBreakdowns = useMemo(() => calculateBreakdownStats(trades, 'setup'), [trades]);
     const emotionBreakdowns = useMemo(() => calculateBreakdownStats(trades, 'emotions'), [trades]);
+    const accountReturn = startingBalance > 0 ? (stats.totalPnL / startingBalance) * 100 : 0;
+    const commandCurvePoints = useMemo(() => {
+        const balances = equityCurveData.map((point) => point.cumulativePnL);
+        const min = Math.min(...balances);
+        const max = Math.max(...balances);
+        const range = Math.max(max - min, 1);
+
+        return balances.map((balance, index) => {
+            const x = balances.length === 1 ? 0 : (index / (balances.length - 1)) * 480;
+            const y = 76 - ((balance - min) / range) * 62;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+    }, [equityCurveData]);
 
     const tabs: Array<{ id: TradingTab; label: string; icon: React.ReactNode }> = [
         { id: 'overview', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
@@ -156,6 +171,16 @@ const TradingJournalPage: React.FC = () => {
         { id: 'setups', label: 'Setups', icon: <BarChart3 className="w-4 h-4" /> },
         { id: 'review', label: 'Review', icon: <ClipboardCheck className="w-4 h-4" /> },
     ];
+
+    const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
+        const nextIndex = getNextTradingTabIndex(event.key, currentIndex, tabs.length);
+        if (nextIndex === null) return;
+
+        event.preventDefault();
+        const nextTab = tabs[nextIndex];
+        setActiveTab(nextTab.id);
+        window.requestAnimationFrame(() => document.getElementById(`trading-tab-${nextTab.id}`)?.focus());
+    };
 
     // Load goals from Firestore (real-time)
     useEffect(() => {
@@ -222,7 +247,7 @@ const TradingJournalPage: React.FC = () => {
         const tradeData = {
             symbol: formData.symbol,
             direction: formData.direction,
-            entryDate: Timestamp.fromDate(new Date(formData.entryDate)),
+            entryDate: Timestamp.fromDate(new Date(`${formData.entryDate}T00:00:00.000Z`)),
             entryPrice,
             exitPrice,
             stopLoss,
@@ -375,232 +400,165 @@ const TradingJournalPage: React.FC = () => {
     }
 
     return (
-        <div
-            className="min-h-screen bg-gray-50 text-gray-800"
-            style={{ fontFamily: "'Inter', 'Manrope', sans-serif" }}
-        >
-            <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Trading Journal</h1>
-                        <p className="text-gray-500 text-sm mt-1">Track, analyze, and master your trading</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setShowExportModal(true)}
-                            className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-medium text-gray-700 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color] duration-150 ease-out hover:bg-gray-50 active:scale-[0.96]"
-                        >
-                            <FileDown className="w-5 h-5 text-gray-500" />
-                            Export
-                        </button>
-                        <button
-                            onClick={() => setShowGoalModal(true)}
-                            className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-4 py-2.5 font-medium text-gray-700 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color] duration-150 ease-out hover:bg-gray-50 active:scale-[0.96]"
-                        >
-                            <Target className="w-5 h-5 text-orange-500" />
-                            Add Goal
-                        </button>
-                        <button
-                            onClick={() => setShowModal(true)}
-                            className="flex min-h-10 items-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 font-medium text-white shadow-lg shadow-orange-500/25 transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 active:scale-[0.96]"
-                        >
-                            <Plus className="w-5 h-5" />
-                            Add Trade
-                        </button>
-                    </div>
-                </div>
-
-                {/* Streak Banner */}
-                {streak.count > 0 && <StreakBanner streak={streak} />}
-
-                {/* Goals Section */}
-                <GoalsSection
-                    goals={goals}
-                    currentBalance={currentBalance}
-                    onDeleteGoal={handleDeleteGoal}
-                />
-
-                {/* Stats Row */}
-                <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-                    {/* Account Balance Card */}
-                    <div className="group relative rounded-xl bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
-                        <div className="flex justify-between items-start mb-2">
-                            <span className="text-sm font-medium text-gray-500">Account Balance</span>
-                            <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
-                                <Wallet className="w-5 h-5" />
+        <div className="trading-fieldbook min-h-screen text-[#16231E]">
+            <main className="fieldbook-shell mx-auto max-w-[1440px] px-3 pb-10 pt-4 sm:px-5 sm:pt-6 lg:px-8">
+                <header className="fieldbook-command">
+                    <div className="fieldbook-command-grid" aria-hidden="true" />
+                    <div className="relative z-10 flex flex-col gap-5 px-5 pb-4 pt-5 sm:px-7 sm:pt-7 lg:flex-row lg:items-start lg:justify-between lg:px-9">
+                        <div>
+                            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#D7AE69] sm:text-xs">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#D7AE69] shadow-[0_0_0_4px_rgba(215,174,105,0.12)]" />
+                                Ta7leel Trading Fieldbook
                             </div>
-                        </div>
-                        <div className="flex items-baseline gap-2">
-                            <h3 className="text-2xl font-bold text-gray-800">
-                                {formatCurrency(currentBalance, false)}
-                            </h3>
-                            <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${stats.totalPnL >= 0
-                                ? 'bg-emerald-50 text-emerald-600'
-                                : 'bg-rose-50 text-rose-600'
-                                }`}>
-                                <span className="tabular-nums">{startingBalance > 0 ? `${stats.totalPnL >= 0 ? '+' : ''}${((stats.totalPnL / startingBalance) * 100).toFixed(2)}%` : '0.00%'}</span>
-                            </span>
-                        </div>
-                        <div className="text-xs text-gray-400 mt-1">
-                            Start: {formatCurrency(startingBalance, false)}
+                            <h1 className="mt-3 max-w-[620px] font-serif text-[34px] font-semibold leading-[0.98] tracking-[-0.04em] text-[#FFFDF7] sm:text-[46px] lg:text-[54px]">
+                                Review the process.<br />Refine the edge.
+                            </h1>
+                            <p className="mt-3 max-w-xl text-sm leading-6 text-[#B9C8C0] sm:text-[15px]">
+                                A decision journal for performance, risk, and the behavior behind every trade.
+                            </p>
                         </div>
 
-                        {/* Edit Button */}
-                        <button
-                            onClick={() => setShowBalanceModal(true)}
-                            className="absolute right-14 top-4 inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-300 opacity-0 transition-[scale,opacity,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-500 active:scale-[0.96] group-hover:opacity-100"
-                            title="Edit Starting Balance"
-                        >
-                            <Edit2 className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <StatCard
-                        title="Total P&L"
-                        value={formatCurrency(stats.totalPnL)}
-                        subtitle={`${stats.totalTrades} trades`}
-                        valueColor={stats.totalPnL > 0 ? 'profit' : stats.totalPnL < 0 ? 'loss' : 'neutral'}
-                        icon={
-                            <Banknote className="w-5 h-5" />
-                        }
-                    />
-                    <StatCard
-                        title="Win Rate"
-                        value={`${stats.winRate}%`}
-                        subtitle={`${stats.wins}W / ${stats.losses}L`}
-                        valueColor={stats.winRate >= 50 ? 'profit' : 'loss'}
-                        icon={
-                            <Percent className="w-5 h-5" />
-                        }
-                    />
-                    <StatCard
-                        title="Profit Factor"
-                        value={stats.profitFactor >= 999 ? '∞' : stats.profitFactor.toFixed(2)}
-                        subtitle="Gross P / Gross L"
-                        valueColor={stats.profitFactor >= 1 ? 'profit' : 'loss'}
-                        icon={
-                            <TrendingUp className="w-5 h-5" />
-                        }
-                    />
-                    <StatCard
-                        title="Avg R:R"
-                        value={stats.avgRR >= 999 ? '∞' : stats.avgRR.toFixed(2)}
-                        subtitle="Avg Win / Avg Loss"
-                        valueColor={stats.avgRR >= 1 ? 'profit' : 'loss'}
-                        icon={
-                            <Scale className="w-5 h-5" />
-                        }
-                    />
-                    <StatCard
-                        title="Max DD"
-                        value={`${advancedStats.maxDrawdownPercent.toFixed(2)}%`}
-                        subtitle={formatCurrency(-advancedStats.maxDrawdownValue)}
-                        valueColor={advancedStats.maxDrawdownValue > 0 ? 'loss' : 'neutral'}
-                        icon={
-                            <TrendingDown className="w-5 h-5" />
-                        }
-                    />
-                </div>
-
-                {/* Tabs */}
-                <div className="overflow-x-auto pb-1">
-                    <div className="inline-flex min-w-max rounded-xl bg-white p-1 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                type="button"
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${activeTab === tab.id
-                                    ? 'bg-[#e5d8c7] text-gray-900 shadow-sm'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                    }`}
-                            >
-                                {tab.icon}
-                                {tab.label}
+                        <div className="fieldbook-actions flex flex-wrap gap-2 lg:max-w-[410px] lg:justify-end">
+                            <button type="button" onClick={() => setShowExportModal(true)} className="fieldbook-button fieldbook-button-secondary">
+                                <FileDown aria-hidden="true" className="h-4 w-4" />
+                                Export fieldbook
                             </button>
-                        ))}
+                            <button type="button" onClick={() => setShowGoalModal(true)} className="fieldbook-button fieldbook-button-secondary">
+                                <Target aria-hidden="true" className="h-4 w-4 text-[#D7AE69]" />
+                                New goal
+                            </button>
+                            <button type="button" onClick={() => setShowModal(true)} className="fieldbook-button fieldbook-button-primary">
+                                <Plus aria-hidden="true" className="h-4 w-4" />
+                                Log trade
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                {activeTab === 'overview' && (
-                    <div className="space-y-6">
-                        <TradingCommandCenter
-                            trades={trades}
-                            stats={stats}
-                            advancedStats={advancedStats}
-                            equityCurveData={equityCurveData}
-                            goals={goals}
-                            streak={streak}
-                            startingBalance={startingBalance}
-                            onAddTrade={() => setShowModal(true)}
-                            onAddGoal={() => setShowGoalModal(true)}
-                        />
-                        <OverviewInsights stats={stats} advancedStats={advancedStats} />
+                    <div className="relative z-10 grid gap-5 border-t border-white/10 px-5 py-5 sm:px-7 lg:grid-cols-[0.72fr_1.28fr] lg:px-9 lg:py-7">
+                        <div className="group relative">
+                            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#91A79C]">
+                                <Wallet aria-hidden="true" className="h-4 w-4 text-[#D7AE69]" />
+                                Live account balance
+                            </div>
+                            <div className="mt-2 flex flex-wrap items-end gap-x-3 gap-y-1">
+                                <p className="text-[38px] font-bold leading-none tracking-[-0.045em] text-white tabular-nums sm:text-[50px]">
+                                    {formatCurrency(currentBalance, false)}
+                                </p>
+                                <span className={`rounded-full px-2.5 py-1 text-xs font-bold tabular-nums ${accountReturn >= 0 ? 'bg-[#2F8A67]/18 text-[#8DD0AF]' : 'bg-[#C65B50]/18 text-[#F0A095]'}`}>
+                                    {accountReturn >= 0 ? '+' : ''}{accountReturn.toFixed(2)}%
+                                </span>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowBalanceModal(true)}
+                                className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 text-xs font-semibold text-[#B9C8C0] transition hover:border-[#D7AE69]/35 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D7AE69]"
+                            >
+                                <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />
+                                Opening {formatCurrency(startingBalance, false)}
+                            </button>
+                        </div>
+
+                        <div className="fieldbook-inkline">
+                            <div className="flex items-center justify-between gap-4">
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D7AE69]">Performance inkline</p>
+                                    <p className="mt-1 text-xs text-[#9FB1A8]">{stats.totalTrades} decisions · live account trajectory</p>
+                                </div>
+                                <p className={`text-sm font-bold tabular-nums ${stats.totalPnL >= 0 ? 'text-[#8DD0AF]' : 'text-[#F0A095]'}`}>
+                                    {formatCurrency(stats.totalPnL)}
+                                </p>
+                            </div>
+                            <svg role="img" aria-label="Account performance line" viewBox="0 0 480 90" preserveAspectRatio="none" className="mt-3 h-[76px] w-full overflow-visible">
+                                <defs>
+                                    <linearGradient id="fieldbook-line-gradient" x1="0" x2="1">
+                                        <stop offset="0" stopColor="#C89A49" />
+                                        <stop offset="1" stopColor={stats.totalPnL >= 0 ? '#77C49E' : '#E38B80'} />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M0 77 H480" stroke="rgba(255,255,255,.09)" strokeWidth="1" />
+                                <path d="M0 45 H480" stroke="rgba(255,255,255,.06)" strokeWidth="1" strokeDasharray="4 6" />
+                                <polyline points={commandCurvePoints} fill="none" stroke="url(#fieldbook-line-gradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                            </svg>
+                        </div>
                     </div>
-                )}
+                </header>
 
-                {activeTab === 'trades' && (
-                    <TradeTable
-                        trades={trades}
-                        onEdit={handleEditTrade}
-                        onDelete={handleDeleteTrade}
-                        onSelect={handleSelectTrade}
-                        isLoading={isLoading}
-                    />
-                )}
+                <div className="mt-4 space-y-4 sm:mt-5">
+                    {streak.count > 0 && <StreakBanner streak={streak} />}
 
-                {activeTab === 'calendar' && (
-                    <TradeCalendar
-                        trades={trades}
-                        onSelectTrade={handleSelectTrade}
-                        onSelectDay={handleSelectDay}
-                    />
-                )}
+                    <GoalsSection goals={goals} currentBalance={currentBalance} onDeleteGoal={handleDeleteGoal} />
 
-                {activeTab === 'psychology' && (
-                    <BreakdownAnalytics
-                        title="Psychology Analytics"
-                        description="See which emotional states are helping or hurting execution."
-                        icon={<Brain className="w-5 h-5" />}
-                        breakdowns={emotionBreakdowns}
-                    />
-                )}
+                    <section aria-label="Account performance metrics" className="fieldbook-metrics grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-5 lg:gap-3">
+                        <StatCard title="Total P&L" value={formatCurrency(stats.totalPnL)} subtitle={`${stats.totalTrades} trades`} valueColor={stats.totalPnL > 0 ? 'profit' : stats.totalPnL < 0 ? 'loss' : 'neutral'} icon={<Banknote className="h-5 w-5" />} />
+                        <StatCard title="Win Rate" value={`${stats.winRate}%`} subtitle={`${stats.wins}W / ${stats.losses}L`} valueColor={stats.winRate >= 50 ? 'profit' : 'loss'} icon={<Percent className="h-5 w-5" />} />
+                        <StatCard title="Profit Factor" value={stats.profitFactor >= 999 ? '∞' : stats.profitFactor.toFixed(2)} subtitle="Gross profit / loss" valueColor={stats.profitFactor >= 1 ? 'profit' : 'loss'} icon={<TrendingUp className="h-5 w-5" />} />
+                        <StatCard title="Average R" value={stats.avgRR >= 999 ? '∞' : stats.avgRR.toFixed(2)} subtitle="Reward per unit risk" valueColor={stats.avgRR >= 1 ? 'profit' : 'loss'} icon={<Scale className="h-5 w-5" />} />
+                        <StatCard title="Max Drawdown" value={`${advancedStats.maxDrawdownPercent.toFixed(2)}%`} subtitle={formatCurrency(-advancedStats.maxDrawdownValue)} valueColor={advancedStats.maxDrawdownValue > 0 ? 'loss' : 'neutral'} icon={<TrendingDown className="h-5 w-5" />} />
+                    </section>
 
-                {activeTab === 'setups' && (
-                    <BreakdownAnalytics
-                        title="Setup Performance"
-                        description="Compare strategies by P&L, win rate, average R, and trade count."
-                        icon={<Target className="w-5 h-5" />}
-                        breakdowns={setupBreakdowns}
-                    />
-                )}
+                    <nav aria-label="Trading journal sections" className="fieldbook-tab-shell">
+                        <div role="tablist" aria-label="Trading journal views" className="fieldbook-tabs">
+                            {tabs.map((tab, index) => (
+                                <button
+                                    key={tab.id}
+                                    id={`trading-tab-${tab.id}`}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={activeTab === tab.id}
+                                    aria-controls="trading-panel"
+                                    tabIndex={activeTab === tab.id ? 0 : -1}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    onKeyDown={(event) => handleTabKeyDown(event, index)}
+                                    className={`fieldbook-tab ${activeTab === tab.id ? 'fieldbook-tab-active' : ''}`}
+                                >
+                                    {tab.icon}
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </nav>
 
-                {activeTab === 'review' && (
-                    <ReviewPanel
-                        stats={stats}
-                        advancedStats={advancedStats}
-                        setupBreakdowns={setupBreakdowns}
-                        emotionBreakdowns={emotionBreakdowns}
-                    />
-                )}
-
-                {/* Support Section */}
-                <div className="flex justify-center pt-4 pb-8">
-                    <a
-                        href="https://ko-fi.com/ta7leel"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block transition-transform hover:scale-110 active:scale-95"
+                    <section
+                        id="trading-panel"
+                        role="tabpanel"
+                        aria-labelledby={`trading-tab-${activeTab}`}
+                        className="fieldbook-panel"
                     >
-                        <img
-                            src="/ko-fi icon.webp"
-                            alt="Support us on Ko-fi"
-                            className="h-12 w-auto"
-                        />
-                    </a>
+                        {activeTab === 'overview' && (
+                            <div className="space-y-5">
+                                <TradingCommandCenter
+                                    trades={trades}
+                                    stats={stats}
+                                    advancedStats={advancedStats}
+                                    equityCurveData={equityCurveData}
+                                    goals={goals}
+                                    streak={streak}
+                                    startingBalance={startingBalance}
+                                    onAddTrade={() => setShowModal(true)}
+                                    onAddGoal={() => setShowGoalModal(true)}
+                                />
+                                <OverviewInsights stats={stats} advancedStats={advancedStats} />
+                            </div>
+                        )}
+
+                        {activeTab === 'trades' && <TradeTable trades={trades} onEdit={handleEditTrade} onDelete={handleDeleteTrade} onSelect={handleSelectTrade} isLoading={isLoading} />}
+
+                        {activeTab === 'calendar' && <TradeCalendar trades={trades} onSelectTrade={handleSelectTrade} onSelectDay={handleSelectDay} />}
+
+                        {activeTab === 'psychology' && <BreakdownAnalytics title="Psychology Analytics" description="See which emotional states are helping or hurting execution." icon={<Brain className="h-5 w-5" />} breakdowns={emotionBreakdowns} />}
+
+                        {activeTab === 'setups' && <BreakdownAnalytics title="Setup Performance" description="Compare strategies by P&L, win rate, average R, and trade count." icon={<Target className="h-5 w-5" />} breakdowns={setupBreakdowns} />}
+
+                        {activeTab === 'review' && <ReviewPanel stats={stats} advancedStats={advancedStats} setupBreakdowns={setupBreakdowns} emotionBreakdowns={emotionBreakdowns} />}
+                    </section>
+
+                    <div className="flex justify-center pb-8 pt-4">
+                        <a href="https://ko-fi.com/ta7leel" target="_blank" rel="noopener noreferrer" className="fieldbook-support-link">
+                            <img src="/ko-fi icon.webp" alt="Support Ta7leel on Ko-fi" className="h-10 w-auto" />
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </main>
 
             {/* Add/Edit Trade Modal */}
             <AddTradeModal

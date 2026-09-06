@@ -95,9 +95,9 @@ Enhanced with:
 
 1. **URL Structure**
    ```
-   ✅ Good: ta7leel.site/summary/ملخص-كتاب-الأب-الغني-الأب-الفقير
-   ✅ Good: ta7leel.site/summary/rich-dad-poor-dad (English slug)
-   ❌ Avoid: ta7leel.site/summary/123456
+   ✅ Good: www.ta7leel.pro/summary/ملخص-كتاب-الأب-الغني-الأب-الفقير
+   ✅ Good: www.ta7leel.pro/summary/rich-dad-poor-dad (English slug)
+   ❌ Avoid: www.ta7leel.pro/summary/123456
    ```
 
 2. **RTL Support**

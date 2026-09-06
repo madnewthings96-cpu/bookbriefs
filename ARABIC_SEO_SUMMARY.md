@@ -179,10 +179,10 @@
 ## 🔗 Important URLs
 
 **Sitemaps:**
-- Main: https://ta7leel.site/sitemap.xml
-- Arabic: https://ta7leel.site/sitemap-ar.xml
-- English: https://ta7leel.site/sitemap-en.xml
-- Index: https://ta7leel.site/sitemap-index.xml
+- Main: https://www.ta7leel.pro/sitemap.xml
+- Arabic: https://www.ta7leel.pro/sitemap-ar.xml
+- English: https://www.ta7leel.pro/sitemap-en.xml
+- Index: https://www.ta7leel.pro/sitemap-index.xml
 
 **Submit to:**
 - Google Search Console: https://search.google.com/search-console

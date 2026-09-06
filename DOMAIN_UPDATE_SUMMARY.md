@@ -1,22 +1,22 @@
-# Domain Update Summary - ta7leel.site
+# Domain Update Summary - www.ta7leel.pro
 
 ## ✅ Updated Files
 
-All domain references have been successfully updated from `bookbriefs.com` to `ta7leel.site`:
+All public-site domain references have been migrated from `ta7leel.site` to the primary hostname `www.ta7leel.pro`:
 
 ### 1. **index.html**
-- ✅ Open Graph URL: `https://ta7leel.site/`
-- ✅ Open Graph image: `https://ta7leel.site/images/og-default.jpg`
-- ✅ Twitter Card URL: `https://ta7leel.site/`
-- ✅ Twitter Card image: `https://ta7leel.site/images/og-default.jpg`
+- ✅ Open Graph URL: `https://www.ta7leel.pro/`
+- ✅ Open Graph image: `https://www.ta7leel.pro/images/og-default.jpg`
+- ✅ Twitter Card URL: `https://www.ta7leel.pro/`
+- ✅ Twitter Card image: `https://www.ta7leel.pro/images/og-default.jpg`
 - ✅ Twitter handle: `@ta7leel`
-- ✅ Canonical URL: `https://ta7leel.site/`
-- ✅ Structured Data schema URL: `https://ta7leel.site`
-- ✅ Search action template: `https://ta7leel.site/#/summaries?search={search_term_string}`
-- ✅ Logo URL: `https://ta7leel.site/favicon/ta7leel.png`
+- ✅ Canonical URL: `https://www.ta7leel.pro/`
+- ✅ Structured Data schema URL: `https://www.ta7leel.pro`
+- ✅ Search action template: `https://www.ta7leel.pro/summaries/?search={search_term_string}`
+- ✅ Logo URL: `https://www.ta7leel.pro/favicon/ta7leel.png`
 
 ### 2. **public/sitemap.xml**
-All page URLs updated to `https://ta7leel.site/#/...`:
+All page URLs updated to `https://www.ta7leel.pro/...`:
 - ✅ Home page
 - ✅ Summaries page
 - ✅ About page
@@ -29,21 +29,34 @@ All page URLs updated to `https://ta7leel.site/#/...`:
 - ✅ All image URLs
 
 ### 3. **public/robots.txt**
-- ✅ Sitemap location: `https://ta7leel.site/sitemap.xml`
+- ✅ Sitemap location: `https://www.ta7leel.pro/sitemap.xml`
 
 ### 4. **components/StructuredData.tsx**
 - ✅ Social media links: `@ta7leel` (Twitter, Facebook, LinkedIn)
-- ✅ Contact email: `support@ta7leel.site`
+- ✅ Contact email: `support@ta7leel.pro`
 - ✅ Uses dynamic `window.location.origin` for base URL (automatically correct)
 
-## 🔄 Dynamic Components (No Update Needed)
+### 5. **netlify.toml**
+- ✅ Permanent redirects preserve paths from the retiring `.site` hostname
+- ✅ Domain redirects run before the SPA catch-all
+- ✅ Firebase Auth callbacks use the stable `firebaseapp.com` handler domain
 
-These components already use dynamic URLs and will automatically work with your domain:
-- ✅ `hooks/useSEO.tsx` - Uses `window.location.origin`
+## 🔄 Shared URL Configuration
+
+These components use the shared `SITE_URL` value so future domain changes stay consistent:
+- ✅ `components/SEOHead.tsx`
+- ✅ `hooks/useSEO.tsx`
+- ✅ Sitemap and prerender generators
 - ✅ All page components - Use relative paths
 - ✅ `utils/seoHelpers.ts` - Uses `window.location.origin`
 
 ## 📋 Next Steps for SEO Success
+
+### 0. Finish the domain cutover
+1. In Netlify **Domain management > HTTPS**, renew/reprovision the certificate and verify it covers both `www.ta7leel.pro` and `ta7leel.pro`.
+2. In Firebase Authentication settings, add `www.ta7leel.pro` and `ta7leel.pro` to **Authorized domains**.
+3. Confirm the `info@ta7leel.pro` and `support@ta7leel.pro` mailboxes or aliases exist before publishing the updated contact details.
+4. Deploy only after HTTPS works on the primary domain, then verify that `.site` URLs return path-preserving `301` redirects.
 
 ### 1. Create Open Graph Image
 Create a social sharing image:
@@ -57,13 +70,13 @@ Content: Your logo/branding with tagline
 ### 2. Submit to Google Search Console
 After deployment:
 1. Go to https://search.google.com/search-console
-2. Add property: `https://ta7leel.site`
+2. Add property: `https://www.ta7leel.pro`
 3. Verify ownership (DNS, HTML file, or meta tag)
-4. Submit sitemap: `https://ta7leel.site/sitemap.xml`
+4. Submit sitemap: `https://www.ta7leel.pro/sitemap.xml`
 5. Request indexing for homepage
 
 ### 3. Set Up Google Analytics
-1. Create GA4 property for `ta7leel.site`
+1. Create GA4 property for `www.ta7leel.pro`
 2. Add tracking code to your site
 3. Enable enhanced measurements
 4. Set up conversion tracking
@@ -71,10 +84,10 @@ After deployment:
 ### 4. Verify Social Media Tags
 Test your meta tags:
 - **Facebook/LinkedIn**: https://developers.facebook.com/tools/debug/
-  - Enter: `https://ta7leel.site`
+  - Enter: `https://www.ta7leel.pro`
   - Check Open Graph preview
 - **Twitter**: https://cards-dev.twitter.com/validator
-  - Enter: `https://ta7leel.site`
+  - Enter: `https://www.ta7leel.pro`
   - Check Twitter Card preview
 
 ### 5. Performance Testing
@@ -86,7 +99,7 @@ Run these tests after deployment:
 ## 🎯 SEO Checklist
 
 ### Before Deployment
-- [x] All URLs updated to `ta7leel.site`
+- [x] All URLs updated to `www.ta7leel.pro`
 - [x] Sitemap contains all pages
 - [x] Robots.txt configured
 - [x] Meta tags optimized
@@ -152,12 +165,12 @@ vercel --prod
 
 ## ✅ Summary
 
-Your domain has been successfully updated to **ta7leel.site** across all SEO-critical files. The site is now ready for deployment with full SEO optimization!
+The repository is updated to **www.ta7leel.pro** across all SEO-critical files. Before deploying the old-domain redirect, renew or reprovision the Netlify TLS certificate so both `www.ta7leel.pro` and `ta7leel.pro` pass hostname validation.
 
 **Important**: Make sure to create the Open Graph image at `/public/images/og-default.jpg` before deploying for optimal social media sharing.
 
 ---
 
-**Last Updated**: 2025-10-11
-**Domain**: ta7leel.site
-**Status**: Ready for Deployment ✅
+**Last Updated**: 2026-08-25
+**Domain**: www.ta7leel.pro
+**Status**: Code ready; live TLS certificate needs attention ⚠️
