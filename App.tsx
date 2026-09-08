@@ -35,6 +35,13 @@ const NewsPage = lazy(async () => {
   return pageModule;
 });
 const BlogPage = lazy(() => import('./pages/BlogPage'));
+const IdeasInTheWildPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([
+    import('./pages/IdeasInTheWildPage.css'),
+    import('./pages/IdeasInTheWildPage'),
+  ]);
+  return pageModule;
+});
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
 const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
@@ -46,6 +53,7 @@ const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 const FinanceTrackerPage = lazy(() => import('./pages/FinanceTrackerPage'));
 const TradingJournalPage = lazy(() => import('./pages/TradingJournalPage'));
 const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'));
+const CoffeeSupportCard = lazy(() => import('./components/CoffeeSupportCard'));
 
 interface FirebaseContextType {
   currentUser: User | null;
@@ -204,6 +212,7 @@ const AppFrame: React.FC = () => {
               <Route path="/news" element={<NewsPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPage />} />
+              <Route path="/connections" element={<IdeasInTheWildPage />} />
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <UserProfilePage />
@@ -248,6 +257,7 @@ const AppFrame: React.FC = () => {
             <MobileBottomNav />
             <Suspense fallback={null}>
               <ExitIntentPopup />
+              <CoffeeSupportCard />
             </Suspense>
             <Footer />
           </>

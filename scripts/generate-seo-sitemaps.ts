@@ -54,6 +54,7 @@ async function main() {
     { path: '/', changefreq: 'daily', priority: '1.0' },
     { path: '/summaries', changefreq: 'daily', priority: '0.9' },
     { path: '/blog', changefreq: 'weekly', priority: '0.8' },
+    { path: '/connections', changefreq: 'weekly', priority: '0.8' },
     { path: '/news', changefreq: 'daily', priority: '0.7' },
     { path: '/about', changefreq: 'monthly', priority: '0.6' },
     { path: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },

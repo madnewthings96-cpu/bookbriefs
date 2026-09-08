@@ -16,6 +16,7 @@ test('nested content routes activate the correct navigation group', () => {
   assert.equal(getActiveNavigationGroup('/calculators/compound-interest'), 'tools');
   assert.equal(getActiveNavigationGroup('/ar/tools/compound-interest-calculator'), 'tools');
   assert.equal(getActiveNavigationGroup('/blog/how-to-read-more'), 'learn');
+  assert.equal(getActiveNavigationGroup('/connections'), 'learn');
   assert.equal(getActiveNavigationGroup('/'), null);
   assert.equal(getActiveNavigationGroup('/summaryish'), null);
   assert.equal(getActiveNavigationGroup('/ar/toolsmith'), null);

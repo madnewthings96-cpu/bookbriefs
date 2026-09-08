@@ -12,7 +12,7 @@ const routeGroups: Record<NavigationGroupKey, readonly string[]> = {
     '/downloads',
   ],
   tools: ['/calculators', '/ar/tools', '/finance-tracker', '/trading-journal'],
-  learn: ['/blog', '/news', '/about'],
+  learn: ['/blog', '/news', '/connections', '/about'],
 };
 
 const matchesRoute = (pathname: string, route: string) =>
