@@ -19,6 +19,9 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
+import NotFoundPage from './pages/NotFoundPage';
+import PrivatePageSEO from './components/PrivatePageSEO';
+import { isPrivateSeoRoute } from './utils/seoConfig';
 import { isStandaloneAppRoute } from './components/appLayoutModel';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -27,7 +30,10 @@ const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
-const NewsPage = lazy(() => import('./pages/NewsPage'));
+const NewsPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsPage')]);
+  return pageModule;
+});
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -172,6 +178,7 @@ const AppFrame: React.FC = () => {
   return (
     <>
       <ScrollToTop />
+      {isPrivateSeoRoute(location.pathname) && <PrivatePageSEO />}
       <div className={isStandalone ? 'min-h-screen bg-[#ece9df]' : 'flex min-h-screen flex-col bg-gray-50 text-gray-800'}>
         {!isStandalone && <Header />}
         <main className={isStandalone ? 'min-h-screen' : 'container mx-auto flex-grow px-0 py-8 sm:px-0 lg:px-0'}>
@@ -231,6 +238,7 @@ const AppFrame: React.FC = () => {
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-use" element={<TermsOfUsePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </main>

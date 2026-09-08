@@ -11,10 +11,10 @@ test('the hero promise cycles through every phrase before wrapping', async () =>
   }
 
   const expectedPhrases = [
-    'Apply immediately.',
+    'Act on it.',
     'Think more clearly.',
-    'Remember what matters.',
-    'Decide with confidence.',
+    'Make it stick.',
+    'Think sharper.',
     'Build better habits.',
     'Put insight to work.',
   ];

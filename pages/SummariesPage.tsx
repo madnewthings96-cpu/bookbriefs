@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowDown, ArrowRight, BookOpen, ChevronDown, Clock3, Search, SlidersHorizontal, Sparkles, Star, X } from 'lucide-react';
 import FavoriteButton from '../components/FavoriteButton';
@@ -7,7 +7,7 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Book } from '../types';
-import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import './SummariesPage.css';
 
 const starterBookIds = ['atomic-habits', 'the-psychology-of-money', 'rich-dad-poor-dad', 'thinking-fast-and-slow', 'trading-in-the-zone'];
@@ -36,17 +36,20 @@ const LibraryBook: React.FC<{ book: Book; title: string; author: string }> = ({ 
 );
 
 const SummariesPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState(() => new URLSearchParams(location.search).get('search') || '');
+  useEffect(() => {
+    setSearchQuery(new URLSearchParams(location.search).get('search') || '');
+  }, [location.search]);
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
   const [selectedRating, setSelectedRating] = useState('');
   const [sortOrder, setSortOrder] = useState('recommended');
   const [showFilters, setShowFilters] = useState(false);
   const [showAllTopics, setShowAllTopics] = useState(false);
-  const location = useLocation();
   const { books, loading, error, refreshBooks } = useBooks();
   const { getBookTitle, getBookAuthor } = useLanguage();
-  const isArabicRoute = location.pathname.startsWith('/ar/');
+  const isArabicRoute = false; // This library currently presents English reader content.
   useSEO({
     title: isArabicRoute
       ? 'ملخصات كتب عربية وعالمية | تحليل'
@@ -58,6 +61,7 @@ const SummariesPage: React.FC = () => {
       ? 'ملخصات كتب, ملخصات كتب عربية, كتب تطوير الذات, كتب الاستثمار, كتب التداول'
       : 'book summaries, business book summaries, trading book summaries, finance book summaries, self-help books',
     type: 'website',
+    noindex: Boolean(new URLSearchParams(location.search).get('search')),
     canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
   });
 
@@ -82,7 +86,7 @@ const SummariesPage: React.FC = () => {
   const filteredBooks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return library.filter(({ book, title, author }) => {
-      const matchesSearch = !query || [title, author, book.title, book.author, book.category].some(value => value?.toLowerCase().includes(query));
+      const matchesSearch = !query || [title, author, book.title, book.author, book.category, book.arabicSlug?.replace(/-/g, ' ')].some(value => value?.toLowerCase().includes(query));
       return matchesSearch && (!selectedGenre || book.category === selectedGenre) &&
         (!selectedAuthor || book.author === selectedAuthor) && (!selectedRating || (book.rating || 0) >= Number(selectedRating));
     }).sort((a, b) => {
@@ -149,6 +153,9 @@ const SummariesPage: React.FC = () => {
               </div>
               <button type="button" className={'library-filter-toggle' + (showFilters ? ' is-active' : '')} aria-expanded={showFilters} aria-controls="library-advanced-filters" onClick={() => setShowFilters(!showFilters)}><SlidersHorizontal aria-hidden="true" />Filters{activeFilterCount > 0 && <span>{activeFilterCount}</span>}</button>
             </div>
+            <nav aria-label="Book category guides" className="flex flex-wrap gap-x-4 gap-y-2 mb-4 text-sm">
+              {CATEGORY_HUBS.map(hub => <Link key={hub.slug} to={`/categories/${hub.slug}/`} className="underline">{hub.englishTitle}</Link>)}
+            </nav>
             <div className="library-topics" role="group" aria-label="Filter by topic">
               <button type="button" aria-pressed={!selectedGenre} onClick={() => setSelectedGenre('')}>All books<span>{books.length}</span></button>
               {visibleTopics.map(genre => <button key={genre} type="button" aria-pressed={selectedGenre === genre} onClick={() => setSelectedGenre(genre)}>{genre}</button>)}

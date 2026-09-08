@@ -1,13 +1,15 @@
 export const SITE_URL = 'https://www.ta7leel.pro';
 export const BRAND_NAME = 'Ta7leel | تحليل';
-export const DEFAULT_OG_IMAGE = '/images/og-default.jpg';
+export const DEFAULT_OG_IMAGE = '/favicon/ta7leel.png';
 
 export function canonicalRoutePath(path: string): string {
   if (!path || path === '/') return '/';
 
-  const [pathname, suffix = ''] = path.split(/(?=[?#])/);
-  const normalizedPathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
-  return `${normalizedPathname}${suffix}`;
+  const pathname = path.split(/[?#]/, 1)[0];
+  const normalized = pathname.replace(/\/+$/, '') || '/';
+  if (normalized === '/') return '/';
+  if (normalized === '/book-summaries' || normalized === '/ar/book-summaries') return '/summaries/';
+  return `${normalized}/`;
 }
 
 export interface CategoryHub {
@@ -661,3 +663,6 @@ export const CALCULATOR_ROUTES: CalculatorRoute[] = [
     ],
   },
 ];
+
+export const PRIVATE_SEO_ROUTES = ['/login', '/signup', '/profile', '/reading-challenge', '/downloads', '/feedback', '/finance-tracker', '/trading-journal'];
+export const isPrivateSeoRoute = (pathname: string): boolean => PRIVATE_SEO_ROUTES.includes(pathname.replace(/\/+$/, ''));

@@ -1,51 +1,8 @@
-# robots.txt for Ta7leel / BookBriefs
-# Optimized for Arabic and International Search Engines
-
+# Public pages and assets must be crawlable for canonical/noindex signals to be read.
 User-agent: *
 Allow: /
-Allow: /summaries
-Allow: /summary/*
-Allow: /blog
-Allow: /blog/*
-Allow: /about
-Allow: /calculators
-Allow: /news
 Disallow: /admin/
 Disallow: /api/
-Disallow: /login
-Disallow: /signup
-Disallow: /profile
-Disallow: /reading-challenge
-Disallow: /downloads
-Disallow: /feedback
-Disallow: /pdfs/
-Disallow: /*?*utm_source=
-Disallow: /*?*utm_medium=
-Disallow: /*?*utm_campaign=
+Disallow: /.netlify/functions/
 
-# Specific crawlers
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0.5
-
-User-agent: Googlebot-Image
-Allow: /images/
-Allow: /favicon/
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-# Yandex (popular in some MENA countries)
-User-agent: Yandex
-Allow: /
-Crawl-delay: 2
-
-# Sitemaps
 Sitemap: https://www.ta7leel.pro/sitemap-index.xml
-Sitemap: https://www.ta7leel.pro/sitemap.xml
-Sitemap: https://www.ta7leel.pro/sitemap-en.xml
-Sitemap: https://www.ta7leel.pro/sitemap-ar.xml
-
-# Crawl-delay for polite crawling
-Crawl-delay: 1

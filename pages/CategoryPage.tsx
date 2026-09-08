@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import BookCard from '../components/BookCard';
 import Spinner from '../components/Spinner';
+import NotFoundPage from './NotFoundPage';
 import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import useSEO from '../hooks/useSEO';
@@ -13,6 +14,7 @@ const CategoryPage: React.FC = () => {
   const { books, loading } = useBooks();
   const isArabic = location.pathname.startsWith('/ar/');
 
+  const knownCategory = CATEGORY_HUBS.some(hub => hub.slug === categorySlug);
   const category = CATEGORY_HUBS.find((hub) => hub.slug === categorySlug) || CATEGORY_HUBS[0];
   const categoryBooks = useMemo(
     () => books.filter((book) => book.category === category.category),
@@ -24,12 +26,16 @@ const CategoryPage: React.FC = () => {
   const keywords = isArabic ? category.arabicKeywords : category.englishKeywords;
 
   useSEO({
-    title,
+    title: knownCategory ? title : 'Page not found | Ta7leel',
     description,
     keywords,
     type: 'website',
+    language: isArabic ? 'ar' : 'en',
+    noindex: !knownCategory,
     canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
   });
+
+  if (!knownCategory) return <NotFoundPage />;
 
   if (loading) {
     return (

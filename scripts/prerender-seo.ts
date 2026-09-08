@@ -1,6 +1,10 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import MarkdownRenderer from '../components/MarkdownRenderer.tsx';
+import { getBookSummaryTranslation } from '../translations/bookSummaries.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
+import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, PRIVATE_SEO_ROUTES, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import {
   absoluteUrl,
   escapeHtml,
@@ -10,6 +14,9 @@ import {
   stripMarkdown,
   truncateText,
 } from './seoCatalog.ts';
+import { blogPosts, getFullContent } from '../components/blog/blogContent.ts';
+import { getBlogPostDirection } from '../components/blog/blogPageModel.ts';
+import type { BlogPost } from '../components/blog/blogPageModel.ts';
 import type { BookDefinition } from './types.js';
 
 interface PrerenderPage {
@@ -20,6 +27,7 @@ interface PrerenderPage {
   description: string;
   keywords: string;
   image?: string;
+  noindex?: boolean;
   body: string;
   schema: Record<string, unknown>[];
 }
@@ -59,12 +67,12 @@ function upsertCanonical(html: string, href: string): string {
 }
 
 function removeExistingJsonLd(html: string): string {
-  return html.replace(/\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '');
+  return html.replace(/\s*<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g, '');
 }
 
 function injectJsonLd(html: string, schemas: Record<string, unknown>[]): string {
   const tags = schemas
-    .map((schema) => `  <script type="application/ld+json">${JSON.stringify(schema)}</script>`)
+    .map((schema) => `  <script type="application/ld+json" data-seo-prerender>${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`)
     .join('\n');
 
   return html.replace('</head>', `${tags}\n</head>`);
@@ -89,15 +97,15 @@ function renderPage(template: string, page: PrerenderPage): string {
   html = upsertMeta(html, 'name', 'title', page.title);
   html = upsertMeta(html, 'name', 'description', page.description);
   html = upsertMeta(html, 'name', 'keywords', page.keywords);
-  html = upsertMeta(html, 'name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+  html = upsertMeta(html, 'name', 'robots', page.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   html = upsertCanonical(html, canonical);
-  html = upsertMeta(html, 'property', 'og:type', 'website');
+  html = upsertMeta(html, 'property', 'og:type', page.path.startsWith('/blog/') ? 'article' : 'website');
   html = upsertMeta(html, 'property', 'og:url', canonical);
   html = upsertMeta(html, 'property', 'og:title', page.title);
   html = upsertMeta(html, 'property', 'og:description', page.description);
   html = upsertMeta(html, 'property', 'og:image', absoluteImage);
   html = upsertMeta(html, 'property', 'og:site_name', BRAND_NAME);
-  html = upsertMeta(html, 'property', 'og:locale', page.lang === 'ar' ? 'ar_AE' : 'en_US');
+  html = upsertMeta(html, 'property', 'og:locale', page.lang === 'ar' ? 'ar_AR' : 'en_US');
   html = upsertMeta(html, 'name', 'twitter:card', 'summary_large_image');
   html = upsertMeta(html, 'name', 'twitter:url', canonical);
   html = upsertMeta(html, 'name', 'twitter:title', page.title);
@@ -144,16 +152,17 @@ function websiteSchema() {
 function bookPage(book: BookDefinition): PrerenderPage {
   const slug = getCanonicalBookSlug(book);
   const pathName = `/summary/${slug}`;
-  const isArabicSlug = /[\u0600-\u06FF]/.test(slug);
+  const isArabicSlug = false; // The published book reader currently serves English content.
   const displayTitle = isArabicSlug ? getArabicTitle(book) : book.title;
-  const cleanSummary = stripMarkdown(book.summary);
+  const readerContent = getBookSummaryTranslation(book.id, 'en') || book;
+  const cleanSummary = stripMarkdown(readerContent.summary);
   const description = isArabicSlug
     ? `اقرأ ملخص كتاب ${displayTitle} مع أهم الأفكار والدروس العملية والنقاط الرئيسية في دقائق.`
     : `Read a practical summary of ${book.title} by ${book.author}, including key takeaways, lessons, and useful ideas.`;
   const title = isArabicSlug
     ? `ملخص كتاب ${displayTitle}: أهم الأفكار والدروس | تحليل`
     : `${book.title} Summary: Key Ideas and Takeaways | Ta7leel`;
-  const takeaways = (book.keyTakeaways || []).slice(0, 6);
+  const takeaways = readerContent.keyTakeaways || [];
 
   const body = `    <main class="seo-prerender mx-auto max-w-5xl px-4 py-10" dir="${isArabicSlug ? 'rtl' : 'ltr'}">
       <article>
@@ -177,11 +186,11 @@ function bookPage(book: BookDefinition): PrerenderPage {
         </section>
         <section class="mt-10">
           <h2 class="text-2xl font-bold text-gray-950">${isArabicSlug ? 'عن هذا الملخص' : 'About This Summary'}</h2>
-          <p class="mt-4 leading-8 text-gray-700">${escapeHtml(truncateText(cleanSummary, 700))}</p>
+          <div class="mt-4 leading-8 text-gray-700">${book.isPremium ? escapeHtml(truncateText(cleanSummary, 700)) : renderToStaticMarkup(React.createElement(MarkdownRenderer, { content: readerContent.summary }))}</div>
         </section>
         <nav class="mt-10 flex flex-wrap gap-3">
           <a href="/summaries" class="text-orange-700 underline">${isArabicSlug ? 'كل الملخصات' : 'All summaries'}</a>
-          <a href="/categories/${categorySlugForBook(book)}" class="text-orange-700 underline">${escapeHtml(book.category)} books</a>
+          ${categorySlugForBook(book) ? `<a href="/categories/${categorySlugForBook(book)}/" class="text-orange-700 underline">${escapeHtml(book.category)} books</a>` : ''}
         </nav>
       </article>
     </main>`;
@@ -219,13 +228,13 @@ function bookPage(book: BookDefinition): PrerenderPage {
   };
 }
 
-function categorySlugForBook(book: BookDefinition): string {
+function categorySlugForBook(book: BookDefinition): string | undefined {
   const match = CATEGORY_HUBS.find((category) => category.category === book.category);
-  return match?.slug || `${book.category.toLowerCase()}-books`;
+  return match?.slug;
 }
 
 function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefinition[], arabic: boolean): PrerenderPage {
-  const categoryBooks = books.filter((book) => book.category === category.category).slice(0, 24);
+  const categoryBooks = books.filter((book) => book.category === category.category);
   const pathName = arabic ? `/ar/categories/${category.slug}` : `/categories/${category.slug}`;
   const title = arabic ? `${category.arabicTitle} | تحليل` : `${category.englishTitle} | Ta7leel`;
   const description = arabic ? category.arabicDescription : category.englishDescription;
@@ -290,7 +299,7 @@ function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefin
 }
 
 function summariesLandingPage(books: BookDefinition[], arabic: boolean, pathName: string): PrerenderPage {
-  const featuredBooks = books.slice(0, 36);
+  const featuredBooks = books;
   const title = arabic ? 'ملخصات كتب عربية وعالمية | تحليل' : 'Book Summaries: Business, Trading, Finance and Self-Development | Ta7leel';
   const description = arabic
     ? 'تصفح مكتبة تحليل لملخصات الكتب العربية والعالمية في الأعمال والتداول والاستثمار وتطوير الذات.'
@@ -446,6 +455,60 @@ function calculatorPage(route: (typeof CALCULATOR_ROUTES)[number]): PrerenderPag
   };
 }
 
+function articlePage(post: BlogPost): PrerenderPage {
+  const arabic = getBlogPostDirection(post) === 'rtl';
+  // Only existing, repository-owned editorial content; escape all text in the fallback.
+  const paragraphs = getFullContent(post.id).split(/<\/(?:p|h[1-6]|li|blockquote)>/i)
+    .map(part => part.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
+  return {
+    path: `/blog/${post.slug}`, lang: arabic ? 'ar' : 'en', dir: arabic ? 'rtl' : 'ltr',
+    title: `${post.title} | Ta7leel`, description: post.excerpt, keywords: post.tags.join(', '), image: post.imageUrl,
+    body: `<main class="seo-prerender mx-auto max-w-3xl px-4 py-10"><article>
+      <h1>${escapeHtml(post.title)}</h1><p>${escapeHtml(post.excerpt)}</p>
+      <time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date)}</time>
+      ${paragraphs.map(text => `<p>${escapeHtml(text)}</p>`).join('\n')}
+      </article><nav><a href="/blog/">${arabic ? 'كل المقالات' : 'All articles'}</a>
+      <a href="/summaries/">${arabic ? 'ملخصات الكتب' : 'Book summaries'}</a></nav></main>`,
+    schema: [{ '@context': 'https://schema.org', '@type': 'Article', headline: post.title,
+      description: post.excerpt, datePublished: post.date, inLanguage: arabic ? 'ar' : 'en',
+      image: absoluteUrl(SITE_URL, post.imageUrl),
+      publisher: { '@type': 'Organization', name: BRAND_NAME, url: SITE_URL },
+      mainEntityOfPage: absoluteUrl(SITE_URL, canonicalRoutePath(`/blog/${post.slug}`)),
+    }, breadcrumbSchema([{name: 'Home', path: '/'}, {name: 'Articles', path: '/blog'}, {name: post.title, path: `/blog/${post.slug}`}])],
+  };
+}
+
+function articleIndexPage(): PrerenderPage {
+  return {
+    path: '/blog', lang: 'en', dir: 'ltr',
+    title: 'Articles on Books, Business & Personal Development | Ta7leel',
+    description: 'Read Arabic and English articles on books, business, trading psychology and personal development.',
+    keywords: '', schema: [websiteSchema()],
+    body: `<main class="seo-prerender mx-auto max-w-5xl px-4 py-10"><h1>Articles / المقالات</h1><ul>${blogPosts.map(post =>
+      `<li><a href="${escapeHtml(canonicalRoutePath(`/blog/${post.slug}`))}" lang="${getBlogPostDirection(post) === 'rtl' ? 'ar' : 'en'}">${escapeHtml(post.title)}</a><p>${escapeHtml(post.excerpt)}</p></li>`).join('')}</ul></main>`,
+  };
+}
+
+function homePage(): PrerenderPage {
+  return {
+    path: '/', lang: 'en', dir: 'ltr', title: 'Ta7leel - High-Signal Book Summaries & Mental Models',
+    description: 'Master the key insights from the world’s greatest business, psychology, and self-growth books in 10 minutes. Distilled for clarity, retention, and action.',
+    keywords: '', schema: [websiteSchema()],
+    body: `<main class="seo-prerender mx-auto max-w-5xl px-4 py-10">
+      <h1>Read less. Understand more. Act on it.</h1>
+      <p>Ta7leel turns transformative books on psychology, money, habits, and strategy into clear, actionable 10-minute briefs.</p>
+      <nav><a href="/summaries/">Explore book summaries</a> <a href="/blog/">Read articles</a></nav>
+      <h2>Browse by topic</h2><ul>${CATEGORY_HUBS.map(category => `<li><a href="/categories/${category.slug}/">${escapeHtml(category.englishTitle)}</a></li>`).join('')}</ul>
+    </main>`,
+  };
+}
+
+function privatePage(path: string): PrerenderPage {
+  return { path, lang: 'en', dir: 'ltr', title: 'Account | Ta7leel',
+    description: 'Sign in to access your Ta7leel account.', keywords: '', noindex: true,
+    body: '<main><h1>Ta7leel</h1><p>Loading your account…</p></main>', schema: [] };
+}
+
 async function writeRouteFile(template: string, page: PrerenderPage) {
   const routePath = page.path === '/' ? 'index.html' : path.join(page.path.slice(1), 'index.html');
   const filePath = path.join(process.cwd(), 'dist', routePath);
@@ -459,21 +522,28 @@ async function main() {
   const books = await loadBookCatalog();
 
   const pages: PrerenderPage[] = [
+    homePage(),
     summariesLandingPage(books, false, '/summaries'),
-    summariesLandingPage(books, false, '/book-summaries'),
-    summariesLandingPage(books, true, '/ar/book-summaries'),
+    ...blogPosts.map(articlePage),
+    articleIndexPage(),
     ...CALCULATOR_ROUTES.map(calculatorPage),
     ...CATEGORY_HUBS.flatMap((category) => [
       categoryPage(category, books, false),
       categoryPage(category, books, true),
     ]),
     ...books.map(bookPage),
+    ...PRIVATE_SEO_ROUTES.map(privatePage),
   ];
 
   for (const page of pages) {
     await writeRouteFile(template, page);
   }
 
+  await writeFile(path.join(process.cwd(), 'dist', '404.html'), renderPage(template, {
+    path: '/404', lang: 'en', dir: 'ltr', title: 'Page not found | Ta7leel',
+    description: 'Find book summaries and articles in the Ta7leel library.', keywords: '', noindex: true,
+    body: '<main><h1>Page not found / الصفحة غير موجودة</h1><a href="/summaries/">Book summaries / ملخصات الكتب</a></main>', schema: [],
+  }), 'utf8');
   console.log(`Prerendered ${pages.length} SEO routes into dist.`);
 }
 

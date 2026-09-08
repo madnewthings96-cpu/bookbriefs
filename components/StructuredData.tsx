@@ -1,4 +1,5 @@
 import React from 'react';
+import { SITE_URL, BRAND_NAME } from '../utils/seoConfig';
 
 interface OrganizationSchemaProps {
   type: 'organization';
@@ -50,7 +51,7 @@ type StructuredDataProps =
   | BreadcrumbSchemaProps;
 
 const StructuredData: React.FC<StructuredDataProps> = (props) => {
-  const baseUrl = window.location.origin;
+  const baseUrl = SITE_URL;
 
   const getSchema = () => {
     switch (props.type) {
@@ -58,7 +59,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
         return {
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: 'BookBriefs',
+          name: BRAND_NAME,
           url: baseUrl,
           logo: `${baseUrl}/favicon/ta7leel.png`,
           description: 'Transform your learning with powerful book summaries. Get key insights from the world\'s greatest minds.',
@@ -78,7 +79,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
         return {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: 'BookBriefs',
+          name: BRAND_NAME,
           url: baseUrl,
           description: 'Discover book summaries, key insights, and learning resources from top business and self-help books.',
           potentialAction: {
@@ -106,7 +107,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
           },
           publisher: {
             '@type': 'Organization',
-            name: 'BookBriefs',
+            name: BRAND_NAME,
             logo: {
               '@type': 'ImageObject',
               url: `${baseUrl}/favicon/ta7leel.png`,

@@ -88,14 +88,13 @@ const BlogLibrary: React.FC<BlogLibraryProps> = ({
                     <span key={tag} lang={getBlogPostDirection(featuredPost) === 'rtl' ? 'ar' : 'en'}>{tag}</span>
                   ))}
                 </div>
-                <button
-                  type="button"
+                <a href={`/blog/${featuredPost.slug}/`}
                   lang="en"
                   aria-label={`Read the essay: ${featuredPost.title}`}
-                  onClick={() => onOpenPost(featuredPost)}
+
                 >
                   Read the essay <ArrowUpRight size={18} aria-hidden="true" />
-                </button>
+                </a>
               </div>
             </div>
           </article>
@@ -127,14 +126,13 @@ const BlogLibrary: React.FC<BlogLibraryProps> = ({
                       <ArticleMeta post={post} formatDate={formatDate} />
                       <h3 lang={getBlogPostDirection(post) === 'rtl' ? 'ar' : 'en'}>{post.title}</h3>
                       <p lang={getBlogPostDirection(post) === 'rtl' ? 'ar' : 'en'}>{post.excerpt}</p>
-                      <button
-                        type="button"
+                      <a href={`/blog/${post.slug}/`}
                         lang="en"
                         aria-label={`Continue reading: ${post.title}`}
-                        onClick={() => onOpenPost(post)}
+
                       >
                         Continue reading <ArrowUpRight size={17} aria-hidden="true" />
-                      </button>
+                      </a>
                     </div>
                   </article>
                 ))}

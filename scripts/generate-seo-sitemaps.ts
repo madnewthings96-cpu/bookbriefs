@@ -3,19 +3,20 @@ import path from 'node:path';
 import { CALCULATOR_ROUTES, CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import { absoluteUrl, escapeXml, getCanonicalBookSlug, loadBookCatalog } from './seoCatalog.ts';
 
-const today = new Date().toISOString().split('T')[0];
+import { blogPosts } from '../components/blog/blogContent.ts';
+import { getBlogPostDirection } from '../components/blog/blogPageModel.ts';
 
 interface SitemapUrl {
   path: string;
   changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
   priority: string;
+  lastmod?: string;
 }
 
-function renderUrl({ path: pathname, changefreq, priority }: SitemapUrl): string {
+function renderUrl({ path: pathname, changefreq, priority, lastmod }: SitemapUrl): string {
   return `  <url>
     <loc>${escapeXml(absoluteUrl(SITE_URL, canonicalRoutePath(pathname)))}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${changefreq}</changefreq>
+${lastmod ? `    <lastmod>${escapeXml(lastmod)}</lastmod>\n` : ''}    <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
 }
@@ -29,7 +30,7 @@ ${urls.map(renderUrl).join('\n')}
 }
 
 function renderSitemapIndex(): string {
-  const sitemaps = ['sitemap.xml', 'sitemap-en.xml', 'sitemap-ar.xml'];
+  const sitemaps = ['sitemap-en.xml', 'sitemap-ar.xml'];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -37,7 +38,6 @@ ${sitemaps
   .map(
     (sitemap) => `  <sitemap>
     <loc>${escapeXml(`${SITE_URL}/${sitemap}`)}</loc>
-    <lastmod>${today}</lastmod>
   </sitemap>`
   )
   .join('\n')}
@@ -53,7 +53,6 @@ async function main() {
   const baseRoutes: SitemapUrl[] = [
     { path: '/', changefreq: 'daily', priority: '1.0' },
     { path: '/summaries', changefreq: 'daily', priority: '0.9' },
-    { path: '/book-summaries', changefreq: 'daily', priority: '0.9' },
     { path: '/blog', changefreq: 'weekly', priority: '0.8' },
     { path: '/news', changefreq: 'daily', priority: '0.7' },
     { path: '/about', changefreq: 'monthly', priority: '0.6' },
@@ -84,7 +83,6 @@ async function main() {
   }));
 
   const arabicCategoryRoutes: SitemapUrl[] = [
-    { path: '/ar/book-summaries', changefreq: 'daily', priority: '0.9' },
     ...arabicCalculatorRoutes,
     ...CATEGORY_HUBS.map((category) => ({
       path: `/ar/categories/${category.slug}`,
@@ -99,8 +97,16 @@ async function main() {
     priority: book.category === 'Trading' || book.category === 'Finance' ? '0.85' : '0.8',
   }));
 
-  const englishRoutes = [...baseRoutes, ...englishCalculatorRoutes, ...englishCategoryRoutes];
-  const arabicRoutes = [...arabicCategoryRoutes, ...bookRoutes];
+  const articleRoutes = blogPosts.map(post => ({
+    path: `/blog/${post.slug}`,
+    changefreq: 'monthly' as const,
+    priority: '0.7',
+    lastmod: post.date,
+  }));
+  const englishRoutes = [...baseRoutes, ...englishCalculatorRoutes, ...englishCategoryRoutes, ...bookRoutes,
+    ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'ltr')];
+  const arabicRoutes = [...arabicCategoryRoutes,
+    ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'rtl')];
   const allRoutes = [...englishRoutes, ...arabicRoutes];
 
   await writeFile(path.join(publicDir, 'sitemap.xml'), renderUrlset(allRoutes), 'utf8');

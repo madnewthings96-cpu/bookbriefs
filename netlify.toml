@@ -94,8 +94,48 @@
   status = 301
   force = true
 
-# SPA redirects
+# Consolidate the duplicate library URL. Arabic book summaries are not yet published.
 [[redirects]]
-  from = "/*"
+  from = "/book-summaries"
+  to = "/summaries/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ar/book-summaries"
+  to = "/summaries/"
+  status = 301
+  force = true
+
+# Firestore can contain books added since the last static build; preserve those routes.
+# A missing dynamic book is noindexed by the client until server rendering is introduced.
+[[redirects]]
+  from = "/summary/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/news"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy-policy"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms-of-use"
+  to = "/index.html"
+  status = 200
+
+# Existing files (including prerendered categories/articles) shadow this fallback.
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404

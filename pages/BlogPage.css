@@ -151,8 +151,8 @@
 }
 
 .signal-topics button:focus-visible,
-.signal-feature button:focus-visible,
-.signal-card button:focus-visible,
+.signal-feature :is(button, a):focus-visible,
+.signal-card :is(button, a):focus-visible,
 .signal-reader button:focus-visible,
 .signal-reader a:focus-visible {
   outline: 3px solid rgba(200, 154, 73, 0.6);
@@ -308,9 +308,9 @@
   border-radius: 999px;
 }
 
-.signal-feature__footer button,
-.signal-card__body button,
-.signal-related button {
+.signal-feature__footer :is(button, a),
+.signal-card__body :is(button, a),
+.signal-related :is(button, a) {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -323,22 +323,22 @@
   cursor: pointer;
 }
 
-.signal-feature__footer button {
+.signal-feature__footer :is(button, a) {
   padding: 0.8rem 1rem;
   color: var(--signal-forest);
   background: var(--signal-brass);
   border-radius: 0.75rem;
 }
 
-.signal-feature__footer button svg,
-.signal-card__body button svg,
-.signal-related button svg {
+.signal-feature__footer :is(button, a) svg,
+.signal-card__body :is(button, a) svg,
+.signal-related :is(button, a) svg {
   transition: transform 180ms ease;
 }
 
-.signal-feature__footer button:hover svg,
-.signal-card__body button:hover svg,
-.signal-related button:hover svg {
+.signal-feature__footer :is(button, a):hover svg,
+.signal-card__body :is(button, a):hover svg,
+.signal-related :is(button, a):hover svg {
   transform: translate(2px, -2px);
 }
 
@@ -434,7 +434,7 @@
   -webkit-line-clamp: 3;
 }
 
-.signal-card__body button {
+.signal-card__body :is(button, a) {
   margin-block-start: auto;
   padding: 0;
   color: var(--signal-canopy);
@@ -927,9 +927,9 @@
   color: var(--signal-canopy);
 }
 
-[dir='rtl'] .signal-feature__footer button svg,
-[dir='rtl'] .signal-card__body button svg,
-[dir='rtl'] .signal-related button svg {
+[dir='rtl'] .signal-feature__footer :is(button, a) svg,
+[dir='rtl'] .signal-card__body :is(button, a) svg,
+[dir='rtl'] .signal-related :is(button, a) svg {
   transform: scaleX(-1);
 }
 
@@ -1008,7 +1008,7 @@
     flex-direction: column;
   }
 
-  .signal-feature__footer button {
+  .signal-feature__footer :is(button, a) {
     justify-content: center;
   }
 
@@ -1098,9 +1098,9 @@
   .signal-feature__image,
   .signal-card,
   .signal-card__image-wrap img,
-  .signal-feature__footer button svg,
-  .signal-card__body button svg,
-  .signal-related button svg,
+  .signal-feature__footer :is(button, a) svg,
+  .signal-card__body :is(button, a) svg,
+  .signal-related :is(button, a) svg,
   .signal-reader__progress span {
     transition: none;
   }

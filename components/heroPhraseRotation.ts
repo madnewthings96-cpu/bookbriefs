@@ -1,8 +1,8 @@
 export const HERO_PHRASES = [
-  'Apply immediately.',
+  'Act on it.',
   'Think more clearly.',
-  'Remember what matters.',
-  'Decide with confidence.',
+  'Make it stick.',
+  'Think sharper.',
   'Build better habits.',
   'Put insight to work.',
 ] as const;

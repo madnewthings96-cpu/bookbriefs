@@ -1,209 +1,244 @@
 import React, { useEffect } from 'react';
-import useSEO from '../hooks/useSEO';
 import {
   AlertTriangle,
+  ArrowRight,
   BarChart3,
   Bell,
   CalendarDays,
-  Clock3,
   Globe2,
   Newspaper,
+  ShieldCheck,
+  Sparkles,
+  Target,
   TrendingUp,
 } from 'lucide-react';
+import useSEO from '../hooks/useSEO';
+import { mountEconomicCalendarWidget } from './newsCalendarWidget';
 
 const marketBriefs = [
   {
-    title: 'Market impact',
-    description: 'High-importance releases can quickly change spreads, volatility, and short-term direction.',
-    icon: BarChart3,
-    accent: 'bg-blue-50 text-blue-700 shadow-blue-900/5',
+    eyebrow: '01 / Interpret',
+    title: 'Read the release, not the headline',
+    description:
+      'Compare the actual number with forecast and prior data. The surprise—not the label—usually drives the first move.',
+    icon: Newspaper,
   },
   {
-    title: 'Plan the session',
-    description: 'Check the daily schedule before placing trades, especially near inflation, jobs, and rate data.',
-    icon: Clock3,
-    accent: 'bg-emerald-50 text-emerald-700 shadow-emerald-900/5',
+    eyebrow: '02 / Prepare',
+    title: 'Map the session before entry',
+    description:
+      'Mark high-impact windows, reduce exposure around uncertainty, and decide what would invalidate your idea.',
+    icon: Target,
   },
   {
-    title: 'Global pressure',
-    description: 'Track data across major economies to understand how currencies, indices, and commodities react.',
-    icon: Globe2,
-    accent: 'bg-amber-50 text-amber-700 shadow-amber-900/5',
+    eyebrow: '03 / Connect',
+    title: 'Follow pressure across markets',
+    description:
+      'Rates, currencies, indices, and commodities tell one connected story. Watch confirmation before committing.',
+    icon: TrendingUp,
   },
 ];
 
+const signalItems = [
+  { label: 'Rates', detail: 'Central-bank direction', icon: BarChart3 },
+  { label: 'Growth', detail: 'Jobs, GDP and demand', icon: Globe2 },
+  { label: 'Inflation', detail: 'Prices and policy pressure', icon: AlertTriangle },
+];
+
 const focusItems = [
-  'Central bank statements and rate decisions',
+  'Central-bank statements and rate decisions',
   'Inflation, jobs, GDP, and consumer confidence',
   'Unexpected revisions to previous data',
+];
+
+const impactLevels = [
+  { label: 'High impact', className: 'market-impact market-impact--high' },
+  { label: 'Medium', className: 'market-impact market-impact--medium' },
+  { label: 'Low', className: 'market-impact market-impact--low' },
 ];
 
 const NewsPage: React.FC = () => {
   useSEO({
     title: 'Financial News & Economic Calendar - Real-Time Market Updates | BookBriefs',
-    description: 'Stay updated with the latest financial news, economic events, and market analysis. Access real-time economic calendar and top trading stories from global markets.',
-    keywords: 'financial news, economic calendar, market news, trading news, forex news, stock market updates, economic events, market analysis',
+    description:
+      'Stay updated with the latest financial news, economic events, and market analysis. Access real-time economic calendar and top trading stories from global markets.',
+    keywords:
+      'financial news, economic calendar, market news, trading news, forex news, stock market updates, economic events, market analysis',
     type: 'website',
   });
 
   useEffect(() => {
     const container = document.getElementById('economicCalendarWidget');
     if (!container) return;
-
-    container.innerHTML = '';
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.type = 'text/javascript';
-    script.setAttribute('data-type', 'calendar-widget');
-    script.src = 'https://www.tradays.com/c/js/widgets/calendar/widget.js?v=15';
-    script.innerHTML = JSON.stringify({
-      "width": 800,
-      "height": 600,
-      "mode": "2",
-      "fw": "html",
-      "lang": "ar"
-    });
-
-    container.appendChild(script);
-
-    return () => {
-      container.innerHTML = '';
-    };
+    return mountEconomicCalendarWidget(container);
   }, []);
 
   return (
-    <div className="bg-[#f7f4ec]">
-      <section className="mx-auto grid max-w-7xl gap-8 px-4 pb-10 pt-6 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:pb-14 lg:pt-10">
-        <div className="flex flex-col justify-center">
-          <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#9f4626] shadow-[0_10px_30px_rgba(17,24,39,0.08)]">
-            <Newspaper className="h-4 w-4" aria-hidden="true" />
-            Live market briefing
+    <div className="market-desk">
+      <section className="market-hero" aria-labelledby="market-desk-title">
+        <div className="market-hero__copy">
+          <div className="market-kicker">
+            <span className="market-kicker__pulse" aria-hidden="true" />
+            Ta7leel Market Desk
           </div>
-          <h1 className="max-w-3xl text-4xl font-black leading-tight text-[#243f3d] sm:text-5xl lg:text-6xl">
-            Economic Calendar & Market News
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-700">
-            الحصول على معلومات حول الأحداث الاقتصادية الهامة واتجاهات السوق التي تؤثر على الأسواق المالية.
+
+          <h1 id="market-desk-title">Know what can move the market—before it moves you.</h1>
+
+          <p className="market-hero__lead">
+            A calmer way to scan macro risk, prepare your session, and act with a plan when the market gets loud.
           </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#calendar"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#2f4f4f] px-5 py-3 text-sm font-bold text-white shadow-[0_14px_30px_rgba(47,79,79,0.28)] transition-transform duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.96]"
-            >
-              <CalendarDays className="h-4 w-4" aria-hidden="true" />
-              View calendar
+
+          <p className="market-hero__arabic" lang="ar" dir="rtl">
+            راقب الأحداث الاقتصادية المؤثرة، افهم سياقها، وادخل جلستك بخطة واضحة قبل تحرك الأسعار.
+          </p>
+
+          <div className="market-hero__actions">
+            <a className="market-action market-action--primary" href="#calendar">
+              Open event radar
+              <ArrowRight aria-hidden="true" />
             </a>
-            <a
-              href="#briefing"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#2f4f4f] shadow-[0_12px_26px_rgba(17,24,39,0.08)] transition-transform duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.96]"
-            >
-              <Bell className="h-4 w-4" aria-hidden="true" />
-              Read briefing notes
+            <a className="market-action market-action--secondary" href="#briefing">
+              <Bell aria-hidden="true" />
+              Build my briefing
             </a>
+          </div>
+
+          <div className="market-hero__trust">
+            <ShieldCheck aria-hidden="true" />
+            <span>Context first. Headlines second.</span>
           </div>
         </div>
 
-        <div className="relative min-h-[260px] overflow-hidden rounded-[28px] bg-[#2f4f4f] shadow-[0_28px_70px_rgba(47,79,79,0.24)] sm:min-h-[320px]">
+        <figure className="market-hero__visual">
           <img
             src="/images/news c.jpg"
-            alt="Financial market news illustration with economic institutions and price charts"
-            className="h-full min-h-[260px] w-full object-cover outline outline-1 outline-black/10 sm:min-h-[320px]"
+            alt="Financial market collage with institutions, scales, and price charts"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-5 pb-5 pt-16 text-white sm:px-7 sm:pb-7">
-            <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-[0.08em] text-white/80">
-              <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">Rates</span>
-              <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">Inflation</span>
-              <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">Currencies</span>
+          <figcaption>
+            <span>Desk principle</span>
+            The market can be loud. Your process should not be.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section className="market-signals">
+        <div className="market-signals__intro">
+          <Sparkles aria-hidden="true" />
+          <span>Scan the pressure points</span>
+        </div>
+        <div
+          className="market-signals__rail"
+          role="region"
+          aria-label="Market preparation signals"
+          tabIndex={0}
+        >
+          {signalItems.map(({ label, detail, icon: Icon }) => (
+            <article className="market-signal" key={label}>
+              <Icon aria-hidden="true" />
+              <div>
+                <strong>{label}</strong>
+                <span>{detail}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="briefing" className="market-briefing" aria-labelledby="briefing-title">
+        <header className="market-section-heading">
+          <span>Before the bell / 03 moves</span>
+          <h2 id="briefing-title">Trading day brief</h2>
+          <p>Turn the calendar into a decision process—not another stream of noise.</p>
+        </header>
+
+        <div className="market-briefing__layout">
+          <aside className="market-briefing__note">
+            <img
+              src="/images/news -.png"
+              alt="Trader climbing a steep market mountain before the session"
+            />
+            <div>
+              <span className="market-briefing__tag">Operating rule</span>
+              <p>Know when to trade, when to size down, and when the best trade is no trade.</p>
             </div>
-            <p className="mt-3 max-w-xl text-xl font-bold leading-7 sm:text-2xl">
-              Follow the events that move prices before the session starts.
-            </p>
+          </aside>
+
+          <div
+            className="market-briefing__cards"
+            role="region"
+            aria-label="Trading-day preparation cards"
+            tabIndex={0}
+          >
+            {marketBriefs.map(({ eyebrow, title, description, icon: Icon }) => (
+              <article className="market-brief" key={title}>
+                <div className="market-brief__topline">
+                  <span>{eyebrow}</span>
+                  <Icon aria-hidden="true" />
+                </div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl space-y-6 px-4 pb-12 sm:px-6 lg:px-8">
-        <section id="briefing" className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr]">
-          <div className="overflow-hidden rounded-2xl bg-white shadow-[0_18px_45px_rgba(17,24,39,0.08)]">
-            <img
-              src="/images/news -.png"
-              alt="Trader climbing a steep market mountain"
-              className="aspect-[16/11] w-full object-cover outline outline-1 outline-black/10"
-            />
-            <div className="p-5">
-              <div className="flex items-center gap-2 text-sm font-bold text-[#9f4626]">
-                <TrendingUp className="h-4 w-4" aria-hidden="true" />
-                Before you trade
-              </div>
-              <p className="mt-3 text-sm leading-6 text-gray-700">
-                Mark the day’s biggest data releases, then decide where you should reduce size, wait for volatility, or avoid trading entirely.
-              </p>
-            </div>
+      <section id="calendar" className="market-calendar" aria-labelledby="calendar-title">
+        <header className="market-calendar__header">
+          <div className="market-calendar__title">
+            <span className="market-calendar__eyebrow">
+              <CalendarDays aria-hidden="true" />
+              Live macro calendar
+            </span>
+            <h2 id="calendar-title">Event radar</h2>
+            <p>
+              Track the releases most likely to reshape volatility, sentiment, and short-term price direction.
+            </p>
+            <p className="market-calendar__arabic" lang="ar" dir="rtl">
+              تابع البيانات الاقتصادية حسب التوقيت والأهمية، وركّز على المفاجأة مقارنة بالتوقعات.
+            </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {marketBriefs.map(({ title, description, icon: Icon, accent }) => (
-              <article
-                key={title}
-                className={`${accent} rounded-2xl p-5 shadow-[0_14px_36px_rgba(17,24,39,0.08)]`}
-              >
-                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-[0_8px_18px_rgba(17,24,39,0.07)]">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <h2 className="text-lg font-black text-gray-950">{title}</h2>
-                <p className="mt-2 text-sm leading-6 text-gray-700">{description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="calendar" className="overflow-hidden rounded-2xl bg-white shadow-[0_22px_60px_rgba(17,24,39,0.1)]">
-          <div className="grid gap-5 border-b border-gray-100 p-5 sm:p-6 lg:grid-cols-[1fr_0.85fr] lg:items-end">
-            <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#f7f4ec] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#9f4626]">
-                <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                Real-time calendar
-              </div>
-              <h2 className="text-2xl font-black text-[#243f3d] sm:text-3xl">
-                Key economic events, updated live
-              </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">
-                تتبع الأحداث الاقتصادية الرئيسية والإعلانات وإصدارات البيانات من الأسواق العالمية، قم بتغيير منطقتك الزمنية تحت.
-              </p>
+          <aside className="market-watchlist" aria-label="Calendar watch list">
+            <div className="market-watchlist__title">
+              <AlertTriangle aria-hidden="true" />
+              <span>Watch before entry</span>
             </div>
-
-            <div className="rounded-2xl bg-amber-50 p-4 text-amber-900 shadow-[0_12px_26px_rgba(146,64,14,0.08)]">
-              <div className="flex items-center gap-2 text-sm font-black">
-                <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-                Watch list
-              </div>
-              <ul className="mt-3 space-y-2 text-sm leading-5">
-                {focusItems.map((item) => (
-                  <li key={item} className="flex gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-600" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+            <ul>
+              {focusItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <div className="market-impact-legend" aria-label="Event impact key">
+              {impactLevels.map(({ label, className }) => (
+                <span key={label}>
+                  <i className={className} aria-hidden="true" />
+                  {label}
+                </span>
+              ))}
             </div>
-          </div>
+          </aside>
+        </header>
 
-          <div className="relative w-full overflow-hidden bg-white">
-            <div id="economicCalendarWidget" className="h-[620px] w-full"></div>
-            <div className="ecw-copyright border-t border-gray-100 p-3 text-center text-xs text-gray-500">
-              <a
-                href="https://www.mql5.com/?utm_source=calendar.widget&utm_medium=link&utm_term=economic.calendar&utm_content=visit.mql5.calendar&utm_campaign=202.calendar.widget"
-                rel="noopener nofollow"
-                target="_blank"
-                className="font-semibold text-blue-600 transition-colors duration-200 hover:text-blue-700 hover:underline"
-              >
-                MQL5 Algo Trading Community
-              </a>
-            </div>
+        <div
+          className="market-calendar__feed"
+          role="region"
+          aria-label="Economic calendar"
+          tabIndex={0}
+        >
+          <div id="economicCalendarWidget" />
+          <div className="ecw-copyright">
+            Calendar data provided by{' '}
+            <a
+              href="https://www.mql5.com/?utm_source=calendar.widget&utm_medium=link&utm_term=economic.calendar&utm_content=visit.mql5.calendar&utm_campaign=202.calendar.widget"
+              rel="noopener nofollow"
+              target="_blank"
+            >
+              MQL5 Algo Trading Community
+            </a>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 };

@@ -97,7 +97,7 @@ export const formatDateForSchema = (date: Date | string): string => {
 /**
  * Check if image exists and return fallback if needed
  */
-export const getImageWithFallback = (imagePath: string, fallback: string = '/images/og-default.jpg'): string => {
+export const getImageWithFallback = (imagePath: string, fallback: string = '/favicon/ta7leel.png'): string => {
   // In production, you might want to actually check if the image exists
   // For now, we'll return the path as-is
   return imagePath || fallback;

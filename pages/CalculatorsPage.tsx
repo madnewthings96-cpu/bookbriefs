@@ -168,6 +168,7 @@ const CalculatorsPage: React.FC = () => {
     keywords: activeRoute.keywords,
     canonical: `${SITE_URL}${canonicalRoutePath(activeRoute.path)}`,
     type: 'website',
+    language: currentLanguage,
   });
 
   const activeCalculator =

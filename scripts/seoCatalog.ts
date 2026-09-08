@@ -68,7 +68,7 @@ export function escapeXml(value: string): string {
 }
 
 export function absoluteUrl(siteUrl: string, pathname: string): string {
-  return encodeURI(`${siteUrl}${pathname}`);
+  return new URL(pathname, `${siteUrl}/`).href;
 }
 
 export function getArabicTitle(book: BookDefinition): string {

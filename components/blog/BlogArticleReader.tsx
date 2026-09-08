@@ -112,14 +112,13 @@ const BlogArticleReader: React.FC<BlogArticleReaderProps> = ({
                 <div>
                   <span lang={getBlogPostDirection(relatedPost) === 'rtl' ? 'ar' : 'en'}>{relatedPost.category}</span>
                   <h3 lang={getBlogPostDirection(relatedPost) === 'rtl' ? 'ar' : 'en'}>{relatedPost.title}</h3>
-                  <button
-                    type="button"
+                  <a href={`/blog/${relatedPost.slug}/`}
                     lang="en"
                     aria-label={`Read next: ${relatedPost.title}`}
-                    onClick={() => onOpenPost(relatedPost)}
+
                   >
                     Read next <ArrowUpRight size={16} aria-hidden="true" />
-                  </button>
+                  </a>
                 </div>
               </article>
             ))}

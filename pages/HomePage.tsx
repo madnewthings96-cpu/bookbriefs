@@ -15,7 +15,6 @@ import {
   Star,
   Target,
   TrendingUp,
-  Zap,
   Calculator,
   Flame,
 } from 'lucide-react';
@@ -23,6 +22,8 @@ import { TESTIMONIALS } from '../constants';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import RotatingHeroPhrase from '../components/RotatingHeroPhrase';
+import PracticalTemplatesDesk from '../components/PracticalTemplatesDesk';
+import HeroReaderTrustMark from '../components/HeroReaderTrustMark';
 
 // Lazy load heavy components
 const Testimonials = lazy(() => import('../components/Testimonials'));
@@ -76,30 +77,6 @@ const readingPaths = [
       { title: 'Sapiens', image: '/images/sapiens.jpg', to: '/summary/sapiens' },
       { title: 'The Subtle Art', image: '/images/the subtle art.jpg', to: '/summary/the-subtle-art-of-not-giving-a-f' },
     ],
-  },
-];
-
-const howItWorks = [
-  {
-    step: '01',
-    title: 'The 90% Filter',
-    description:
-      'Most 300-page business books can be stated in 10 pages. We strip author repetition, anecdotal padding, and filler so you get only the core signal.',
-    icon: Target,
-  },
-  {
-    step: '02',
-    title: 'The Mental Model',
-    description:
-      'We extract the author’s primary reasoning frameworks so you don’t just memorize arbitrary quotes—you gain tools for clearer daily decision-making.',
-    icon: Brain,
-  },
-  {
-    step: '03',
-    title: 'Tools for Action',
-    description:
-      'Every brief finishes with concrete 1-minute action steps, interactive calculators, and personal note saving so insights actually compound in your life.',
-    icon: Zap,
   },
 ];
 
@@ -264,26 +241,13 @@ const HomePage: React.FC = () => {
 
               {/* Left Column: Value Proposition */}
               <div className="max-w-2xl text-left">
-                {/* Pill Tag & Social Proof */}
-                <div className="mb-6 inline-flex flex-wrap items-center gap-3">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-forest-50 border border-forest-800/15 px-3.5 py-1 text-xs font-bold text-forest-800 shadow-sm">
-                    <Sparkles className="h-3.5 w-3.5 text-forest-600" />
-                    Distilled Wisdom · 10-Minute Briefs
-                  </span>
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-white/90 border border-forest-900/[0.06] px-3 py-1 text-xs font-semibold text-forest-800 shadow-sm">
-                    <div className="flex" aria-hidden="true">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="h-3 w-3 fill-amber-400 text-amber-500" />
-                      ))}
-                    </div>
-                    <span>5,000+ Active Readers</span>
-                  </div>
-                </div>
+                {/* Reader Trust Mark */}
+                <HeroReaderTrustMark />
 
                 {/* Primary Headline */}
                 <h1
                   className="font-display text-4xl font-extrabold tracking-tight text-forest-950 sm:text-5xl lg:text-6xl text-balance leading-[1.06]"
-                  aria-label="Read less. Understand more. Apply immediately."
+                  aria-label="Read less. Understand more. Act on it."
                 >
                   Read less. <br />
                   Understand more. <br />
@@ -316,21 +280,28 @@ const HomePage: React.FC = () => {
                   </a>
                 </div>
 
-                {/* Trust Badges / Stats Bar */}
-                <div className="mt-10 grid grid-cols-3 gap-4 border-t border-forest-900/[0.08] pt-7">
+                {/* Arabic Reading Companion */}
+                <div
+                  className="mt-7 flex max-w-lg items-center gap-4 text-right sm:gap-5"
+                  lang="ar"
+                  dir="rtl"
+                >
+                  <img
+                    src="/images/ta7leel-super-reader-v1.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-[84px] w-[84px] shrink-0 object-contain sm:h-[92px] sm:w-[92px]"
+                  />
                   <div>
-                    <div className="font-display text-2xl font-extrabold text-forest-950 sm:text-3xl">100+</div>
-                    <div className="mt-0.5 text-xs font-semibold text-forest-900/60 uppercase tracking-wider">Distilled Books</div>
-                  </div>
-                  <div>
-                    <div className="font-display text-2xl font-extrabold text-forest-950 sm:text-3xl">10 Min</div>
-                    <div className="mt-0.5 text-xs font-semibold text-forest-900/60 uppercase tracking-wider">Average Read</div>
-                  </div>
-                  <div>
-                    <div className="font-display text-2xl font-extrabold text-forest-950 sm:text-3xl">100%</div>
-                    <div className="mt-0.5 text-xs font-semibold text-forest-900/60 uppercase tracking-wider">Actionable Signal</div>
+                    <p className="text-base font-extrabold leading-7 text-forest-950 sm:text-lg">
+                      رفيقك الذكي لفهم الكتب
+                    </p>
+                    <p className="mt-1 max-w-sm text-sm leading-6 text-forest-900/65 sm:text-[15px]">
+                      أهم الأفكار، نماذج ذهنية واضحة، وخطوات عملية قابلة للتطبيق.
+                    </p>
                   </div>
                 </div>
+
               </div>
 
               {/* Right Column: Arcade-Style Interactive Brief Preview */}
@@ -342,51 +313,8 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* THE TA7LEEL METHOD (How It Works) */}
-        <section className="border-y border-forest-900/[0.06] bg-white py-16 md:py-24">
-          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="inline-flex items-center gap-2 rounded-full bg-forest-50 border border-forest-800/15 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-forest-800">
-                <Clock3 className="h-3.5 w-3.5 text-forest-600" />
-                The Distillation Engine
-              </p>
-              <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-forest-950 md:text-5xl">
-                Finish books. Keep the thinking.
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-forest-900/70 md:text-lg">
-                Reading isn’t a trophy of finished pages. It’s about extracting the sharpest mental
-                models so you make better decisions in life, money, and work.
-              </p>
-            </div>
-
-            <div className="mt-14 grid gap-6 md:grid-cols-3">
-              {howItWorks.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.step}
-                    className="group relative rounded-2xl bg-forest-50/40 p-7 border border-forest-900/[0.06] transition-all duration-300 hover:bg-white hover:shadow-card-hover hover:-translate-y-1"
-                  >
-                    <div className="mb-6 flex items-center justify-between">
-                      <span className="font-display text-sm font-extrabold text-forest-700">
-                        {item.step}
-                      </span>
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-forest-800 border border-forest-900/[0.08] shadow-sm transition-colors duration-200 group-hover:bg-forest-800 group-hover:text-white">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                    </div>
-                    <h3 className="font-display text-xl font-bold text-forest-950">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-forest-900/70">
-                      {item.description}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        {/* PRACTICAL TEMPLATES DESK */}
+        <PracticalTemplatesDesk />
 
         {/* MOST READ BOOKS SHELF */}
         <section className="py-12 md:py-16">

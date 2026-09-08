@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SITE_URL } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath, isPrivateSeoRoute } from '../utils/seoConfig';
 
 interface SEOProps {
   title: string;
@@ -13,25 +13,32 @@ interface SEOProps {
   modifiedTime?: string;
   canonical?: string;
   noindex?: boolean;
+  language?: 'ar' | 'en';
 }
 
 const useSEO = ({
   title,
   description,
   keywords = 'book summaries, business books, self-help books, ملخصات كتب, كتب أعمال, تطوير ذاتي',
-  image = '/images/og-default.jpg',
+  image = '/favicon/ta7leel.png',
   type = 'website',
   author,
   publishedTime,
   modifiedTime,
   canonical,
   noindex = false,
+  language = 'en',
 }: SEOProps) => {
   const location = useLocation();
-  const currentUrl = canonical || `${SITE_URL}${location.pathname}`;
+  const shouldNoindex = noindex || isPrivateSeoRoute(location.pathname);
+  const currentUrl = canonical || `${SITE_URL}${canonicalRoutePath(location.pathname)}`;
   const fullImageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
   useEffect(() => {
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    // Build-time schemas describe the initial page only; React supplies current schemas.
+    document.querySelectorAll('script[data-seo-prerender]').forEach(element => element.remove());
     // Track created elements for cleanup
     const createdElements: HTMLElement[] = [];
 
@@ -60,8 +67,8 @@ const useSEO = ({
     setMetaTag('author', author || 'تحليل - Ta7leel');
 
     // Robots meta
-    if (noindex) {
-      setMetaTag('robots', 'noindex, nofollow');
+    if (shouldNoindex) {
+      setMetaTag('robots', 'noindex, follow');
     } else {
       setMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     }
@@ -73,7 +80,7 @@ const useSEO = ({
     setMetaTag('og:url', currentUrl, true);
     setMetaTag('og:type', type, true);
     setMetaTag('og:site_name', 'تحليل - Ta7leel', true);
-    setMetaTag('og:locale', 'ar_AE', true);
+    setMetaTag('og:locale', language === 'ar' ? 'ar_AR' : 'en_US', true);
 
     // Twitter Card tags
     setMetaTag('twitter:card', 'summary_large_image');
@@ -82,6 +89,9 @@ const useSEO = ({
     setMetaTag('twitter:image', fullImageUrl);
     setMetaTag('twitter:site', '@ta7leel');
 
+    ['article:published_time', 'article:modified_time', 'article:author'].forEach(key => {
+      document.querySelectorAll(`meta[property="${key}"]`).forEach(element => element.remove());
+    });
     // Article specific meta tags
     if (type === 'article' && publishedTime) {
       setMetaTag('article:published_time', publishedTime, true);
@@ -113,7 +123,7 @@ const useSEO = ({
         canonicalLink.parentNode.removeChild(canonicalLink);
       }
     };
-  }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, noindex]);
+  }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, shouldNoindex, language]);
 };
 
 export default useSEO;

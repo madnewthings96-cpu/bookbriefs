@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
-import { SITE_URL } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath, isPrivateSeoRoute } from '../utils/seoConfig';
 
 interface SEOHeadProps {
     title: string;
@@ -17,7 +17,7 @@ interface SEOHeadProps {
 }
 
 const SITE_NAME = 'تحليل - Ta7leel';
-const DEFAULT_IMAGE = '/images/og-default.jpg';
+const DEFAULT_IMAGE = '/favicon/ta7leel.png';
 const DEFAULT_KEYWORDS = 'book summaries, business books, self-help books, ملخصات كتب, كتب أعمال, تطوير ذاتي';
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -33,7 +33,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     noindex = false,
 }) => {
     const location = useLocation();
-    const currentUrl = canonical || `${SITE_URL}${location.pathname}`;
+    const currentUrl = canonical || `${SITE_URL}${canonicalRoutePath(location.pathname)}`;
     const fullImageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
     return (
@@ -46,8 +46,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
             <meta
                 name="robots"
                 content={
-                    noindex
-                        ? 'noindex, nofollow'
+                    (noindex || isPrivateSeoRoute(location.pathname))
+                        ? 'noindex, follow'
                         : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
                 }
             />
@@ -62,7 +62,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
             <meta property="og:url" content={currentUrl} />
             <meta property="og:type" content={type} />
             <meta property="og:site_name" content={SITE_NAME} />
-            <meta property="og:locale" content="ar_AE" />
+            <meta property="og:locale" content="en_US" />
 
             {/* Twitter Card */}
             <meta name="twitter:card" content="summary_large_image" />
