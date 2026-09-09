@@ -13,7 +13,7 @@
     "sync-library": "tsx scripts/sync-library.ts",
     "test:rules": "firebase emulators:exec --project demo-bookbriefs-rules --only firestore \"npm run test:rules:node\"",
     "test:rules:node": "node --test tests/firestore.rules.test.mjs",
-    "test:seo": "node --import tsx --test tests/seoCatalog.test.ts tests/seoOutput.test.ts"
+    "test:seo": "node --import tsx --test tests/netlifyConfig.test.ts tests/seoCatalog.test.ts tests/seoOutput.test.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

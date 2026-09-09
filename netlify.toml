@@ -53,6 +53,17 @@
     # HSTS - Force HTTPS (31536000 seconds = 1 year)
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
+# Authenticated dashboard routes should never be indexed, including direct deep links.
+[[headers]]
+  for = "/dashboard"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/dashboard/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
 # Cache static assets
 [[headers]]
   for = "/images/*"
@@ -131,6 +142,17 @@
 
 [[redirects]]
   from = "/terms-of-use"
+  to = "/index.html"
+  status = 200
+
+# Preserve the authenticated SPA shell for direct dashboard visits and deep links.
+[[redirects]]
+  from = "/dashboard"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard/*"
   to = "/index.html"
   status = 200
 
