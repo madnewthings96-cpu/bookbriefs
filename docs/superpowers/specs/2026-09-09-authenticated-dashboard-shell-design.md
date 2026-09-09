@@ -51,8 +51,8 @@ React Router will use one protected nested route branch. `DashboardLayout` rende
 ├── /calculators
 ├── /finance
 ├── /trading
-├── /feedback
 ├── /settings
+├── /admin/feedback
 └── /summary/:bookId
 ```
 
@@ -69,8 +69,8 @@ The route roles are:
 | `/dashboard/calculators` | Existing calculators inside the dashboard shell |
 | `/dashboard/finance` | Existing finance tracker |
 | `/dashboard/trading` | Existing trading journal |
-| `/dashboard/feedback` | Existing authenticated feedback page |
-| `/dashboard/settings` | Account identity, language, theme, and logout |
+| `/dashboard/settings` | Account identity, workspace preferences, and logout |
+| `/dashboard/admin/feedback` | Existing administrator-only feedback review queue; hidden from reader navigation |
 | `/dashboard/summary/:bookId` | Focused signed-in reading experience |
 
 Public `/summaries`, `/summary/:bookId`, and `/calculators/*` remain unchanged and indexable. Dashboard discovery and reading reuse the same data and presentational components under dashboard URLs.
@@ -80,7 +80,7 @@ Legacy authenticated routes redirect with `replace`:
 - `/profile` → `/dashboard/settings`
 - `/reading-challenge` → `/dashboard/challenge`
 - `/downloads` → `/dashboard/downloads`
-- `/feedback` → `/dashboard/feedback`
+- `/feedback` → `/dashboard/admin/feedback`
 - `/finance-tracker` → `/dashboard/finance`
 - `/trading-journal` → `/dashboard/trading`
 
@@ -112,13 +112,13 @@ Route classification is centralized in the layout model rather than repeated acr
 - Collapse preference persists locally and never blocks the initial render.
 - Primary group: Overview, Discover, My Library, Notes, Reading Challenge.
 - Tools group: Downloads, Calculators, Finance Tracker, Trading Journal.
-- Utility group: Feedback and Settings.
+- Utility group: a Send feedback action and Settings. Send feedback opens the existing submission modal rather than navigating to the administrator queue.
 - User identity and logout sit at the bottom.
 - Active state uses a filled forest surface and is communicated by more than color.
 
 ### `DashboardTopbar`
 
-- Contains the page title or compact brand context, global book search, theme/language controls, and account menu.
+- Contains the page title or compact brand context, global book search, and account menu.
 - Avoids duplicating sidebar navigation.
 - Search uses `BooksContext` and the current localization helpers; it requires no new search service.
 - Keyboard behavior supports arrow-key result navigation, Escape to close, and Enter to open a result.
@@ -126,7 +126,7 @@ Route classification is centralized in the layout model rather than repeated acr
 ### `DashboardMobileNav`
 
 - Primary destinations: Overview, Discover, Library, and Notes.
-- A fifth More control opens a labelled drawer containing Challenge, Tools, Feedback, and Settings.
+- A fifth More control opens a labelled drawer containing Challenge, Tools, Send feedback, and Settings.
 - The public bottom navigation is never rendered on dashboard routes.
 - The drawer edge and navigation order mirror appropriately in RTL.
 
@@ -187,7 +187,7 @@ The existing profile page currently combines dashboard, shelf, and recommendatio
 - `DashboardOverviewPage` receives the greeting, next-book, challenge, note, and insight composition.
 - `DashboardLibraryPage` owns saved, in-progress, completed, and recommended shelves with filtering.
 - `DashboardNotesPage` owns cross-book notes and highlights, with empty states and book grouping.
-- `DashboardSettingsPage` owns account identity, language, theme, and logout.
+- `DashboardSettingsPage` owns account identity, dashboard navigation preferences, and logout. It does not invent a theme or language switcher that the current application does not support.
 
 Shared book-card and dashboard-card components will be extracted only where two or more pages use the same behavior. The implementation will not create a generic card abstraction before a real reuse case exists.
 
