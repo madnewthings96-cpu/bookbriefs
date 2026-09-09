@@ -19,7 +19,7 @@ The new authenticated experience will be a personal reading and learning workspa
 - Establish a clear information architecture that can grow without overloading the public navigation.
 - Preserve the public website, indexable book catalog, and summary detail routes for visitors and SEO.
 - Reuse the existing contexts and page behavior without requiring a data migration.
-- Support empty, loading, partial-error, offline-tolerant, English, Arabic/RTL, keyboard, and reduced-motion states.
+- Support empty, loading, partial-error, offline-tolerant, English, RTL-ready, keyboard, and reduced-motion states.
 
 ## Non-goals
 
@@ -246,11 +246,12 @@ The overview favors a calm, asymmetric grid with generous whitespace. Finance-st
 - Content uses container-driven or layout-local breakpoints where practical, avoiding page-specific viewport assumptions.
 - Interactive targets are at least 44×44px, and no page introduces document-level horizontal scrolling.
 
-## RTL and Localization
+## RTL Readiness and Localization
 
-- Navigation labels and dashboard copy use the existing language system rather than hard-coded English in final UI components.
+- The dashboard remains English-only because the current `LanguageContext` intentionally supports only `en`; restoring Arabic translations is a separate project.
+- Navigation labels and dashboard copy use the existing language system rather than scattering hard-coded English through UI components.
 - Layout uses CSS logical properties for inline spacing and positioning.
-- In Arabic, the sidebar and drawer anchor to the right, content alignment mirrors, and directional arrows adapt.
+- When the document direction is set to RTL during compatibility testing, the sidebar and drawer anchor to the right, content alignment mirrors, and directional arrows adapt.
 - Book covers, universal icons, numbers, and progress direction are evaluated individually rather than blindly mirrored.
 - Long translated labels truncate only when an accessible full label remains available.
 
@@ -297,7 +298,7 @@ The overview favors a calm, asymmetric grid with generous whitespace. Finance-st
 - Protected branch waits for auth readiness, renders for authenticated users, and redirects confirmed guests.
 - Public chrome is absent from dashboard routes and unchanged on public routes.
 - Desktop collapse state, mobile More drawer, current-route semantics, and logout behavior.
-- English and Arabic labels, RTL anchoring, visible focus, reduced motion, and minimum touch targets.
+- English labels, simulated RTL anchoring, visible focus, reduced motion, and minimum touch targets.
 - Overview loading, partial-error, empty, and populated structures.
 
 ### Integration verification
@@ -332,5 +333,5 @@ The implementation is complete when:
 - Refreshing a protected route does not incorrectly redirect an authenticated user during auth initialization.
 - Overview cards show real values or purposeful empty states.
 - Public browsing and SEO routes retain their current frame and behavior.
-- English, Arabic/RTL, mobile, keyboard, and reduced-motion verification pass.
+- English, simulated RTL, mobile, keyboard, and reduced-motion verification pass.
 - Existing tests and the production build pass without unrelated regressions.
