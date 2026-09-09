@@ -12,7 +12,9 @@ test('reading destinations lead and tools remain a secondary group', () => {
   assert.deepEqual(DASHBOARD_NAVIGATION[0].items.map(item => item.href), [
     '/dashboard', '/dashboard/discover', '/dashboard/library', '/dashboard/notes', '/dashboard/challenge',
   ]);
-  assert.equal(DASHBOARD_NAVIGATION[1].items[0].href, '/dashboard/downloads');
+  assert.deepEqual(DASHBOARD_NAVIGATION[1].items.map(item => item.href), [
+    '/dashboard/downloads', '/dashboard/calculators', '/dashboard/finance', '/dashboard/trading',
+  ]);
   assert.equal(DASHBOARD_NAVIGATION.flatMap(group => group.items).some(item => item.href.includes('admin')), false);
 });
 

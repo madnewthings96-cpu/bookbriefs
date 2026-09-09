@@ -2,7 +2,7 @@ import { Menu, X } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useModalDialog } from '../../hooks/useModalDialog';
-import { DASHBOARD_NAVIGATION, isDashboardNavItemActive, type DashboardNavItem } from './dashboardNavigation';
+import { DASHBOARD_NAVIGATION, isDashboardNavItemActive, type DashboardNavGroup, type DashboardNavItem } from './dashboardNavigation';
 
 interface DashboardMobileNavProps {
   open: boolean;
@@ -11,6 +11,12 @@ interface DashboardMobileNavProps {
 }
 
 const primaryItems = DASHBOARD_NAVIGATION[0].items.slice(0, 4);
+const [readingGroup, toolsGroup, utilityGroup] = DASHBOARD_NAVIGATION;
+const moreGroups: DashboardNavGroup[] = [
+  { ...readingGroup, label: null, items: readingGroup.items.filter(item => item.id === 'challenge') },
+  toolsGroup,
+  utilityGroup,
+];
 
 function MobileNavigationItem({ item, pathname, onNavigate, onFeedback }: {
   item: DashboardNavItem;
@@ -56,9 +62,19 @@ export function DashboardMobileNav({ open, onOpenChange, onFeedback }: Dashboard
               <button type="button" className="dashboard-icon-button" onClick={closeDrawer} aria-label="Close more navigation"><X aria-hidden="true" size={20} /></button>
             </div>
             <nav className="dashboard-more-drawer-navigation" aria-label="More dashboard navigation">
-              {DASHBOARD_NAVIGATION.flatMap(group => group.items).map(item => (
-                <MobileNavigationItem key={item.id} item={item} pathname={pathname} onNavigate={closeDrawer} onFeedback={onFeedback} />
-              ))}
+              {moreGroups.map(group => {
+                const groupLabel = group.id === 'tools' ? t('dashboardTools') || group.label : group.label;
+                return (
+                  <section className="dashboard-more-drawer-group" key={group.id} aria-label={groupLabel ?? undefined}>
+                    {groupLabel && <h3 className="dashboard-more-drawer-group-label">{groupLabel}</h3>}
+                    <div className="dashboard-more-drawer-group-items">
+                      {group.items.map(item => (
+                        <MobileNavigationItem key={item.id} item={item} pathname={pathname} onNavigate={closeDrawer} onFeedback={onFeedback} />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
             </nav>
           </div>
         </div>

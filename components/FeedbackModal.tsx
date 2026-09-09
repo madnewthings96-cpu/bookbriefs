@@ -24,7 +24,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const dialogRef = useModalDialog({ open: isOpen, onClose: handleClose });
+  const dialogRef = useModalDialog({ open: isOpen, onClose });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,6 +90,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
         tabIndex={-1}
         className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 animate-scaleIn"
       >
+        <h2 id="feedback-modal-title" className="sr-only">Send feedback</h2>
         {/* Close Button */}
         <button
           type="button"
@@ -118,7 +119,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
           <>
             {/* Modal Header */}
             <div className="mb-6">
-              <h2 id="feedback-modal-title" className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 What can we do to improve our product?
               </h2>
             </div>
@@ -131,7 +132,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Start typing..."
-                  className="w-full h-32 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all duration-200"
+                  className="w-full h-32 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors duration-200"
                   disabled={isSubmitting}
                   required
                 />
@@ -148,7 +149,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || !feedback.trim()}
-                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl"
+                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-full transition-[background-color,box-shadow,transform] duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
