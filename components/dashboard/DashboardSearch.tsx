@@ -3,14 +3,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useBooks } from '../../contexts/BooksContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { searchDashboardBooks } from './dashboardSearchModel';
+import { getDashboardSearchActiveIndex, searchDashboardBooks } from './dashboardSearchModel';
 
 const RESULTS_ID = 'dashboard-search-results';
 
 export default function DashboardSearch() {
   const { books } = useBooks();
   const { getBookAuthor, getBookTitle } = useLanguage();
-  const { pathname } = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState('');
@@ -49,7 +49,7 @@ export default function DashboardSearch() {
 
   useEffect(() => {
     clear();
-  }, [pathname]);
+  }, [location.key]);
 
   useEffect(() => {
     const closeOnOutsidePointer = (event: PointerEvent) => {
@@ -65,7 +65,7 @@ export default function DashboardSearch() {
       event.preventDefault();
       if (results.length) {
         setIsOpen(true);
-        setActiveIndex(index => index < results.length - 1 ? index + 1 : 0);
+        setActiveIndex(index => getDashboardSearchActiveIndex(index, results.length, 'next'));
       }
       return;
     }
@@ -73,7 +73,7 @@ export default function DashboardSearch() {
       event.preventDefault();
       if (results.length) {
         setIsOpen(true);
-        setActiveIndex(index => index > 0 ? index - 1 : results.length - 1);
+        setActiveIndex(index => getDashboardSearchActiveIndex(index, results.length, 'previous'));
       }
       return;
     }
@@ -104,7 +104,7 @@ export default function DashboardSearch() {
           aria-autocomplete="list"
           aria-expanded={isOpen && hasQuery}
           aria-controls={RESULTS_ID}
-          aria-activedescendant={activeIndex >= 0 ? `dashboard-search-result-${activeIndex}` : undefined}
+          aria-activedescendant={activeIndex >= 0 && activeIndex < results.length ? `dashboard-search-result-${activeIndex}` : undefined}
           onChange={event => {
             setQuery(event.target.value);
             setIsOpen(true);
@@ -116,25 +116,24 @@ export default function DashboardSearch() {
       </div>
       {isOpen && hasQuery && (
         <ul id={RESULTS_ID} className="dashboard-search-results" role="listbox" aria-label="Book search results">
-          {results.length ? results.map((result, index) => (
-            <li key={result.book.id}>
-              <button
-                id={`dashboard-search-result-${index}`}
-                type="button"
-                role="option"
-                aria-selected={activeIndex === index}
-                className={activeIndex === index ? 'is-active' : undefined}
-                onMouseMove={() => setActiveIndex(index)}
-                onClick={() => selectResult(index)}
-              >
-                <strong>{result.title}</strong>
-                <span>{result.author} · {result.book.category}</span>
-              </button>
+          {results.map((result, index) => (
+            <li
+              key={result.book.id}
+              id={`dashboard-search-result-${index}`}
+              role="option"
+              aria-selected={activeIndex === index}
+              className={`dashboard-search-option${activeIndex === index ? ' is-active' : ''}`}
+              onMouseMove={() => setActiveIndex(index)}
+              onClick={() => selectResult(index)}
+            >
+              <strong>{result.title}</strong>
+              <span>{result.author} · {result.book.category}</span>
             </li>
-          )) : (
-            <li className="dashboard-search-empty" role="status">No matching book summaries.</li>
-          )}
+          ))}
         </ul>
+      )}
+      {isOpen && hasQuery && !results.length && (
+        <p className="dashboard-search-empty" role="status">No matching book summaries.</p>
       )}
     </div>
   );

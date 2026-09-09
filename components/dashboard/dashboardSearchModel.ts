@@ -7,6 +7,18 @@ export interface DashboardSearchBook {
   score: number;
 }
 
+export type DashboardSearchDirection = 'next' | 'previous';
+
+export function getDashboardSearchActiveIndex(
+  activeIndex: number,
+  resultCount: number,
+  direction: DashboardSearchDirection,
+) {
+  if (resultCount <= 0) return -1;
+  if (direction === 'next') return activeIndex < resultCount - 1 ? activeIndex + 1 : 0;
+  return activeIndex > 0 ? activeIndex - 1 : resultCount - 1;
+}
+
 export function searchDashboardBooks(
   books: Array<Book & { localizedTitle?: string; localizedAuthor?: string }>,
   query: string,
