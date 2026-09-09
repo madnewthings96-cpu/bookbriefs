@@ -54,7 +54,7 @@ final result: passed
 - Signed-out direct navigation was checked for `/dashboard`, `/dashboard/discover`, `/dashboard/library`, `/dashboard/notes`, `/dashboard/challenge`, `/dashboard/downloads`, `/dashboard/calculators/fire`, `/dashboard/finance`, `/dashboard/trading`, `/dashboard/settings`, `/dashboard/admin/feedback`, and `/dashboard/summary/atomic-habits`; each resolved to `/login` after auth resolution.
 - Legacy `/profile`, `/reading-challenge`, `/downloads`, `/feedback`, `/finance-tracker`, and `/trading-journal` also resolved to `/login` in the signed-out browser. Their post-auth replacement targets remain covered by the route/navigation model tests.
 - `/summaries` and `/summary/atomic-habits` rendered with public header chrome and remained outside the protected branch.
-- Static route contract coverage confirms every approved dashboard destination is declared beneath one `<Route element={<ProtectedRoute />}>` branch.
+- Static route contract coverage extracts balanced source blocks: the approved child destinations are descendants of `<Route path="/dashboard" element={<DashboardLayout />}>`, and the focused summary route is inside the same `<Route element={<ProtectedRoute />}>` branch.
 
 ### Responsive and browser checks
 

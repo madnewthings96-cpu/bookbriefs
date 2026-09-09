@@ -2,7 +2,7 @@
 
 ## Status
 
-Completed and ready to commit. No dashboard CSS/component defect was found during the feasible QA pass; Task 8 adds the route contract test and QA record.
+Task 8 verification was completed in base commit `93ad39c` (`test: verify authenticated dashboard experience`). Fix round 1 strengthens the route contract and updates this report. No dashboard CSS/component defect was found during the feasible QA pass.
 
 ## Environment
 
@@ -24,7 +24,7 @@ Public `/summaries` and `/summary/atomic-habits` checks retained the public head
 
 ## Checks performed and results
 
-- Added `tests/dashboardRouteContract.test.ts`, asserting all approved destinations and one protected branch.
+- Added `tests/dashboardRouteContract.test.ts`, extracting balanced source blocks to assert that approved child destinations are nested under the `/dashboard` `DashboardLayout` route and that the focused summary remains inside the `ProtectedRoute` branch. A route moved outside those blocks now fails the contract.
 - Full Node/TSX suite: PASS, 120 tests, 0 failures.
 - Production build: PASS after the sandboxed attempt was unable to create tsx's temporary IPC pipe; the approved rerun completed sitemap generation, Vite build, SEO prerender, and 7 SEO tests.
 - Static source/model coverage passed for skip link/main landmark, 44px controls, navigation activation, dashboard search combobox/listbox semantics, modal focus trap/Escape/focus restoration, logical RTL positioning, and reduced-motion declarations.
@@ -45,4 +45,23 @@ No changes were needed in `components/dashboard/DashboardShell.css`, `pages/Dash
 
 ## Commit
 
-Pending Task 8 commit: `test: verify authenticated dashboard experience`.
+- Base Task 8 commit: `93ad39c test: verify authenticated dashboard experience`.
+
+## Fix round 1
+
+### Changes
+
+- Replaced the global path/marker assertions with a dependency-free balanced route-block extractor based on source lines and nested `<Route>` depth.
+- Asserted the protected parent, the `/dashboard` `DashboardLayout` child, every approved dashboard child path inside that branch, and `/dashboard/summary/:bookId` inside the protected block.
+- Updated `design-qa.md` to describe the structural guarantee precisely.
+
+### Verification
+
+- `node --import tsx --test tests/dashboardRouteContract.test.ts`: PASS, 1 test, 0 failures.
+- Full `node --import tsx --test tests/*.test.ts tests/*.test.tsx`: PASS, 120 tests, 0 failures.
+- `npm run build`: PASS (sitemaps, Vite build, SEO prerender, and 7 SEO tests).
+- `git diff --check`: PASS.
+
+### Commit
+
+Fix round 1 implementation commit: pending report metadata commit.
