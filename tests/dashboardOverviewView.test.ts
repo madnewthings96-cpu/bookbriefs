@@ -56,3 +56,37 @@ test('challenge loading remains inside its card while reading actions stay avail
   assert.match(markup, /Continue reading/);
   assert.match(markup, /Atomic Habits/);
 });
+
+test('challenge and library errors stay in their cards while the overview remains useful', () => {
+  const markup = renderToStaticMarkup(
+    React.createElement(StaticRouter, { location: '/dashboard' },
+      React.createElement(DashboardOverviewView, {
+        greeting: 'Good morning', userName: 'Belhal', catalogLoading: false, challengeLoading: false,
+        continueBook: { book: { id: 'atomic-habits', title: 'Atomic Habits', author: 'James Clear', category: 'Self-Help', coverImageUrl: '/atomic.jpg' }, progress: 68, saved: true, status: 'in-progress' },
+        challenge: undefined,
+        challengeError: 'Unable to load your reading challenge.',
+        libraryError: "We couldn't load your saved books.",
+        recentKnowledge: [],
+        library: [{ book: { id: 'deep-work', title: 'Deep Work', author: 'Cal Newport', category: 'Business', coverImageUrl: '/deep-work.jpg' }, progress: 0, saved: true, status: 'saved' }],
+        weeklyInsight: { readingDays: 3, currentStreak: 2 },
+        recommendations: [{ book: { id: 'dune', title: 'Dune', author: 'Frank Herbert', category: 'Science Fiction', coverImageUrl: '/dune.jpg' }, progress: 0, saved: false, status: 'not-started' }],
+      }),
+    ),
+  );
+  const challengeStart = markup.indexOf('dashboard-challenge-card');
+  const contentStart = markup.indexOf('dashboard-overview-content-grid');
+  const libraryStart = markup.indexOf('dashboard-library-card');
+  const railStart = markup.indexOf('dashboard-overview-rail');
+  const challengeCard = markup.slice(challengeStart, contentStart);
+  const libraryCard = markup.slice(libraryStart, railStart);
+
+  assert.equal((markup.match(/role="alert"/g) ?? []).length, 2);
+  assert.match(challengeCard, /role="alert">Unable to load your reading challenge\. Refresh the page to try again\./);
+  assert.doesNotMatch(challengeCard, /couldn&#x27;t load your saved books/);
+  assert.match(libraryCard, /role="alert">We couldn&#x27;t load your saved books\. Refresh the page to try again\./);
+  assert.doesNotMatch(libraryCard, /Unable to load your reading challenge/);
+  assert.match(libraryCard, /Deep Work/);
+  assert.match(markup, /Continue reading/);
+  assert.match(markup, /Atomic Habits/);
+  assert.match(markup, /Recommended reading/);
+});
