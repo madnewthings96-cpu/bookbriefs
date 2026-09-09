@@ -48,7 +48,22 @@
 .dashboard-topbar { display: flex; min-block-size: 80px; align-items: center; justify-content: space-between; gap: 16px; border-block-end: 1px solid var(--dashboard-border); background: rgb(255 253 248 / 80%); padding: 14px clamp(16px, 2.5vw, 40px); }
 .dashboard-topbar-kicker { margin: 0 0 2px; color: #607168; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .dashboard-topbar h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(24px, 3vw, 32px); line-height: 1.05; }
+.dashboard-topbar-actions { display: flex; min-inline-size: 0; align-items: center; justify-content: flex-end; gap: 12px; flex: 1; }
 .dashboard-topbar-more { display: none; min-block-size: 44px; align-items: center; gap: 7px; border: 1px solid var(--dashboard-border); border-radius: 10px; background: var(--dashboard-card); color: var(--dashboard-forest-deep); padding-inline: 12px; font-weight: 800; }
+.dashboard-search { position: relative; inline-size: min(100%, 430px); }
+.dashboard-search-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.dashboard-search-input-wrap { position: relative; display: flex; min-block-size: 44px; align-items: center; border: 1px solid var(--dashboard-border); border-radius: 10px; background: var(--dashboard-card); color: #607168; }
+.dashboard-search-input-wrap svg { position: absolute; inset-inline-start: 13px; pointer-events: none; }
+.dashboard-search-input-wrap input { inline-size: 100%; min-block-size: 42px; border: 0; border-radius: inherit; background: transparent; color: #16231e; padding-inline: 42px 14px; font: inherit; }
+.dashboard-search-input-wrap input::placeholder { color: #738178; }
+.dashboard-search-input-wrap input:focus { outline: 0; }
+.dashboard-search-input-wrap:focus-within { border-color: #d0923d; box-shadow: 0 0 0 3px rgb(208 146 61 / 22%); }
+.dashboard-search-results { position: absolute; z-index: 110; inset-inline: 0; inset-block-start: calc(100% + 8px); display: grid; gap: 4px; max-block-size: min(50vh, 360px); overflow-y: auto; margin: 0; border: 1px solid var(--dashboard-border); border-radius: 12px; background: var(--dashboard-card); box-shadow: 0 16px 36px rgb(9 37 28 / 16%); padding: 6px; list-style: none; }
+.dashboard-search-results button { display: grid; inline-size: 100%; min-block-size: 52px; gap: 3px; border: 0; border-radius: 8px; background: transparent; color: #16231e; padding: 8px 10px; text-align: start; }
+.dashboard-search-results button:hover, .dashboard-search-results button.is-active { background: #eaf0ea; }
+.dashboard-search-results strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dashboard-search-results span, .dashboard-search-empty { color: #607168; font-size: 12px; }
+.dashboard-search-empty { padding: 14px 10px; }
 .dashboard-main { min-inline-size: 0; padding: 24px clamp(16px, 2.5vw, 40px) 48px; }
 
 .dashboard-mobile-nav, .dashboard-more-drawer-layer { display: none; }
@@ -60,6 +75,7 @@
   .dashboard-shell { display: block; }
   .dashboard-sidebar { display: none; }
   .dashboard-topbar { min-block-size: 72px; }
+  .dashboard-search { inline-size: min(100%, 360px); }
   .dashboard-topbar-more { display: inline-flex; }
   .dashboard-main { padding-block-end: 104px; }
   .dashboard-mobile-nav { position: fixed; z-index: 80; inset-inline: 0; inset-block-end: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-block-start: 1px solid var(--dashboard-border); background: rgb(255 253 248 / 96%); box-shadow: 0 -10px 30px rgb(9 37 28 / 10%); padding: 6px max(8px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)); backdrop-filter: blur(12px); }
@@ -76,6 +92,12 @@
   .dashboard-more-drawer-group-label { margin: 0 0 8px; color: #607168; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
   .dashboard-more-drawer-group-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dashboard-more-drawer .dashboard-mobile-nav-item { min-block-size: 64px; grid-template-columns: auto 1fr; place-content: center start; gap: 10px; border: 1px solid var(--dashboard-border); background: #fff; padding-inline: 12px; font-size: 13px; text-align: start; }
+}
+
+@media (max-width: 640px) {
+  .dashboard-topbar { flex-wrap: wrap; }
+  .dashboard-topbar-actions { flex: 1 0 100%; }
+  .dashboard-search { inline-size: 100%; }
 }
 
 @media (max-width: 420px) { .dashboard-topbar-more span { display: none; } .dashboard-more-drawer-group-items { grid-template-columns: 1fr; } }
