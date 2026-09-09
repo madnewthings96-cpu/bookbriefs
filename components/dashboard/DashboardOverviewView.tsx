@@ -37,7 +37,7 @@ function CatalogAlert({ message, onRetry }: { message: string; onRetry?: () => v
     <div className="dashboard-catalog-alert" role="alert">
       <p>{message}</p>
       <p>Saved reading data remains available while the catalog reconnects.</p>
-      <button type="button" onClick={onRetry}>Try again</button>
+      {onRetry && <button type="button" onClick={onRetry}>Try again</button>}
     </div>
   );
 }

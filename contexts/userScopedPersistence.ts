@@ -23,10 +23,11 @@ export class UserScopedIdentity {
   private readyUserId: string | null = null;
 
   observe(userId: string | null) {
-    if (userId === this.currentUserId) return;
+    if (userId === this.currentUserId) return false;
     this.currentUserId = userId;
     this.version += 1;
     this.readyUserId = null;
+    return true;
   }
 
   capture(userId: string): UserScopedHydrationToken {
@@ -53,6 +54,62 @@ export class UserScopedIdentity {
 
   canWrite(userId: string | null) {
     return this.isReady(userId);
+  }
+}
+
+/**
+ * The state/effect orchestration shared by the user-scoped providers. Keeping
+ * reset, hydration publication, mutation, and persistence eligibility here
+ * makes those transitions directly testable without a DOM renderer.
+ */
+export class UserScopedStore<T> {
+  private readonly emptyState: () => T;
+  private readonly identity = new UserScopedIdentity();
+  private state: T;
+
+  constructor(emptyState: () => T) {
+    this.emptyState = emptyState;
+    this.state = emptyState();
+  }
+
+  observe(userId: string | null) {
+    const changed = this.identity.observe(userId);
+    if (changed) this.state = this.emptyState();
+    return changed;
+  }
+
+  async hydrate(userId: string, load: (capturedUserId: string) => T | Promise<T>) {
+    const loaded = await this.identity.hydrate(userId, load);
+    if (loaded === undefined) return undefined;
+    this.state = loaded;
+    return loaded;
+  }
+
+  canWrite(userId: string | null) {
+    return this.identity.canWrite(userId);
+  }
+
+  getExposedState(userId: string | null) {
+    return this.identity.isReady(userId) ? this.state : this.emptyState();
+  }
+
+  getPersistableState(userId: string | null) {
+    return this.identity.canWrite(userId) ? this.state : undefined;
+  }
+
+  persist(userId: string | null, writer: (state: T) => void) {
+    const persistableState = this.getPersistableState(userId);
+    if (!persistableState) return false;
+    writer(persistableState);
+    return true;
+  }
+
+  update(userId: string | null, updater: (state: T) => T) {
+    if (!this.identity.canWrite(userId)) return false;
+    const next = updater(this.state);
+    if (!this.identity.canWrite(userId)) return false;
+    this.state = next;
+    return true;
   }
 }
 
@@ -108,9 +165,17 @@ const isRecord = (value: unknown): value is Record<string, unknown> => (
   typeof value === 'object' && value !== null && !Array.isArray(value)
 );
 
-const asFiniteNumber = (value: unknown, fallback: number) => (
-  typeof value === 'number' && Number.isFinite(value) ? value : fallback
-);
+const readOptionalFiniteNumber = (
+  value: unknown,
+  fallback: number,
+  minimum = 0,
+  maximum = Number.POSITIVE_INFINITY,
+): number | null => {
+  if (value === undefined) return fallback;
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+  if (value < minimum || value > maximum) return null;
+  return value;
+};
 
 const parseDate = (value: unknown): Date | undefined => {
   if (value instanceof Date) {
@@ -124,15 +189,19 @@ const parseDate = (value: unknown): Date | undefined => {
 const normalizeStats = (value: unknown): UserStats | null => {
   if (!isRecord(value) || !Array.isArray(value.readingHistory)) return null;
 
-  const readingHistory = value.readingHistory
-    .map(parseDate)
-    .filter((date): date is Date => date !== undefined);
+  const parsedHistory = value.readingHistory.map(parseDate);
+  if (parsedHistory.some((date) => date === undefined)) return null;
+
+  const booksRead = readOptionalFiniteNumber(value.booksRead, 0);
+  const dayStreak = readOptionalFiniteNumber(value.dayStreak, 0);
+  const totalReadingTime = readOptionalFiniteNumber(value.totalReadingTime, 0);
+  if (booksRead === null || dayStreak === null || totalReadingTime === null) return null;
 
   return {
-    booksRead: asFiniteNumber(value.booksRead, 0),
-    dayStreak: asFiniteNumber(value.dayStreak, 0),
-    totalReadingTime: asFiniteNumber(value.totalReadingTime, 0),
-    readingHistory,
+    booksRead,
+    dayStreak,
+    totalReadingTime,
+    readingHistory: parsedHistory as Date[],
   };
 };
 
@@ -143,11 +212,15 @@ const normalizeProgress = (value: unknown): BookProgress | null => {
   const lastReadAt = parseDate(value.lastReadAt);
   if (!startedAt || !lastReadAt) return null;
 
-  const progress = asFiniteNumber(value.progress, 0);
+  const progress = readOptionalFiniteNumber(value.progress, 0, 0, 100);
+  if (progress === null) return null;
+  if (value.isCompleted !== undefined && typeof value.isCompleted !== 'boolean') return null;
+
   const isCompleted = typeof value.isCompleted === 'boolean'
     ? value.isCompleted
     : progress >= 100;
   const completedAt = value.completedAt === undefined ? undefined : parseDate(value.completedAt);
+  if (value.completedAt !== undefined && completedAt === undefined) return null;
 
   return {
     bookId: value.bookId,
@@ -162,7 +235,9 @@ const normalizeProgress = (value: unknown): BookProgress | null => {
 const normalizeNote = (value: unknown): PersonalNote | null => {
   if (!isRecord(value)
     || typeof value.id !== 'string'
+    || value.id.length === 0
     || typeof value.bookId !== 'string'
+    || value.bookId.length === 0
     || typeof value.content !== 'string') {
     return null;
   }
@@ -177,7 +252,9 @@ const normalizeNote = (value: unknown): PersonalNote | null => {
 const normalizeHighlight = (value: unknown): Highlight | null => {
   if (!isRecord(value)
     || typeof value.id !== 'string'
+    || value.id.length === 0
     || typeof value.bookId !== 'string'
+    || value.bookId.length === 0
     || typeof value.text !== 'string') {
     return null;
   }
@@ -185,6 +262,7 @@ const normalizeHighlight = (value: unknown): Highlight | null => {
   const createdAt = parseDate(value.createdAt);
   const updatedAt = parseDate(value.updatedAt);
   if (!createdAt || !updatedAt) return null;
+  if (value.context !== undefined && typeof value.context !== 'string') return null;
 
   return {
     id: value.id,
@@ -223,13 +301,17 @@ export const readUserProgress = (storage: StorageLike | null, userId: string) =>
     `bookbriefs_user_stats_${userId}`,
     normalizeStats,
   ) ?? emptyUserStats();
-  const progress = readScopedValue<unknown[]>(
+  const progress = readScopedValue<BookProgress[]>(
     storage,
     `bookbriefs_book_progress_${userId}`,
-    (value) => Array.isArray(value)
-      ? value.map(normalizeProgress).filter((item): item is BookProgress => item !== null)
-      : null,
-  ) as BookProgress[] | undefined ?? [];
+    (value) => {
+      if (!Array.isArray(value)) return null;
+      const normalized = value.map(normalizeProgress);
+      return normalized.every((item): item is BookProgress => item !== null)
+        ? normalized
+        : null;
+    },
+  ) ?? [];
 
   return { stats, progress };
 };
@@ -237,12 +319,11 @@ export const readUserProgress = (storage: StorageLike | null, userId: string) =>
 export const readPersonalNotes = (storage: StorageLike | null, userId: string): PersonalNotesData => {
   const value = readScopedValue(storage, `bookbriefs_personal_notes_${userId}`, (raw) => {
     if (!isRecord(raw) || !Array.isArray(raw.notes) || !Array.isArray(raw.highlights)) return null;
-    return {
-      notes: raw.notes.map(normalizeNote).filter((item): item is PersonalNote => item !== null),
-      highlights: raw.highlights
-        .map(normalizeHighlight)
-        .filter((item): item is Highlight => item !== null),
-    };
+    const notes = raw.notes.map(normalizeNote);
+    const highlights = raw.highlights.map(normalizeHighlight);
+    if (!notes.every((item): item is PersonalNote => item !== null)
+      || !highlights.every((item): item is Highlight => item !== null)) return null;
+    return { notes, highlights };
   });
 
   return value ?? emptyPersonalNotesData();

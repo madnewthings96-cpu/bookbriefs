@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import DashboardOverviewView from '../components/dashboard/DashboardOverviewView';
+import { buildCatalogSurfaceState, runCatalogRetry } from '../components/dashboard/catalogStateModel';
 
 test('overview renders a retryable catalog failure without replacing unrelated challenge content', () => {
   const markup = renderToStaticMarkup(
@@ -50,20 +50,39 @@ test('overview keeps challenge data visible while catalog cards show loading sta
   assert.doesNotMatch(markup, /Choose your first summary/);
 });
 
-test('library and notes distinguish catalog loading and failure from true empty state', async () => {
-  const library = await readFile('pages/DashboardLibraryPage.tsx', 'utf8');
-  const notes = await readFile('pages/DashboardNotesPage.tsx', 'utf8');
+test('catalog presenters give loading and failure precedence without hiding usable content', () => {
+  assert.equal(buildCatalogSurfaceState({ loading: true, error: null, hasContent: false }), 'loading');
+  assert.equal(buildCatalogSurfaceState({ loading: true, error: null, hasContent: true }), 'content');
+  assert.equal(buildCatalogSurfaceState({ loading: false, error: 'offline', hasContent: false }), 'error');
+  assert.equal(buildCatalogSurfaceState({ loading: false, error: 'offline', hasContent: true }), 'content');
+  assert.equal(buildCatalogSurfaceState({ loading: false, error: null, hasContent: false }), 'empty');
+});
 
-  for (const source of [library, notes]) {
-    assert.match(source, /loading:\s*catalogLoading/);
-    assert.match(source, /error:\s*catalogError/);
-    assert.match(source, /refreshBooks/);
-    assert.match(source, /role="alert"/);
-    assert.match(source, /Try again/);
-    assert.match(source, /role="status"/);
-  }
+test('catalog retry presenter invokes the context refresh callback exactly once', async () => {
+  let calls = 0;
+  const retry = runCatalogRetry(async () => {
+    calls += 1;
+  });
 
-  assert.match(library, /catalogError.*visibleItems\.length/s);
-  assert.match(notes, /catalogError.*groups\.length/s);
-  assert.match(notes, /Book no longer available/);
+  await retry();
+  assert.equal(calls, 1);
+});
+
+test('overview catalog failure omits retry control when no callback is supplied', () => {
+  const markup = renderToStaticMarkup(
+    React.createElement(StaticRouter, { location: '/dashboard' },
+      React.createElement(DashboardOverviewView, {
+        greeting: 'Good morning', userName: 'Reader', catalogLoading: false,
+        catalogError: 'Catalog offline',
+        challengeLoading: false,
+        continueBook: undefined, challenge: undefined,
+        challengeError: null, libraryError: null,
+        recentKnowledge: [], library: [],
+        weeklyInsight: { readingDays: 0, currentStreak: 0 }, recommendations: [],
+      }),
+    ),
+  );
+
+  assert.match(markup, /role="alert"/);
+  assert.doesNotMatch(markup, /<button[^>]*>Try again<\/button>/);
 });

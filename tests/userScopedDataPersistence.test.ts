@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   UserScopedIdentity,
+  UserScopedStore,
   readPersonalNotes,
   readUserProgress,
   type StorageLike,
@@ -159,4 +160,79 @@ test('save gating never redirects hydrated A data to B or an anonymous key', asy
   assert.equal(storage.getItem('bookbriefs_personal_notes_a'), JSON.stringify({ notes: ['A'] }));
   assert.equal(storage.getItem('bookbriefs_personal_notes_b'), null);
   assert.equal(storage.getItem('bookbriefs_personal_notes_null'), null);
+});
+
+test('the provider store model resets exposed state and persists only hydrated identity data', async () => {
+  const store = new UserScopedStore(() => ({ events: [] as string[] }));
+  const persisted: string[] = [];
+
+  store.observe('a');
+  const staleHydration = store.hydrate('a', async () => {
+    await Promise.resolve();
+    return { events: ['A'] };
+  });
+  store.observe('b');
+
+  assert.deepEqual(store.getExposedState('b'), { events: [] });
+  assert.equal(await staleHydration, undefined);
+  assert.equal(store.getPersistableState('b'), undefined);
+  assert.equal(store.persist('b', () => persisted.push('stale B')), false);
+
+  await store.hydrate('b', () => ({ events: ['B'] }));
+  assert.deepEqual(store.getExposedState('b'), { events: ['B'] });
+  assert.deepEqual(store.getPersistableState('b'), { events: ['B'] });
+  assert.equal(store.persist('b', (state) => persisted.push(state.events.join(','))), true);
+  assert.equal(store.update('b', (state) => ({ events: [...state.events, 'B2'] })), true);
+
+  store.observe(null);
+  assert.deepEqual(store.getExposedState(null), { events: [] });
+  assert.equal(store.getPersistableState(null), undefined);
+  assert.equal(store.persist(null, () => persisted.push('anonymous')), false);
+  assert.deepEqual(persisted, ['B']);
+});
+
+test('malformed scalar or child records remove only the affected user record', () => {
+  const storage = new MemoryStorage({
+    'bookbriefs_user_stats_a': JSON.stringify({
+      booksRead: '4',
+      dayStreak: 1,
+      totalReadingTime: 5,
+      readingHistory: ['2026-09-08T00:00:00.000Z'],
+    }),
+    'bookbriefs_book_progress_a': JSON.stringify([{
+      bookId: 'good',
+      progress: 25,
+      startedAt: '2026-09-01T00:00:00.000Z',
+      lastReadAt: '2026-09-08T00:00:00.000Z',
+      isCompleted: false,
+    }, {
+      bookId: 'bad',
+      progress: '50',
+      startedAt: '2026-09-01T00:00:00.000Z',
+      lastReadAt: '2026-09-08T00:00:00.000Z',
+      isCompleted: false,
+    }]),
+    'bookbriefs_personal_notes_a': JSON.stringify({
+      notes: [{
+        id: 'bad-note',
+        bookId: 'atomic-habits',
+        content: 42,
+        createdAt: '2026-09-01T00:00:00.000Z',
+        updatedAt: '2026-09-08T00:00:00.000Z',
+      }],
+      highlights: [],
+    }),
+  });
+
+  const progress = readUserProgress(storage, 'a');
+  const notes = readPersonalNotes(storage, 'a');
+
+  assert.equal(progress.stats.booksRead, 0);
+  assert.deepEqual(progress.progress, []);
+  assert.deepEqual(notes, { notes: [], highlights: [] });
+  assert.deepEqual(storage.removed.sort(), [
+    'bookbriefs_book_progress_a',
+    'bookbriefs_personal_notes_a',
+    'bookbriefs_user_stats_a',
+  ]);
 });

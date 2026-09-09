@@ -7,6 +7,7 @@ import {
   selectRecentKnowledge,
   type DashboardKnowledgeItem,
 } from '../components/dashboard/dashboardOverviewModel';
+import { buildCatalogSurfaceState, runCatalogRetry } from '../components/dashboard/catalogStateModel';
 import './DashboardPages.css';
 
 type KnowledgeFilter = 'all' | 'note' | 'highlight';
@@ -66,6 +67,12 @@ export default function DashboardNotesPage() {
 
     return Array.from(byBookId.values());
   }, [visibleKnowledge]);
+  const catalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: groups.length > 0,
+  });
+  const retryCatalog = useMemo(() => runCatalogRetry(refreshBooks), [refreshBooks]);
 
   return (
     <section className="dashboard-page dashboard-workspace-page dashboard-notes-page">
@@ -99,11 +106,11 @@ export default function DashboardNotesPage() {
         <section className="dashboard-workspace-status" role="alert">
           <p>{catalogError}</p>
           <p>Your notes and highlights remain available. Retry the catalog to restore book links.</p>
-          <button type="button" onClick={() => { void refreshBooks(); }}>Try again</button>
+          <button type="button" onClick={() => { void retryCatalog(); }}>Try again</button>
         </section>
       )}
 
-      {groups.length > 0 ? (
+      {catalogState === 'content' ? (
         <div className="dashboard-knowledge-groups">
           {groups.map((group) => (
             <section className="dashboard-knowledge-group" key={group.bookId}>
@@ -123,13 +130,13 @@ export default function DashboardNotesPage() {
             </section>
           ))}
         </div>
-      ) : catalogLoading || catalogError ? null : (
+      ) : catalogState === 'empty' ? (
         <section className="dashboard-empty-state dashboard-workspace-empty" aria-labelledby="knowledge-empty-heading">
           <h2 id="knowledge-empty-heading">Nothing captured yet</h2>
           <p>{filter === 'all' ? 'Notes and highlights from your reading will appear here.' : `No ${filter === 'note' ? 'notes' : 'highlights'} match this view.`}</p>
           <Link className="dashboard-empty-action" to="/dashboard/library">Open your library</Link>
         </section>
-      )}
+      ) : null}
     </section>
   );
 }

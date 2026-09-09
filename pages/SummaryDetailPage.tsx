@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
@@ -26,6 +26,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import { getBookLibraryHref, getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
+import { SummaryVisitTracker } from '../components/summaryVisitModel';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -89,8 +90,8 @@ interface SummaryDetailPageProps {
 const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public' }) => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
-  const { isAuthenticated } = useAuth();
-  const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
+  const { isAuthenticated, user } = useAuth();
+  const { updateBookProgress, getBookProgress, isUserDataReady } = useUserProgress();
   const { books, loading: booksLoading, error: booksError } = useBooks();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
@@ -111,6 +112,9 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
   }, [books]);
 
   const bookId = resolveBookId(bookIdOrSlug);
+  const currentUserId = user?.id ?? null;
+  const summaryVisit = useRef(new SummaryVisitTracker());
+  summaryVisit.current.observe(currentUserId);
 
   const displayTitle = book ? (getBookTitle(book.id) === book.id ? book.title : getBookTitle(book.id)) : '';
   const displayAuthor = book ? (getBookAuthor(book.id) === book.id ? book.author : getBookAuthor(book.id)) : '';
@@ -191,15 +195,6 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     if (currentBook) {
       fetchSummary(currentBook);
 
-      // Record reading activity when user opens a book summary
-      if (isAuthenticated && bookId) {
-        recordReadingActivity();
-
-        // Update book progress - add 25% progress each time they visit
-        const currentProgress = getBookProgress(bookId);
-        const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
-        updateBookProgress(bookId, newProgress);
-      }
     } else {
       // Only set error if we are sure the book is not found (books are loaded)
       if (!booksLoading) {
@@ -223,6 +218,18 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId, fetchSummary, books, booksLoading]);
+
+  // User-scoped progress must wait for the captured identity's local record to
+  // hydrate. The tracker makes this idempotent across hydration rerenders and
+  // StrictMode-style effect repeats while still allowing a new account visit.
+  useEffect(() => {
+    if (!isAuthenticated || !bookId
+      || !summaryVisit.current.shouldRecord(currentUserId, bookId, isUserDataReady)) return;
+
+    const currentProgress = getBookProgress(bookId);
+    const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
+    updateBookProgress(bookId, newProgress);
+  }, [bookId, currentUserId, getBookProgress, isAuthenticated, isUserDataReady, updateBookProgress]);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!book) return;

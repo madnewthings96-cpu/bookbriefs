@@ -9,6 +9,7 @@ import {
   filterDashboardShelf,
   type DashboardLibraryFilter,
 } from '../components/dashboard/dashboardOverviewModel';
+import { buildCatalogSurfaceState, runCatalogRetry } from '../components/dashboard/catalogStateModel';
 import './DashboardPages.css';
 
 const FILTERS: Array<{ value: DashboardLibraryFilter; label: string }> = [
@@ -59,6 +60,12 @@ export default function DashboardLibraryPage() {
 
   const library = useMemo(() => buildDashboardShelf(books, favorites, bookProgress), [books, favorites, bookProgress]);
   const visibleItems = useMemo(() => filterDashboardShelf(library, filter), [filter, library]);
+  const catalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: visibleItems.length > 0,
+  });
+  const retryCatalog = useMemo(() => runCatalogRetry(refreshBooks), [refreshBooks]);
   const emptyState = emptyStateFor(filter);
   const countLabel = `${visibleItems.length} ${visibleItems.length === 1 ? 'book' : 'books'} shown`;
 
@@ -99,15 +106,15 @@ export default function DashboardLibraryPage() {
         <section className="dashboard-workspace-status" role="alert">
           <p>{catalogError}</p>
           <p>Your saved reading state is still safe. Retry the catalog to restore book details.</p>
-          <button type="button" onClick={() => { void refreshBooks(); }}>Try again</button>
+          <button type="button" onClick={() => { void retryCatalog(); }}>Try again</button>
         </section>
       )}
 
-      {visibleItems.length > 0 ? (
+      {catalogState === 'content' ? (
         <div className="dashboard-book-grid dashboard-book-grid--library" aria-label="Library books">
           {visibleItems.map((item) => <DashboardBookCard key={item.book.id} item={item} />)}
         </div>
-      ) : catalogLoading || catalogError ? null : (
+      ) : catalogState === 'empty' ? (
         <section className="dashboard-empty-state dashboard-workspace-empty" aria-labelledby="library-empty-heading">
           <h2 id="library-empty-heading">No books here yet</h2>
           <p>{emptyState.message}</p>
@@ -119,7 +126,7 @@ export default function DashboardLibraryPage() {
             </button>
           )}
         </section>
-      )}
+      ) : null}
     </section>
   );
 }
