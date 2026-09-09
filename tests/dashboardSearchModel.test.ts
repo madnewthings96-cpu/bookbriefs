@@ -50,4 +50,6 @@ test('dashboard search keyboard index wraps at both result-list bounds', () => {
   assert.equal(getDashboardSearchActiveIndex(0, 3, 'previous'), 2);
   assert.equal(getDashboardSearchActiveIndex(1, 3, 'previous'), 0);
   assert.equal(getDashboardSearchActiveIndex(-1, 0, 'next'), -1);
+  assert.equal(getDashboardSearchActiveIndex(5, 2, 'next'), 0);
+  assert.equal(getDashboardSearchActiveIndex(5, 2, 'previous'), 1);
 });

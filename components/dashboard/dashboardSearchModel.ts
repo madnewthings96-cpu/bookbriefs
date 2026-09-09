@@ -15,8 +15,9 @@ export function getDashboardSearchActiveIndex(
   direction: DashboardSearchDirection,
 ) {
   if (resultCount <= 0) return -1;
-  if (direction === 'next') return activeIndex < resultCount - 1 ? activeIndex + 1 : 0;
-  return activeIndex > 0 ? activeIndex - 1 : resultCount - 1;
+  const currentIndex = activeIndex >= 0 && activeIndex < resultCount ? activeIndex : -1;
+  if (direction === 'next') return currentIndex < resultCount - 1 ? currentIndex + 1 : 0;
+  return currentIndex > 0 ? currentIndex - 1 : resultCount - 1;
 }
 
 export function searchDashboardBooks(

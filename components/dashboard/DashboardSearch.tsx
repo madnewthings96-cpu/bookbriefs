@@ -52,6 +52,10 @@ export default function DashboardSearch() {
   }, [location.key]);
 
   useEffect(() => {
+    setActiveIndex(index => index >= 0 && index < results.length ? index : -1);
+  }, [results.length]);
+
+  useEffect(() => {
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) close();
     };
@@ -77,9 +81,13 @@ export default function DashboardSearch() {
       }
       return;
     }
-    if (event.key === 'Enter' && activeIndex >= 0) {
+    if (event.key === 'Enter') {
       event.preventDefault();
-      selectResult(activeIndex);
+      if (activeIndex >= 0 && activeIndex < results.length) {
+        selectResult(activeIndex);
+      } else {
+        setActiveIndex(-1);
+      }
       return;
     }
     if (event.key === 'Escape') {

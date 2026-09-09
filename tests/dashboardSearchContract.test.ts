@@ -23,9 +23,10 @@ test('dashboard search contracts retain keyboard navigation, route reset, outsid
   assert.match(search, /aria-activedescendant=\{activeIndex >= 0 && activeIndex < results\.length/);
   assert.match(search, /event\.key === 'ArrowDown'[\s\S]*getDashboardSearchActiveIndex\(index, results\.length, 'next'\)/);
   assert.match(search, /event\.key === 'ArrowUp'[\s\S]*getDashboardSearchActiveIndex\(index, results\.length, 'previous'\)/);
-  assert.match(search, /event\.key === 'Enter' && activeIndex >= 0[\s\S]*selectResult\(activeIndex\)/);
+  assert.match(search, /event\.key === 'Enter'[\s\S]*activeIndex >= 0 && activeIndex < results\.length[\s\S]*selectResult\(activeIndex\)[\s\S]*setActiveIndex\(-1\)/);
   assert.match(search, /event\.key === 'Escape'[\s\S]*clear\(\)/);
   assert.match(search, /document\.addEventListener\('pointerdown', closeOnOutsidePointer\)/);
   assert.match(search, /useEffect\(\(\) => \{\s*clear\(\);\s*\}, \[location\.key\]\)/);
+  assert.match(search, /useEffect\(\(\) => \{\s*setActiveIndex\(index => index >= 0 && index < results\.length \? index : -1\);\s*\}, \[results\.length\]\)/);
   assert.match(search, /navigate\(`\/dashboard\/summary\/\$\{result\.book\.arabicSlug \|\| result\.book\.id\}`\)/);
 });
