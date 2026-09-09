@@ -89,7 +89,7 @@ const UserMenu: React.FC = () => {
             {/* Your Library */}
             {isAuthenticated && (
               <NavLink
-                to="/profile"
+                to="/dashboard/library"
                 onClick={() => setIsMenuOpen(false)}
                 className={menuItemClassName}
               >
@@ -105,7 +105,7 @@ const UserMenu: React.FC = () => {
             {/* Reading Challenge */}
             {isAuthenticated && (
               <NavLink
-                to="/reading-challenge"
+                to="/dashboard/challenge"
                 onClick={() => setIsMenuOpen(false)}
                 className={menuItemClassName}
               >
@@ -121,7 +121,7 @@ const UserMenu: React.FC = () => {
             {/* Downloads */}
             {isAuthenticated && (
               <NavLink
-                to="/downloads"
+                to="/dashboard/downloads"
                 onClick={() => setIsMenuOpen(false)}
                 className={menuItemClassName}
               >

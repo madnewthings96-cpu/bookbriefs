@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 import { AuthGateway } from '../components/AuthGateway';
+import { getSafePostAuthDestination } from '../components/authRouteModel';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,10 @@ const LoginPage: React.FC = () => {
   const [success, setSuccess] = useState('');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const destination = getSafePostAuthDestination(
+    typeof location.state?.from === 'string' ? location.state.from : undefined,
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +40,7 @@ const LoginPage: React.FC = () => {
       // Sign in with Firebase Auth
       await signInWithEmailAndPassword(auth, email.trim(), password);
 
-      setSuccess('Login successful! Redirecting...');
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+      navigate(destination, { replace: true });
     } catch (err: any) {
       console.error('Login error:', err);
       
@@ -84,12 +86,7 @@ const LoginPage: React.FC = () => {
       // Sign in with Google
       await signInWithPopup(auth, googleProvider);
 
-      // Show success message
-      setSuccess('Login successful with Google! Redirecting...');
-
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+      navigate(destination, { replace: true });
     } catch (err: any) {
       console.error('Google login error:', err);
       

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getBookSummaryHref } from '../readingRouteModel';
 import DashboardBookCard from './DashboardBookCard';
 import type { DashboardKnowledgeItem, DashboardShelfBook, WeeklyReadingInsight } from './dashboardOverviewModel';
 
@@ -126,7 +127,7 @@ export default function DashboardOverviewView({
               <ul className="dashboard-knowledge-list">
                 {recentKnowledge.map(item => {
                   const title = item.book?.title || 'A saved book';
-                  const href = `/dashboard/summary/${item.book?.arabicSlug || item.bookId}`;
+                  const href = getBookSummaryHref(item.book || { id: item.bookId }, 'dashboard');
                   return (
                     <li key={item.id}>
                       <Link to={href}>

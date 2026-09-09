@@ -41,6 +41,7 @@ interface SummaryReadingExperienceProps {
   onDownloadPdf: () => void;
   onAddNote: () => void;
   onRequireSignUp: () => void;
+  getBookSummaryHref: (book: Pick<Book, 'id' | 'arabicSlug'>) => string;
   t: (key: string) => string;
 }
 
@@ -70,6 +71,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
   onDownloadPdf,
   onAddNote,
   onRequireSignUp,
+  getBookSummaryHref,
   t,
 }) => {
   const plainSummary = useMemo(() => stripSummaryMarkdown(summaryData.summary), [summaryData.summary]);
@@ -117,7 +119,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
     const shareData = {
       title: `${displayTitle} Summary`,
       text: `Read the key ideas from ${displayTitle} by ${displayAuthor}.`,
-      url: window.location.href,
+      url: new URL(getBookSummaryHref(book), window.location.origin).href,
     };
 
     try {

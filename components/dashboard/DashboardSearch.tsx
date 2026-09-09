@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useBooks } from '../../contexts/BooksContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getBookSummaryHref } from '../readingRouteModel';
 import { getDashboardSearchActiveIndex, searchDashboardBooks } from './dashboardSearchModel';
 
 const RESULTS_ID = 'dashboard-search-results';
@@ -43,7 +44,7 @@ export default function DashboardSearch() {
   const selectResult = (index: number) => {
     const result = results[index];
     if (!result) return;
-    navigate(`/dashboard/summary/${result.book.arabicSlug || result.book.id}`);
+    navigate(getBookSummaryHref(result.book, 'dashboard'));
     clear();
   };
 

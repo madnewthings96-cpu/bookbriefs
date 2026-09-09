@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getBookSummaryHref } from '../readingRouteModel';
 import type { DashboardShelfBook } from './dashboardOverviewModel';
 
 interface DashboardBookCardProps {
@@ -11,7 +12,7 @@ const clampProgress = (progress: number) => Math.max(0, Math.min(100, progress))
 export function DashboardBookCard({ item, compact = false }: DashboardBookCardProps) {
   const { book, status } = item;
   const progress = clampProgress(item.progress);
-  const href = `/dashboard/summary/${book.arabicSlug || book.id}`;
+  const href = getBookSummaryHref(book, 'dashboard');
   const hasProgress = status === 'in-progress' || status === 'completed';
   const action = hasProgress ? 'Continue reading' : 'Read summary';
   const statusLabel = status === 'completed'

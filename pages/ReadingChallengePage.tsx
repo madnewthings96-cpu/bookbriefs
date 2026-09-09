@@ -24,12 +24,15 @@ import { useReadingChallenge } from '../contexts/ReadingChallengeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useBooks } from '../contexts/BooksContext';
 import { Book } from '../types';
-
-const getBookUrl = (book: Book) => `/summary/${book.arabicSlug || book.id}`;
+import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 
 const clamp = (value: number, min = 0, max = 100) => Math.min(Math.max(value, min), max);
 
-const ReadingChallengePage: React.FC = () => {
+interface ReadingChallengePageProps {
+  surface?: ReadingSurface;
+}
+
+const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = 'public' }) => {
   const { challenge, loading, setGoal, deleteGoal, progress, isBookRead, markBookAsRead, unmarkBookAsRead } = useReadingChallenge();
   const { isAuthenticated } = useAuth();
   const { books } = useBooks();
@@ -379,7 +382,7 @@ const ReadingChallengePage: React.FC = () => {
                   <div className="grid grid-cols-3 gap-3">
                     {recentReadBooks.map((book) => (
                       <div key={book.id} className="group relative">
-                        <Link to={getBookUrl(book)} className="block">
+                        <Link to={getBookSummaryHref(book, surface)} className="block">
                           <img
                             src={book.coverImageUrl}
                             alt={book.title}
@@ -446,6 +449,7 @@ const ReadingChallengePage: React.FC = () => {
                       key={book.id}
                       book={book}
                       isRead={false}
+                      surface={surface}
                       onToggle={() => handleMarkRead(book.id)}
                     />
                   ))}
@@ -511,13 +515,14 @@ const Metric: React.FC<MetricProps> = ({ label, value }) => (
 interface BookChallengeCardProps {
   book: Book;
   isRead: boolean;
+  surface: ReadingSurface;
   onToggle: () => void;
 }
 
-const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, onToggle }) => (
+const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, surface, onToggle }) => (
   <div className="group">
     <div className="relative">
-      <Link to={getBookUrl(book)} className="block overflow-hidden rounded-xl bg-gray-100 shadow-[0_10px_24px_rgba(17,24,39,0.12)]">
+      <Link to={getBookSummaryHref(book, surface)} className="block overflow-hidden rounded-xl bg-gray-100 shadow-[0_10px_24px_rgba(17,24,39,0.12)]">
         <img
           src={book.coverImageUrl}
           alt={book.title}
@@ -536,7 +541,7 @@ const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, onT
         {isRead ? <Check className="h-4 w-4" aria-hidden="true" /> : <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
       </button>
     </div>
-    <Link to={getBookUrl(book)} className="mt-3 block">
+    <Link to={getBookSummaryHref(book, surface)} className="mt-3 block">
       <h3 className="line-clamp-2 text-sm font-black leading-5 text-gray-950 transition-colors duration-200 group-hover:text-orange-600">{book.title}</h3>
       <p className="mt-1 line-clamp-1 text-xs font-semibold text-gray-500">{book.author}</p>
     </Link>

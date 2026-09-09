@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getBookSummaryHref } from '../components/readingRouteModel';
 import { useBooks } from '../contexts/BooksContext';
 import { usePersonalNotes } from '../contexts/PersonalNotesContext';
 import {
@@ -88,11 +89,11 @@ export default function DashboardNotesPage() {
           {groups.map((group) => (
             <section className="dashboard-knowledge-group" key={group.bookId}>
               <h2>{group.bookTitle}</h2>
-              {group.bookSlug && <Link to={`/dashboard/summary/${group.bookSlug}`}>Open book summary</Link>}
+              {group.bookSlug && <Link to={getBookSummaryHref({ id: group.bookSlug }, 'dashboard')}>Open book summary</Link>}
               <ul>
                 {group.items.map((item) => (
                   <li key={`${item.kind}-${item.id}`}>
-                    <Link to={group.bookSlug ? `/dashboard/summary/${group.bookSlug}` : '/dashboard/library'}>
+                    <Link to={group.bookSlug ? getBookSummaryHref({ id: group.bookSlug }, 'dashboard') : '/dashboard/library'}>
                       <span className="dashboard-knowledge-kind">{item.kind === 'note' ? 'Note' : 'Highlight'}</span>
                       <p className="dashboard-knowledge-excerpt">{item.content}</p>
                       <time dateTime={item.updatedAt.toISOString()}>Updated {relativeUpdatedAt(item.updatedAt)}</time>

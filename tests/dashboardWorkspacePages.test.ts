@@ -9,7 +9,7 @@ test('workspace pages provide a single page heading and purposeful empty states'
   assert.match(library, /<h1/);
   assert.match(library, /aria-live="polite"/);
   assert.match(notes, /Highlights/);
-  assert.match(notes, /dashboard\/summary/);
+  assert.match(notes, /getBookSummaryHref\(\{ id: group\.bookSlug \}, 'dashboard'\)/);
   assert.match(settings, /ta7leel_dashboard_sidebar_collapsed/);
   assert.doesNotMatch(settings, /Dark mode|Arabic|Theme/);
 });

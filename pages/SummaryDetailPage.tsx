@@ -25,6 +25,7 @@ import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { getBookLibraryHref, getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -81,7 +82,11 @@ const PDF_PATHS: Record<string, string> = {
   'reminiscences-of-a-stock-operator': '/pdfs/reminiscences of a stock operator.pdf',
 };
 
-const SummaryDetailPage: React.FC = () => {
+interface SummaryDetailPageProps {
+  surface?: ReadingSurface;
+}
+
+const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public' }) => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated } = useAuth();
@@ -118,8 +123,10 @@ const SummaryDetailPage: React.FC = () => {
     image: book?.coverImageUrl || '/favicon/ta7leel.png',
     type: 'book',
     language: 'en',
-    noindex: !booksLoading && !booksError && !bookId,
-    canonical: canonicalSlug ? `${SITE_URL}${canonicalRoutePath(`/summary/${canonicalSlug}`)}` : undefined,
+    noindex: surface === 'dashboard' || (!booksLoading && !booksError && !bookId),
+    canonical: canonicalSlug
+      ? `${SITE_URL}${canonicalRoutePath(getBookSummaryHref({ id: canonicalSlug }, 'public'))}`
+      : undefined,
   });
 
   // Personal Notes & Highlights state
@@ -301,7 +308,7 @@ const SummaryDetailPage: React.FC = () => {
       <div className="text-center">
         <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>{t('bookNotFound') || 'Book Not Found'}</h1>
         <p className="text-gray-600 mt-2">{t('bookNotFoundMessage') || "We couldn't find the book you were looking for."}</p>
-        <Link to="/summaries" className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
+        <Link to={getBookLibraryHref(surface)} className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
           {t('backToSummaries') || 'Back to Summaries'}
         </Link>
       </div>
@@ -312,7 +319,7 @@ const SummaryDetailPage: React.FC = () => {
 
   return (
     <>
-      {book && (
+      {surface === 'public' && book && (
         <StructuredData
           type="book"
           name={displayTitle}
@@ -334,6 +341,7 @@ const SummaryDetailPage: React.FC = () => {
           onDownloadPdf={handleDownloadPdf}
           onAddNote={() => setShowAddNoteModal(true)}
           onRequireSignUp={() => setShowSignUpModal(true)}
+          getBookSummaryHref={(candidate) => getBookSummaryHref(candidate, surface)}
           t={t}
         />
       )}
@@ -2753,6 +2761,7 @@ const SummaryDetailPage: React.FC = () => {
             currentBookCategory={book.category}
             books={books}
             maxBooks={8}
+            getBookSummaryHref={(candidate) => getBookSummaryHref(candidate, surface)}
           />
         )
       }

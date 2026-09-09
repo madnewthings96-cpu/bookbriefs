@@ -65,6 +65,7 @@
 .dashboard-search-results span, .dashboard-search-empty { color: #607168; font-size: 12px; }
 .dashboard-search-empty { padding: 14px 10px; }
 .dashboard-main { min-inline-size: 0; padding: 24px clamp(16px, 2.5vw, 40px) 48px; }
+.dashboard-main > .min-h-screen { min-block-size: 0; background: transparent; padding: 0; }
 
 .dashboard-mobile-nav, .dashboard-more-drawer-layer { display: none; }
 
