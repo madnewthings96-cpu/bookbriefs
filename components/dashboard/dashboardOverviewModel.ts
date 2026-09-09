@@ -1,5 +1,6 @@
 import type { Book, PersonalNotesData } from '../../types';
 import type { BookProgress } from '../../contexts/UserProgressContext';
+import { RECOMMENDED_BOOK_IDS } from '../profile/profilePageModel';
 
 export type DashboardReadingStatus = 'saved' | 'in-progress' | 'completed' | 'not-started';
 
@@ -24,14 +25,6 @@ export interface WeeklyReadingInsight {
   readingDays: number;
   currentStreak: number;
 }
-
-const preferredRecommendationIds = [
-  'atomic-habits',
-  'the-psychology-of-money',
-  'rich-dad-poor-dad',
-  'thinking-fast-and-slow',
-  'trading-in-the-zone',
-];
 
 const clampProgress = (progress: number) => Math.min(100, Math.max(0, Number.isFinite(progress) ? progress : 0));
 
@@ -115,6 +108,7 @@ export const buildDashboardShelf = (
   return items
     .sort((left, right) => (
       statusOrder[left.status] - statusOrder[right.status]
+      || (left.status === 'in-progress' ? timestamp(right.lastReadAt) - timestamp(left.lastReadAt) : 0)
       || left.index - right.index
     ))
     .map(({ index: _index, ...item }) => item);
@@ -198,7 +192,7 @@ export const selectDashboardRecommendations = (
   if (!Number.isFinite(maximum) || maximum === 0) return [];
 
   return [...books]
-    .map((book, index) => ({ book, index, preferredRank: preferredRecommendationIds.indexOf(book.id) }))
+    .map((book, index) => ({ book, index, preferredRank: RECOMMENDED_BOOK_IDS.indexOf(book.id) }))
     .filter(({ book }) => !excluded.has(book.id))
     .sort((left, right) => {
       const leftRank = left.preferredRank === -1 ? Number.POSITIVE_INFINITY : left.preferredRank;
