@@ -141,7 +141,7 @@
   padding-inline: 13px;
 }
 
-.dashboard-page .dashboard-workspace-page {
+.dashboard-page.dashboard-workspace-page {
   max-inline-size: 1160px;
   margin-inline: auto;
   color: #16231e;
@@ -186,7 +186,7 @@
 }
 
 .dashboard-page .dashboard-segmented-control button {
-  min-block-size: 40px;
+  min-block-size: 44px;
   border: 1px solid var(--dashboard-border, rgb(18 61 47 / 16%));
   border-radius: 999px;
   background: #fffdf8;
@@ -251,6 +251,8 @@
 
 .dashboard-page .dashboard-knowledge-group > a {
   display: inline-flex;
+  min-block-size: 44px;
+  align-items: center;
   margin-block: 8px 14px;
   color: var(--dashboard-forest, #123d2f);
   font-size: 14px;
@@ -290,7 +292,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.dashboard-page .dashboard-settings-page {
+.dashboard-page.dashboard-settings-page {
   display: grid;
   gap: 16px;
 }
