@@ -3,6 +3,7 @@ import type { BookProgress } from '../../contexts/UserProgressContext';
 import { RECOMMENDED_BOOK_IDS } from '../profile/profilePageModel';
 
 export type DashboardReadingStatus = 'saved' | 'in-progress' | 'completed' | 'not-started';
+export type DashboardLibraryFilter = 'all' | 'saved' | 'in-progress' | 'completed';
 
 export interface DashboardShelfBook {
   book: Book;
@@ -112,6 +113,15 @@ export const buildDashboardShelf = (
       || left.index - right.index
     ))
     .map(({ index: _index, ...item }) => item);
+};
+
+export const filterDashboardShelf = (
+  items: DashboardShelfBook[],
+  filter: DashboardLibraryFilter,
+): DashboardShelfBook[] => {
+  if (filter === 'all') return [...items];
+  if (filter === 'saved') return items.filter((item) => item.saved);
+  return items.filter((item) => item.status === filter);
 };
 
 export const selectRecentKnowledge = (

@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   buildDashboardShelf,
   buildWeeklyReadingInsight,
+  filterDashboardShelf,
   selectContinueReading,
   selectDashboardRecommendations,
   selectRecentKnowledge,
@@ -26,6 +27,18 @@ test('library merges favorite and progress status without mutating inputs', () =
   assert.deepEqual(shelf.map(item => [item.book.id, item.saved, item.status]), [
     ['b', false, 'in-progress'], ['a', true, 'in-progress'],
   ]);
+});
+
+test('library filters distinguish saved, active, and completed books', () => {
+  const shelf = [
+    { book: books[0], progress: 0, saved: true, status: 'saved' as const },
+    { book: books[1], progress: 50, saved: false, status: 'in-progress' as const },
+    { book: { ...books[1], id: 'c' }, progress: 100, saved: true, status: 'completed' as const },
+  ];
+
+  assert.deepEqual(filterDashboardShelf(shelf, 'saved').map(item => item.book.id), ['a', 'c']);
+  assert.deepEqual(filterDashboardShelf(shelf, 'in-progress').map(item => item.book.id), ['b']);
+  assert.deepEqual(filterDashboardShelf(shelf, 'completed').map(item => item.book.id), ['c']);
 });
 
 test('library clamps progress, omits missing catalog records, and leaves its inputs unchanged', () => {
