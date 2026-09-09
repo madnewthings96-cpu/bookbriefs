@@ -11,7 +11,8 @@ export const getProtectedRouteDecision = (
 export const getSafePostAuthDestination = (candidate?: string): string => {
   if (!candidate) return '/dashboard';
   const [pathname] = candidate.split(/[?#]/, 1);
-  return pathname === '/dashboard' || pathname.startsWith('/dashboard/')
+  const normalizedPathname = pathname.toLowerCase();
+  return normalizedPathname === '/dashboard' || normalizedPathname.startsWith('/dashboard/')
     ? candidate
     : '/dashboard';
 };

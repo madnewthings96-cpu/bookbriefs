@@ -11,6 +11,11 @@ test('protected routes wait for auth before allowing or redirecting', () => {
 
 test('post-auth redirects accept dashboard paths only', () => {
   assert.equal(getSafePostAuthDestination('/dashboard/notes?book=atomic-habits'), '/dashboard/notes?book=atomic-habits');
+  assert.equal(getSafePostAuthDestination('/DaShBoArD/Library'), '/DaShBoArD/Library');
+  assert.equal(
+    getSafePostAuthDestination('/DASHBOARD/Summary/atomic-habits?from=login#notes'),
+    '/DASHBOARD/Summary/atomic-habits?from=login#notes',
+  );
   assert.equal(getSafePostAuthDestination('/profile'), '/dashboard');
   assert.equal(getSafePostAuthDestination('https://evil.example'), '/dashboard');
   assert.equal(getSafePostAuthDestination(undefined), '/dashboard');
