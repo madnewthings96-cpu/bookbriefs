@@ -39,15 +39,34 @@ test('dashboard SPA rewrites are explicit and precede the 404 fallback', async (
 test('dashboard responses carry scoped noindex headers without changing the public security block', async () => {
   const config = await readConfig();
   const headers = extractBlocks(config, '[[headers]]');
+  const exactIndex = headers.findIndex(block => getTomlString(block, 'for') === '/dashboard');
+  const wildcardIndex = headers.findIndex(block => getTomlString(block, 'for') === '/dashboard/*');
+  const publicIndex = headers.findIndex(block => getTomlString(block, 'for') === '/*');
   const exactHeader = headers.find(block => getTomlString(block, 'for') === '/dashboard');
   const wildcardHeader = headers.find(block => getTomlString(block, 'for') === '/dashboard/*');
   const publicHeader = headers.find(block => getTomlString(block, 'for') === '/*');
   const robotsHeader = 'X-Robots-Tag = "noindex, nofollow, noarchive"';
+  const requiredSecurityHeaders = [
+    'Content-Security-Policy = """',
+    'X-Frame-Options = "SAMEORIGIN"',
+    'X-Content-Type-Options = "nosniff"',
+    'X-XSS-Protection = "1; mode=block"',
+    'Referrer-Policy = "strict-origin-when-cross-origin"',
+    'Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"',
+    'Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"',
+  ];
 
+  assert.ok(exactIndex >= 0, 'Expected an exact /dashboard response header block');
+  assert.ok(wildcardIndex >= 0, 'Expected a wildcard /dashboard/* response header block');
+  assert.ok(publicIndex >= 0, 'Expected the existing public security header block');
+  assert.ok(exactIndex < publicIndex, 'Exact dashboard headers must precede the /* header block');
+  assert.ok(wildcardIndex < publicIndex, 'Wildcard dashboard headers must precede the /* header block');
   assert.ok(exactHeader, 'Expected an exact /dashboard response header block');
   assert.ok(wildcardHeader, 'Expected a wildcard /dashboard/* response header block');
-  assert.ok(exactHeader.includes(robotsHeader));
-  assert.ok(wildcardHeader.includes(robotsHeader));
+  for (const header of [exactHeader, wildcardHeader]) {
+    for (const requiredHeader of requiredSecurityHeaders) assert.ok(header.includes(requiredHeader), requiredHeader);
+    assert.ok(header.includes(robotsHeader));
+  }
   assert.ok(publicHeader, 'Expected the existing public security header block');
   assert.doesNotMatch(publicHeader, /X-Robots-Tag\s*=/);
 });
