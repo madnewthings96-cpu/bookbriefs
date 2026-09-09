@@ -42,6 +42,11 @@ export const useModalDialog = ({ open, onClose }: UseModalDialogOptions): RefObj
 
       if (event.key !== 'Tab' || !dialogRef.current) return;
       const focusable = getFocusableElements(dialogRef.current);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
       const activeIndex = focusable.indexOf(document.activeElement as HTMLElement);
       const wrapTarget = getModalFocusWrapTarget(activeIndex, focusable.length, event.shiftKey);
       if (wrapTarget !== null) {

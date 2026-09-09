@@ -26,6 +26,11 @@ test('feedback dialog retains its accessible name and Escape close path in every
   assert.match(feedback, /transition-\[background-color,box-shadow,transform\] duration-300/);
 });
 
+test('feedback close control has a 44px interactive target', async () => {
+  const feedback = await readFile('components/FeedbackModal.tsx', 'utf8');
+  assert.match(feedback, /aria-label="Close modal"[\s\S]*className="[^"]*h-11[^"]*w-11/);
+});
+
 test('mobile More keeps only its secondary destinations and a visible Tools group', async () => {
   const mobile = await readFile('components/dashboard/DashboardMobileNav.tsx', 'utf8');
   assert.match(mobile, /const moreGroups/);
