@@ -210,6 +210,8 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
     );
   }
 
+  const PageElement = surface === 'dashboard' ? 'div' : 'main';
+
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <section className="border-b border-[#e5d8c7] bg-[#f7f0e6]">
@@ -321,7 +323,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <PageElement className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {error && (
           <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 ring-1 ring-red-100">
             <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -464,7 +466,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
             </section>
           </div>
         )}
-      </main>
+      </PageElement>
 
       {showGoalModal && (
         <GoalModal

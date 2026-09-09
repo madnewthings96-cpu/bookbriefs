@@ -666,6 +666,6 @@ export const CALCULATOR_ROUTES: CalculatorRoute[] = [
 
 export const PRIVATE_SEO_ROUTES = ['/login', '/signup', '/profile', '/reading-challenge', '/downloads', '/feedback', '/finance-tracker', '/trading-journal'];
 export const isPrivateSeoRoute = (pathname: string): boolean => {
-  const normalized = pathname.replace(/\/+$/, '') || '/';
+  const normalized = (pathname.replace(/\/+$/, '') || '/').toLowerCase();
   return normalized === '/dashboard' || normalized.startsWith('/dashboard/') || PRIVATE_SEO_ROUTES.includes(normalized);
 };

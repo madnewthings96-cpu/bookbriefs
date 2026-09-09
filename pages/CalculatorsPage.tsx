@@ -149,8 +149,8 @@ const defaultCalculatorRoute = CALCULATOR_ROUTES.find(
 const getCalculatorRoute = (path: string): CalculatorRoute =>
   CALCULATOR_ROUTES.find((route) => route.path === path) ?? defaultCalculatorRoute;
 
-const normalizeDashboardCalculatorPath = (pathname: string) => {
-  const normalized = pathname.replace(/\/+$/, '') || '/';
+export const normalizeDashboardCalculatorPath = (pathname: string) => {
+  const normalized = (pathname.replace(/\/+$/, '') || '/').toLowerCase();
   if (normalized === '/dashboard/calculators') return '/calculators';
   const prefix = '/dashboard/calculators/';
   return normalized.startsWith(prefix) ? `/calculators/${normalized.slice(prefix.length)}` : normalized;

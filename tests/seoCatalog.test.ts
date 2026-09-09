@@ -20,5 +20,7 @@ test('all dashboard paths are private without hiding similarly named public path
   assert.equal(isPrivateSeoRoute('/dashboard'), true);
   assert.equal(isPrivateSeoRoute('/dashboard/library/'), true);
   assert.equal(isPrivateSeoRoute('/dashboard/summary/atomic-habits'), true);
+  assert.equal(isPrivateSeoRoute('/DASHBOARD/LIBRARY'), true);
+  assert.equal(isPrivateSeoRoute('/DaShBoArD/SuMmArY/atomic-habits/'), true);
   assert.equal(isPrivateSeoRoute('/dashboardish'), false);
 });

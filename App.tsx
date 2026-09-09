@@ -222,7 +222,7 @@ const AppRoutes: React.FC = () => (
         <Route path="downloads" element={<DownloadsPage />} />
         <Route path="calculators/*" element={<CalculatorsPage surface="dashboard" />} />
         <Route path="finance" element={<FinanceTrackerPage />} />
-        <Route path="trading" element={<TradingJournalPage />} />
+        <Route path="trading" element={<TradingJournalPage surface="dashboard" />} />
         <Route path="settings" element={<DashboardSettingsPage />} />
         <Route path="admin/feedback" element={<FeedbackPage />} />
       </Route>

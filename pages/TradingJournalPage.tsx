@@ -3,6 +3,7 @@ import { useFirebase } from '../App';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import useSEO from '../hooks/useSEO';
+import type { ReadingSurface } from '../components/readingRouteModel';
 import './TradingJournalPage.css';
 
 // Trading Components
@@ -55,7 +56,11 @@ import {
 
 type TradingTab = 'overview' | 'trades' | 'calendar' | 'psychology' | 'setups' | 'review';
 
-const TradingJournalPage: React.FC = () => {
+interface TradingJournalPageProps {
+    surface?: ReadingSurface;
+}
+
+const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'public' }) => {
     const { currentUser } = useFirebase();
     const [trades, setTrades] = useState<Trade[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -399,9 +404,11 @@ const TradingJournalPage: React.FC = () => {
         );
     }
 
+    const PageElement = surface === 'dashboard' ? 'div' : 'main';
+
     return (
         <div className="trading-fieldbook min-h-screen text-[#16231E]">
-            <main className="fieldbook-shell mx-auto max-w-[1440px] px-3 pb-10 pt-4 sm:px-5 sm:pt-6 lg:px-8">
+            <PageElement className="fieldbook-shell mx-auto max-w-[1440px] px-3 pb-10 pt-4 sm:px-5 sm:pt-6 lg:px-8">
                 <header className="fieldbook-command">
                     <div className="fieldbook-command-grid" aria-hidden="true" />
                     <div className="relative z-10 flex flex-col gap-5 px-5 pb-4 pt-5 sm:px-7 sm:pt-7 lg:flex-row lg:items-start lg:justify-between lg:px-9">
@@ -558,7 +565,7 @@ const TradingJournalPage: React.FC = () => {
                         </a>
                     </div>
                 </div>
-            </main>
+            </PageElement>
 
             {/* Add/Edit Trade Modal */}
             <AddTradeModal
