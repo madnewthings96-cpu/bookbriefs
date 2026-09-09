@@ -14,6 +14,7 @@ interface ReadingChallenge {
 interface ReadingChallengeContextType {
   challenge: ReadingChallenge | null;
   loading: boolean;
+  error: string | null;
   setGoal: (goal: number) => Promise<void>;
   deleteGoal: () => Promise<void>;
   markBookAsRead: (bookId: string) => Promise<void>;
@@ -32,11 +33,14 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
   const { user, isAuthenticated } = useAuth();
   const [challenge, setChallenge] = useState<ReadingChallenge | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const currentYear = new Date().getFullYear();
 
   // Load challenge from Firestore
   useEffect(() => {
     const loadChallenge = async () => {
+      setError(null);
+      setLoading(true);
       if (!isAuthenticated || !user) {
         setChallenge(null);
         setLoading(false);
@@ -59,8 +63,11 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         } else {
           setChallenge(null);
         }
+        setError(null);
       } catch (error) {
         console.error('Error loading reading challenge:', error);
+        setChallenge(null);
+        setError('Unable to load your reading challenge. Please refresh the page and try again.');
       } finally {
         setLoading(false);
       }
@@ -195,6 +202,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
       value={{
         challenge,
         loading,
+        error,
         setGoal,
         deleteGoal,
         markBookAsRead,

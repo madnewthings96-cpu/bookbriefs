@@ -5,6 +5,7 @@ import { db } from '../firebase';
 
 interface FavoritesContextType {
   favorites: string[];
+  error: string | null;
   addFavorite: (bookId: string) => void;
   removeFavorite: (bookId: string) => void;
   isFavorite: (bookId: string) => boolean;
@@ -16,6 +17,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const readLegacyFavorites = (storageKey: string): string[] => {
     const storedFavorites = localStorage.getItem(storageKey);
@@ -37,6 +39,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 
   useEffect(() => {
+    setError(null);
     if (!user) {
       setFavorites([]);
       return;
@@ -56,6 +59,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const mergedFavorites = uniqueFavorites([...remoteFavorites, ...legacyFavorites]);
 
         setFavorites(mergedFavorites);
+        setError(null);
 
         if (legacyFavorites.length > 0 && mergedFavorites.length !== remoteFavorites.length) {
           setDoc(favoritesRef, {
@@ -71,6 +75,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       (error) => {
         console.error('Failed to load favorites:', error);
         setFavorites(legacyFavorites);
+        setError("We couldn't load your saved books. Your saved books on this device are still available.");
       }
     );
   }, [user]);
@@ -123,7 +128,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite }}>
+    <FavoritesContext.Provider value={{ favorites, error, addFavorite, removeFavorite, isFavorite, toggleFavorite }}>
       {children}
     </FavoritesContext.Provider>
   );
