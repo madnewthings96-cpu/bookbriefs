@@ -7,6 +7,8 @@ export interface DashboardOverviewViewProps {
   greeting: string;
   userName: string;
   catalogLoading: boolean;
+  catalogError?: string | null;
+  onRetryCatalog?: () => void;
   challengeLoading: boolean;
   continueBook?: DashboardShelfBook;
   challenge?: { current: number; goal: number; percentage: number };
@@ -30,6 +32,24 @@ function CardAlert({ message }: { message: string }) {
   return <p className="dashboard-card-alert" role="alert">{message} Refresh the page to try again.</p>;
 }
 
+function CatalogAlert({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  return (
+    <div className="dashboard-catalog-alert" role="alert">
+      <p>{message}</p>
+      <p>Saved reading data remains available while the catalog reconnects.</p>
+      <button type="button" onClick={onRetry}>Try again</button>
+    </div>
+  );
+}
+
+function CatalogUnavailable() {
+  return (
+    <div className="dashboard-catalog-unavailable">
+      <p>The book catalog is unavailable right now. Try again to restore book details.</p>
+    </div>
+  );
+}
+
 const dateLabel = (date: Date) => new Intl.DateTimeFormat(undefined, {
   day: 'numeric',
   month: 'short',
@@ -44,6 +64,8 @@ export default function DashboardOverviewView({
   greeting,
   userName,
   catalogLoading,
+  catalogError = null,
+  onRetryCatalog,
   challengeLoading,
   continueBook,
   challenge,
@@ -65,6 +87,8 @@ export default function DashboardOverviewView({
         <Link className="dashboard-primary-action" to="/dashboard/discover">Search book summaries</Link>
       </section>
 
+      {catalogError && <CatalogAlert message={catalogError} onRetry={onRetryCatalog} />}
+
       <div className="dashboard-overview-lead-grid">
         <section className="dashboard-overview-card dashboard-continue-card" aria-labelledby="dashboard-continue-title">
           <div className="dashboard-card-heading">
@@ -73,7 +97,7 @@ export default function DashboardOverviewView({
           </div>
           {catalogLoading ? <CardSkeleton /> : continueBook ? (
             <DashboardBookCard item={continueBook} />
-          ) : (
+          ) : catalogError ? <CatalogUnavailable /> : (
             <div className="dashboard-empty-state">
               <p>Your next useful idea is waiting in the summary library.</p>
               <EmptyAction to="/dashboard/discover">Choose your first summary</EmptyAction>
@@ -140,7 +164,7 @@ export default function DashboardOverviewView({
                   );
                 })}
               </ul>
-            ) : (
+            ) : catalogError ? <CatalogUnavailable /> : (
               <div className="dashboard-empty-state">
                 <p>Keep the ideas worth returning to close at hand.</p>
                 <EmptyAction to="/dashboard/discover">Capture your first idea</EmptyAction>
@@ -161,7 +185,7 @@ export default function DashboardOverviewView({
               <div className="dashboard-book-grid dashboard-book-grid--library">
                 {library.slice(0, 3).map(item => <DashboardBookCard compact item={item} key={item.book.id} />)}
               </div>
-            ) : (
+            ) : catalogError ? <CatalogUnavailable /> : (
               <div className="dashboard-empty-state">
                 <p>Save a summary or begin reading to make this shelf yours.</p>
                 <EmptyAction to="/dashboard/discover">Explore the library</EmptyAction>
@@ -203,7 +227,7 @@ export default function DashboardOverviewView({
           <div className="dashboard-book-grid dashboard-book-grid--recommendations">
             {recommendations.map(item => <DashboardBookCard compact item={item} key={item.book.id} />)}
           </div>
-        ) : (
+        ) : catalogError ? <CatalogUnavailable /> : (
           <div className="dashboard-empty-state">
             <p>Explore the catalog to find a summary for your next session.</p>
             <EmptyAction to="/dashboard/discover">Browse book summaries</EmptyAction>

@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
+import {
+  emptyUserStats,
+  getBrowserStorage,
+  readUserProgress,
+  safeWriteItem,
+  UserScopedIdentity,
+} from './userScopedPersistence';
 
 export interface BookProgress {
   bookId: string;
@@ -35,59 +42,73 @@ export const useUserProgress = () => {
   }
   return context;
 };
-
 interface UserProgressProviderProps {
   children: ReactNode;
 }
 
 export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ children }) => {
   const { user } = useAuth();
-  const [userStats, setUserStats] = useState<UserStats>({
-    booksRead: 0,
-    dayStreak: 0,
-    totalReadingTime: 0,
-    readingHistory: []
-  });
+  const currentUserId = user?.id ?? null;
+  const identity = useRef(new UserScopedIdentity());
+  // Observe during render so the exposed value is empty on the first render
+  // after logout or an account switch, before effects have had a chance to run.
+  identity.current.observe(currentUserId);
+
+  const [userStats, setUserStats] = useState<UserStats>(() => emptyUserStats());
   const [bookProgress, setBookProgress] = useState<BookProgress[]>([]);
 
-  // Load data from localStorage on mount
   useEffect(() => {
-    if (user) {
-      const savedStats = localStorage.getItem(`bookbriefs_user_stats_${user.id}`);
-      const savedProgress = localStorage.getItem(`bookbriefs_book_progress_${user.id}`);
-      
-      if (savedStats) {
-        const parsedStats = JSON.parse(savedStats);
-        setUserStats({
-          ...parsedStats,
-          readingHistory: parsedStats.readingHistory.map((date: string) => new Date(date))
-        });
-      }
-      
-      if (savedProgress) {
-        const parsedProgress = JSON.parse(savedProgress);
-        setBookProgress(parsedProgress.map((progress: any) => ({
-          ...progress,
-          startedAt: new Date(progress.startedAt),
-          lastReadAt: new Date(progress.lastReadAt),
-          completedAt: progress.completedAt ? new Date(progress.completedAt) : undefined
-        })));
-      }
-    }
-  }, [user]);
+    let cancelled = false;
+    const capturedUserId = currentUserId;
+    const storage = getBrowserStorage();
 
-  // Save data to localStorage whenever it changes
+    // Reset immediately for every identity transition. The identity gate below
+    // also hides the previous state during the render before this effect runs.
+    setUserStats(emptyUserStats());
+    setBookProgress([]);
+
+    if (!capturedUserId) return () => { cancelled = true; };
+
+    void identity.current.hydrate(capturedUserId, (userId) => readUserProgress(storage, userId))
+      .then((loaded) => {
+        if (cancelled || loaded === undefined || !identity.current.isReady(capturedUserId)) return;
+        setUserStats(loaded.stats);
+        setBookProgress(loaded.progress);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUserId]);
+
+  const canWrite = (capturedUserId: string | null) => (
+    capturedUserId !== null && identity.current.canWrite(capturedUserId)
+  );
+
+  // Saving is enabled only after the captured user's hydration completes. The
+  // identity token is checked again at write time so an old effect cannot write
+  // state under a newly selected account.
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(`bookbriefs_user_stats_${user.id}`, JSON.stringify(userStats));
-    }
-  }, [userStats, user]);
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    safeWriteItem(
+      getBrowserStorage(),
+      `bookbriefs_user_stats_${capturedUserId}`,
+      JSON.stringify(userStats),
+    );
+  }, [currentUserId, userStats]);
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(`bookbriefs_book_progress_${user.id}`, JSON.stringify(bookProgress));
-    }
-  }, [bookProgress, user]);
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    safeWriteItem(
+      getBrowserStorage(),
+      `bookbriefs_book_progress_${capturedUserId}`,
+      JSON.stringify(bookProgress),
+    );
+  }, [currentUserId, bookProgress]);
 
   // Calculate day streak
   const calculateDayStreak = (readingHistory: Date[]): number => {
@@ -95,7 +116,7 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     // Sort dates in descending order
     const sortedDates = readingHistory
       .map(date => {
@@ -104,7 +125,7 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
         return d;
       })
       .sort((a, b) => b.getTime() - a.getTime())
-      .filter((date, index, arr) => 
+      .filter((date, index, arr) =>
         index === 0 || date.getTime() !== arr[index - 1].getTime()
       ); // Remove duplicates
 
@@ -125,27 +146,28 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
   };
 
   const updateBookProgress = (bookId: string, progress: number) => {
-    if (!user) return;
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
 
     const now = new Date();
     setBookProgress(prev => {
+      if (!canWrite(capturedUserId)) return prev;
       const existingProgress = prev.find(p => p.bookId === bookId);
-      
+
       if (existingProgress) {
         return prev.map(p =>
           p.bookId === bookId
             ? { ...p, progress, lastReadAt: now, isCompleted: progress >= 100 }
             : p
         );
-      } else {
-        return [...prev, {
-          bookId,
-          progress,
-          startedAt: now,
-          lastReadAt: now,
-          isCompleted: progress >= 100
-        }];
       }
+      return [...prev, {
+        bookId,
+        progress,
+        startedAt: now,
+        lastReadAt: now,
+        isCompleted: progress >= 100,
+      }];
     });
 
     // Record reading activity
@@ -153,39 +175,46 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
   };
 
   const completeBook = (bookId: string) => {
-    if (!user) return;
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
 
     const now = new Date();
-    setBookProgress(prev =>
-      prev.map(p =>
+    setBookProgress(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return prev.map(p =>
         p.bookId === bookId
           ? { ...p, progress: 100, completedAt: now, isCompleted: true, lastReadAt: now }
           : p
-      )
-    );
+      );
+    });
 
     // Update books read count
-    setUserStats(prev => ({
-      ...prev,
-      booksRead: prev.booksRead + 1
-    }));
+    setUserStats(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return { ...prev, booksRead: prev.booksRead + 1 };
+    });
 
     recordReadingActivity();
   };
 
+  const exposedUserStats = identity.current.isReady(currentUserId) ? userStats : emptyUserStats();
+  const exposedBookProgress = identity.current.isReady(currentUserId) ? bookProgress : [];
+
   const getBookProgress = (bookId: string): BookProgress | null => {
-    return bookProgress.find(p => p.bookId === bookId) || null;
+    return exposedBookProgress.find(p => p.bookId === bookId) || null;
   };
 
   const recordReadingActivity = () => {
-    if (!user) return;
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     setUserStats(prev => {
+      if (!canWrite(capturedUserId)) return prev;
       const newHistory = [...prev.readingHistory];
-      
+
       // Check if today is already recorded
       const todayExists = newHistory.some(date => {
         const d = new Date(date);
@@ -193,9 +222,7 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
         return d.getTime() === today.getTime();
       });
 
-      if (!todayExists) {
-        newHistory.push(today);
-      }
+      if (!todayExists) newHistory.push(today);
 
       const newStreak = calculateDayStreak(newHistory);
 
@@ -203,18 +230,18 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
         ...prev,
         readingHistory: newHistory,
         dayStreak: newStreak,
-        totalReadingTime: prev.totalReadingTime + 5 // Add 5 minutes per reading session
+        totalReadingTime: prev.totalReadingTime + 5, // Add 5 minutes per reading session
       };
     });
   };
 
   const value: UserProgressContextType = {
-    userStats,
-    bookProgress,
+    userStats: exposedUserStats,
+    bookProgress: exposedBookProgress,
     updateBookProgress,
     completeBook,
     getBookProgress,
-    recordReadingActivity
+    recordReadingActivity,
   };
 
   return (

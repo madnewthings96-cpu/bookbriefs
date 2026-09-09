@@ -31,7 +31,12 @@ const relativeUpdatedAt = (date: Date) => {
 };
 
 export default function DashboardNotesPage() {
-  const { books } = useBooks();
+  const {
+    books,
+    loading: catalogLoading,
+    error: catalogError,
+    refreshBooks,
+  } = useBooks();
   const { personalNotesData } = usePersonalNotes();
   const [filter, setFilter] = useState<KnowledgeFilter>('all');
 
@@ -84,6 +89,20 @@ export default function DashboardNotesPage() {
         ))}
       </div>
 
+      {catalogLoading && (
+        <section className="dashboard-workspace-loading" role="status" aria-label="Loading book details">
+          <p>Loading book details…</p>
+        </section>
+      )}
+
+      {catalogError && (
+        <section className="dashboard-workspace-status" role="alert">
+          <p>{catalogError}</p>
+          <p>Your notes and highlights remain available. Retry the catalog to restore book links.</p>
+          <button type="button" onClick={() => { void refreshBooks(); }}>Try again</button>
+        </section>
+      )}
+
       {groups.length > 0 ? (
         <div className="dashboard-knowledge-groups">
           {groups.map((group) => (
@@ -104,7 +123,7 @@ export default function DashboardNotesPage() {
             </section>
           ))}
         </div>
-      ) : (
+      ) : catalogLoading || catalogError ? null : (
         <section className="dashboard-empty-state dashboard-workspace-empty" aria-labelledby="knowledge-empty-heading">
           <h2 id="knowledge-empty-heading">Nothing captured yet</h2>
           <p>{filter === 'all' ? 'Notes and highlights from your reading will appear here.' : `No ${filter === 'note' ? 'notes' : 'highlights'} match this view.`}</p>

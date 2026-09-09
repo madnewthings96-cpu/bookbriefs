@@ -47,7 +47,12 @@ const emptyStateFor = (filter: DashboardLibraryFilter) => {
 };
 
 export default function DashboardLibraryPage() {
-  const { books } = useBooks();
+  const {
+    books,
+    loading: catalogLoading,
+    error: catalogError,
+    refreshBooks,
+  } = useBooks();
   const { favorites } = useFavorites();
   const { bookProgress } = useUserProgress();
   const [filter, setFilter] = useState<DashboardLibraryFilter>('all');
@@ -84,11 +89,25 @@ export default function DashboardLibraryPage() {
 
       <p className="dashboard-result-count" aria-live="polite">{countLabel}</p>
 
+      {catalogLoading && (
+        <section className="dashboard-workspace-loading" role="status" aria-label="Loading your library">
+          <p>Loading your library…</p>
+        </section>
+      )}
+
+      {catalogError && (
+        <section className="dashboard-workspace-status" role="alert">
+          <p>{catalogError}</p>
+          <p>Your saved reading state is still safe. Retry the catalog to restore book details.</p>
+          <button type="button" onClick={() => { void refreshBooks(); }}>Try again</button>
+        </section>
+      )}
+
       {visibleItems.length > 0 ? (
         <div className="dashboard-book-grid dashboard-book-grid--library" aria-label="Library books">
           {visibleItems.map((item) => <DashboardBookCard key={item.book.id} item={item} />)}
         </div>
-      ) : (
+      ) : catalogLoading || catalogError ? null : (
         <section className="dashboard-empty-state dashboard-workspace-empty" aria-labelledby="library-empty-heading">
           <h2 id="library-empty-heading">No books here yet</h2>
           <p>{emptyState.message}</p>

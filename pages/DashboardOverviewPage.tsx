@@ -27,7 +27,7 @@ const greetingForHour = (hour: number) => {
 
 export default function DashboardOverviewPage() {
   const { user } = useAuth();
-  const { books, loading: catalogLoading } = useBooks();
+  const { books, loading: catalogLoading, error: catalogError, refreshBooks } = useBooks();
   const { favorites, error: libraryError } = useFavorites();
   const { getBookAuthor, getBookTitle } = useLanguage();
   const { personalNotesData } = usePersonalNotes();
@@ -76,6 +76,8 @@ export default function DashboardOverviewPage() {
       greeting={greetingForHour(new Date().getHours())}
       userName={user?.name?.trim() || 'Reader'}
       catalogLoading={catalogLoading}
+      catalogError={catalogError}
+      onRetryCatalog={() => { void refreshBooks(); }}
       challengeLoading={challengeLoading}
       continueBook={continueBook}
       challenge={challenge ? progress : undefined}

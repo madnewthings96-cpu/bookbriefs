@@ -1,6 +1,13 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { PersonalNote, Highlight, PersonalNotesData } from '../types';
 import { useAuth } from './AuthContext';
+import {
+  emptyPersonalNotesData,
+  getBrowserStorage,
+  readPersonalNotes,
+  safeWriteItem,
+  UserScopedIdentity,
+} from './userScopedPersistence';
 
 interface PersonalNotesContextType {
   personalNotesData: PersonalNotesData;
@@ -23,129 +30,162 @@ export const usePersonalNotes = () => {
   }
   return context;
 };
-
 interface PersonalNotesProviderProps {
   children: ReactNode;
 }
 
 export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ children }) => {
   const { user } = useAuth();
-  const [personalNotesData, setPersonalNotesData] = useState<PersonalNotesData>({
-    notes: [],
-    highlights: []
-  });
+  const currentUserId = user?.id ?? null;
+  const identity = useRef(new UserScopedIdentity());
+  // Mark identity changes during render so old notes are never exposed while
+  // the new user's local record is being hydrated.
+  identity.current.observe(currentUserId);
 
-  // Load data from localStorage on mount
+  const [personalNotesData, setPersonalNotesData] = useState<PersonalNotesData>(() => emptyPersonalNotesData());
+
   useEffect(() => {
-    if (user) {
-      const savedData = localStorage.getItem(`bookbriefs_personal_notes_${user.id}`);
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        // Convert date strings back to Date objects
-        const notes = parsedData.notes.map((note: any) => ({
-          ...note,
-          createdAt: new Date(note.createdAt),
-          updatedAt: new Date(note.updatedAt)
-        }));
-        const highlights = parsedData.highlights.map((highlight: any) => ({
-          ...highlight,
-          createdAt: new Date(highlight.createdAt),
-          updatedAt: new Date(highlight.updatedAt)
-        }));
+    let cancelled = false;
+    const capturedUserId = currentUserId;
+    const storage = getBrowserStorage();
 
-        setPersonalNotesData({ notes, highlights });
-      }
-    }
-  }, [user]);
+    setPersonalNotesData(emptyPersonalNotesData());
 
-  // Save data to localStorage whenever personalNotesData changes
+    if (!capturedUserId) return () => { cancelled = true; };
+
+    void identity.current.hydrate(capturedUserId, (userId) => readPersonalNotes(storage, userId))
+      .then((loaded) => {
+        if (cancelled || loaded === undefined || !identity.current.isReady(capturedUserId)) return;
+        setPersonalNotesData(loaded);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUserId]);
+
+  const canWrite = (capturedUserId: string | null) => (
+    capturedUserId !== null && identity.current.canWrite(capturedUserId)
+  );
+
   useEffect(() => {
-    if (user && personalNotesData.notes.length > 0 || personalNotesData.highlights.length > 0) {
-      localStorage.setItem(`bookbriefs_personal_notes_${user.id}`, JSON.stringify(personalNotesData));
-    }
-  }, [personalNotesData, user]);
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    safeWriteItem(
+      getBrowserStorage(),
+      `bookbriefs_personal_notes_${capturedUserId}`,
+      JSON.stringify(personalNotesData),
+    );
+  }, [currentUserId, personalNotesData]);
 
   const addNote = (bookId: string, content: string) => {
-    if (!user) return;
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
 
+    const now = new Date();
     const newNote: PersonalNote = {
       id: Date.now().toString(),
       bookId,
       content,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: now,
+      updatedAt: now,
     };
 
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: [...prev.notes, newNote]
-    }));
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return { ...prev, notes: [...prev.notes, newNote] };
+    });
   };
 
   const updateNote = (noteId: string, content: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: prev.notes.map(note =>
-        note.id === noteId
-          ? { ...note, content, updatedAt: new Date() }
-          : note
-      )
-    }));
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return {
+        ...prev,
+        notes: prev.notes.map(note =>
+          note.id === noteId
+            ? { ...note, content, updatedAt: new Date() }
+            : note
+        ),
+      };
+    });
   };
 
   const deleteNote = (noteId: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: prev.notes.filter(note => note.id !== noteId)
-    }));
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return { ...prev, notes: prev.notes.filter(note => note.id !== noteId) };
+    });
   };
 
   const addHighlight = (bookId: string, text: string, context?: string) => {
-    if (!user) return;
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
 
+    const now = new Date();
     const newHighlight: Highlight = {
       id: Date.now().toString(),
       bookId,
       text,
       context,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: now,
+      updatedAt: now,
     };
 
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: [...prev.highlights, newHighlight]
-    }));
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return { ...prev, highlights: [...prev.highlights, newHighlight] };
+    });
   };
 
   const updateHighlight = (highlightId: string, text: string, context?: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: prev.highlights.map(highlight =>
-        highlight.id === highlightId
-          ? { ...highlight, text, context, updatedAt: new Date() }
-          : highlight
-      )
-    }));
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return {
+        ...prev,
+        highlights: prev.highlights.map(highlight =>
+          highlight.id === highlightId
+            ? { ...highlight, text, context, updatedAt: new Date() }
+            : highlight
+        ),
+      };
+    });
   };
 
   const deleteHighlight = (highlightId: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: prev.highlights.filter(highlight => highlight.id !== highlightId)
-    }));
+    const capturedUserId = currentUserId;
+    if (!canWrite(capturedUserId)) return;
+
+    setPersonalNotesData(prev => {
+      if (!canWrite(capturedUserId)) return prev;
+      return { ...prev, highlights: prev.highlights.filter(highlight => highlight.id !== highlightId) };
+    });
   };
 
+  const exposedData = identity.current.isReady(currentUserId)
+    ? personalNotesData
+    : emptyPersonalNotesData();
+
   const getNotesForBook = (bookId: string): PersonalNote[] => {
-    return personalNotesData.notes.filter(note => note.bookId === bookId);
+    return exposedData.notes.filter(note => note.bookId === bookId);
   };
 
   const getHighlightsForBook = (bookId: string): Highlight[] => {
-    return personalNotesData.highlights.filter(highlight => highlight.bookId === bookId);
+    return exposedData.highlights.filter(highlight => highlight.bookId === bookId);
   };
 
   const value: PersonalNotesContextType = {
-    personalNotesData,
+    personalNotesData: exposedData,
     addNote,
     updateNote,
     deleteNote,
@@ -153,7 +193,7 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
     updateHighlight,
     deleteHighlight,
     getNotesForBook,
-    getHighlightsForBook
+    getHighlightsForBook,
   };
 
   return (
