@@ -297,7 +297,7 @@
   gap: 16px;
 }
 
-.dashboard-page .dashboard-settings-page .dashboard-workspace-intro {
+.dashboard-page.dashboard-settings-page .dashboard-workspace-intro {
   margin-block-end: 12px;
 }
 

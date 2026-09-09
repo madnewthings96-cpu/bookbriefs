@@ -19,6 +19,7 @@ test('workspace styles apply root page layouts and accessible filter and summary
 
   assert.match(styles, /\.dashboard-page\.dashboard-workspace-page\s*\{[^}]*max-inline-size:\s*1160px/s);
   assert.match(styles, /\.dashboard-page\.dashboard-settings-page\s*\{[^}]*gap:\s*16px/s);
+  assert.match(styles, /\.dashboard-page\.dashboard-settings-page \.dashboard-workspace-intro\s*\{[^}]*margin-block-end:\s*12px/s);
   assert.match(styles, /\.dashboard-segmented-control button\s*\{[^}]*min-block-size:\s*44px/s);
   assert.match(styles, /\.dashboard-knowledge-group > a\s*\{[^}]*min-block-size:\s*44px[^}]*align-items:\s*center/s);
   assert.match(styles, /\.dashboard-page :focus-visible\s*\{/);
