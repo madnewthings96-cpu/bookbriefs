@@ -18,5 +18,18 @@ test('post-auth redirects accept dashboard paths only', () => {
   );
   assert.equal(getSafePostAuthDestination('/profile'), '/dashboard');
   assert.equal(getSafePostAuthDestination('https://evil.example'), '/dashboard');
+  assert.equal(getSafePostAuthDestination('//evil.example/dashboard/notes'), '/dashboard');
   assert.equal(getSafePostAuthDestination(undefined), '/dashboard');
+});
+
+test('post-auth redirects validate dashboard membership after dot-segment normalization', () => {
+  assert.equal(getSafePostAuthDestination('/dashboard/../summary/atomic-habits'), '/dashboard');
+  assert.equal(
+    getSafePostAuthDestination('/DASHBOARD/%2e%2e/Summary/atomic-habits?from=login#notes'),
+    '/dashboard',
+  );
+  assert.equal(
+    getSafePostAuthDestination('/DaShBoArD/./Summary/atomic-habits?from=login#notes'),
+    '/DaShBoArD/./Summary/atomic-habits?from=login#notes',
+  );
 });
