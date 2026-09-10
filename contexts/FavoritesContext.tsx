@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { arrayRemove, arrayUnion, doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
+import { UserScopedRealtimeStore, type UserIdentityToken } from './userScopedRealtime';
 
 interface FavoritesContextType {
   favorites: string[];
@@ -12,14 +13,32 @@ interface FavoritesContextType {
   toggleFavorite: (bookId: string) => void;
 }
 
+interface FavoritesState {
+  favorites: string[];
+  error: string | null;
+}
+
+const emptyFavoritesState = (): FavoritesState => ({ favorites: [], error: null });
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const currentUserId = user?.id ?? null;
+  const scopedStore = useRef(new UserScopedRealtimeStore<FavoritesState>(emptyFavoritesState)).current;
+
+  // Reset before React renders children for a new UID or logout.
+  scopedStore.observe(currentUserId);
+  const [, forceRender] = useState(0);
+  const exposedState = scopedStore.getExposedState(currentUserId);
+
+  const publish = (token: UserIdentityToken, nextState: FavoritesState) => {
+    if (!scopedStore.publish(token, nextState)) return false;
+    forceRender((revision) => revision + 1);
+    return true;
+  };
 
   const readLegacyFavorites = (storageKey: string): string[] => {
+    if (typeof localStorage === 'undefined') return [];
     const storedFavorites = localStorage.getItem(storageKey);
     if (!storedFavorites) return [];
 
@@ -39,92 +58,110 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 
   useEffect(() => {
-    setError(null);
-    if (!user) {
-      setFavorites([]);
-      return;
-    }
+    const capturedUserId = currentUserId;
+    const token = scopedStore.capture(capturedUserId);
+    if (!token || !user) return () => undefined;
 
     const legacyStorageKey = `favorites_${user.email}`;
     const legacyFavorites = readLegacyFavorites(legacyStorageKey);
-    const favoritesRef = doc(db, 'favorites', user.id);
+    const favoritesRef = doc(db, 'favorites', token.userId);
 
-    return onSnapshot(
-      favoritesRef,
-      (snapshot) => {
+    const dispose = scopedStore.subscribe(
+      token.userId,
+      (_subscriptionToken, onValue, onError) => onSnapshot(favoritesRef, onValue, onError),
+      (snapshot: any, snapshotToken) => {
         const data = snapshot.data();
         const remoteFavorites = Array.isArray(data?.bookIds)
           ? data.bookIds.filter((bookId): bookId is string => typeof bookId === 'string')
           : [];
         const mergedFavorites = uniqueFavorites([...remoteFavorites, ...legacyFavorites]);
 
-        setFavorites(mergedFavorites);
-        setError(null);
+        publish(snapshotToken, { favorites: mergedFavorites, error: null });
 
         if (legacyFavorites.length > 0 && mergedFavorites.length !== remoteFavorites.length) {
-          setDoc(favoritesRef, {
+          if (!scopedStore.isCurrent(snapshotToken)) return;
+          void setDoc(favoritesRef, {
             bookIds: mergedFavorites,
             updatedAt: serverTimestamp(),
           }, { merge: true })
-            .then(() => localStorage.removeItem(legacyStorageKey))
+            .then(() => {
+              if (scopedStore.isCurrent(snapshotToken) && typeof localStorage !== 'undefined') {
+                localStorage.removeItem(legacyStorageKey);
+              }
+            })
             .catch((error) => {
               console.error('Failed to migrate legacy favorites:', error);
             });
         }
       },
-      (error) => {
+      (error, errorToken) => {
         console.error('Failed to load favorites:', error);
-        setFavorites(legacyFavorites);
-        setError("We couldn't load your saved books. Your saved books on this device are still available.");
-      }
+        publish(errorToken, {
+          favorites: legacyFavorites,
+          error: "We couldn't load your saved books. Your saved books on this device are still available.",
+        });
+      },
     );
-  }, [user]);
+
+    return dispose;
+  }, [currentUserId, user?.email]);
 
   const addFavorite = (bookId: string) => {
-    if (!user) return;
+    const token = scopedStore.capture(currentUserId);
+    if (!token) return;
+    const previous = scopedStore.getExposedState(token.userId).favorites;
+    if (previous.includes(bookId)) return;
 
-    setFavorites(prev => {
-      if (prev.includes(bookId)) {
-        return prev;
-      }
-      return [...prev, bookId];
-    });
+    if (!scopedStore.update(token, (state) => ({
+      favorites: [...state.favorites, bookId],
+      error: null,
+    }))) return;
+    forceRender((revision) => revision + 1);
 
-    const favoritesRef = doc(db, 'favorites', user.id);
-    setDoc(favoritesRef, {
+    const favoritesRef = doc(db, 'favorites', token.userId);
+    if (!scopedStore.isCurrent(token)) return;
+    void setDoc(favoritesRef, {
       bookIds: arrayUnion(bookId),
       updatedAt: serverTimestamp(),
     }, { merge: true }).catch((error) => {
       console.error('Failed to add favorite:', error);
-      setFavorites(prev => prev.filter(id => id !== bookId));
+      if (!scopedStore.isCurrent(token)) return;
+      scopedStore.publish(token, { favorites: previous, error: null });
+      forceRender((revision) => revision + 1);
     });
   };
 
   const removeFavorite = (bookId: string) => {
-    if (!user) return;
+    const token = scopedStore.capture(currentUserId);
+    if (!token) return;
+    const previous = scopedStore.getExposedState(token.userId).favorites;
 
-    setFavorites(prev => prev.filter(id => id !== bookId));
+    if (!scopedStore.update(token, (state) => ({
+      favorites: state.favorites.filter((id) => id !== bookId),
+      error: null,
+    }))) return;
+    forceRender((revision) => revision + 1);
 
-    const favoritesRef = doc(db, 'favorites', user.id);
-    setDoc(favoritesRef, {
+    const favoritesRef = doc(db, 'favorites', token.userId);
+    if (!scopedStore.isCurrent(token)) return;
+    void setDoc(favoritesRef, {
       bookIds: arrayRemove(bookId),
       updatedAt: serverTimestamp(),
     }, { merge: true }).catch((error) => {
       console.error('Failed to remove favorite:', error);
-      setFavorites(prev => prev.includes(bookId) ? prev : [...prev, bookId]);
+      if (!scopedStore.isCurrent(token)) return;
+      scopedStore.publish(token, { favorites: previous, error: null });
+      forceRender((revision) => revision + 1);
     });
   };
 
-  const isFavorite = (bookId: string): boolean => {
-    return favorites.includes(bookId);
-  };
+  const favorites = currentUserId ? exposedState.favorites : [];
+  const error = currentUserId ? exposedState.error : null;
+  const isFavorite = (bookId: string): boolean => favorites.includes(bookId);
 
   const toggleFavorite = (bookId: string) => {
-    if (isFavorite(bookId)) {
-      removeFavorite(bookId);
-    } else {
-      addFavorite(bookId);
-    }
+    if (isFavorite(bookId)) removeFavorite(bookId);
+    else addFavorite(bookId);
   };
 
   return (

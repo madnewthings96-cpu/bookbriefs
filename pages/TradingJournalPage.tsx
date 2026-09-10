@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useFirebase } from '../App';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { UserScopedRealtimeStore } from '../contexts/userScopedRealtime';
 import useSEO from '../hooks/useSEO';
 import type { ReadingSurface } from '../components/readingRouteModel';
 import './TradingJournalPage.css';
@@ -60,21 +61,48 @@ interface TradingJournalPageProps {
     surface?: ReadingSurface;
 }
 
+interface TradingDataState {
+    trades: Trade[];
+    goals: Goal[];
+    startingBalance: number;
+    loading: boolean;
+}
+
+const emptyTradingDataState = (): TradingDataState => ({
+    trades: [],
+    goals: [],
+    startingBalance: 10000,
+    loading: true,
+});
+
 const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'public' }) => {
-    const { currentUser } = useFirebase();
-    const [trades, setTrades] = useState<Trade[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { user: currentUser } = useAuth();
+    const currentUserId = currentUser?.id ?? null;
+    const scopedStore = useRef(new UserScopedRealtimeStore<TradingDataState>(emptyTradingDataState)).current;
+    scopedStore.observe(currentUserId);
+    const [, forceRender] = useState(0);
+    const exposedData = scopedStore.getExposedState(currentUserId);
+    const trades = exposedData.trades;
+    const goals = exposedData.goals;
+    const startingBalance = exposedData.startingBalance;
+    const isLoading = currentUserId ? exposedData.loading : false;
     const [showModal, setShowModal] = useState(false);
     const [showBalanceModal, setShowBalanceModal] = useState(false);
     const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
-    const [startingBalance, setStartingBalance] = useState(10000);
+    const [editingTradeUserId, setEditingTradeUserId] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<TradingTab>('overview');
-    const [goals, setGoals] = useState<Goal[]>([]);
     const [showGoalModal, setShowGoalModal] = useState(false);
     const [goalToDelete, setGoalToDelete] = useState<string | null>(null);
+    const [goalToDeleteUserId, setGoalToDeleteUserId] = useState<string | null>(null);
     const [showExportModal, setShowExportModal] = useState(false);
     const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
+    const [selectedTradeUserId, setSelectedTradeUserId] = useState<string | null>(null);
     const [selectedDay, setSelectedDay] = useState<{ date: Date; trades: Trade[] } | null>(null);
+    const [selectedDayUserId, setSelectedDayUserId] = useState<string | null>(null);
+    const activeEditingTrade = editingTradeUserId === currentUserId ? editingTrade : null;
+    const activeSelectedTrade = selectedTradeUserId === currentUserId ? selectedTrade : null;
+    const activeSelectedDay = selectedDayUserId === currentUserId ? selectedDay : null;
+    const activeGoalToDelete = goalToDeleteUserId === currentUserId ? goalToDelete : null;
 
     useSEO({
         title: 'Trading Journal - Ta7leel | BookBriefs',
@@ -85,58 +113,74 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Load trades from Firestore (real-time)
     useEffect(() => {
-        if (!currentUser) {
-            setIsLoading(false);
-            return;
-        }
+        const capturedUserId = currentUserId;
+        const token = scopedStore.capture(capturedUserId);
+        if (!token) return () => undefined;
 
         const tradesQuery = query(
-            collection(db, 'users', currentUser.uid, 'trades'),
+            collection(db, 'users', token.userId, 'trades'),
             orderBy('entryDate', 'desc')
         );
 
-        const unsubscribe = onSnapshot(tradesQuery, (snapshot) => {
-            const tradesData: Trade[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Trade[];
+        const updateState = (updater: (state: TradingDataState) => TradingDataState) => {
+            if (!scopedStore.update(token, updater)) return;
+            forceRender((revision) => revision + 1);
+        };
 
-            // Client-side sort to ensure stable ordering
-            // 1. Sort by Entry Date (descending)
-            // 2. Sort by Created At (descending) for same-day trades
-            tradesData.sort((a, b) => {
-                const dateA = a.entryDate?.toMillis?.() || 0;
-                const dateB = b.entryDate?.toMillis?.() || 0;
+        const unsubscribe = scopedStore.subscribe(
+            token.userId,
+            (_subscriptionToken, onValue, onError) => onSnapshot(tradesQuery, onValue, onError),
+            (snapshot: any, snapshotToken) => {
+                const tradesData: Trade[] = snapshot.docs.map((snapshotDoc: any) => ({
+                    id: snapshotDoc.id,
+                    ...snapshotDoc.data(),
+                })) as Trade[];
 
-                if (dateA !== dateB) {
-                    return dateB - dateA;
-                }
+                // Client-side sort to ensure stable ordering
+                // 1. Sort by Entry Date (descending)
+                // 2. Sort by Created At (descending) for same-day trades
+                tradesData.sort((a, b) => {
+                    const dateA = a.entryDate?.toMillis?.() || 0;
+                    const dateB = b.entryDate?.toMillis?.() || 0;
 
-                const createdA = a.createdAt?.toMillis?.() || 0;
-                const createdB = b.createdAt?.toMillis?.() || 0;
-                return createdB - createdA;
-            });
+                    if (dateA !== dateB) {
+                        return dateB - dateA;
+                    }
 
-            setTrades(tradesData);
-            setIsLoading(false);
-        }, (error) => {
-            console.error('Error loading trades:', error);
-            setIsLoading(false);
-        });
+                    const createdA = a.createdAt?.toMillis?.() || 0;
+                    const createdB = b.createdAt?.toMillis?.() || 0;
+                    return createdB - createdA;
+                });
+
+                updateState((state) => ({ ...state, trades: tradesData, loading: false }));
+                if (!scopedStore.isCurrent(snapshotToken)) return;
+            },
+            (error, errorToken) => {
+                console.error('Error loading trades:', error);
+                updateState((state) => ({ ...state, loading: false }));
+                if (!scopedStore.isCurrent(errorToken)) return;
+            },
+        );
 
         return () => unsubscribe();
-    }, [currentUser]);
+    }, [currentUserId]);
 
     // Fetch starting balance
     useEffect(() => {
-        if (!currentUser) return;
+        const capturedUserId = currentUserId;
+        const token = scopedStore.capture(capturedUserId);
+        if (!token) return () => undefined;
 
         const fetchSettings = async () => {
             try {
-                const docRef = doc(db, 'users', currentUser.uid, 'trading_settings', 'general');
+                const docRef = doc(db, 'users', token.userId, 'trading_settings', 'general');
                 const docSnap = await getDoc(docRef);
+                if (!scopedStore.isCurrent(token)) return;
                 if (docSnap.exists() && docSnap.data().startingBalance) {
-                    setStartingBalance(docSnap.data().startingBalance);
+                    const nextBalance = docSnap.data().startingBalance;
+                    if (scopedStore.update(token, (state) => ({ ...state, startingBalance: nextBalance }))) {
+                        forceRender((revision) => revision + 1);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching settings:', error);
@@ -144,7 +188,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         };
 
         fetchSettings();
-    }, [currentUser]);
+    }, [currentUserId]);
 
     // Calculate derived stats
     const stats = useMemo(() => calculateStats(trades), [trades]);
@@ -189,32 +233,48 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Load goals from Firestore (real-time)
     useEffect(() => {
-        if (!currentUser) return;
+        const capturedUserId = currentUserId;
+        const token = scopedStore.capture(capturedUserId);
+        if (!token) return () => undefined;
 
         const goalsQuery = query(
-            collection(db, 'users', currentUser.uid, 'goals'),
+            collection(db, 'users', token.userId, 'goals'),
             orderBy('createdAt', 'desc')
         );
 
-        const unsubscribe = onSnapshot(goalsQuery, (snapshot) => {
-            const goalsData: Goal[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Goal[];
-            setGoals(goalsData.filter(g => !g.completed));
-        });
+        const unsubscribe = scopedStore.subscribe(
+            token.userId,
+            (_subscriptionToken, onValue, onError) => onSnapshot(goalsQuery, onValue, onError),
+            (snapshot: any, snapshotToken) => {
+                const goalsData: Goal[] = snapshot.docs.map((snapshotDoc: any) => ({
+                    id: snapshotDoc.id,
+                    ...snapshotDoc.data(),
+                })) as Goal[];
+                if (scopedStore.update(snapshotToken, (state) => ({ ...state, goals: goalsData.filter(g => !g.completed) }))) {
+                    forceRender((revision) => revision + 1);
+                }
+            },
+            (error, errorToken) => {
+                console.error('Error loading goals:', error);
+                if (!scopedStore.isCurrent(errorToken)) return;
+            },
+        );
 
         return () => unsubscribe();
-    }, [currentUser]);
+    }, [currentUserId]);
 
     // Handle save balance
     const handleSaveBalance = async (newBalance: number) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
         try {
-            await setDoc(doc(db, 'users', currentUser.uid, 'trading_settings', 'general'), {
+            if (!scopedStore.isCurrent(token)) return;
+            await setDoc(doc(db, 'users', token.userId, 'trading_settings', 'general'), {
                 startingBalance: newBalance
             }, { merge: true });
-            setStartingBalance(newBalance);
+            if (scopedStore.update(token, (state) => ({ ...state, startingBalance: newBalance }))) {
+                forceRender((revision) => revision + 1);
+            }
         } catch (error) {
             console.error('Error saving balance:', error);
             throw error;
@@ -227,7 +287,8 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         calculatedPnL: number,
         status: 'WIN' | 'LOSS' | 'BE'
     ) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
 
         const entryPrice = parseFloat(formData.entryPrice);
         const exitPrice = parseFloat(formData.exitPrice);
@@ -267,20 +328,25 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         };
 
         try {
-            if (editingTrade) {
+            if (activeEditingTrade) {
                 // Update existing trade
+                if (!scopedStore.isCurrent(token)) return;
                 await updateDoc(
-                    doc(db, 'users', currentUser.uid, 'trades', editingTrade.id),
+                    doc(db, 'users', token.userId, 'trades', activeEditingTrade.id),
                     tradeData
                 );
             } else {
                 // Add new trade
-                await addDoc(collection(db, 'users', currentUser.uid, 'trades'), {
+                if (!scopedStore.isCurrent(token)) return;
+                await addDoc(collection(db, 'users', token.userId, 'trades'), {
                     ...tradeData,
                     createdAt: Timestamp.now(),
                 });
             }
-            setEditingTrade(null);
+            if (scopedStore.isCurrent(token)) {
+                setEditingTrade(null);
+                setEditingTradeUserId(null);
+            }
         } catch (error) {
             console.error('Error saving trade:', error);
             throw error;
@@ -289,36 +355,54 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Handle edit trade
     const handleEditTrade = (trade: Trade) => {
+        if (!currentUserId || !scopedStore.getExposedState(currentUserId).trades.some((item) => item.id === trade.id)) return;
         setEditingTrade(trade);
+        setEditingTradeUserId(currentUserId);
         setSelectedTrade(null);
+        setSelectedTradeUserId(null);
         setSelectedDay(null);
+        setSelectedDayUserId(null);
         setShowModal(true);
     };
 
     const handleSelectTrade = (trade: Trade) => {
+        if (!currentUserId || !scopedStore.getExposedState(currentUserId).trades.some((item) => item.id === trade.id)) return;
         setSelectedTrade(trade);
+        setSelectedTradeUserId(currentUserId);
         setSelectedDay(null);
+        setSelectedDayUserId(null);
     };
 
     const handleSelectDay = (date: Date, dayTrades: Trade[]) => {
+        if (!currentUserId) return;
+        const currentTradeIds = new Set(scopedStore.getExposedState(currentUserId).trades.map((trade) => trade.id));
+        if (dayTrades.some((trade) => !currentTradeIds.has(trade.id))) return;
         setSelectedDay({ date, trades: dayTrades });
+        setSelectedDayUserId(currentUserId);
         setSelectedTrade(null);
+        setSelectedTradeUserId(null);
     };
 
     const handleCloseReviewDrawer = () => {
         setSelectedTrade(null);
+        setSelectedTradeUserId(null);
         setSelectedDay(null);
+        setSelectedDayUserId(null);
     };
 
     // Handle delete trade
     const handleDeleteTrade = async (tradeId: string) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
 
         if (!window.confirm('Are you sure you want to delete this trade?')) return;
 
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'trades', tradeId));
+            if (!scopedStore.isCurrent(token)) return;
+            await deleteDoc(doc(db, 'users', token.userId, 'trades', tradeId));
+            if (!scopedStore.isCurrent(token)) return;
             setSelectedTrade((trade) => trade?.id === tradeId ? null : trade);
+            if (selectedTrade?.id === tradeId) setSelectedTradeUserId(null);
             setSelectedDay((day) => {
                 if (!day) return day;
                 const remainingTrades = day.trades.filter((trade) => trade.id !== tradeId);
@@ -333,11 +417,13 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
     const handleCloseModal = () => {
         setShowModal(false);
         setEditingTrade(null);
+        setEditingTradeUserId(null);
     };
 
     // Handle save goal
     const handleSaveGoal = async (goalData: GoalFormData) => {
-        if (!currentUser) {
+        const token = scopedStore.capture(currentUserId);
+        if (!token) {
             console.error('No current user found');
             alert('You must be logged in to save goals.');
             return;
@@ -358,7 +444,8 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         };
 
         try {
-            await addDoc(collection(db, 'users', currentUser.uid, 'goals'), goalToSave);
+            if (!scopedStore.isCurrent(token)) return;
+            await addDoc(collection(db, 'users', token.userId, 'goals'), goalToSave);
             console.log('Goal saved successfully');
         } catch (error) {
             console.error('Error saving goal:', error);
@@ -369,16 +456,23 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Handle delete goal click
     const handleDeleteGoal = (goalId: string) => {
+        if (!currentUserId || !scopedStore.getExposedState(currentUserId).goals.some((goal) => goal.id === goalId)) return;
         setGoalToDelete(goalId);
+        setGoalToDeleteUserId(currentUserId);
     };
 
     // Confirm delete goal
     const confirmDeleteGoal = async () => {
-        if (!currentUser || !goalToDelete) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token || !activeGoalToDelete) return;
 
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'goals', goalToDelete));
-            setGoalToDelete(null);
+            if (!scopedStore.isCurrent(token)) return;
+            await deleteDoc(doc(db, 'users', token.userId, 'goals', activeGoalToDelete));
+            if (scopedStore.isCurrent(token)) {
+                setGoalToDelete(null);
+                setGoalToDeleteUserId(null);
+            }
         } catch (error) {
             console.error('Error deleting goal:', error);
             alert('Failed to delete goal.');
@@ -572,7 +666,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 isOpen={showModal}
                 onClose={handleCloseModal}
                 onSave={handleSaveTrade}
-                editingTrade={editingTrade}
+                editingTrade={activeEditingTrade}
             />
 
             {/* Starting Balance Modal */}
@@ -593,8 +687,11 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
             {/* Delete Confirmation Dialog */}
             <ConfirmDialog
-                isOpen={!!goalToDelete}
-                onClose={() => setGoalToDelete(null)}
+                isOpen={!!activeGoalToDelete}
+                onClose={() => {
+                    setGoalToDelete(null);
+                    setGoalToDeleteUserId(null);
+                }}
                 onConfirm={confirmDeleteGoal}
                 title="Delete Goal"
                 message="Are you sure you want to delete this goal? This action cannot be undone."
@@ -613,8 +710,8 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
             />
 
             <TradingReviewDrawer
-                trade={selectedTrade}
-                day={selectedDay}
+                trade={activeSelectedTrade}
+                day={activeSelectedDay}
                 onClose={handleCloseReviewDrawer}
                 onEdit={handleEditTrade}
                 onDelete={handleDeleteTrade}

@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { UserScopedRealtimeStore, type UserIdentityToken } from './userScopedRealtime';
 
 interface ReadingChallenge {
   year: number;
@@ -27,96 +28,134 @@ interface ReadingChallengeContextType {
   };
 }
 
+interface ReadingChallengeState {
+  challenge: ReadingChallenge | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const emptyReadingChallengeState = (): ReadingChallengeState => ({
+  challenge: null,
+  loading: true,
+  error: null,
+});
+
 const ReadingChallengeContext = createContext<ReadingChallengeContextType | undefined>(undefined);
 
 export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
-  const [challenge, setChallenge] = useState<ReadingChallenge | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const currentUserId = isAuthenticated ? user?.id ?? null : null;
   const currentYear = new Date().getFullYear();
+  const scopedStore = useRef(new UserScopedRealtimeStore<ReadingChallengeState>(emptyReadingChallengeState)).current;
 
-  // Load challenge from Firestore
+  // observe() runs during render so an account switch/logout cannot expose the
+  // previous user's challenge for even one render.
+  scopedStore.observe(currentUserId);
+  const [, forceRender] = useState(0);
+  const exposedState = scopedStore.getExposedState(currentUserId);
+
+  const publish = (token: UserIdentityToken, nextState: ReadingChallengeState) => {
+    if (!scopedStore.publish(token, nextState)) return false;
+    forceRender((revision) => revision + 1);
+    return true;
+  };
+
   useEffect(() => {
-    const loadChallenge = async () => {
-      setError(null);
-      setLoading(true);
-      if (!isAuthenticated || !user) {
-        setChallenge(null);
-        setLoading(false);
-        return;
-      }
+    const capturedUserId = currentUserId;
+    const token = scopedStore.capture(capturedUserId);
+    if (!token) return () => undefined;
 
+    let cancelled = false;
+    publish(token, { challenge: null, loading: true, error: null });
+
+    const loadChallenge = async () => {
       try {
-        const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
+        const challengeRef = doc(db, 'reading_challenges', `${token.userId}_${currentYear}`);
         const challengeDoc = await getDoc(challengeRef);
+        if (cancelled || !scopedStore.isCurrent(token)) return;
 
         if (challengeDoc.exists()) {
           const data = challengeDoc.data();
-          setChallenge({
-            year: data.year,
-            goal: data.goal,
-            booksRead: data.booksRead || [],
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
+          publish(token, {
+            challenge: {
+              year: data.year,
+              goal: data.goal,
+              booksRead: data.booksRead || [],
+              createdAt: data.createdAt?.toDate() || new Date(),
+              updatedAt: data.updatedAt?.toDate() || new Date(),
+            },
+            loading: false,
+            error: null,
           });
         } else {
-          setChallenge(null);
+          publish(token, { challenge: null, loading: false, error: null });
         }
-        setError(null);
       } catch (error) {
+        if (cancelled || !scopedStore.isCurrent(token)) return;
         console.error('Error loading reading challenge:', error);
-        setChallenge(null);
-        setError('Unable to load your reading challenge. Please refresh the page and try again.');
-      } finally {
-        setLoading(false);
+        publish(token, {
+          challenge: null,
+          loading: false,
+          error: 'Unable to load your reading challenge. Please refresh the page and try again.',
+        });
       }
     };
 
-    loadChallenge();
-  }, [isAuthenticated, user, currentYear]);
+    void loadChallenge();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUserId, currentYear]);
 
   const setGoal = async (goal: number) => {
-    if (!user) return;
+    const token = scopedStore.capture(currentUserId);
+    if (!token) return;
 
     try {
-      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
-      
-      // Check if challenge already exists
+      const challengeRef = doc(db, 'reading_challenges', `${token.userId}_${currentYear}`);
       const existingDoc = await getDoc(challengeRef);
-      
+      if (!scopedStore.isCurrent(token)) return;
+
       if (existingDoc.exists()) {
-        // Update existing challenge
         await updateDoc(challengeRef, {
           goal,
           updatedAt: serverTimestamp(),
         });
-        
+        if (!scopedStore.isCurrent(token)) return;
+
         const data = existingDoc.data();
-        setChallenge({
-          year: data.year,
-          goal,
-          booksRead: data.booksRead || [],
-          createdAt: data.createdAt?.toDate() || new Date(),
-          updatedAt: new Date(),
+        publish(token, {
+          challenge: {
+            year: data.year,
+            goal,
+            booksRead: data.booksRead || [],
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: new Date(),
+          },
+          loading: false,
+          error: null,
         });
       } else {
-        // Create new challenge
         await setDoc(challengeRef, {
-          userId: user.id,
+          userId: token.userId,
           year: currentYear,
           goal,
           booksRead: [],
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
-        
-        setChallenge({
-          year: currentYear,
-          goal,
-          booksRead: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
+        if (!scopedStore.isCurrent(token)) return;
+
+        publish(token, {
+          challenge: {
+            year: currentYear,
+            goal,
+            booksRead: [],
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          loading: false,
+          error: null,
         });
       }
     } catch (error) {
@@ -126,70 +165,63 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
   };
 
   const deleteGoal = async () => {
-    if (!user) return;
+    const token = scopedStore.capture(currentUserId);
+    if (!token) return;
 
     try {
-      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
+      const challengeRef = doc(db, 'reading_challenges', `${token.userId}_${currentYear}`);
       await deleteDoc(challengeRef);
-      setChallenge(null);
+      if (!scopedStore.isCurrent(token)) return;
+      publish(token, { challenge: null, loading: false, error: null });
     } catch (error) {
       console.error('Error deleting reading goal:', error);
       throw error;
     }
   };
 
-  const markBookAsRead = async (bookId: string) => {
-    if (!user || !challenge) return;
+  const updateBooksRead = async (bookId: string, remove: boolean) => {
+    const token = scopedStore.capture(currentUserId);
+    if (!token) return;
+
+    const currentState = scopedStore.getExposedState(token.userId);
+    if (!currentState.challenge) return;
+
+    const updatedBooksRead = remove
+      ? currentState.challenge.booksRead.filter((id) => id !== bookId)
+      : currentState.challenge.booksRead.includes(bookId)
+        ? currentState.challenge.booksRead
+        : [...currentState.challenge.booksRead, bookId];
 
     try {
-      const updatedBooksRead = [...challenge.booksRead];
-      if (!updatedBooksRead.includes(bookId)) {
-        updatedBooksRead.push(bookId);
-      }
-
-      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
+      const challengeRef = doc(db, 'reading_challenges', `${token.userId}_${currentYear}`);
       await updateDoc(challengeRef, {
         booksRead: updatedBooksRead,
         updatedAt: serverTimestamp(),
       });
+      if (!scopedStore.isCurrent(token)) return;
 
-      setChallenge({
-        ...challenge,
-        booksRead: updatedBooksRead,
-        updatedAt: new Date(),
+      publish(token, {
+        challenge: {
+          ...currentState.challenge,
+          booksRead: updatedBooksRead,
+          updatedAt: new Date(),
+        },
+        loading: false,
+        error: null,
       });
     } catch (error) {
-      console.error('Error marking book as read:', error);
+      console.error(remove ? 'Error unmarking book as read:' : 'Error marking book as read:', error);
       throw error;
     }
   };
 
-  const unmarkBookAsRead = async (bookId: string) => {
-    if (!user || !challenge) return;
+  const markBookAsRead = (bookId: string) => updateBooksRead(bookId, false);
+  const unmarkBookAsRead = (bookId: string) => updateBooksRead(bookId, true);
+  const challenge = currentUserId ? exposedState.challenge : null;
+  const error = currentUserId ? exposedState.error : null;
+  const loading = currentUserId ? exposedState.loading : false;
 
-    try {
-      const updatedBooksRead = challenge.booksRead.filter(id => id !== bookId);
-
-      const challengeRef = doc(db, 'reading_challenges', `${user.id}_${currentYear}`);
-      await updateDoc(challengeRef, {
-        booksRead: updatedBooksRead,
-        updatedAt: serverTimestamp(),
-      });
-
-      setChallenge({
-        ...challenge,
-        booksRead: updatedBooksRead,
-        updatedAt: new Date(),
-      });
-    } catch (error) {
-      console.error('Error unmarking book as read:', error);
-      throw error;
-    }
-  };
-
-  const isBookRead = (bookId: string): boolean => {
-    return challenge?.booksRead.includes(bookId) || false;
-  };
+  const isBookRead = (bookId: string): boolean => challenge?.booksRead.includes(bookId) || false;
 
   const progress = {
     current: challenge?.booksRead.length || 0,

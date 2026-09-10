@@ -130,7 +130,8 @@ service cloud.firestore {
 
     // Reading Challenges
     match /reading_challenges/{challengeId} {
-      allow read: if true;
+      allow read: if isAuthenticated() &&
+                  resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated() &&
                    isValidReadingChallenge(request.resource.data) &&
                    request.resource.data.createdAt == request.time &&

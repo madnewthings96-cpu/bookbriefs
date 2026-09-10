@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useFirebase } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, Timestamp, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { UserScopedRealtimeStore } from '../contexts/userScopedRealtime';
 import useSEO from '../hooks/useSEO';
 import ReceiptScanner from '../components/ReceiptScanner';
 import './FinanceTrackerPage.css';
@@ -57,6 +58,20 @@ interface Budget {
     amount: number;
     updatedAt?: Timestamp;
 }
+
+interface FinanceDataState {
+    transactions: Transaction[];
+    goals: Goal[];
+    budgets: Budget[];
+    loading: boolean;
+}
+
+const emptyFinanceDataState = (): FinanceDataState => ({
+    transactions: [],
+    goals: [],
+    budgets: [],
+    loading: true,
+});
 
 type TransactionTypeFilter = 'all' | 'income' | 'expense';
 type TransactionSort = 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc';
@@ -467,17 +482,23 @@ const formatDateLabel = (date: string, language: FinanceLanguage = 'en') =>
     });
 
 const FinanceTrackerPage: React.FC = () => {
-    const { currentUser } = useFirebase();
+    const { user: currentUser } = useAuth();
+    const currentUserId = currentUser?.id ?? null;
+    const scopedStore = useRef(new UserScopedRealtimeStore<FinanceDataState>(emptyFinanceDataState)).current;
+    scopedStore.observe(currentUserId);
+    const [, forceRender] = useState(0);
+    const exposedData = scopedStore.getExposedState(currentUserId);
+    const transactions = exposedData.transactions;
+    const goals = exposedData.goals;
+    const budgets = exposedData.budgets;
+    const isLoading = currentUserId ? exposedData.loading : false;
     const currentMonthKey = useMemo(() => getMonthKey(new Date()), []);
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [goals, setGoals] = useState<Goal[]>([]);
-    const [budgets, setBudgets] = useState<Budget[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
     const [showGoalForm, setShowGoalForm] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonthKey);
     const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
+    const [editingTransactionUserId, setEditingTransactionUserId] = useState<string | null>(null);
     const [transactionSearch, setTransactionSearch] = useState('');
     const [transactionTypeFilter, setTransactionTypeFilter] = useState<TransactionTypeFilter>('all');
     const [transactionCategoryFilter, setTransactionCategoryFilter] = useState('all');
@@ -519,6 +540,7 @@ const FinanceTrackerPage: React.FC = () => {
     const monthLabel = (month: string) => formatMonthLabel(month, financeLanguage);
     const dateLabel = (date: string) => formatDateLabel(date, financeLanguage);
     const categoryLabel = (category: string) => getCategoryLabel(category, financeLanguage);
+    const activeEditingTransactionId = editingTransactionUserId === currentUserId ? editingTransactionId : null;
 
     const changeFinanceLanguage = (language: FinanceLanguage) => {
         setFinanceLanguage(language);
@@ -533,57 +555,88 @@ const FinanceTrackerPage: React.FC = () => {
     });
 
     useEffect(() => {
-        if (!currentUser) {
-            setIsLoading(false);
-            return;
-        }
+        const capturedUserId = currentUserId;
+        const token = scopedStore.capture(capturedUserId);
+        if (!token) return () => undefined;
 
         const txnQuery = query(
-            collection(db, 'users', currentUser.uid, 'transactions'),
+            collection(db, 'users', token.userId, 'transactions'),
             orderBy('date', 'desc')
         );
 
         const goalQuery = query(
-            collection(db, 'users', currentUser.uid, 'goals'),
+            collection(db, 'users', token.userId, 'goals'),
             orderBy('createdAt', 'desc')
         );
 
         const budgetQuery = query(
-            collection(db, 'users', currentUser.uid, 'budgets'),
+            collection(db, 'users', token.userId, 'budgets'),
             orderBy('category', 'asc')
         );
 
-        const unsubTxn = onSnapshot(txnQuery, (snapshot) => {
-            const txns: Transaction[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Transaction[];
-            setTransactions(txns);
-            setIsLoading(false);
-        });
+        const updateState = (updater: (state: FinanceDataState) => FinanceDataState) => {
+            if (!scopedStore.update(token, updater)) return;
+            forceRender((revision) => revision + 1);
+        };
 
-        const unsubGoals = onSnapshot(goalQuery, (snapshot) => {
-            const g: Goal[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Goal[];
-            setGoals(g);
-        });
+        const unsubTxn = scopedStore.subscribe(
+            token.userId,
+            (_subscriptionToken, onValue, onError) => onSnapshot(txnQuery, onValue, onError),
+            (snapshot: any, snapshotToken) => {
+                const txns: Transaction[] = snapshot.docs.map((snapshotDoc: any) => ({
+                    id: snapshotDoc.id,
+                    ...snapshotDoc.data(),
+                })) as Transaction[];
+                updateState((state) => ({ ...state, transactions: txns, loading: false }));
+                if (!scopedStore.isCurrent(snapshotToken)) return;
+            },
+            (error, errorToken) => {
+                console.error('Error loading transactions:', error);
+                updateState((state) => ({ ...state, loading: false }));
+                if (!scopedStore.isCurrent(errorToken)) return;
+            },
+        );
 
-        const unsubBudgets = onSnapshot(budgetQuery, (snapshot) => {
-            const b: Budget[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Budget[];
-            setBudgets(b);
-        });
+        const unsubGoals = scopedStore.subscribe(
+            token.userId,
+            (_subscriptionToken, onValue, onError) => onSnapshot(goalQuery, onValue, onError),
+            (snapshot: any, snapshotToken) => {
+                const g: Goal[] = snapshot.docs.map((snapshotDoc: any) => ({
+                    id: snapshotDoc.id,
+                    ...snapshotDoc.data(),
+                })) as Goal[];
+                updateState((state) => ({ ...state, goals: g }));
+                if (!scopedStore.isCurrent(snapshotToken)) return;
+            },
+            (error, errorToken) => {
+                console.error('Error loading goals:', error);
+                if (!scopedStore.isCurrent(errorToken)) return;
+            },
+        );
+
+        const unsubBudgets = scopedStore.subscribe(
+            token.userId,
+            (_subscriptionToken, onValue, onError) => onSnapshot(budgetQuery, onValue, onError),
+            (snapshot: any, snapshotToken) => {
+                const b: Budget[] = snapshot.docs.map((snapshotDoc: any) => ({
+                    id: snapshotDoc.id,
+                    ...snapshotDoc.data(),
+                })) as Budget[];
+                updateState((state) => ({ ...state, budgets: b }));
+                if (!scopedStore.isCurrent(snapshotToken)) return;
+            },
+            (error, errorToken) => {
+                console.error('Error loading budgets:', error);
+                if (!scopedStore.isCurrent(errorToken)) return;
+            },
+        );
 
         return () => {
             unsubTxn();
             unsubGoals();
             unsubBudgets();
         };
-    }, [currentUser]);
+    }, [currentUserId]);
 
     const filteredTransactions = useMemo(() => {
         return transactions.filter((t) => {
@@ -840,6 +893,7 @@ const FinanceTrackerPage: React.FC = () => {
 
     const openAddTransaction = (type: 'income' | 'expense' = 'expense') => {
         setEditingTransactionId(null);
+        setEditingTransactionUserId(null);
         setFormData({
             date: new Date().toISOString().split('T')[0],
             description: '',
@@ -851,7 +905,9 @@ const FinanceTrackerPage: React.FC = () => {
     };
 
     const openEditTransaction = (transaction: Transaction) => {
+        if (!currentUserId || !scopedStore.getExposedState(currentUserId).transactions.some((item) => item.id === transaction.id)) return;
         setEditingTransactionId(transaction.id);
+        setEditingTransactionUserId(currentUserId);
         setFormData({
             date: transaction.date,
             description: transaction.description,
@@ -865,6 +921,7 @@ const FinanceTrackerPage: React.FC = () => {
     const closeTransactionForm = () => {
         setShowForm(false);
         setEditingTransactionId(null);
+        setEditingTransactionUserId(null);
         resetTransactionForm();
     };
 
@@ -946,7 +1003,8 @@ const FinanceTrackerPage: React.FC = () => {
     };
 
     const handleScanComplete = async (data: { date: string; amount: string; description: string; category: string }) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
 
         try {
             const cleanAmount = data.amount.replace(/,/g, '.');
@@ -957,7 +1015,8 @@ const FinanceTrackerPage: React.FC = () => {
                 return;
             }
 
-            await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
+            if (!scopedStore.isCurrent(token)) return;
+            await addDoc(collection(db, 'users', token.userId, 'transactions'), {
                 date: data.date,
                 description: data.description || t.scannedReceipt,
                 category: data.category || 'Other',
@@ -973,7 +1032,8 @@ const FinanceTrackerPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!currentUser || isSubmitting) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token || isSubmitting) return;
 
         const numericAmount = parseFloat(formData.amount);
         if (isNaN(numericAmount) || numericAmount <= 0) return;
@@ -988,19 +1048,21 @@ const FinanceTrackerPage: React.FC = () => {
                 type: formData.type,
             };
 
-            if (editingTransactionId) {
-                await updateDoc(doc(db, 'users', currentUser.uid, 'transactions', editingTransactionId), {
+            if (activeEditingTransactionId) {
+                if (!scopedStore.isCurrent(token)) return;
+                await updateDoc(doc(db, 'users', token.userId, 'transactions', activeEditingTransactionId), {
                     ...payload,
                     updatedAt: Timestamp.now(),
                 });
             } else {
-                await addDoc(collection(db, 'users', currentUser.uid, 'transactions'), {
+                if (!scopedStore.isCurrent(token)) return;
+                await addDoc(collection(db, 'users', token.userId, 'transactions'), {
                     ...payload,
                     createdAt: Timestamp.now(),
                 });
             }
 
-            closeTransactionForm();
+            if (scopedStore.isCurrent(token)) closeTransactionForm();
         } catch (error) {
             console.error('Error saving transaction:', error);
         } finally {
@@ -1010,19 +1072,21 @@ const FinanceTrackerPage: React.FC = () => {
 
     const handleBudgetSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!currentUser || isSubmitting) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token || isSubmitting) return;
 
         const numericAmount = parseFloat(budgetFormData.amount);
         if (isNaN(numericAmount) || numericAmount <= 0) return;
 
         setIsSubmitting(true);
         try {
-            await setDoc(doc(db, 'users', currentUser.uid, 'budgets', budgetFormData.category), {
+            if (!scopedStore.isCurrent(token)) return;
+            await setDoc(doc(db, 'users', token.userId, 'budgets', budgetFormData.category), {
                 category: budgetFormData.category,
                 amount: numericAmount,
                 updatedAt: Timestamp.now(),
             }, { merge: true });
-            setBudgetFormData({ category: budgetFormData.category, amount: '' });
+            if (scopedStore.isCurrent(token)) setBudgetFormData({ category: budgetFormData.category, amount: '' });
         } catch (error) {
             console.error('Error saving budget:', error);
         } finally {
@@ -1032,10 +1096,12 @@ const FinanceTrackerPage: React.FC = () => {
 
     const handleGoalSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!currentUser || isSubmitting) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token || isSubmitting) return;
         setIsSubmitting(true);
         try {
-            await addDoc(collection(db, 'users', currentUser.uid, 'goals'), {
+            if (!scopedStore.isCurrent(token)) return;
+            await addDoc(collection(db, 'users', token.userId, 'goals'), {
                 name: goalFormData.name,
                 emoji: goalFormData.emoji,
                 targetAmount: parseFloat(goalFormData.targetAmount),
@@ -1043,8 +1109,10 @@ const FinanceTrackerPage: React.FC = () => {
                 targetDate: goalFormData.targetDate,
                 createdAt: Timestamp.now(),
             });
-            setGoalFormData({ name: '', emoji: '🎯', targetAmount: '', currentAmount: '', targetDate: '' });
-            setShowGoalForm(false);
+            if (scopedStore.isCurrent(token)) {
+                setGoalFormData({ name: '', emoji: '🎯', targetAmount: '', currentAmount: '', targetDate: '' });
+                setShowGoalForm(false);
+            }
         } catch (error) {
             console.error('Error adding goal:', error);
         } finally {
@@ -1053,44 +1121,54 @@ const FinanceTrackerPage: React.FC = () => {
     };
 
     const handleAddToGoal = async (goalId: string) => {
-        if (!currentUser || !addAmount) return;
-        const goal = goals.find(g => g.id === goalId);
+        const token = scopedStore.capture(currentUserId);
+        if (!token || !addAmount) return;
+        const goal = scopedStore.getExposedState(token.userId).goals.find(g => g.id === goalId);
         const numericAmount = parseFloat(addAmount);
         if (!goal || isNaN(numericAmount) || numericAmount <= 0) return;
 
         try {
-            await updateDoc(doc(db, 'users', currentUser.uid, 'goals', goalId), {
+            if (!scopedStore.isCurrent(token)) return;
+            await updateDoc(doc(db, 'users', token.userId, 'goals', goalId), {
                 currentAmount: goal.currentAmount + numericAmount,
             });
-            setAddAmount('');
-            setAddAmountGoalId(null);
+            if (scopedStore.isCurrent(token)) {
+                setAddAmount('');
+                setAddAmountGoalId(null);
+            }
         } catch (error) {
             console.error('Error updating goal:', error);
         }
     };
 
     const handleDeleteGoal = async (goalId: string) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'goals', goalId));
+            if (!scopedStore.isCurrent(token)) return;
+            await deleteDoc(doc(db, 'users', token.userId, 'goals', goalId));
         } catch (error) {
             console.error('Error deleting goal:', error);
         }
     };
 
     const handleDeleteBudget = async (category: string) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'budgets', category));
+            if (!scopedStore.isCurrent(token)) return;
+            await deleteDoc(doc(db, 'users', token.userId, 'budgets', category));
         } catch (error) {
             console.error('Error deleting budget:', error);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!currentUser) return;
+        const token = scopedStore.capture(currentUserId);
+        if (!token) return;
         try {
-            await deleteDoc(doc(db, 'users', currentUser.uid, 'transactions', id));
+            if (!scopedStore.isCurrent(token)) return;
+            await deleteDoc(doc(db, 'users', token.userId, 'transactions', id));
         } catch (error) {
             console.error('Error deleting transaction:', error);
         }
@@ -1707,9 +1785,9 @@ const FinanceTrackerPage: React.FC = () => {
 
             {showForm && (
                 <div className="finance-modal-backdrop">
-                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={showForm ? (editingTransactionId ? t.editTransaction : t.newTransaction) : t.newGoal} tabIndex={-1} dir={direction} className="finance-dialog">
+                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={showForm ? (activeEditingTransactionId ? t.editTransaction : t.newTransaction) : t.newGoal} tabIndex={-1} dir={direction} className="finance-dialog">
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-gray-800">{editingTransactionId ? t.editTransaction : t.newTransaction}</h2>
+                            <h2 className="text-xl font-bold text-gray-800">{activeEditingTransactionId ? t.editTransaction : t.newTransaction}</h2>
                             <button onClick={closeTransactionForm} className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-600" aria-label={t.closeTransactionForm}>
                                 <X className="h-5 w-5" aria-hidden="true" />
                             </button>
@@ -1743,7 +1821,7 @@ const FinanceTrackerPage: React.FC = () => {
                                 <input aria-label={t.description} type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder={t.coffeeExample} className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-forest-400" required />
                             </div>
                             <button type="submit" disabled={isSubmitting} className="pressable w-full rounded-lg bg-forest-800 py-3 font-semibold text-white transition-[transform,background-color,opacity] duration-200 hover:bg-forest-700 disabled:cursor-not-allowed disabled:opacity-50">
-                                {isSubmitting ? t.saving : editingTransactionId ? t.updateTransaction : t.saveTransaction}
+                                {isSubmitting ? t.saving : activeEditingTransactionId ? t.updateTransaction : t.saveTransaction}
                             </button>
                         </form>
                     </div>
@@ -1752,7 +1830,7 @@ const FinanceTrackerPage: React.FC = () => {
 
             {showGoalForm && (
                 <div className="finance-modal-backdrop">
-                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={showForm ? (editingTransactionId ? t.editTransaction : t.newTransaction) : t.newGoal} tabIndex={-1} dir={direction} className="finance-dialog">
+                    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={showForm ? (activeEditingTransactionId ? t.editTransaction : t.newTransaction) : t.newGoal} tabIndex={-1} dir={direction} className="finance-dialog">
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-xl font-bold text-gray-800">{t.newGoal}</h2>
                             <button onClick={() => setShowGoalForm(false)} className="pressable flex h-10 w-10 items-center justify-center rounded-xl text-gray-400 transition-[transform,background-color,color] duration-200 hover:bg-gray-100 hover:text-gray-600" aria-label={t.closeGoalForm}>
