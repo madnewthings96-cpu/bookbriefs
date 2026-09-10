@@ -10,6 +10,7 @@ import {
 import { auth, googleProvider } from '../firebase';
 import {
   createAuthObserverFlow,
+  disposeCurrentAuthObserverSubscription,
   type AuthAttemptKind,
   type AuthObserverState,
   type AuthUser,
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const observerSubscriptionRef = useRef<(() => void) | null>(null);
 
   const subscribeAuthObserver = useCallback(() => {
-    observerSubscriptionRef.current?.();
+    disposeCurrentAuthObserverSubscription(observerSubscriptionRef);
 
     let active = true;
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -78,10 +79,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [observerFlow]);
 
   useEffect(() => {
-    const cleanup = subscribeAuthObserver();
+    subscribeAuthObserver();
     return () => {
-      cleanup();
-      if (observerSubscriptionRef.current === cleanup) observerSubscriptionRef.current = null;
+      disposeCurrentAuthObserverSubscription(observerSubscriptionRef);
     };
   }, [subscribeAuthObserver]);
 

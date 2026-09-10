@@ -51,6 +51,38 @@ test('auth provider handles observer failure and exposes a resubscription path',
   assert.match(source, /onAuthStateChanged\(auth/);
 });
 
+test('observer recovery unmount disposes the latest subscription exactly once', async () => {
+  const model = await load<typeof import('../contexts/authStateModel')>('../contexts/authStateModel');
+  const provider = await readFile('contexts/AuthContext.tsx', 'utf8');
+  assert.match(provider, /disposeCurrentAuthObserverSubscription\(observerSubscriptionRef\)/);
+  const flow = model.createAuthObserverFlow({
+    user: { id: 'user-a', email: 'a@example.com', name: 'A' },
+    isAuthReady: true,
+    authError: null,
+  });
+  const subscriptionRef: { current: (() => void) | null } = { current: null };
+  let oldUnsubscribeCount = 0;
+  let latestUnsubscribeCount = 0;
+
+  const subscribe = (unsubscribe: () => void) => {
+    model.disposeCurrentAuthObserverSubscription(subscriptionRef);
+    subscriptionRef.current = unsubscribe;
+  };
+
+  subscribe(() => { oldUnsubscribeCount += 1; });
+  flow.observerError(new Error('observer failed'));
+  flow.beginAttempt('login');
+  subscribe(() => { latestUnsubscribeCount += 1; });
+  flow.observerUser({ id: 'user-b', email: 'b@example.com', name: 'B' });
+
+  model.disposeCurrentAuthObserverSubscription(subscriptionRef);
+  model.disposeCurrentAuthObserverSubscription(subscriptionRef);
+
+  assert.equal(oldUnsubscribeCount, 1, 'recovery must clean the replaced observer');
+  assert.equal(latestUnsubscribeCount, 1, 'unmount must clean the latest observer once');
+  assert.equal(subscriptionRef.current, null);
+});
+
 test('observer recovery flow accepts email login, signup, and Google retries', async () => {
   const model = await load<typeof import('../contexts/authStateModel')>('../contexts/authStateModel');
   const prior = {

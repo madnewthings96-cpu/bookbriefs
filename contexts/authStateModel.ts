@@ -12,6 +12,23 @@ export interface AuthObserverState {
 
 export type AuthAttemptKind = 'login' | 'signup' | 'google';
 
+export type AuthObserverSubscriptionRef = {
+  current: (() => void) | null;
+};
+
+/**
+ * Dispose the subscription currently owned by the provider. Clearing the ref
+ * before invoking the cleanup makes this safe for both replacement and
+ * unmount, even when a recovery attempt has installed a newer subscription.
+ */
+export const disposeCurrentAuthObserverSubscription = (
+  subscriptionRef: AuthObserverSubscriptionRef,
+): void => {
+  const cleanup = subscriptionRef.current;
+  subscriptionRef.current = null;
+  cleanup?.();
+};
+
 export const INITIAL_AUTH_OBSERVER_STATE: AuthObserverState = {
   user: null,
   isAuthReady: false,
