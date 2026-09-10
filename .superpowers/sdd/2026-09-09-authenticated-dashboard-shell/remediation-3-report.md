@@ -34,3 +34,12 @@
 - Node emits the existing `module.register()` deprecation warning during TSX runs.
 
 Commit: `98c0acf` (`fix dashboard accessibility and shell robustness`).
+
+## Fix round 1
+
+- Files: `pages/SummariesPage.css`, `components/dashboard/DashboardShell.css`, `components/dashboard/DashboardSidebar.tsx`, and `tests/dashboardAccessibilityRemediation.test.ts`.
+- RED: the strengthened RTL contract failed because the sort select still used physical padding and the sidebar depended on one-time `isRtl`/`languagechange` state.
+- GREEN: the contract now checks logical block/inline padding, inline-end chevron reserve, live `[dir='rtl']` icon flipping, stable collapse semantics, and no React-only direction state; focused accessibility/shell/RTL tests pass 23/23.
+- Behavior preservation: LTR collapse icon mapping and `Expand sidebar`/`Collapse sidebar` labels are unchanged; CSS reacts immediately to root `dir` changes without listeners or stale state, and the sort select preserves its prior LTR padding geometry while reserving the chevron in RTL.
+- Verification: full TS/TSX suite 151/151, `npm run build` (Vite, SEO prerender, SEO tests), and `git diff --check` all pass. Existing TSX module deprecation and baseline `tsc` concerns remain unchanged.
+- Commit: `d2347d4` (`fix dashboard RTL affordance reactivity`).
