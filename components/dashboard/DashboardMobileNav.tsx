@@ -47,7 +47,14 @@ export function DashboardMobileNav({ open, onOpenChange, onFeedback }: Dashboard
     <>
       <nav className="dashboard-mobile-nav" aria-label="Dashboard navigation">
         {primaryItems.map(item => <MobileNavigationItem key={item.id} item={item} pathname={pathname} onNavigate={() => undefined} onFeedback={onFeedback} />)}
-        <button type="button" className="dashboard-mobile-nav-item" onClick={() => onOpenChange(true)} aria-expanded={open} aria-controls="dashboard-more-drawer">
+        <button
+          type="button"
+          className="dashboard-mobile-nav-item"
+          onClick={() => onOpenChange(true)}
+          aria-expanded={open}
+          aria-haspopup={open ? 'dialog' : undefined}
+          aria-controls={open ? 'dashboard-more-drawer' : undefined}
+        >
           <Menu aria-hidden="true" size={20} />
           <span>{t('dashboardMore') || 'More'}</span>
         </button>

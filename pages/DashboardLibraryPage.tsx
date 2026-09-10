@@ -46,8 +46,13 @@ export default function DashboardLibraryPage() {
     error: catalogError,
     refreshBooks,
   } = useBooks();
-  const { favorites } = useFavorites();
-  const { bookProgress } = useUserProgress();
+  const {
+    favorites,
+    error: favoritesError,
+    isUserDataReady: favoritesReady,
+    refreshFavorites,
+  } = useFavorites();
+  const { bookProgress, isUserDataReady: progressReady } = useUserProgress();
   const [filter, setFilter] = useState<DashboardLibraryFilter>('all');
 
   const library = useMemo(() => buildDashboardShelf(books, favorites, bookProgress), [books, favorites, bookProgress]);
@@ -62,6 +67,9 @@ export default function DashboardLibraryPage() {
       visibleItems={visibleItems}
       catalogLoading={catalogLoading}
       catalogError={catalogError}
+      favoritesError={favoritesError}
+      retryFavorites={refreshFavorites}
+      userDataReady={favoritesReady && progressReady}
       retryCatalog={retryCatalog}
       emptyState={emptyState}
     />

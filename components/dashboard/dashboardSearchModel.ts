@@ -1,5 +1,29 @@
 import type { Book } from '../../types';
 
+export type DashboardSearchSurfaceState = 'idle' | 'loading' | 'error' | 'results' | 'empty';
+
+export interface DashboardSearchSurfaceInput {
+  query: string;
+  loading: boolean;
+  error: string | null;
+  hasResults: boolean;
+  hasCatalog: boolean;
+}
+
+export const getDashboardSearchSurfaceState = ({
+  query,
+  loading,
+  error,
+  hasResults,
+  hasCatalog,
+}: DashboardSearchSurfaceInput): DashboardSearchSurfaceState => {
+  if (!query.trim()) return 'idle';
+  if (loading && !hasCatalog) return 'loading';
+  if (error && !hasCatalog) return 'error';
+  if (hasResults) return 'results';
+  return loading || error ? 'results' : 'empty';
+};
+
 export interface DashboardSearchBook {
   book: Book;
   title: string;

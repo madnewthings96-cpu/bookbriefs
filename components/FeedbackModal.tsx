@@ -128,7 +128,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
             <form onSubmit={handleSubmit}>
               {/* Textarea */}
               <div className="mb-6">
+                <label htmlFor="feedback-message" className="sr-only">Tell us what we can improve</label>
                 <textarea
+                  id="feedback-message"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Start typing..."

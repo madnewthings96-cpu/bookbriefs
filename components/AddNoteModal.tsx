@@ -21,10 +21,11 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
   onSuccess,
   surface = 'public',
 }) => {
-  const { addNote } = usePersonalNotes();
+  const { addNote, isUserDataReady } = usePersonalNotes();
   const { t } = useLanguage();
   const [noteContent, setNoteContent] = useState(initialText);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const noteInputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,15 +35,26 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
       return;
     }
 
+    if (!isUserDataReady) {
+      setSubmitError('Your notes are still loading. Please wait a moment and try again.');
+      return;
+    }
+
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      addNote(bookId, noteContent.trim());
+      const didAdd = addNote(bookId, noteContent.trim());
+      if (!didAdd) {
+        setSubmitError('Your notes are still loading. Please wait a moment and try again.');
+        return;
+      }
       setNoteContent('');
       onClose();
       onSuccess?.();
     } catch (error) {
       console.error('Error adding note:', error);
+      setSubmitError('We could not save this note. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -50,6 +62,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
 
   const handleClose = () => {
     setNoteContent(initialText);
+    setSubmitError(null);
     onClose();
   };
 
@@ -85,7 +98,10 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
               ref={noteInputRef}
               id="noteContent"
               value={noteContent}
-              onChange={(e) => setNoteContent(e.target.value)}
+              onChange={(e) => {
+                setNoteContent(e.target.value);
+                setSubmitError(null);
+              }}
               placeholder={t('writeYourThoughts') || 'Write your thoughts, insights, or key takeaways from this book...'}
               className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               required
@@ -93,9 +109,19 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
             <p className="text-sm text-gray-500 mt-2">
               {t('noteHelpText') || 'Capture your personal insights, questions, or connections you make while reading.'}
             </p>
+            {!isUserDataReady && (
+              <p className="mt-2 text-sm font-semibold text-gray-600" role="status">
+                Loading your notes…
+              </p>
+            )}
+            {submitError && (
+              <p className="mt-2 text-sm font-semibold text-red-700" role="alert">
+                {submitError}
+              </p>
+            )}
           </div>
 
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={handleClose}
@@ -106,12 +132,12 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={!noteContent.trim() || isSubmitting}
+              disabled={!noteContent.trim() || isSubmitting || !isUserDataReady}
               className={`${surface === 'dashboard' ? 'min-h-11 ' : ''}px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center`}
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ms-1 me-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -119,7 +145,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   {t('addNote') || 'Add Note'}

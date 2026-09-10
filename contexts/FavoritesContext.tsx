@@ -9,6 +9,8 @@ import { getBrowserStorage, safeReadItem, safeRemoveItem } from './userScopedPer
 interface FavoritesContextType {
   favorites: string[];
   error: string | null;
+  isUserDataReady: boolean;
+  refreshFavorites: () => void;
   addFavorite: (bookId: string) => void;
   removeFavorite: (bookId: string) => void;
   isFavorite: (bookId: string) => boolean;
@@ -18,9 +20,10 @@ interface FavoritesContextType {
 interface FavoritesState {
   favorites: string[];
   error: string | null;
+  ready: boolean;
 }
 
-const emptyFavoritesState = (): FavoritesState => ({ favorites: [], error: null });
+const emptyFavoritesState = (): FavoritesState => ({ favorites: [], error: null, ready: false });
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -32,6 +35,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Reset before React renders children for a new UID or logout.
   if (scopedStore.observe(currentUserId)) optimisticState.reset();
   const [, forceRender] = useState(0);
+  const [retryRevision, setRetryRevision] = useState(0);
   const exposedState = scopedStore.getExposedState(currentUserId);
 
   const publish = (token: UserIdentityToken, nextState: FavoritesState) => {
@@ -65,6 +69,12 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const token = scopedStore.capture(capturedUserId);
     if (!token || !user) return () => undefined;
 
+    publish(token, {
+      ...scopedStore.getExposedState(capturedUserId),
+      error: null,
+      ready: false,
+    });
+
     const legacyStorageKey = `favorites_${user.email}`;
     const legacyFavorites = readLegacyFavorites(legacyStorageKey);
     const favoritesRef = doc(db, 'favorites', token.userId);
@@ -80,7 +90,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const mergedFavorites = uniqueFavorites([...remoteFavorites, ...legacyFavorites]);
 
         const rebasedFavorites = optimisticState.setRemote(mergedFavorites);
-        publish(snapshotToken, { favorites: rebasedFavorites, error: null });
+        publish(snapshotToken, { favorites: rebasedFavorites, error: null, ready: true });
 
         if (legacyFavorites.length > 0 && mergedFavorites.length !== remoteFavorites.length) {
           if (!scopedStore.isCurrent(snapshotToken)) return;
@@ -100,15 +110,19 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       },
       (error, errorToken) => {
         console.error('Failed to load favorites:', error);
+        const visibleFavorites = scopedStore.getExposedState(errorToken.userId).favorites;
+        const legacyFallback = optimisticState.setRemote(legacyFavorites);
+        const preservedFavorites = optimisticState.setRemote(uniqueFavorites([...visibleFavorites, ...legacyFallback]));
         publish(errorToken, {
-          favorites: optimisticState.setRemote(legacyFavorites),
+          favorites: preservedFavorites,
           error: "We couldn't load your saved books. Your saved books on this device are still available.",
+          ready: true,
         });
       },
     );
 
     return dispose;
-  }, [currentUserId, user?.email]);
+  }, [currentUserId, retryRevision, user?.email]);
 
   useEffect(() => () => {
     scopedStore.destroy();
@@ -124,6 +138,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!scopedStore.update(token, (state) => ({
       favorites: mutation.state,
       error: null,
+      ready: state.ready,
     }))) return;
     forceRender((revision) => revision + 1);
 
@@ -135,13 +150,21 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, { merge: true }).then(() => {
       if (!scopedStore.isCurrent(token)) return;
       const rebasedFavorites = optimisticState.resolve(mutation.token, true);
-      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      scopedStore.publish(token, {
+        favorites: rebasedFavorites,
+        error: null,
+        ready: scopedStore.getExposedState(token.userId).ready,
+      });
       forceRender((revision) => revision + 1);
     }, (error) => {
       console.error('Failed to add favorite:', error);
       if (!scopedStore.isCurrent(token)) return;
       const rebasedFavorites = optimisticState.resolve(mutation.token, false);
-      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      scopedStore.publish(token, {
+        favorites: rebasedFavorites,
+        error: null,
+        ready: scopedStore.getExposedState(token.userId).ready,
+      });
       forceRender((revision) => revision + 1);
     });
   };
@@ -156,6 +179,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!scopedStore.update(token, (state) => ({
       favorites: mutation.state,
       error: null,
+      ready: state.ready,
     }))) return;
     forceRender((revision) => revision + 1);
 
@@ -167,19 +191,29 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }, { merge: true }).then(() => {
       if (!scopedStore.isCurrent(token)) return;
       const rebasedFavorites = optimisticState.resolve(mutation.token, true);
-      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      scopedStore.publish(token, {
+        favorites: rebasedFavorites,
+        error: null,
+        ready: scopedStore.getExposedState(token.userId).ready,
+      });
       forceRender((revision) => revision + 1);
     }, (error) => {
       console.error('Failed to remove favorite:', error);
       if (!scopedStore.isCurrent(token)) return;
       const rebasedFavorites = optimisticState.resolve(mutation.token, false);
-      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      scopedStore.publish(token, {
+        favorites: rebasedFavorites,
+        error: null,
+        ready: scopedStore.getExposedState(token.userId).ready,
+      });
       forceRender((revision) => revision + 1);
     });
   };
 
   const favorites = currentUserId ? exposedState.favorites : [];
   const error = currentUserId ? exposedState.error : null;
+  const isUserDataReady = Boolean(currentUserId && exposedState.ready);
+  const refreshFavorites = () => setRetryRevision((revision) => revision + 1);
   const isFavorite = (bookId: string): boolean => favorites.includes(bookId);
 
   const toggleFavorite = (bookId: string) => {
@@ -188,7 +222,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   return (
-    <FavoritesContext.Provider value={{ favorites, error, addFavorite, removeFavorite, isFavorite, toggleFavorite }}>
+    <FavoritesContext.Provider value={{ favorites, error, isUserDataReady, refreshFavorites, addFavorite, removeFavorite, isFavorite, toggleFavorite }}>
       {children}
     </FavoritesContext.Provider>
   );

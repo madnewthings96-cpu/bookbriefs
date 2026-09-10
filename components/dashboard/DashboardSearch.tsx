@@ -4,12 +4,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useBooks } from '../../contexts/BooksContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { getBookSummaryHref } from '../readingRouteModel';
-import { getDashboardSearchActiveIndex, searchDashboardBooks } from './dashboardSearchModel';
+import {
+  getDashboardSearchActiveIndex,
+  getDashboardSearchSurfaceState,
+  searchDashboardBooks,
+} from './dashboardSearchModel';
 
 const RESULTS_ID = 'dashboard-search-results';
+const STATUS_ID = 'dashboard-search-status';
 
 export default function DashboardSearch() {
-  const { books } = useBooks();
+  const {
+    books,
+    loading: booksLoading,
+    error: booksError,
+    refreshBooks,
+  } = useBooks();
   const { getBookAuthor, getBookTitle } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -98,6 +108,18 @@ export default function DashboardSearch() {
   };
 
   const hasQuery = Boolean(query.trim());
+  const searchState = getDashboardSearchSurfaceState({
+    query,
+    loading: booksLoading,
+    error: booksError,
+    hasResults: results.length > 0,
+    hasCatalog: books.length > 0,
+  });
+  const hasStatus = isOpen && hasQuery && (
+    booksLoading
+    || Boolean(booksError)
+    || (!booksLoading && !booksError && results.length === 0)
+  );
 
   return (
     <div ref={containerRef} className="dashboard-search">
@@ -114,6 +136,7 @@ export default function DashboardSearch() {
           aria-expanded={isOpen && hasQuery}
           aria-controls={isOpen && hasQuery ? RESULTS_ID : undefined}
           aria-activedescendant={isOpen && hasQuery && activeIndex >= 0 && activeIndex < results.length ? `dashboard-search-result-${activeIndex}` : undefined}
+          aria-describedby={hasStatus ? STATUS_ID : undefined}
           onChange={event => {
             setQuery(event.target.value);
             setIsOpen(true);
@@ -123,8 +146,30 @@ export default function DashboardSearch() {
           onKeyDown={handleKeyDown}
         />
       </div>
+      {isOpen && hasQuery && booksLoading && (
+        <p id={STATUS_ID} className="dashboard-search-empty" role="status" aria-live="polite">
+          {books.length > 0 ? 'Refreshing book summaries…' : 'Loading book summaries…'}
+        </p>
+      )}
+      {isOpen && hasQuery && booksError && (
+        <div id={STATUS_ID} className="dashboard-search-empty" role="alert">
+          <p>We couldn&apos;t load book summaries. Retry to search the catalog.</p>
+          <button type="button" onClick={() => { void refreshBooks(); }}>Try again</button>
+        </div>
+      )}
+      {isOpen && hasQuery && !results.length && (
+        <p
+          id={!booksLoading && !booksError && searchState === 'empty' ? STATUS_ID : undefined}
+          className="dashboard-search-empty"
+          role="status"
+          aria-live="polite"
+          hidden={booksLoading || Boolean(booksError)}
+        >
+          No matching book summaries.
+        </p>
+      )}
       {isOpen && hasQuery && (
-        <ul id={RESULTS_ID} className="dashboard-search-results" role="listbox" aria-label="Book search results">
+        <ul id={RESULTS_ID} className="dashboard-search-results" role="listbox" aria-label="Book search results" aria-busy={booksLoading || undefined}>
           {results.map((result, index) => (
             <li
               key={result.book.id}
@@ -140,9 +185,6 @@ export default function DashboardSearch() {
             </li>
           ))}
         </ul>
-      )}
-      {isOpen && hasQuery && !results.length && (
-        <p className="dashboard-search-empty" role="status">No matching book summaries.</p>
       )}
     </div>
   );

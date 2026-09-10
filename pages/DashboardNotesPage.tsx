@@ -16,7 +16,7 @@ export default function DashboardNotesPage() {
     error: catalogError,
     refreshBooks,
   } = useBooks();
-  const { personalNotesData } = usePersonalNotes();
+  const { personalNotesData, isUserDataReady } = usePersonalNotes();
   const [filter, setFilter] = useState<KnowledgeFilter>('all');
 
   const allKnowledge = useMemo(() => (
@@ -54,6 +54,7 @@ export default function DashboardNotesPage() {
       catalogLoading={catalogLoading}
       catalogError={catalogError}
       retryCatalog={retryCatalog}
+      userDataReady={isUserDataReady}
       groups={groups}
     />
   );

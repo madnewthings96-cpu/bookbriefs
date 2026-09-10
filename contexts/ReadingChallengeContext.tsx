@@ -17,6 +17,7 @@ interface ReadingChallengeContextType {
   challenge: ReadingChallenge | null;
   loading: boolean;
   error: string | null;
+  refreshChallenge: () => void;
   setGoal: (goal: number) => Promise<void>;
   deleteGoal: () => Promise<void>;
   markBookAsRead: (bookId: string) => Promise<void>;
@@ -48,6 +49,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
   const currentUserId = isAuthenticated ? user?.id ?? null : null;
   const currentYear = new Date().getFullYear();
   const scopedStore = useRef(new UserScopedRealtimeStore<ReadingChallengeState>(emptyReadingChallengeState)).current;
+  const [reloadRevision, setReloadRevision] = useState(0);
 
   // observe() runs during render so an account switch/logout cannot expose the
   // previous user's challenge for even one render.
@@ -68,7 +70,11 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     if (!token) return () => undefined;
 
     let cancelled = false;
-    publish(token, { challenge: null, loading: true, error: null });
+    publish(token, {
+      challenge: scopedStore.getExposedState(token.userId).challenge,
+      loading: true,
+      error: null,
+    });
 
     const loadChallenge = async () => {
       try {
@@ -95,10 +101,14 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
       } catch (error) {
         if (cancelled || !scopedStore.isCurrent(token)) return;
         console.error('Error loading reading challenge:', error);
-        publish(token, {
+        const failureState: ReadingChallengeState = {
           challenge: null,
           loading: false,
           error: 'Unable to load your reading challenge. Please refresh the page and try again.',
+        };
+        publish(token, {
+          ...failureState,
+          challenge: scopedStore.getExposedState(token.userId).challenge,
         });
       }
     };
@@ -107,7 +117,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     return () => {
       cancelled = true;
     };
-  }, [currentUserId, currentYear]);
+  }, [currentUserId, currentYear, reloadRevision]);
 
   useEffect(() => () => {
     scopedStore.destroy();
@@ -231,6 +241,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
   const challenge = currentUserId ? exposedState.challenge : null;
   const error = currentUserId ? exposedState.error : null;
   const loading = currentUserId ? exposedState.loading : false;
+  const refreshChallenge = () => setReloadRevision((revision) => revision + 1);
 
   const isBookRead = (bookId: string): boolean => challenge?.booksRead.includes(bookId) || false;
 
@@ -246,6 +257,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         challenge,
         loading,
         error,
+        refreshChallenge,
         setGoal,
         deleteGoal,
         markBookAsRead,

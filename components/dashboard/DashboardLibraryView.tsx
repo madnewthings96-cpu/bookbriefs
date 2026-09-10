@@ -25,6 +25,9 @@ export interface DashboardLibraryViewProps {
   catalogLoading: boolean;
   catalogError: string | null;
   retryCatalog: () => Promise<void>;
+  favoritesError?: string | null;
+  retryFavorites?: () => void;
+  userDataReady?: boolean;
   emptyState: DashboardLibraryEmptyState;
 }
 
@@ -35,12 +38,16 @@ export default function DashboardLibraryView({
   catalogLoading,
   catalogError,
   retryCatalog,
+  favoritesError = null,
+  retryFavorites,
+  userDataReady = true,
   emptyState,
 }: DashboardLibraryViewProps) {
   const catalogState: CatalogSurfaceState = buildCatalogSurfaceState({
     loading: catalogLoading,
     error: catalogError,
     hasContent: visibleItems.length > 0,
+    userDataReady,
   });
   const countLabel = `${visibleItems.length} ${visibleItems.length === 1 ? 'book' : 'books'} shown`;
 
@@ -77,6 +84,12 @@ export default function DashboardLibraryView({
         </section>
       )}
 
+      {!catalogLoading && !userDataReady && (
+        <section className="dashboard-workspace-loading" role="status" aria-label="Loading your saved reading data">
+          <p>Loading your saved reading data…</p>
+        </section>
+      )}
+
       {catalogError && (
         <section className="dashboard-workspace-status" role="alert">
           <p>{catalogError}</p>
@@ -85,11 +98,19 @@ export default function DashboardLibraryView({
         </section>
       )}
 
+      {favoritesError && (
+        <section className="dashboard-workspace-status" role="alert">
+          <p>{favoritesError}</p>
+          <p>Your available library items remain visible. Retry saved books to restore any missing favorites.</p>
+          {retryFavorites && <button type="button" onClick={retryFavorites}>Retry saved books</button>}
+        </section>
+      )}
+
       {catalogState === 'content' ? (
         <div className="dashboard-book-grid dashboard-book-grid--library" aria-label="Library books">
           {visibleItems.map((item) => <DashboardBookCard key={item.book.id} item={item} />)}
         </div>
-      ) : catalogState === 'empty' ? (
+      ) : catalogState === 'empty' && !favoritesError ? (
         <section className="dashboard-empty-state dashboard-workspace-empty" aria-labelledby="library-empty-heading">
           <h2 id="library-empty-heading">No books here yet</h2>
           <p>{emptyState.message}</p>

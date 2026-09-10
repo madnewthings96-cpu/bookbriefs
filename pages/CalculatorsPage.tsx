@@ -213,16 +213,16 @@ const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ surface = 'public' })
       <section className="relative isolate overflow-hidden bg-white px-4 pb-16 pt-8 sm:px-6 md:pb-24 md:pt-12 lg:px-8 border-b border-forest-900/[0.06]">
         {/* Subtle Ambient Radial Glow */}
         <div
-          className="pointer-events-none absolute -left-20 -top-20 h-[500px] w-[500px] rounded-full bg-forest-100/40 blur-3xl"
+          className="pointer-events-none absolute -start-20 -top-20 h-[500px] w-[500px] rounded-full bg-forest-100/40 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute right-0 top-1/4 h-[400px] w-[400px] rounded-full bg-emerald-50/50 blur-3xl"
+          className="pointer-events-none absolute end-0 top-1/4 h-[400px] w-[400px] rounded-full bg-emerald-50/50 blur-3xl"
           aria-hidden="true"
         />
 
         <div className="container relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="text-left">
+          <div className="text-start">
             {/* Pill Tag */}
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-forest-50 border border-forest-800/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-forest-800 shadow-sm">
               <Sparkles className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
@@ -268,7 +268,7 @@ const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ surface = 'public' })
               />
 
               {/* Floating Formula Badge */}
-              <div className="absolute -bottom-4 -left-4 z-20 hidden max-w-[260px] rounded-2xl bg-forest-950/92 p-4 text-left text-white shadow-xl border border-forest-800/60 backdrop-blur-md sm:block">
+              <div className="absolute -bottom-4 -start-4 z-20 hidden max-w-[260px] rounded-2xl bg-forest-950/92 p-4 text-start text-white shadow-xl border border-forest-800/60 backdrop-blur-md sm:block">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-400">
                   <Sparkles className="h-3 w-3" />
                   {activeRoute.formulaLabel}

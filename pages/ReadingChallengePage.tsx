@@ -34,7 +34,18 @@ interface ReadingChallengePageProps {
 }
 
 const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = 'public' }) => {
-  const { challenge, loading, setGoal, deleteGoal, progress, isBookRead, markBookAsRead, unmarkBookAsRead } = useReadingChallenge();
+  const {
+    challenge,
+    loading,
+    error: challengeLoadError,
+    refreshChallenge,
+    setGoal,
+    deleteGoal,
+    progress,
+    isBookRead,
+    markBookAsRead,
+    unmarkBookAsRead,
+  } = useReadingChallenge();
   const { isAuthenticated } = useAuth();
   const { books } = useBooks();
   const [goalInput, setGoalInput] = useState('');
@@ -200,7 +211,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
     );
   }
 
-  if (loading) {
+  if (loading && !challenge) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="text-center">
@@ -230,7 +241,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
                 Set a target, mark summaries as read, and use the dashboard to choose the next book with less friction.
               </p>
 
-              {!challenge && (
+              {!challenge && !challengeLoadError && (
                 <div className="mt-7 flex flex-wrap gap-3">
                   {[12, 24, 52].map((preset) => (
                     <button
@@ -300,6 +311,21 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
                     </button>
                   </div>
                 </>
+              ) : challengeLoadError ? (
+                <div className="py-3" role="alert">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                    <Target className="h-7 w-7" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-2xl font-black text-gray-950">Your challenge is unavailable</h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-600">We couldn&apos;t confirm your current challenge. Retry before creating a new goal.</p>
+                  <button
+                    type="button"
+                    onClick={refreshChallenge}
+                    className="pressable mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-black text-white"
+                  >
+                    Try again
+                  </button>
+                </div>
               ) : (
                 <div className="py-3">
                   <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
@@ -325,6 +351,27 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
       </section>
 
       <PageElement className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {challengeLoadError && (
+          <div className="mb-6 flex flex-wrap items-start justify-between gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 ring-1 ring-red-100" role="alert">
+            <div className="flex items-start gap-3">
+              <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <div>
+                <p>{challengeLoadError}</p>
+                <p className="mt-1 font-medium text-red-600">Your visible challenge data remains available. Retry to sync the latest state.</p>
+              </div>
+            </div>
+            <button type="button" onClick={refreshChallenge} className="min-h-11 rounded-xl bg-white px-4 py-2 font-black text-red-700 ring-1 ring-red-200 hover:bg-red-100">
+              Try again
+            </button>
+          </div>
+        )}
+
+        {loading && challenge && (
+          <p className="mb-6 rounded-xl bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-800" role="status">
+            Refreshing your reading challenge…
+          </p>
+        )}
+
         {error && (
           <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 ring-1 ring-red-100">
             <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -363,7 +410,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
                           <span className="block text-sm font-black text-gray-950">{achievement.label}</span>
                           <span className="block text-xs font-semibold text-gray-500">{achievement.detail}</span>
                         </span>
-                        {achievement.unlocked && <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />}
+                        {achievement.unlocked && <CheckCircle2 className="ms-auto h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />}
                       </div>
                     );
                   })}
@@ -396,7 +443,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
                         <button
                           type="button"
                           onClick={() => handleUnmarkRead(book.id)}
-                          className={`pressable absolute right-1.5 top-1.5 flex items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-8 w-8'}`}
+                          className={`pressable absolute end-1.5 top-1.5 flex items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-8 w-8'}`}
                           aria-label={`Mark ${book.title} as unread`}
                         >
                           <Check className="h-4 w-4" aria-hidden="true" />
@@ -423,13 +470,13 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
 
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <div className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                    <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
                     <input
                       type="search"
                       value={query}
                       onChange={(event) => setQuery(event.target.value)}
                       placeholder="Search books"
-                      className="h-11 w-full rounded-xl bg-gray-50 pl-10 pr-3 text-sm font-semibold text-gray-900 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-300 sm:w-56"
+                      className="h-11 w-full rounded-xl bg-gray-50 ps-10 pe-3 text-sm font-semibold text-gray-900 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-300 sm:w-56"
                     />
                   </div>
                   <select
@@ -536,7 +583,7 @@ const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, sur
       <button
         type="button"
         onClick={onToggle}
-        className={`pressable absolute right-2 top-2 flex items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-9 w-9'} ${
+        className={`pressable absolute end-2 top-2 flex items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-9 w-9'} ${
           isRead ? 'bg-emerald-500 text-white hover:bg-red-500' : 'bg-white text-gray-500 hover:bg-emerald-500 hover:text-white'
         }`}
         aria-label={isRead ? `Mark ${book.title} as unread` : `Mark ${book.title} as read`}

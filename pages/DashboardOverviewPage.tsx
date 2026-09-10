@@ -28,11 +28,16 @@ const greetingForHour = (hour: number) => {
 export default function DashboardOverviewPage() {
   const { user } = useAuth();
   const { books, loading: catalogLoading, error: catalogError, refreshBooks } = useBooks();
-  const { favorites, error: libraryError } = useFavorites();
+  const {
+    favorites,
+    error: libraryError,
+    isUserDataReady: favoritesReady,
+  } = useFavorites();
   const { getBookAuthor, getBookTitle } = useLanguage();
-  const { personalNotesData } = usePersonalNotes();
+  const { personalNotesData, isUserDataReady: notesReady } = usePersonalNotes();
   const { challenge, loading: challengeLoading, error: challengeError, progress } = useReadingChallenge();
-  const { bookProgress, userStats } = useUserProgress();
+  const { bookProgress, userStats, isUserDataReady: progressReady } = useUserProgress();
+  const userDataReady = favoritesReady && notesReady && progressReady;
 
   const localizeBook = useCallback((book: Book): Book => {
     const title = getBookTitle(book.id);
@@ -79,6 +84,7 @@ export default function DashboardOverviewPage() {
       catalogError={catalogError}
       onRetryCatalog={() => { void refreshBooks(); }}
       challengeLoading={challengeLoading}
+      userDataReady={userDataReady}
       continueBook={continueBook}
       challenge={challenge ? progress : undefined}
       challengeError={challengeError}

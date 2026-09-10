@@ -11,6 +11,7 @@ export interface DashboardOverviewViewProps {
   catalogError?: string | null;
   onRetryCatalog?: () => void;
   challengeLoading: boolean;
+  userDataReady?: boolean;
   continueBook?: DashboardShelfBook;
   challenge?: { current: number; goal: number; percentage: number };
   challengeError: string | null;
@@ -68,6 +69,7 @@ export default function DashboardOverviewView({
   catalogError = null,
   onRetryCatalog,
   challengeLoading,
+  userDataReady = true,
   continueBook,
   challenge,
   challengeError,
@@ -82,21 +84,25 @@ export default function DashboardOverviewView({
     loading: catalogLoading,
     error: catalogError,
     hasContent: Boolean(continueBook),
+    userDataReady,
   });
   const notesCatalogState = buildCatalogSurfaceState({
     loading: catalogLoading,
     error: catalogError,
     hasContent: recentKnowledge.length > 0,
+    userDataReady,
   });
   const libraryCatalogState = buildCatalogSurfaceState({
     loading: catalogLoading,
     error: catalogError,
     hasContent: library.length > 0,
+    userDataReady,
   });
   const recommendationsCatalogState = buildCatalogSurfaceState({
     loading: catalogLoading,
     error: catalogError,
     hasContent: recommendations.length > 0,
+    userDataReady,
   });
 
   return (
@@ -221,7 +227,7 @@ export default function DashboardOverviewView({
               <p className="dashboard-page-eyebrow">Your rhythm</p>
               <h2 id="dashboard-insight-title">Weekly insight</h2>
             </div>
-            {weeklyInsight.readingDays > 0 ? (
+            {!userDataReady ? <CardSkeleton lines={2} label="Loading your reading rhythm" /> : weeklyInsight.readingDays > 0 ? (
               <div className="dashboard-insight-stats">
                 <p><strong>{weeklyInsight.readingDays}</strong> reading {weeklyInsight.readingDays === 1 ? 'day' : 'days'} this week</p>
                 <p><strong>{weeklyInsight.currentStreak}</strong> day current streak</p>

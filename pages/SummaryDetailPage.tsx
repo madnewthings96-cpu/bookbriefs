@@ -92,7 +92,12 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
   const { isAuthenticated, user } = useAuth();
   const { updateBookProgress, getBookProgress, isUserDataReady } = useUserProgress();
-  const { books, loading: booksLoading, error: booksError } = useBooks();
+  const {
+    books,
+    loading: booksLoading,
+    error: booksError,
+    refreshBooks,
+  } = useBooks();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -188,7 +193,21 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
 
   useEffect(() => {
     // Wait for books to load if they are loading
-    if (booksLoading && books.length === 0) return;
+    if (booksLoading && books.length === 0) {
+      setBook(undefined);
+      setError(null);
+      setLoading(true);
+      return;
+    }
+
+    // A failed catalog request is not evidence that the requested book does
+    // not exist. Keep the failure distinct so readers have a recovery path.
+    if (booksError && books.length === 0) {
+      setBook(undefined);
+      setError(booksError);
+      setLoading(false);
+      return;
+    }
 
     const currentBook = books.find((b) => b.id === bookId);
     setBook(currentBook);
@@ -198,7 +217,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     } else {
       // Only set error if we are sure the book is not found (books are loaded)
       if (!booksLoading) {
-        setError(t('bookNotFound') || "Book not found.");
+        setError(booksError || t('bookNotFound') || "Book not found.");
         setLoading(false);
       }
     }
@@ -217,7 +236,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
       window.removeEventListener('languagechange', handleLanguageChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, fetchSummary, books, booksLoading]);
+  }, [bookId, fetchSummary, books, booksError, booksLoading]);
 
   // User-scoped progress must wait for the captured identity's local record to
   // hydrate. The tracker makes this idempotent across hydration rerenders and
@@ -309,6 +328,30 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
       alert('Failed to generate PDF. Please try again.');
     }
   }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
+
+  if (!book && booksLoading) {
+    return (
+      <div className="flex min-h-48 items-center justify-center" role="status" aria-label="Loading book">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!book && !loading && booksError) {
+    return (
+      <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 text-center shadow-sm" role="alert">
+        <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>We couldn&apos;t load this book</h1>
+        <p className="mt-2 text-gray-600">{booksError}</p>
+        <button
+          type="button"
+          onClick={() => { void refreshBooks(); }}
+          className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-orange-500 px-5 py-2 font-bold text-white hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
 
   if (!book && !loading) {
     return (
@@ -421,8 +464,8 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
         {book && !loading && (
           <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-5 text-center border border-indigo-100 shadow-md relative overflow-hidden">
             {/* Decorative background elements */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+            <div className="absolute top-0 end-0 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 start-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
 
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -2220,7 +2263,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
                     <div className="relative">
                       <img src={book.coverImageUrl} alt={`Cover of ${getBookTitle(book.id)}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
                       {/* Favorite Button */}
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 end-3">
                         <FavoriteButton bookId={book.id} size="md" />
                       </div>
                     </div>
@@ -2230,11 +2273,11 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
               <div className="lg:col-span-3">
                 <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-5 sm:p-6 shadow-lg border border-indigo-100/50 relative overflow-hidden">
                   {/* Decorative background elements */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-3xl -z-10"></div>
-                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-3xl -z-10"></div>
+                  <div className="absolute top-0 end-0 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-3xl -z-10"></div>
+                  <div className="absolute bottom-0 start-0 w-40 h-40 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-3xl -z-10"></div>
                   
                   <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6 flex items-center">
-                    <div className="p-2 sm:p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mr-3 shadow-lg shadow-indigo-500/30">
+                    <div className="p-2 sm:p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl me-3 shadow-lg shadow-indigo-500/30">
                       <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                       </svg>
@@ -2256,11 +2299,11 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
                           <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-purple-50/0 group-hover:from-indigo-50/50 group-hover:to-purple-50/50 transition-all duration-300 rounded-xl"></div>
                           
                           {/* Number badge */}
-                          <div className="absolute -top-1 -left-1 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-br-xl rounded-tl-lg flex items-center justify-center shadow-lg">
+                          <div className="absolute -top-1 -start-1 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-se-xl rounded-ss-lg flex items-center justify-center shadow-lg">
                             <span className="text-white text-xs font-bold">{index + 1}</span>
                           </div>
                           
-                          <div className="relative z-10 pl-5 pt-1">
+                          <div className="relative z-10 ps-5 pt-1">
                             <p className="text-sm sm:text-base text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors duration-300">{cleanTakeaway}</p>
                           </div>
                         </div>
@@ -2274,12 +2317,12 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
             <div className="bg-white rounded-lg shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border-b border-gray-100">
                 <h2 className="text-xl sm:text-2xl font-bold flex items-center mb-3 sm:mb-0" style={{ color: '#2F4F4F' }}>
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 me-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                   {t('detailedSummary') || 'Detailed Summary'}
                 </h2>
-                <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:space-x-4">
+                <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:gap-4">
                   {isAuthenticated ? (
                     <button
                       onClick={async () => {
@@ -2653,7 +2696,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
                           alert('Failed to generate PDF. Please try again.');
                         }
                       }}
-                      className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
+                      className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-[100%_100%] border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                     >
                       {/* Animated neon border */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>
@@ -2675,7 +2718,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
                   ) : (
                     <button
                       onClick={() => setShowSignUpModal(true)}
-                      className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
+                      className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-[100%_100%] border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                     >
                       {/* Animated neon border */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>

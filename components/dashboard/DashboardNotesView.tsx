@@ -27,6 +27,7 @@ export interface DashboardNotesViewProps {
   catalogLoading: boolean;
   catalogError: string | null;
   retryCatalog: () => Promise<void>;
+  userDataReady?: boolean;
   groups: KnowledgeGroup[];
 }
 
@@ -42,12 +43,14 @@ export default function DashboardNotesView({
   catalogLoading,
   catalogError,
   retryCatalog,
+  userDataReady = true,
   groups,
 }: DashboardNotesViewProps) {
   const catalogState: CatalogSurfaceState = buildCatalogSurfaceState({
     loading: catalogLoading,
     error: catalogError,
     hasContent: groups.length > 0,
+    userDataReady,
   });
 
   return (
@@ -75,6 +78,12 @@ export default function DashboardNotesView({
       {catalogLoading && (
         <section className="dashboard-workspace-loading" role="status" aria-label="Loading book details">
           <p>Loading book details…</p>
+        </section>
+      )}
+
+      {!catalogLoading && !userDataReady && (
+        <section className="dashboard-workspace-loading" role="status" aria-label="Loading your notes">
+          <p>Loading your notes…</p>
         </section>
       )}
 

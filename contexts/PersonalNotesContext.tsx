@@ -12,12 +12,12 @@ import {
 interface PersonalNotesContextType {
   personalNotesData: PersonalNotesData;
   isUserDataReady: boolean;
-  addNote: (bookId: string, content: string) => void;
-  updateNote: (noteId: string, content: string) => void;
-  deleteNote: (noteId: string) => void;
-  addHighlight: (bookId: string, text: string, context?: string) => void;
-  updateHighlight: (highlightId: string, text: string, context?: string) => void;
-  deleteHighlight: (highlightId: string) => void;
+  addNote: (bookId: string, content: string) => boolean;
+  updateNote: (noteId: string, content: string) => boolean;
+  deleteNote: (noteId: string) => boolean;
+  addHighlight: (bookId: string, text: string, context?: string) => boolean;
+  updateHighlight: (highlightId: string, text: string, context?: string) => boolean;
+  deleteHighlight: (highlightId: string) => boolean;
   getNotesForBook: (bookId: string) => PersonalNote[];
   getHighlightsForBook: (bookId: string) => Highlight[];
 }
@@ -73,7 +73,7 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
     });
   }, [currentUserId, storeRevision]);
 
-  const addNote = (bookId: string, content: string) => {
+  const addNote = (bookId: string, content: string): boolean => {
     const capturedUserId = currentUserId;
     const now = new Date();
     const newNote: PersonalNote = {
@@ -88,10 +88,12 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
       ...state,
       notes: [...state.notes, newNote],
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const updateNote = (noteId: string, content: string) => {
+  const updateNote = (noteId: string, content: string): boolean => {
     const capturedUserId = currentUserId;
     const updated = scopedStore.current.update(capturedUserId, (state) => ({
       ...state,
@@ -101,19 +103,23 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
           : note
       ),
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const deleteNote = (noteId: string) => {
+  const deleteNote = (noteId: string): boolean => {
     const capturedUserId = currentUserId;
     const updated = scopedStore.current.update(capturedUserId, (state) => ({
       ...state,
       notes: state.notes.filter(note => note.id !== noteId),
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const addHighlight = (bookId: string, text: string, context?: string) => {
+  const addHighlight = (bookId: string, text: string, context?: string): boolean => {
     const capturedUserId = currentUserId;
     const now = new Date();
     const newHighlight: Highlight = {
@@ -129,10 +135,12 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
       ...state,
       highlights: [...state.highlights, newHighlight],
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const updateHighlight = (highlightId: string, text: string, context?: string) => {
+  const updateHighlight = (highlightId: string, text: string, context?: string): boolean => {
     const capturedUserId = currentUserId;
     const updated = scopedStore.current.update(capturedUserId, (state) => ({
       ...state,
@@ -142,16 +150,20 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
           : highlight
       ),
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const deleteHighlight = (highlightId: string) => {
+  const deleteHighlight = (highlightId: string): boolean => {
     const capturedUserId = currentUserId;
     const updated = scopedStore.current.update(capturedUserId, (state) => ({
       ...state,
       highlights: state.highlights.filter(highlight => highlight.id !== highlightId),
     }));
-    if (updated) forceRender((revision) => revision + 1);
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
   const exposedData = scopedStore.current.getExposedState(currentUserId);
