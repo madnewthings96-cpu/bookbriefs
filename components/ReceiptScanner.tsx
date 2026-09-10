@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useId } from 'react';
 import { Camera } from 'lucide-react';
 import { AsyncIdentityGuard, type AsyncIdentityToken } from './asyncIdentityGuard';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 // Lazy load types
 import type { Worker } from 'tesseract.js';
@@ -24,6 +25,9 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState('');
+    const modalInstanceId = useId().replace(/:/g, '');
+    const titleId = `receipt-scanner-title-${modalInstanceId}`;
+    const descriptionId = `receipt-scanner-description-${modalInstanceId}`;
 
     // Form state for verification
     const [scannedData, setScannedData] = useState<ScannedData>({
@@ -38,6 +42,7 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
     const activeTokenRef = useRef<AsyncIdentityToken | null>(null);
     const activeWorkerRef = useRef<Worker | null>(null);
     const previewUrlRef = useRef<string | null>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
 
     const revokePreview = () => {
         if (!previewUrlRef.current) return;
@@ -196,6 +201,8 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
         setPreviewUrl(null);
     };
 
+    const dialogRef = useModalDialog({ open: showModal, onClose: handleCancel, initialFocusRef: closeButtonRef });
+
     const triggerCamera = () => {
         fileInputRef.current?.click();
     };
@@ -204,13 +211,15 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
         <>
             <button
                 onClick={triggerCamera}
-                className={className}
+                className={`${className} min-h-11 min-w-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2`}
             >
                 <Camera className="w-4 h-4" aria-hidden="true" />
                 <span>{label}</span>
             </button>
 
+            <label htmlFor="receipt-file" className="sr-only">Receipt image</label>
             <input
+                id="receipt-file"
                 type="file"
                 accept="image/*;capture=camera"
                 ref={fileInputRef}
@@ -219,19 +228,37 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
             />
 
             {showModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+                <div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+                    onMouseDown={(event) => event.target === event.currentTarget && handleCancel()}
+                >
+                    <div
+                        ref={dialogRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby={titleId}
+                        aria-describedby={descriptionId}
+                        tabIndex={-1}
+                        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
+                    >
 
                         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <h2 id={titleId} className="text-lg font-bold text-gray-800 flex items-center gap-2">
                                 <span className="text-xl">🧾</span> Verify Receipt Data
-                            </h3>
-                            <button onClick={handleCancel} className="text-gray-400 hover:text-gray-600">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </h2>
+                            <button
+                                ref={closeButtonRef}
+                                type="button"
+                                onClick={handleCancel}
+                                aria-label="Close receipt verification dialog"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                            >
+                                <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
 
                         <div className="overflow-y-auto p-6 space-y-6">
+                            <p id={descriptionId} className="sr-only">Review and correct the information extracted from your receipt before saving it.</p>
                             {/* Image Preview */}
                             {previewUrl && (
                                 <div className="relative rounded-xl overflow-hidden bg-gray-100 border border-gray-200 h-48 sm:h-64 flex-shrink-0">
@@ -250,43 +277,47 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
+                                        <label htmlFor="receipt-date" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
                                         <input
+                                            id="receipt-date"
                                             type="date"
                                             value={scannedData.date}
                                             onChange={e => setScannedData({ ...scannedData, date: e.target.value })}
-                                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all font-medium text-gray-800"
+                                            className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-gray-800"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Amount ($)</label>
+                                        <label htmlFor="receipt-amount" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Amount ($)</label>
                                         <input
+                                            id="receipt-amount"
                                             type="number" step="0.01"
                                             value={scannedData.amount}
                                             onChange={e => setScannedData({ ...scannedData, amount: e.target.value })}
                                             placeholder="0.00"
-                                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all font-bold text-gray-800"
+                                            className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-gray-800"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Description (Merchant)</label>
+                                    <label htmlFor="receipt-description" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Description (Merchant)</label>
                                     <input
+                                        id="receipt-description"
                                         type="text"
                                         value={scannedData.description}
                                         onChange={e => setScannedData({ ...scannedData, description: e.target.value })}
                                         placeholder="e.g. Starbucks, Walmart..."
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                                        className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category (Review)</label>
+                                    <label htmlFor="receipt-category" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category (Review)</label>
                                     <select
+                                        id="receipt-category"
                                         value={scannedData.category}
                                         onChange={e => setScannedData({ ...scannedData, category: e.target.value })}
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                                        className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
                                     >
                                         <option>Food</option>
                                         <option>Transport</option>
@@ -304,14 +335,16 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
                         <div className="p-4 border-t border-gray-100 bg-gray-50 flex gap-3">
                             <button
                                 onClick={handleCancel}
-                                className="flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                                type="button"
+                                className="min-h-11 flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleConfirm}
+                                type="button"
                                 disabled={isScanning || !scannedData.amount}
-                                className="flex-1 px-4 py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                                className="min-h-11 flex-1 px-4 py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-700 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
                             >
                                 Confirm & Save
                             </button>
