@@ -45,6 +45,17 @@ service cloud.firestore {
              data.updatedAt is timestamp;
     }
 
+    // The document name is part of the privacy boundary. It permits an
+    // authenticated owner to read a missing first-use document without ever
+    // granting anonymous, cross-user, or un-namespaced reads.
+    function isReadingChallengePathForUser(challengeId) {
+      return isAuthenticated() &&
+             challengeId.size() >= request.auth.uid.size() + 5 &&
+             challengeId[0:request.auth.uid.size()] == request.auth.uid &&
+             challengeId[request.auth.uid.size()] == '_' &&
+             challengeId.matches('^.*_[0-9]{4}$');
+    }
+
     // Admins have full access to everything
     match /{document=**} {
       allow read, write: if isAdmin();
@@ -130,21 +141,29 @@ service cloud.firestore {
 
     // Reading Challenges
     match /reading_challenges/{challengeId} {
-      allow read: if isAuthenticated() &&
-                  resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() &&
+      allow read: if isReadingChallengePathForUser(challengeId) &&
+                  (!exists(/databases/$(database)/documents/reading_challenges/$(challengeId)) ||
+                   (resource.data.userId == request.auth.uid &&
+                    resource.data.year is int &&
+                    challengeId == resource.data.userId + '_' + string(resource.data.year)));
+      allow create: if isReadingChallengePathForUser(challengeId) &&
                    isValidReadingChallenge(request.resource.data) &&
+                   request.resource.data.userId == request.auth.uid &&
+                   challengeId == request.resource.data.userId + '_' + string(request.resource.data.year) &&
                    request.resource.data.createdAt == request.time &&
                    request.resource.data.updatedAt == request.time;
-      allow update: if isAuthenticated() &&
+      allow update: if isReadingChallengePathForUser(challengeId) &&
                     resource.data.userId == request.auth.uid &&
                     isValidReadingChallenge(request.resource.data) &&
                     request.resource.data.userId == resource.data.userId &&
                     request.resource.data.year == resource.data.year &&
+                    challengeId == request.resource.data.userId + '_' + string(request.resource.data.year) &&
                     request.resource.data.createdAt == resource.data.createdAt &&
                     request.resource.data.updatedAt == request.time;
-      allow delete: if isAuthenticated() &&
-                    resource.data.userId == request.auth.uid;
+      allow delete: if isReadingChallengePathForUser(challengeId) &&
+                    resource.data.userId == request.auth.uid &&
+                    resource.data.year is int &&
+                    challengeId == resource.data.userId + '_' + string(resource.data.year);
     }
 
     // Community Messages (Chat)

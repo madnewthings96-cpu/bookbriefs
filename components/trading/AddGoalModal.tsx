@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GoalType } from '../../utils/tradingUtils';
 import { X, Target, TrendingUp, Brain, Flame } from 'lucide-react';
+import { AsyncIdentityGuard } from '../asyncIdentityGuard';
 
 interface AddGoalModalProps {
     isOpen: boolean;
@@ -32,12 +33,27 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
     const [target, setTarget] = useState('');
     const [behaviorToAvoid, setBehaviorToAvoid] = useState('FOMO');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => operationGuard.unmount();
+    }, [operationGuard]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            operationGuard.invalidate();
+            setIsSubmitting(false);
+        }
+    }, [isOpen, operationGuard]);
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Submitting goal:', { selectedType, title, target, behaviorToAvoid });
+        const token = operationGuard.begin();
+        if (!token) return;
         setIsSubmitting(true);
 
         try {
@@ -48,17 +64,23 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
                 unit: getUnit(),
                 behaviorToAvoid: selectedType === 'behavior' ? behaviorToAvoid : undefined,
             };
+            if (!operationGuard.isCurrent(token)) return;
             await onSave(goalData);
+            if (!operationGuard.isCurrent(token)) return;
+            setIsSubmitting(false);
             handleClose();
         } catch (error) {
-            console.error('Error saving goal:', error);
-            alert('Failed to save goal. Please try again.');
+            if (operationGuard.isCurrent(token)) {
+                console.error('Error saving goal:', error);
+                alert('Failed to save goal. Please try again.');
+            }
         } finally {
-            setIsSubmitting(false);
+            if (operationGuard.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
     const handleClose = () => {
+        operationGuard.invalidate();
         setSelectedType('balance');
         setTitle('');
         setTarget('');

@@ -165,6 +165,10 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         return () => unsubscribe();
     }, [currentUserId]);
 
+    useEffect(() => () => {
+        scopedStore.destroy();
+    }, [scopedStore]);
+
     // Fetch starting balance
     useEffect(() => {
         const capturedUserId = currentUserId;
@@ -183,6 +187,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                     }
                 }
             } catch (error) {
+                if (!scopedStore.isCurrent(token)) return;
                 console.error('Error fetching settings:', error);
             }
         };
@@ -276,6 +281,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 forceRender((revision) => revision + 1);
             }
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error saving balance:', error);
             throw error;
         }
@@ -348,6 +354,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 setEditingTradeUserId(null);
             }
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error saving trade:', error);
             throw error;
         }
@@ -409,6 +416,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 return remainingTrades.length > 0 ? { ...day, trades: remainingTrades } : null;
             });
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error deleting trade:', error);
         }
     };
@@ -448,6 +456,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
             await addDoc(collection(db, 'users', token.userId, 'goals'), goalToSave);
             console.log('Goal saved successfully');
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error saving goal:', error);
             alert('Failed to save goal. Please check your data and try again.');
             throw error;
@@ -474,6 +483,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 setGoalToDeleteUserId(null);
             }
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error deleting goal:', error);
             alert('Failed to delete goal.');
         }
@@ -707,6 +717,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 startingBalance={startingBalance}
                 currentBalance={currentBalance}
                 userEmail={currentUser?.email || undefined}
+                identityKey={currentUserId}
             />
 
             <TradingReviewDrawer

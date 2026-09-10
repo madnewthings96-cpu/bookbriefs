@@ -70,3 +70,28 @@ test('monthly PDF embeds a Unicode font for Arabic journal content', async () =>
   assert.deepEqual(doc.getFontList().NotoSansArabic, ['normal']);
   assert.ok(new Uint8Array(doc.output('arraybuffer')).byteLength > 10_000);
 });
+
+test('cancelled report generation does not begin font fetch or download work', async () => {
+  const { generateMonthlyReport } = await import('../utils/pdfReportGenerator');
+  let fetchStarted = false;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = (async () => {
+    fetchStarted = true;
+    throw new Error('cancelled report must not fetch');
+  }) as typeof fetch;
+
+  try {
+    await generateMonthlyReport({
+      trades: [],
+      startingBalance: 10_000,
+      currentBalance: 10_000,
+      month: 1,
+      year: 2026,
+      canCommit: () => false,
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.equal(fetchStarted, false);
+});

@@ -13,6 +13,8 @@ export interface ReportData {
     month: number;
     year: number;
     userEmail?: string;
+    /** Return false when the owning modal/account has unmounted or changed. */
+    canCommit?: () => boolean;
 }
 
 export interface MonthlyReportDocumentOptions {
@@ -544,11 +546,13 @@ export const createMonthlyReportDocument = async (
 };
 
 export const generateMonthlyReport = async (data: ReportData): Promise<void> => {
+    if (data.canCommit && !data.canCommit()) return;
     const response = await fetch('/fonts/NotoSansArabic-Regular.ttf');
     if (!response.ok) {
         throw new Error(`Unable to load the PDF Unicode font (${response.status}).`);
     }
     const bytes = new Uint8Array(await response.arrayBuffer());
+    if (data.canCommit && !data.canCommit()) return;
     let binary = '';
     const chunkSize = 0x8000;
     for (let offset = 0; offset < bytes.length; offset += chunkSize) {
@@ -557,6 +561,7 @@ export const generateMonthlyReport = async (data: ReportData): Promise<void> => 
     const doc = await createMonthlyReportDocument(data, {
         unicodeFontBase64: btoa(binary),
     });
+    if (data.canCommit && !data.canCommit()) return;
     doc.save(getTradingReportFilename(data.month, data.year));
 };
 

@@ -3,6 +3,7 @@ import { arrayRemove, arrayUnion, doc, onSnapshot, serverTimestamp, setDoc } fro
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
 import { UserScopedRealtimeStore, type UserIdentityToken } from './userScopedRealtime';
+import { OptimisticFavoritesState } from './favoritesState';
 
 interface FavoritesContextType {
   favorites: string[];
@@ -25,9 +26,10 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const { user } = useAuth();
   const currentUserId = user?.id ?? null;
   const scopedStore = useRef(new UserScopedRealtimeStore<FavoritesState>(emptyFavoritesState)).current;
+  const optimisticState = useRef(new OptimisticFavoritesState()).current;
 
   // Reset before React renders children for a new UID or logout.
-  scopedStore.observe(currentUserId);
+  if (scopedStore.observe(currentUserId)) optimisticState.reset();
   const [, forceRender] = useState(0);
   const exposedState = scopedStore.getExposedState(currentUserId);
 
@@ -39,7 +41,13 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const readLegacyFavorites = (storageKey: string): string[] => {
     if (typeof localStorage === 'undefined') return [];
-    const storedFavorites = localStorage.getItem(storageKey);
+    let storedFavorites: string | null = null;
+    try {
+      storedFavorites = localStorage.getItem(storageKey);
+    } catch (error) {
+      console.error('Failed to read legacy favorites:', error);
+      return [];
+    }
     if (!storedFavorites) return [];
 
     try {
@@ -76,7 +84,8 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           : [];
         const mergedFavorites = uniqueFavorites([...remoteFavorites, ...legacyFavorites]);
 
-        publish(snapshotToken, { favorites: mergedFavorites, error: null });
+        const rebasedFavorites = optimisticState.setRemote(mergedFavorites);
+        publish(snapshotToken, { favorites: rebasedFavorites, error: null });
 
         if (legacyFavorites.length > 0 && mergedFavorites.length !== remoteFavorites.length) {
           if (!scopedStore.isCurrent(snapshotToken)) return;
@@ -97,7 +106,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       (error, errorToken) => {
         console.error('Failed to load favorites:', error);
         publish(errorToken, {
-          favorites: legacyFavorites,
+          favorites: optimisticState.setRemote(legacyFavorites),
           error: "We couldn't load your saved books. Your saved books on this device are still available.",
         });
       },
@@ -106,14 +115,19 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return dispose;
   }, [currentUserId, user?.email]);
 
+  useEffect(() => () => {
+    scopedStore.destroy();
+  }, [scopedStore]);
+
   const addFavorite = (bookId: string) => {
     const token = scopedStore.capture(currentUserId);
     if (!token) return;
-    const previous = scopedStore.getExposedState(token.userId).favorites;
-    if (previous.includes(bookId)) return;
+    const currentFavorites = scopedStore.getExposedState(token.userId).favorites;
+    if (currentFavorites.includes(bookId)) return;
 
+    const mutation = optimisticState.begin(bookId, true);
     if (!scopedStore.update(token, (state) => ({
-      favorites: [...state.favorites, bookId],
+      favorites: mutation.state,
       error: null,
     }))) return;
     forceRender((revision) => revision + 1);
@@ -123,10 +137,16 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     void setDoc(favoritesRef, {
       bookIds: arrayUnion(bookId),
       updatedAt: serverTimestamp(),
-    }, { merge: true }).catch((error) => {
+    }, { merge: true }).then(() => {
+      if (!scopedStore.isCurrent(token)) return;
+      const rebasedFavorites = optimisticState.resolve(mutation.token, true);
+      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      forceRender((revision) => revision + 1);
+    }, (error) => {
       console.error('Failed to add favorite:', error);
       if (!scopedStore.isCurrent(token)) return;
-      scopedStore.publish(token, { favorites: previous, error: null });
+      const rebasedFavorites = optimisticState.resolve(mutation.token, false);
+      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
       forceRender((revision) => revision + 1);
     });
   };
@@ -134,10 +154,12 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const removeFavorite = (bookId: string) => {
     const token = scopedStore.capture(currentUserId);
     if (!token) return;
-    const previous = scopedStore.getExposedState(token.userId).favorites;
+    const currentFavorites = scopedStore.getExposedState(token.userId).favorites;
+    if (!currentFavorites.includes(bookId)) return;
 
+    const mutation = optimisticState.begin(bookId, false);
     if (!scopedStore.update(token, (state) => ({
-      favorites: state.favorites.filter((id) => id !== bookId),
+      favorites: mutation.state,
       error: null,
     }))) return;
     forceRender((revision) => revision + 1);
@@ -147,10 +169,16 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     void setDoc(favoritesRef, {
       bookIds: arrayRemove(bookId),
       updatedAt: serverTimestamp(),
-    }, { merge: true }).catch((error) => {
+    }, { merge: true }).then(() => {
+      if (!scopedStore.isCurrent(token)) return;
+      const rebasedFavorites = optimisticState.resolve(mutation.token, true);
+      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
+      forceRender((revision) => revision + 1);
+    }, (error) => {
       console.error('Failed to remove favorite:', error);
       if (!scopedStore.isCurrent(token)) return;
-      scopedStore.publish(token, { favorites: previous, error: null });
+      const rebasedFavorites = optimisticState.resolve(mutation.token, false);
+      scopedStore.publish(token, { favorites: rebasedFavorites, error: null });
       forceRender((revision) => revision + 1);
     });
   };

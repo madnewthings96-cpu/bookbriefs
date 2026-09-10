@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     TradeFormData,
     Trade,
@@ -9,6 +9,7 @@ import {
     getInitialTradeFormData,
 } from '../../utils/tradingUtils';
 import { X, ArrowLeft, Loader2 } from 'lucide-react';
+import { AsyncIdentityGuard } from '../asyncIdentityGuard';
 
 interface AddTradeModalProps {
     isOpen: boolean;
@@ -28,6 +29,19 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCustomSetup, setIsCustomSetup] = useState(false);
     const [isManualPnL, setIsManualPnL] = useState(false);
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => operationGuard.unmount();
+    }, [operationGuard]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            operationGuard.invalidate();
+            setIsSubmitting(false);
+        }
+    }, [isOpen, operationGuard]);
 
     // Initialize form when editing or opening
     useEffect(() => {
@@ -91,16 +105,22 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
         e.preventDefault();
         if (isSubmitting) return;
 
+        const token = operationGuard.begin();
+        if (!token) return;
         setIsSubmitting(true);
         try {
             const pnlValue = parseFloat(calculatedPnL) || 0;
             const status = determineStatus(pnlValue);
+            if (!operationGuard.isCurrent(token)) return;
             await onSave(formData, pnlValue, status);
+            if (!operationGuard.isCurrent(token)) return;
+            setIsSubmitting(false);
+            operationGuard.invalidate();
             onClose();
         } catch (error) {
-            console.error('Error saving trade:', error);
+            if (operationGuard.isCurrent(token)) console.error('Error saving trade:', error);
         } finally {
-            setIsSubmitting(false);
+            if (operationGuard.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
@@ -118,7 +138,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         {editingTrade ? 'Edit Trade' : 'Log New Trade'}
                     </h2>
                     <button
-                        onClick={onClose}
+                        onClick={() => { operationGuard.invalidate(); onClose(); }}
                         className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-[scale,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-600 active:scale-[0.96]"
                         title="Close"
                     >

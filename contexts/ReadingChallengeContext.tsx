@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { UserScopedRealtimeStore, type UserIdentityToken } from './userScopedRealtime';
+import { mergeReadingChallengeBooks } from './readingChallengeState';
 
 interface ReadingChallenge {
   year: number;
@@ -107,6 +108,10 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     };
   }, [currentUserId, currentYear]);
 
+  useEffect(() => () => {
+    scopedStore.destroy();
+  }, [scopedStore]);
+
   const setGoal = async (goal: number) => {
     const token = scopedStore.capture(currentUserId);
     if (!token) return;
@@ -124,12 +129,13 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         if (!scopedStore.isCurrent(token)) return;
 
         const data = existingDoc.data();
+        const latestChallenge = scopedStore.getExposedState(token.userId).challenge;
         publish(token, {
           challenge: {
-            year: data.year,
+            year: latestChallenge?.year ?? data.year,
             goal,
-            booksRead: data.booksRead || [],
-            createdAt: data.createdAt?.toDate() || new Date(),
+            booksRead: latestChallenge?.booksRead ?? data.booksRead ?? [],
+            createdAt: latestChallenge?.createdAt ?? data.createdAt?.toDate() ?? new Date(),
             updatedAt: new Date(),
           },
           loading: false,
@@ -159,6 +165,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         });
       }
     } catch (error) {
+      if (!scopedStore.isCurrent(token)) return;
       console.error('Error setting reading goal:', error);
       throw error;
     }
@@ -174,6 +181,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
       if (!scopedStore.isCurrent(token)) return;
       publish(token, { challenge: null, loading: false, error: null });
     } catch (error) {
+      if (!scopedStore.isCurrent(token)) return;
       console.error('Error deleting reading goal:', error);
       throw error;
     }
@@ -186,23 +194,24 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
     const currentState = scopedStore.getExposedState(token.userId);
     if (!currentState.challenge) return;
 
-    const updatedBooksRead = remove
-      ? currentState.challenge.booksRead.filter((id) => id !== bookId)
-      : currentState.challenge.booksRead.includes(bookId)
-        ? currentState.challenge.booksRead
-        : [...currentState.challenge.booksRead, bookId];
-
     try {
       const challengeRef = doc(db, 'reading_challenges', `${token.userId}_${currentYear}`);
       await updateDoc(challengeRef, {
-        booksRead: updatedBooksRead,
+        // Atomic array transforms prevent concurrent marks for different books
+        // from overwriting one another with stale full-array writes.
+        booksRead: remove ? arrayRemove(bookId) : arrayUnion(bookId),
         updatedAt: serverTimestamp(),
       });
       if (!scopedStore.isCurrent(token)) return;
 
+      const latestState = scopedStore.getExposedState(token.userId);
+      const latestChallenge = latestState.challenge;
+      if (!latestChallenge) return;
+      const updatedBooksRead = mergeReadingChallengeBooks(latestChallenge.booksRead, bookId, remove);
+
       publish(token, {
         challenge: {
-          ...currentState.challenge,
+          ...latestChallenge,
           booksRead: updatedBooksRead,
           updatedAt: new Date(),
         },
@@ -210,6 +219,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
         error: null,
       });
     } catch (error) {
+      if (!scopedStore.isCurrent(token)) return;
       console.error(remove ? 'Error unmarking book as read:' : 'Error marking book as read:', error);
       throw error;
     }

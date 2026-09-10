@@ -17,6 +17,7 @@ import { getModalFocusWrapTarget } from '../modalFocusTrap';
 import { Trade } from '../../utils/tradingUtils';
 import { buildMonthlyTradingReportModel } from '../../utils/tradingReportModel';
 import { generateMonthlyReport, getAvailableMonths } from '../../utils/pdfReportGenerator';
+import { AsyncIdentityGuard } from '../asyncIdentityGuard';
 
 interface ExportReportModalProps {
     isOpen: boolean;
@@ -25,6 +26,7 @@ interface ExportReportModalProps {
     startingBalance: number;
     currentBalance: number;
     userEmail?: string;
+    identityKey?: string | null;
 }
 
 const formatMoney = (value: number, showSign = false) => {
@@ -49,6 +51,7 @@ const ExportReportModal: React.FC<ExportReportModalProps> = ({
     startingBalance,
     currentBalance,
     userEmail,
+    identityKey = null,
 }) => {
     const availableMonths = useMemo(() => getAvailableMonths(trades), [trades]);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -59,6 +62,21 @@ const ExportReportModal: React.FC<ExportReportModalProps> = ({
     const dialogRef = useRef<HTMLDivElement>(null);
     const onCloseRef = useRef(onClose);
     const shouldReduceMotion = useReducedMotion();
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+
+    operationGuard.setIdentity(identityKey);
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => operationGuard.unmount();
+    }, [operationGuard]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            operationGuard.invalidate();
+            setIsGenerating(false);
+        }
+    }, [isOpen, operationGuard]);
 
     onCloseRef.current = onClose;
 
@@ -123,8 +141,11 @@ const ExportReportModal: React.FC<ExportReportModalProps> = ({
 
     const handleDownload = async () => {
         if (!selectedMonth) return;
+        const token = operationGuard.begin(identityKey);
+        if (!token) return;
         setIsGenerating(true);
         try {
+            if (!operationGuard.isCurrent(token)) return;
             await generateMonthlyReport({
                 trades,
                 startingBalance,
@@ -132,13 +153,17 @@ const ExportReportModal: React.FC<ExportReportModalProps> = ({
                 month: selectedMonth.month,
                 year: selectedMonth.year,
                 userEmail,
+                canCommit: () => operationGuard.isCurrent(token),
             });
+            if (!operationGuard.isCurrent(token)) return;
             onClose();
         } catch (error) {
             console.error('Error generating report:', error);
-            window.alert('The fieldbook could not be generated. Please try again.');
+            if (operationGuard.isCurrent(token)) {
+                window.alert('The fieldbook could not be generated. Please try again.');
+            }
         } finally {
-            setIsGenerating(false);
+            if (operationGuard.isCurrent(token)) setIsGenerating(false);
         }
     };
 

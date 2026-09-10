@@ -174,6 +174,36 @@ describe('Firestore security rules', () => {
             unexpected: true,
           })
       );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-2_2026')
+          .set(challengePayload('reader-1'))
+      );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-1_2027')
+          .set(challengePayload('reader-1'))
+      );
+    });
+
+    it('lets the owner read a missing first-use challenge but denies anonymous and non-owner paths', async () => {
+      const ownerMissing = authContext('reader-1').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const nonOwnerMissing = authContext('reader-2').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const anonymousMissing = testEnv.unauthenticatedContext().firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+
+      await assertSucceeds(ownerMissing.get());
+      await assertFails(nonOwnerMissing.get());
+      await assertFails(anonymousMissing.get());
     });
 
     it('lets only the owner update progress without changing ownership or creation metadata', async () => {

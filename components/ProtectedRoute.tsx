@@ -2,13 +2,14 @@ import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getProtectedRouteDecision } from './authRouteModel';
+import { getDashboardIdentityKey } from './dashboard/dashboardIdentityBoundary';
 
 interface ProtectedRouteProps {
   children?: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isAuthReady } = useAuth();
+  const { user, isAuthenticated, isAuthReady } = useAuth();
   const location = useLocation();
   const decision = getProtectedRouteDecision(isAuthReady, isAuthenticated);
 
@@ -20,7 +21,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <Navigate to="/login" replace state={{ from }} />;
   }
 
-  return <>{children ?? <Outlet />}</>;
+  const identityKey = getDashboardIdentityKey(user?.id ?? null, isAuthenticated);
+  return <React.Fragment key={identityKey}>{children ?? <Outlet />}</React.Fragment>;
 };
 
 export default ProtectedRoute;

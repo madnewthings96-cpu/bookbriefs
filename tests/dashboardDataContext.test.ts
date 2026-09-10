@@ -6,12 +6,14 @@ test('dashboard data contexts expose recoverable load errors', async () => {
   const favorites = await readFile('contexts/FavoritesContext.tsx', 'utf8');
   const challenge = await readFile('contexts/ReadingChallengeContext.tsx', 'utf8');
   assert.match(favorites, /error:\s*string\s*\|\s*null/);
-  assert.match(favorites, /favorites:\s*legacyFavorites/);
+  assert.match(favorites, /optimisticState\.setRemote\(legacyFavorites\)/);
   assert.match(favorites, /error:\s*"We couldn't load your saved books/);
-  assert.match(favorites, /favorites:\s*mergedFavorites/);
+  assert.match(favorites, /optimisticState\.setRemote\(mergedFavorites\)/);
   assert.match(favorites, /error:\s*null/);
   assert.match(challenge, /error:\s*string\s*\|\s*null/);
   assert.match(challenge, /challenge:\s*null,\s+loading:\s*false,\s+error:\s*'Unable to load your reading challenge/);
   assert.match(challenge, /challenge:\s*null,\s+loading:\s*true,\s+error:\s*null/);
   assert.match(challenge, /scopedStore\.isCurrent\(token\)/);
+  assert.match(challenge, /arrayUnion\(bookId\)/);
+  assert.match(challenge, /arrayRemove\(bookId\)/);
 });

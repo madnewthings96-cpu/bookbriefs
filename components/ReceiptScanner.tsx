@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
+import { AsyncIdentityGuard, type AsyncIdentityToken } from './asyncIdentityGuard';
 
 // Lazy load types
 import type { Worker } from 'tesseract.js';
@@ -33,24 +34,68 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+    const activeTokenRef = useRef<AsyncIdentityToken | null>(null);
+    const activeWorkerRef = useRef<Worker | null>(null);
+    const previewUrlRef = useRef<string | null>(null);
+
+    const revokePreview = () => {
+        if (!previewUrlRef.current) return;
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+    };
+
+    const terminateActiveWorker = () => {
+        const worker = activeWorkerRef.current;
+        activeWorkerRef.current = null;
+        if (worker) void worker.terminate().catch(() => undefined);
+    };
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => {
+            operationGuard.unmount();
+            activeTokenRef.current = null;
+            terminateActiveWorker();
+            revokePreview();
+        };
+    }, [operationGuard]);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
 
         const file = e.target.files[0];
+        operationGuard.invalidate();
+        const token = operationGuard.begin();
+        if (!token) return;
+        activeTokenRef.current = token;
+        terminateActiveWorker();
+        revokePreview();
         const imageUrl = URL.createObjectURL(file);
+        previewUrlRef.current = imageUrl;
         setPreviewUrl(imageUrl);
         setIsScanning(true);
         setShowModal(true);
         setStatus('Initializing OCR...');
 
+        let worker: Worker | null = null;
+        let workerTerminated = false;
+        const terminateWorker = async () => {
+            if (!worker || workerTerminated) return;
+            workerTerminated = true;
+            if (activeWorkerRef.current === worker) activeWorkerRef.current = null;
+            await worker.terminate().catch(() => undefined);
+        };
+
         try {
             // Dynamic import for lazy loading
             const Tesseract = await import('tesseract.js');
+            if (!operationGuard.isCurrent(token)) return;
 
             // @ts-ignore - Tesseract.js types might be slightly off between versions, but this signature is correct for v5+
-            const worker: Worker = await Tesseract.createWorker('eng', 1, {
+            worker = await Tesseract.createWorker('eng', 1, {
                 logger: m => {
+                    if (!operationGuard.isCurrent(token)) return;
                     if (m.status === 'recognizing text') {
                         setProgress(m.progress * 100);
                         setStatus(`Scanning... ${Math.round(m.progress * 100)}%`);
@@ -59,22 +104,26 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
                     }
                 }
             });
+            activeWorkerRef.current = worker;
+            if (!operationGuard.isCurrent(token)) return;
 
             // recognized() is called directly on the worker instance which is already initialized
             const { data: { text } } = await worker.recognize(file);
+            if (!operationGuard.isCurrent(token)) return;
 
             // Parse data
             const extractedData = parseReceipt(text);
+            if (!operationGuard.isCurrent(token)) return;
             setScannedData(prev => ({
                 ...prev,
                 ...extractedData
             }));
-
-            await worker.terminate();
         } catch (error) {
             console.error('OCR Error:', error);
-            setStatus('Failed to scan receipt');
+            if (operationGuard.isCurrent(token)) setStatus('Failed to scan receipt');
         } finally {
+            await terminateWorker();
+            if (!operationGuard.isCurrent(token)) return;
             setIsScanning(false);
             // Reset input so same file can be selected again
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -125,12 +174,24 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
     };
 
     const handleConfirm = () => {
+        const token = activeTokenRef.current;
+        if (!operationGuard.isCurrent(token)) return;
         onScanComplete(scannedData);
+        if (!operationGuard.isCurrent(token)) return;
+        operationGuard.invalidate();
+        activeTokenRef.current = null;
+        terminateActiveWorker();
+        revokePreview();
         setShowModal(false);
         setPreviewUrl(null);
     };
 
     const handleCancel = () => {
+        operationGuard.invalidate();
+        activeTokenRef.current = null;
+        terminateActiveWorker();
+        revokePreview();
+        if (fileInputRef.current) fileInputRef.current.value = '';
         setShowModal(false);
         setPreviewUrl(null);
     };

@@ -127,3 +127,28 @@ test('captured mutation tokens remain bound to their original UID and version', 
   assert.equal(store.update(tokenB, (state) => ({ ...state, records: ['B'] })), true);
   assert.deepEqual(store.getExposedState('user-b'), { records: ['B'], error: null });
 });
+
+test('destroy invalidates retained async completions after a page unmounts', () => {
+  const store = new UserScopedRealtimeStore(empty);
+  store.observe('user-a');
+  const token = store.capture('user-a');
+  assert.ok(token);
+
+  store.destroy();
+  assert.equal(store.isCurrent(token), false);
+  assert.equal(store.update(token, (state) => ({ ...state, records: ['late'] })), false);
+});
+
+test('a replayed setup can re-arm a destroyed store without reviving old tokens', () => {
+  const store = new UserScopedRealtimeStore(empty);
+  store.observe('user-a');
+  const oldToken = store.capture('user-a');
+  assert.ok(oldToken);
+  store.destroy();
+
+  store.observe('user-a');
+  const newToken = store.capture('user-a');
+  assert.ok(newToken);
+  assert.equal(store.isCurrent(oldToken), false);
+  assert.equal(store.isCurrent(newToken), true);
+});

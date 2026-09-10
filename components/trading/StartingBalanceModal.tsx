@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { formatCurrency } from '../../utils/tradingUtils';
+import { AsyncIdentityGuard } from '../asyncIdentityGuard';
 
 interface StartingBalanceModalProps {
     isOpen: boolean;
@@ -16,6 +17,19 @@ const StartingBalanceModal: React.FC<StartingBalanceModalProps> = ({
 }) => {
     const [balance, setBalance] = useState<string>('10000');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => operationGuard.unmount();
+    }, [operationGuard]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            operationGuard.invalidate();
+            setIsSubmitting(false);
+        }
+    }, [isOpen, operationGuard]);
 
     useEffect(() => {
         if (isOpen) {
@@ -25,14 +39,20 @@ const StartingBalanceModal: React.FC<StartingBalanceModalProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const token = operationGuard.begin();
+        if (!token) return;
         setIsSubmitting(true);
         try {
+            if (!operationGuard.isCurrent(token)) return;
             await onSave(parseFloat(balance));
+            if (!operationGuard.isCurrent(token)) return;
+            setIsSubmitting(false);
+            operationGuard.invalidate();
             onClose();
         } catch (error) {
-            console.error('Error saving balance:', error);
+            if (operationGuard.isCurrent(token)) console.error('Error saving balance:', error);
         } finally {
-            setIsSubmitting(false);
+            if (operationGuard.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
@@ -44,7 +64,7 @@ const StartingBalanceModal: React.FC<StartingBalanceModalProps> = ({
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                     <h3 className="text-lg font-bold text-gray-800">Set Starting Balance</h3>
                     <button
-                        onClick={onClose}
+                        onClick={() => { operationGuard.invalidate(); onClose(); }}
                         className="text-gray-400 hover:text-gray-600 transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,7 +101,7 @@ const StartingBalanceModal: React.FC<StartingBalanceModalProps> = ({
                     <div className="flex gap-3 pt-2">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={() => { operationGuard.invalidate(); onClose(); }}
                             className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
                         >
                             Cancel

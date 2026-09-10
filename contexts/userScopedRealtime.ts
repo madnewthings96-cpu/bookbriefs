@@ -25,6 +25,7 @@ export class UserScopedRealtimeStore<T> {
   private state: T;
   private currentUserId: string | null = null;
   private version = 0;
+  private mounted = true;
   private readonly activeSubscriptions = new Set<Cleanup>();
 
   constructor(emptyState: () => T) {
@@ -33,6 +34,14 @@ export class UserScopedRealtimeStore<T> {
   }
 
   observe(userId: string | null) {
+    // React development StrictMode may replay an effect cleanup/setup pair;
+    // allow the next render to re-arm this store while keeping all old tokens
+    // invalid because destroy() advanced the version.
+    if (!this.mounted) {
+      this.mounted = true;
+      this.currentUserId = null;
+      this.state = this.emptyState();
+    }
     if (userId === this.currentUserId) return false;
 
     this.currentUserId = userId;
@@ -43,13 +52,14 @@ export class UserScopedRealtimeStore<T> {
   }
 
   capture(userId: string | null): UserIdentityToken | null {
-    if (!userId || userId !== this.currentUserId) return null;
+    if (!this.mounted || !userId || userId !== this.currentUserId) return null;
     return { userId, version: this.version };
   }
 
   isCurrent(token: UserIdentityToken | null): token is UserIdentityToken {
     return Boolean(
       token &&
+      this.mounted &&
       token.userId === this.currentUserId &&
       token.version === this.version,
     );
@@ -115,5 +125,15 @@ export class UserScopedRealtimeStore<T> {
 
   stopSubscriptions() {
     Array.from(this.activeSubscriptions).forEach((dispose) => dispose());
+  }
+
+  /** Invalidate retained async mutations when the owning page unmounts. */
+  destroy() {
+    if (!this.mounted) return;
+    this.mounted = false;
+    this.version += 1;
+    this.stopSubscriptions();
+    this.state = this.emptyState();
+    this.currentUserId = null;
   }
 }

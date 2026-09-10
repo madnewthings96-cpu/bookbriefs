@@ -638,6 +638,10 @@ const FinanceTrackerPage: React.FC = () => {
         };
     }, [currentUserId]);
 
+    useEffect(() => () => {
+        scopedStore.destroy();
+    }, [scopedStore]);
+
     const filteredTransactions = useMemo(() => {
         return transactions.filter((t) => {
             const txnMonth = t.date.substring(0, 7);
@@ -1011,7 +1015,7 @@ const FinanceTrackerPage: React.FC = () => {
             const numericAmount = parseFloat(cleanAmount);
 
             if (isNaN(numericAmount)) {
-                alert(t.invalidAmount);
+                if (scopedStore.isCurrent(token)) alert(t.invalidAmount);
                 return;
             }
 
@@ -1024,7 +1028,9 @@ const FinanceTrackerPage: React.FC = () => {
                 type: 'expense',
                 createdAt: Timestamp.now(),
             });
+            if (!scopedStore.isCurrent(token)) return;
         } catch (error: any) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error adding scanned transaction:', error);
             alert(formatCopy(t.failedToSave, { message: error.message }));
         }
@@ -1064,9 +1070,10 @@ const FinanceTrackerPage: React.FC = () => {
 
             if (scopedStore.isCurrent(token)) closeTransactionForm();
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error saving transaction:', error);
         } finally {
-            setIsSubmitting(false);
+            if (scopedStore.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
@@ -1088,9 +1095,10 @@ const FinanceTrackerPage: React.FC = () => {
             }, { merge: true });
             if (scopedStore.isCurrent(token)) setBudgetFormData({ category: budgetFormData.category, amount: '' });
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error saving budget:', error);
         } finally {
-            setIsSubmitting(false);
+            if (scopedStore.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
@@ -1114,9 +1122,10 @@ const FinanceTrackerPage: React.FC = () => {
                 setShowGoalForm(false);
             }
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error adding goal:', error);
         } finally {
-            setIsSubmitting(false);
+            if (scopedStore.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
@@ -1137,6 +1146,7 @@ const FinanceTrackerPage: React.FC = () => {
                 setAddAmountGoalId(null);
             }
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error updating goal:', error);
         }
     };
@@ -1148,6 +1158,7 @@ const FinanceTrackerPage: React.FC = () => {
             if (!scopedStore.isCurrent(token)) return;
             await deleteDoc(doc(db, 'users', token.userId, 'goals', goalId));
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error deleting goal:', error);
         }
     };
@@ -1159,6 +1170,7 @@ const FinanceTrackerPage: React.FC = () => {
             if (!scopedStore.isCurrent(token)) return;
             await deleteDoc(doc(db, 'users', token.userId, 'budgets', category));
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error deleting budget:', error);
         }
     };
@@ -1170,6 +1182,7 @@ const FinanceTrackerPage: React.FC = () => {
             if (!scopedStore.isCurrent(token)) return;
             await deleteDoc(doc(db, 'users', token.userId, 'transactions', id));
         } catch (error) {
+            if (!scopedStore.isCurrent(token)) return;
             console.error('Error deleting transaction:', error);
         }
     };
