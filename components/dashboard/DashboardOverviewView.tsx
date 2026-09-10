@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { getBookSummaryHref } from '../readingRouteModel';
 import DashboardBookCard from './DashboardBookCard';
 import { buildCatalogSurfaceState } from './catalogStateModel';
-import type { DashboardKnowledgeItem, DashboardShelfBook, WeeklyReadingInsight } from './dashboardOverviewModel';
+import { runDashboardRetry, type DashboardKnowledgeItem, type DashboardShelfBook, type WeeklyReadingInsight } from './dashboardOverviewModel';
 
 export interface DashboardOverviewViewProps {
   greeting: string;
@@ -11,6 +11,8 @@ export interface DashboardOverviewViewProps {
   catalogError?: string | null;
   onRetryCatalog?: () => void;
   challengeLoading: boolean;
+  onRetryChallenge?: () => void;
+  onRetryLibrary?: () => void;
   userDataReady?: boolean;
   continueBook?: DashboardShelfBook;
   challenge?: { current: number; goal: number; percentage: number };
@@ -30,8 +32,13 @@ function CardSkeleton({ lines = 3, label = 'Loading reading data' }: { lines?: n
   );
 }
 
-function CardAlert({ message }: { message: string }) {
-  return <p className="dashboard-card-alert" role="alert">{message} Refresh the page to try again.</p>;
+function CardAlert({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  return (
+    <div className="dashboard-card-alert">
+      <p role="alert">{message} Refresh the page to try again.</p>
+      {onRetry && <button type="button" onClick={() => runDashboardRetry(onRetry)}>Try again</button>}
+    </div>
+  );
 }
 
 function CatalogAlert({ message, onRetry }: { message: string; onRetry?: () => void }) {
@@ -69,6 +76,8 @@ export default function DashboardOverviewView({
   catalogError = null,
   onRetryCatalog,
   challengeLoading,
+  onRetryChallenge,
+  onRetryLibrary,
   userDataReady = true,
   continueBook,
   challenge,
@@ -137,9 +146,9 @@ export default function DashboardOverviewView({
             <p className="dashboard-page-eyebrow">This year</p>
             <h2 id="dashboard-challenge-title">Reading challenge</h2>
           </div>
-          {challengeLoading ? <CardSkeleton lines={4} label="Loading your reading challenge" /> : challenge ? (
+          {challengeLoading && !challenge ? <CardSkeleton lines={4} label="Loading your reading challenge" /> : challenge ? (
             <div className="dashboard-challenge-content">
-              {challengeError && <CardAlert message={challengeError} />}
+              {challengeError && <CardAlert message={challengeError} onRetry={onRetryChallenge} />}
               <div
                 className="dashboard-challenge-ring"
                 role="progressbar"
@@ -154,9 +163,10 @@ export default function DashboardOverviewView({
               <p>Keep building the shelf you want to return to.</p>
               <Link className="dashboard-text-action" to="/dashboard/challenge">View reading challenge</Link>
             </div>
+          ) : challengeError ? (
+            <CardAlert message={challengeError} onRetry={onRetryChallenge} />
           ) : (
             <div className="dashboard-empty-state">
-              {challengeError && <CardAlert message={challengeError} />}
               <p>A small goal gives your next reading session a direction.</p>
               <EmptyAction to="/dashboard/challenge">Create a reading goal</EmptyAction>
             </div>
@@ -207,8 +217,8 @@ export default function DashboardOverviewView({
               </div>
               <Link className="dashboard-text-action" to="/dashboard/library">Open library</Link>
             </div>
-            {libraryError && <CardAlert message={libraryError} />}
-            {libraryCatalogState === 'loading' ? <CardSkeleton lines={4} /> : libraryCatalogState === 'content' ? (
+            {libraryError && <CardAlert message={libraryError} onRetry={onRetryLibrary} />}
+            {libraryError && library.length === 0 ? null : libraryCatalogState === 'loading' ? <CardSkeleton lines={4} /> : libraryCatalogState === 'content' ? (
               <div className="dashboard-book-grid dashboard-book-grid--library">
                 {library.slice(0, 3).map(item => <DashboardBookCard compact item={item} key={item.book.id} />)}
               </div>

@@ -27,6 +27,8 @@ import { getDbInstance } from '../firebase';
 import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import { getBookLibraryHref, getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 import { SummaryVisitTracker } from '../components/summaryVisitModel';
+import { AsyncIdentityGuard, type AsyncIdentityToken } from '../components/asyncIdentityGuard';
+import { getSummaryCatalogSurfaceState } from '../components/summaryCatalogState';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -87,6 +89,24 @@ interface SummaryDetailPageProps {
   surface?: ReadingSurface;
 }
 
+function CatalogErrorBanner({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="mx-auto mb-6 flex max-w-5xl flex-wrap items-start justify-between gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-800 ring-1 ring-red-100" role="alert">
+      <div>
+        <p>We couldn&apos;t refresh the book catalog.</p>
+        <p className="mt-1 font-medium text-red-700">{message} Existing book content remains available.</p>
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="min-h-11 rounded-xl bg-white px-4 py-2 font-black text-red-800 ring-1 ring-red-200 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+
 const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public' }) => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
@@ -102,6 +122,10 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const summaryRequestGuard = useRef(new AsyncIdentityGuard()).current;
+  const summaryBookIdRef = useRef<string | null>(null);
+  const summaryLoadedBookIdRef = useRef<string | null>(null);
+  const summaryLoadedLanguageRef = useRef<string | null>(null);
 
   // Helper function to resolve Arabic slug to book ID
   const resolveBookId = useCallback((idOrSlug: string | undefined): string | undefined => {
@@ -143,7 +167,20 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
   const [showSignUpModal, setShowSignUpModal] = useState(false);
 
 
-  const fetchSummary = useCallback(async (currentBook: Book) => {
+  useEffect(() => {
+    summaryRequestGuard.mount();
+    return () => summaryRequestGuard.unmount();
+  }, [summaryRequestGuard]);
+
+  const fetchSummary = useCallback(async (currentBook: Book, requestToken: AsyncIdentityToken) => {
+    if (!summaryRequestGuard.isCurrent(requestToken)) return;
+
+    if (summaryBookIdRef.current !== currentBook.id) {
+      summaryBookIdRef.current = currentBook.id;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+    }
     setLoading(true);
     setError(null);
 
@@ -152,10 +189,13 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
 
     if (translatedSummary) {
       // Use translated summary
+      if (!summaryRequestGuard.isCurrent(requestToken)) return;
       setSummaryData({
         summary: translatedSummary.summary,
         keyTakeaways: translatedSummary.keyTakeaways
       });
+      summaryLoadedBookIdRef.current = currentBook.id;
+      summaryLoadedLanguageRef.current = currentLanguage;
       setLoading(false);
     } else {
       // Load from Firestore
@@ -167,10 +207,13 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
         if (bookDoc.exists()) {
           const firestoreData = bookDoc.data();
           if (firestoreData.summary && firestoreData.keyTakeaways) {
+            if (!summaryRequestGuard.isCurrent(requestToken)) return;
             setSummaryData({
               summary: firestoreData.summary,
               keyTakeaways: firestoreData.keyTakeaways
             });
+            summaryLoadedBookIdRef.current = currentBook.id;
+            summaryLoadedLanguageRef.current = currentLanguage;
             setLoading(false);
             return;
           }
@@ -180,6 +223,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
       }
 
       // Final fallback: show placeholder
+      if (!summaryRequestGuard.isCurrent(requestToken)) return;
       setSummaryData({
         summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
         keyTakeaways: [
@@ -187,17 +231,28 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
           t('checkBackSoon') || "Check back soon for detailed content"
         ]
       });
+      summaryLoadedBookIdRef.current = currentBook.id;
+      summaryLoadedLanguageRef.current = currentLanguage;
       setLoading(false);
     }
-  }, [currentLanguage, t]);
+  }, [currentLanguage, summaryRequestGuard, t]);
 
   useEffect(() => {
+    const requestIdentity = bookIdOrSlug ?? null;
+    summaryRequestGuard.setIdentity(requestIdentity);
+    const requestToken = summaryRequestGuard.begin(requestIdentity);
+    if (!requestToken) return () => undefined;
+
     // Wait for books to load if they are loading
     if (booksLoading && books.length === 0) {
       setBook(undefined);
       setError(null);
       setLoading(true);
-      return;
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+      return () => summaryRequestGuard.invalidate();
     }
 
     // A failed catalog request is not evidence that the requested book does
@@ -206,15 +261,31 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
       setBook(undefined);
       setError(booksError);
       setLoading(false);
-      return;
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+      return () => summaryRequestGuard.invalidate();
     }
 
     const currentBook = books.find((b) => b.id === bookId);
     setBook(currentBook);
     if (currentBook) {
-      fetchSummary(currentBook);
+      if (
+        summaryLoadedBookIdRef.current !== currentBook.id
+        || summaryLoadedLanguageRef.current !== currentLanguage
+      ) {
+        void fetchSummary(currentBook, requestToken);
+      } else {
+        setError(null);
+        setLoading(false);
+      }
 
     } else {
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
       // Only set error if we are sure the book is not found (books are loaded)
       if (!booksLoading) {
         setError(booksError || t('bookNotFound') || "Book not found.");
@@ -225,7 +296,8 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     // Refresh translated summary when language changes
     const handleLanguageChange = () => {
       if (currentBook) {
-        fetchSummary(currentBook);
+        const languageToken = summaryRequestGuard.begin(requestIdentity);
+        if (languageToken) void fetchSummary(currentBook, languageToken);
       }
     };
 
@@ -233,10 +305,11 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
 
     // Cleanup event listener on component unmount
     return () => {
+      summaryRequestGuard.invalidate();
       window.removeEventListener('languagechange', handleLanguageChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, fetchSummary, books, booksError, booksLoading]);
+  }, [bookId, bookIdOrSlug, books, booksError, booksLoading, fetchSummary, summaryRequestGuard, t]);
 
   // User-scoped progress must wait for the captured identity's local record to
   // hydrate. The tracker makes this idempotent across hydration rerenders and
@@ -329,7 +402,13 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     }
   }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
 
-  if (!book && booksLoading) {
+  const summaryCatalogState = getSummaryCatalogSurfaceState({
+    loading: booksLoading,
+    error: booksError,
+    hasBook: Boolean(book),
+  });
+
+  if (summaryCatalogState === 'loading') {
     return (
       <div className="flex min-h-48 items-center justify-center" role="status" aria-label="Loading book">
         <Spinner />
@@ -337,23 +416,19 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     );
   }
 
-  if (!book && !loading && booksError) {
+  if (summaryCatalogState === 'error' && !book) {
     return (
-      <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 text-center shadow-sm" role="alert">
-        <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>We couldn&apos;t load this book</h1>
-        <p className="mt-2 text-gray-600">{booksError}</p>
-        <button
-          type="button"
-          onClick={() => { void refreshBooks(); }}
-          className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-orange-500 px-5 py-2 font-bold text-white hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-        >
-          Try again
-        </button>
-      </div>
+      <>
+        <CatalogErrorBanner message={booksError || 'Please try again.'} onRetry={() => { void refreshBooks(); }} />
+        <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 text-center shadow-sm">
+          <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>We couldn&apos;t load this book</h1>
+          <p className="mt-2 text-gray-600">The catalog request failed before we could confirm this book.</p>
+        </div>
+      </>
     );
   }
 
-  if (!book && !loading) {
+  if (summaryCatalogState === 'not-found') {
     return (
       <div className="text-center">
         <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>{t('bookNotFound') || 'Book Not Found'}</h1>
@@ -365,10 +440,16 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     );
   }
 
-  const showRedesignedLayout = Boolean(book && summaryData && !loading && !error);
+  const hasSummaryForCurrentBook = Boolean(book && summaryData && summaryBookIdRef.current === book.id);
+  const showRedesignedLayout = Boolean(
+    hasSummaryForCurrentBook
+    && !error
+    && (!loading || Boolean(booksError)),
+  );
 
   return (
     <>
+      {booksError && <CatalogErrorBanner message={booksError} onRetry={() => { void refreshBooks(); }} />}
       {surface === 'public' && book && (
         <StructuredData
           type="book"

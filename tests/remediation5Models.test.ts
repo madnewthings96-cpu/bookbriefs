@@ -9,7 +9,11 @@ import DashboardNotesView from '../components/dashboard/DashboardNotesView';
 import DashboardOverviewView from '../components/dashboard/DashboardOverviewView';
 import { buildCatalogSurfaceState } from '../components/dashboard/catalogStateModel';
 import { getDashboardSearchSurfaceState } from '../components/dashboard/dashboardSearchModel';
+import { runDashboardRetry } from '../components/dashboard/dashboardOverviewModel';
+import { getSummaryCatalogSurfaceState } from '../components/summaryCatalogState';
 import { parseBooksCache, readBooksCache, writeBooksCache } from '../contexts/booksCache';
+import { LatestRequestGate } from '../contexts/latestRequestGate';
+import { AsyncIdentityGuard } from '../components/asyncIdentityGuard';
 
 class MemoryStorage {
   private readonly values = new Map<string, string>();
@@ -74,6 +78,55 @@ test('hydration readiness keeps overview and notes presenters from flashing priv
   assert.doesNotMatch(notes, /Nothing captured yet/);
 });
 
+test('overview recovery actions replace misleading empty CTAs and preserve stale cards', () => {
+  const emptyMarkup = renderToStaticMarkup(
+    React.createElement(StaticRouter, { location: '/dashboard' },
+      React.createElement(DashboardOverviewView, {
+        greeting: 'Good morning', userName: 'Reader', catalogLoading: false,
+        challengeLoading: false, challenge: undefined,
+        challengeError: 'Challenge unavailable', libraryError: 'Saved books unavailable',
+        onRetryChallenge: () => undefined, onRetryLibrary: () => undefined,
+        continueBook: undefined, recentKnowledge: [], library: [],
+        weeklyInsight: { readingDays: 0, currentStreak: 0 }, recommendations: [],
+      }),
+    ),
+  );
+  assert.equal((emptyMarkup.match(/>Try again</g) ?? []).length, 2);
+  assert.doesNotMatch(emptyMarkup, /Create a reading goal/);
+  assert.doesNotMatch(emptyMarkup, /Explore the library/);
+
+  const staleMarkup = renderToStaticMarkup(
+    React.createElement(StaticRouter, { location: '/dashboard' },
+      React.createElement(DashboardOverviewView, {
+        greeting: 'Good morning', userName: 'Reader', catalogLoading: false,
+        challengeLoading: false,
+        challenge: { current: 4, goal: 12, percentage: 33 },
+        challengeError: 'Challenge refresh failed', libraryError: 'Saved books unavailable',
+        onRetryChallenge: () => undefined, onRetryLibrary: () => undefined,
+        continueBook: undefined, recentKnowledge: [],
+        library: [{
+          book: { id: 'atomic-habits', title: 'Atomic Habits', author: 'James Clear', category: 'Self-Help', coverImageUrl: '/atomic.jpg' },
+          progress: 40, saved: true, status: 'in-progress' as const,
+        }],
+        weeklyInsight: { readingDays: 0, currentStreak: 0 }, recommendations: [],
+      }),
+    ),
+  );
+  assert.match(staleMarkup, /4 of 12/);
+  assert.match(staleMarkup, /Atomic Habits/);
+  assert.equal((staleMarkup.match(/>Try again</g) ?? []).length, 2);
+});
+
+test('overview retry actions invoke each context refresh callback exactly once', () => {
+  let challengeCalls = 0;
+  let favoritesCalls = 0;
+  runDashboardRetry(() => { challengeCalls += 1; });
+  runDashboardRetry(() => { favoritesCalls += 1; });
+  runDashboardRetry(undefined);
+  assert.equal(challengeCalls, 1);
+  assert.equal(favoritesCalls, 1);
+});
+
 test('library renders favorites failures separately from catalog failures', () => {
   const markup = renderToStaticMarkup(
     React.createElement(StaticRouter, { location: '/dashboard/library' },
@@ -99,7 +152,12 @@ test('library renders favorites failures separately from catalog failures', () =
 
 test('firebase hosting protects exact and nested dashboard responses from indexing', async () => {
   const config = JSON.parse(await readFile('firebase.json', 'utf8')) as {
-    hosting?: { headers?: Array<{ source: string; headers: Array<{ key: string; value: string }> }> };
+    hosting?: {
+      public?: string;
+      ignore?: string[];
+      headers?: Array<{ source: string; headers: Array<{ key: string; value: string }> }>;
+      rewrites?: Array<{ source: string; destination: string; status?: number }>;
+    };
   };
   const headerBlocks = config.hosting?.headers ?? [];
   const robots = headerBlocks.filter((block) => (
@@ -112,6 +170,24 @@ test('firebase hosting protects exact and nested dashboard responses from indexi
     !['/dashboard', '/dashboard/**'].includes(block.source)
     && block.headers.some((header) => header.key === 'X-Robots-Tag')
   )), false);
+  assert.equal(config.hosting?.public, 'dist');
+  assert.deepEqual(config.hosting?.ignore, ['firebase.json', '**/.*', '**/node_modules/**']);
+  assert.deepEqual(config.hosting?.rewrites, [{ source: '**', destination: '/index.html' }]);
+
+  const netlifyConfig = await readFile('netlify.toml', 'utf8');
+  const publicSecurityBlock = netlifyConfig.slice(netlifyConfig.indexOf('for = "/*"'), netlifyConfig.indexOf('[[headers]]', netlifyConfig.indexOf('for = "/*"') + 1));
+  for (const header of [
+    'Content-Security-Policy',
+    'X-Frame-Options',
+    'X-Content-Type-Options',
+    'X-XSS-Protection',
+    'Referrer-Policy',
+    'Permissions-Policy',
+    'Strict-Transport-Security',
+  ]) {
+    assert.match(publicSecurityBlock, new RegExp(`^\\s*${header}\\s*=`, 'm'), header);
+  }
+  assert.doesNotMatch(publicSecurityBlock, /X-Robots-Tag/);
 });
 
 test('books cache accepts complete legacy records and clears wrong-shaped records only', () => {
@@ -128,6 +204,20 @@ test('books cache accepts complete legacy records and clears wrong-shaped record
   assert.equal(readBooksCache(storage), null);
   assert.deepEqual(storage.removed.sort(), ['books_cache', 'books_cache_timestamp']);
   assert.equal(storage.getItem('unrelated'), 'keep me');
+});
+
+test('books cache rejects blank and non-canonical timestamp strings before numeric conversion', () => {
+  const invalidTimestamps = ['', ' ', ' 1700000000000', '1700000000000 ', '01700000000000', '1e12', '+1700000000000'];
+  for (const timestamp of invalidTimestamps) {
+    const storage = new MemoryStorage({
+      books_cache: JSON.stringify([validBook]),
+      books_cache_timestamp: timestamp,
+      unrelated: 'keep me',
+    });
+    assert.equal(readBooksCache(storage, 1_700_000_000_000), null, timestamp);
+    assert.deepEqual(storage.removed.sort(), ['books_cache', 'books_cache_timestamp'], timestamp);
+    assert.equal(storage.getItem('unrelated'), 'keep me');
+  }
 });
 
 test('books cache reads a valid fresh record without changing its shape', () => {
@@ -172,4 +262,49 @@ test('focused-reader and modal/mobile contracts remain direction-safe and labell
   assert.match(mobile, /aria-controls=\{open \? 'dashboard-more-drawer' : undefined\}/);
   assert.match(feedback, /<label htmlFor="feedback-message"/);
   assert.match(feedback, /id="feedback-message"/);
+});
+
+test('latest catalog requests block stale commits in either completion order', () => {
+  const firstWinsTooLate = new LatestRequestGate();
+  const first = firstWinsTooLate.begin();
+  const second = firstWinsTooLate.begin();
+  let state = 'initial';
+  const commitFirstWinsTooLate = (requestId: number, next: string) => {
+    if (firstWinsTooLate.isCurrent(requestId)) state = next;
+  };
+  commitFirstWinsTooLate(first, 'old-error');
+  commitFirstWinsTooLate(second, 'new-success');
+  assert.equal(state, 'new-success');
+
+  const firstCompletesBeforeRetry = new LatestRequestGate();
+  const initial = firstCompletesBeforeRetry.begin();
+  let orderedState = 'initial';
+  if (firstCompletesBeforeRetry.isCurrent(initial)) orderedState = 'old-success';
+  const retry = firstCompletesBeforeRetry.begin();
+  if (firstCompletesBeforeRetry.isCurrent(retry)) orderedState = 'new-error';
+  assert.equal(orderedState, 'new-error');
+});
+
+test('summary request guard prevents late response and error commits after route changes or unmount', () => {
+  const guard = new AsyncIdentityGuard();
+  guard.setIdentity('book-a');
+  const first = guard.begin('book-a');
+  guard.setIdentity('book-b');
+  const second = guard.begin('book-b');
+  assert.equal(guard.isCurrent(first), false);
+  assert.equal(guard.isCurrent(second), true);
+
+  const commits: string[] = [];
+  if (guard.isCurrent(first)) commits.push('book-a-error');
+  if (guard.isCurrent(second)) commits.push('book-b-success');
+  guard.unmount();
+  if (guard.isCurrent(second)) commits.push('book-b-error');
+  assert.deepEqual(commits, ['book-b-success']);
+});
+
+test('summary catalog state keeps stale books distinct from confirmed not-found', () => {
+  assert.equal(getSummaryCatalogSurfaceState({ loading: false, error: 'offline', hasBook: true }), 'error');
+  assert.equal(getSummaryCatalogSurfaceState({ loading: false, error: 'offline', hasBook: false }), 'error');
+  assert.equal(getSummaryCatalogSurfaceState({ loading: false, error: null, hasBook: false }), 'not-found');
+  assert.equal(getSummaryCatalogSurfaceState({ loading: true, error: null, hasBook: false }), 'loading');
 });

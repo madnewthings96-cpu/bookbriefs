@@ -27,6 +27,15 @@ export interface WeeklyReadingInsight {
   currentStreak: number;
 }
 
+/**
+ * Keeps card-level recovery actions callable without making the button depend
+ * on a particular context implementation. Context refresh functions are
+ * intentionally synchronous triggers; the context owns the async work.
+ */
+export const runDashboardRetry = (refresh: (() => void) | undefined) => {
+  refresh?.();
+};
+
 const clampProgress = (progress: number) => Math.min(100, Math.max(0, Number.isFinite(progress) ? progress : 0));
 
 const validDate = (value: unknown): Date | undefined => {

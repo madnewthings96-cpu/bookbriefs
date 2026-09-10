@@ -32,10 +32,17 @@ export default function DashboardOverviewPage() {
     favorites,
     error: libraryError,
     isUserDataReady: favoritesReady,
+    refreshFavorites,
   } = useFavorites();
   const { getBookAuthor, getBookTitle } = useLanguage();
   const { personalNotesData, isUserDataReady: notesReady } = usePersonalNotes();
-  const { challenge, loading: challengeLoading, error: challengeError, progress } = useReadingChallenge();
+  const {
+    challenge,
+    loading: challengeLoading,
+    error: challengeError,
+    refreshChallenge,
+    progress,
+  } = useReadingChallenge();
   const { bookProgress, userStats, isUserDataReady: progressReady } = useUserProgress();
   const userDataReady = favoritesReady && notesReady && progressReady;
 
@@ -84,6 +91,8 @@ export default function DashboardOverviewPage() {
       catalogError={catalogError}
       onRetryCatalog={() => { void refreshBooks(); }}
       challengeLoading={challengeLoading}
+      onRetryChallenge={refreshChallenge}
+      onRetryLibrary={refreshFavorites}
       userDataReady={userDataReady}
       continueBook={continueBook}
       challenge={challenge ? progress : undefined}

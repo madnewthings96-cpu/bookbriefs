@@ -66,6 +66,12 @@ const safeRemove = (storage: BooksCacheStorage, key: string) => {
   }
 };
 
+const parseCacheTimestamp = (raw: string | null): number | null => {
+  if (raw === null || raw.length === 0 || raw.trim() !== raw || !/^(0|[1-9]\d*)$/.test(raw)) return null;
+  const timestamp = Number(raw);
+  return Number.isSafeInteger(timestamp) ? timestamp : null;
+};
+
 export const readBooksCache = (
   storage: BooksCacheStorage | null,
   now = Date.now(),
@@ -78,8 +84,8 @@ export const readBooksCache = (
   if (raw.value === null && timestampRaw.value === null) return null;
 
   const books = parseBooksCache(raw.value);
-  const timestamp = timestampRaw.value === null ? Number.NaN : Number(timestampRaw.value);
-  if (!books || !Number.isFinite(timestamp)) {
+  const timestamp = parseCacheTimestamp(timestampRaw.value);
+  if (!books || timestamp === null) {
     safeRemove(storage, BOOKS_CACHE_KEY);
     safeRemove(storage, BOOKS_CACHE_TIMESTAMP_KEY);
     return null;
