@@ -43,3 +43,11 @@ Commit: `98c0acf` (`fix dashboard accessibility and shell robustness`).
 - Behavior preservation: LTR collapse icon mapping and `Expand sidebar`/`Collapse sidebar` labels are unchanged; CSS reacts immediately to root `dir` changes without listeners or stale state, and the sort select preserves its prior LTR padding geometry while reserving the chevron in RTL.
 - Verification: full TS/TSX suite 151/151, `npm run build` (Vite, SEO prerender, SEO tests), and `git diff --check` all pass. Existing TSX module deprecation and baseline `tsc` concerns remain unchanged.
 - Commit: `d2347d4` (`fix dashboard RTL affordance reactivity`).
+
+## Fix round 2
+
+- Files: `components/dashboard/DashboardShell.css`, `tests/calculatorsPage.test.ts`, and `tests/dashboardAccessibilityRemediation.test.ts` (covering the existing `pages/CalculatorsPage.tsx` FAQ markup).
+- RED: the precise FAQ contract failed because the native calculator `<summary>` was absent from the dashboard interactive sizing selector.
+- GREEN: the dashboard-scoped `:is(button, a, input, select, textarea, summary)` rule now provides logical 44px block/inline minimums; the existing dashboard `:focus-visible` rule keeps keyboard focus visible, while public calculator styling is unchanged.
+- Verification: focused accessibility/calculator/shell tests pass 20/20; full TS/TSX suite passes 152/152; `npm run build` (Vite, SEO prerender, SEO tests) and `git diff --check` pass.
+- Commit: `7eb1843` (`fix dashboard calculator FAQ tap target`).
