@@ -20,4 +20,3 @@ export const buildCatalogSurfaceState = ({ loading, error, hasContent }: Catalog
 export const runCatalogRetry = (refreshBooks: () => Promise<void>) => async () => {
   await refreshBooks();
 };
-

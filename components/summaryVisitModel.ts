@@ -18,4 +18,3 @@ export class SummaryVisitTracker {
     return true;
   }
 }
-

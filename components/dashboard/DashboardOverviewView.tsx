@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getBookSummaryHref } from '../readingRouteModel';
 import DashboardBookCard from './DashboardBookCard';
+import { buildCatalogSurfaceState } from './catalogStateModel';
 import type { DashboardKnowledgeItem, DashboardShelfBook, WeeklyReadingInsight } from './dashboardOverviewModel';
 
 export interface DashboardOverviewViewProps {
@@ -77,6 +78,26 @@ export default function DashboardOverviewView({
   recommendations,
 }: DashboardOverviewViewProps) {
   const challengePercentage = Math.max(0, Math.min(100, challenge?.percentage ?? 0));
+  const continueCatalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: Boolean(continueBook),
+  });
+  const notesCatalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: recentKnowledge.length > 0,
+  });
+  const libraryCatalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: library.length > 0,
+  });
+  const recommendationsCatalogState = buildCatalogSurfaceState({
+    loading: catalogLoading,
+    error: catalogError,
+    hasContent: recommendations.length > 0,
+  });
 
   return (
     <div className="dashboard-page dashboard-overview">
@@ -95,9 +116,9 @@ export default function DashboardOverviewView({
             <p className="dashboard-page-eyebrow">Next up</p>
             <h2 id="dashboard-continue-title">Continue reading</h2>
           </div>
-          {catalogLoading ? <CardSkeleton /> : continueBook ? (
+          {continueCatalogState === 'loading' ? <CardSkeleton /> : continueCatalogState === 'content' && continueBook ? (
             <DashboardBookCard item={continueBook} />
-          ) : catalogError ? <CatalogUnavailable /> : (
+          ) : continueCatalogState === 'error' ? <CatalogUnavailable /> : (
             <div className="dashboard-empty-state">
               <p>Your next useful idea is waiting in the summary library.</p>
               <EmptyAction to="/dashboard/discover">Choose your first summary</EmptyAction>
@@ -147,7 +168,7 @@ export default function DashboardOverviewView({
               </div>
               <Link className="dashboard-text-action" to="/dashboard/notes">View all notes</Link>
             </div>
-            {catalogLoading ? <CardSkeleton /> : recentKnowledge.length ? (
+            {notesCatalogState === 'loading' ? <CardSkeleton /> : notesCatalogState === 'content' ? (
               <ul className="dashboard-knowledge-list">
                 {recentKnowledge.map(item => {
                   const title = item.book?.title || 'A saved book';
@@ -164,7 +185,7 @@ export default function DashboardOverviewView({
                   );
                 })}
               </ul>
-            ) : catalogError ? <CatalogUnavailable /> : (
+            ) : notesCatalogState === 'error' ? <CatalogUnavailable /> : (
               <div className="dashboard-empty-state">
                 <p>Keep the ideas worth returning to close at hand.</p>
                 <EmptyAction to="/dashboard/discover">Capture your first idea</EmptyAction>
@@ -181,11 +202,11 @@ export default function DashboardOverviewView({
               <Link className="dashboard-text-action" to="/dashboard/library">Open library</Link>
             </div>
             {libraryError && <CardAlert message={libraryError} />}
-            {catalogLoading ? <CardSkeleton lines={4} /> : library.length ? (
+            {libraryCatalogState === 'loading' ? <CardSkeleton lines={4} /> : libraryCatalogState === 'content' ? (
               <div className="dashboard-book-grid dashboard-book-grid--library">
                 {library.slice(0, 3).map(item => <DashboardBookCard compact item={item} key={item.book.id} />)}
               </div>
-            ) : catalogError ? <CatalogUnavailable /> : (
+            ) : libraryCatalogState === 'error' ? <CatalogUnavailable /> : (
               <div className="dashboard-empty-state">
                 <p>Save a summary or begin reading to make this shelf yours.</p>
                 <EmptyAction to="/dashboard/discover">Explore the library</EmptyAction>
@@ -223,11 +244,11 @@ export default function DashboardOverviewView({
           </div>
           <Link className="dashboard-text-action" to="/dashboard/discover">Browse all summaries</Link>
         </div>
-        {catalogLoading ? <CardSkeleton lines={4} /> : recommendations.length ? (
+        {recommendationsCatalogState === 'loading' ? <CardSkeleton lines={4} /> : recommendationsCatalogState === 'content' ? (
           <div className="dashboard-book-grid dashboard-book-grid--recommendations">
             {recommendations.map(item => <DashboardBookCard compact item={item} key={item.book.id} />)}
           </div>
-        ) : catalogError ? <CatalogUnavailable /> : (
+        ) : recommendationsCatalogState === 'error' ? <CatalogUnavailable /> : (
           <div className="dashboard-empty-state">
             <p>Explore the catalog to find a summary for your next session.</p>
             <EmptyAction to="/dashboard/discover">Browse book summaries</EmptyAction>
