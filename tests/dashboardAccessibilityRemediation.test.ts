@@ -39,7 +39,7 @@ test('dashboard tap targets are scoped to the dashboard surface and use logical 
   const calculators = await read('pages/CalculatorsPage.tsx');
   const challenge = await read('pages/ReadingChallengePage.tsx');
 
-  assert.match(shell, /\.dashboard-shell\s+:is\(button, a, input, select, textarea\)[^{]*\{[^}]*min-block-size:\s*44px[^}]*min-inline-size:\s*44px/s);
+  assert.match(shell, /\.dashboard-shell\s+:is\(button, a, input, select, textarea, summary\)[^{]*\{[^}]*min-block-size:\s*44px[^}]*min-inline-size:\s*44px/s);
   assert.match(summaries, /\.dashboard-shell \.summaries-library[\s\S]*min-block-size:\s*44px/);
   assert.match(calculators, /surface === 'dashboard'[\s\S]*min-h-11/);
   assert.match(challenge, /surface === 'dashboard'[\s\S]*min-h-11/);
