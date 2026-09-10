@@ -113,6 +113,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Load trades from Firestore (real-time)
     useEffect(() => {
+        scopedStore.activate(currentUserId);
         const capturedUserId = currentUserId;
         const token = scopedStore.capture(capturedUserId);
         if (!token) return () => undefined;
@@ -171,6 +172,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Fetch starting balance
     useEffect(() => {
+        scopedStore.activate(currentUserId);
         const capturedUserId = currentUserId;
         const token = scopedStore.capture(capturedUserId);
         if (!token) return () => undefined;
@@ -238,6 +240,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
     // Load goals from Firestore (real-time)
     useEffect(() => {
+        scopedStore.activate(currentUserId);
         const capturedUserId = currentUserId;
         const token = scopedStore.capture(capturedUserId);
         if (!token) return () => undefined;

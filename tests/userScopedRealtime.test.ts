@@ -152,3 +152,39 @@ test('a replayed setup can re-arm a destroyed store without reviving old tokens'
   assert.equal(store.isCurrent(oldToken), false);
   assert.equal(store.isCurrent(newToken), true);
 });
+
+test('StrictMode replay can reactivate the same store and rejects callbacks from the old setup', () => {
+  const store = new UserScopedRealtimeStore(empty);
+  let emitOld: ((value: string[]) => void) | undefined;
+  let emitNew: ((value: string[]) => void) | undefined;
+  const received: string[][] = [];
+
+  store.observe('user-a');
+  store.subscribe<string[]>(
+    'user-a',
+    (_token, onValue) => {
+      emitOld = onValue;
+      return () => undefined;
+    },
+    (value) => received.push(value),
+  );
+
+  // React StrictMode runs the effect cleanup, then setup again without a
+  // render that could call observe(). The explicit lifecycle API must re-arm
+  // this persistent store before the second setup captures its token.
+  store.destroy();
+  store.activate('user-a');
+  store.subscribe<string[]>(
+    'user-a',
+    (_token, onValue) => {
+      emitNew = onValue;
+      return () => undefined;
+    },
+    (value) => received.push(value),
+  );
+
+  emitOld?.(['old']);
+  emitNew?.(['new']);
+
+  assert.deepEqual(received, [['new']]);
+});

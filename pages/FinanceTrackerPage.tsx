@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, Timestamp, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserScopedRealtimeStore } from '../contexts/userScopedRealtime';
+import { getBrowserStorage, safeReadItem, safeWriteItem } from '../contexts/userScopedPersistence';
 import useSEO from '../hooks/useSEO';
 import ReceiptScanner from '../components/ReceiptScanner';
 import './FinanceTrackerPage.css';
@@ -505,8 +506,7 @@ const FinanceTrackerPage: React.FC = () => {
     const [transactionSort, setTransactionSort] = useState<TransactionSort>('date-desc');
     const [showAllTransactions, setShowAllTransactions] = useState(false);
     const [financeLanguage, setFinanceLanguage] = useState<FinanceLanguage>(() => {
-        if (typeof window === 'undefined') return 'en';
-        return window.localStorage.getItem('bookbriefs_finance_language') === 'ar' ? 'ar' : 'en';
+        return safeReadItem(getBrowserStorage(), 'bookbriefs_finance_language') === 'ar' ? 'ar' : 'en';
     });
 
     const [formData, setFormData] = useState({
@@ -544,7 +544,7 @@ const FinanceTrackerPage: React.FC = () => {
 
     const changeFinanceLanguage = (language: FinanceLanguage) => {
         setFinanceLanguage(language);
-        window.localStorage.setItem('bookbriefs_finance_language', language);
+        safeWriteItem(getBrowserStorage(), 'bookbriefs_finance_language', language);
     };
 
     useSEO({
@@ -555,6 +555,7 @@ const FinanceTrackerPage: React.FC = () => {
     });
 
     useEffect(() => {
+        scopedStore.activate(currentUserId);
         const capturedUserId = currentUserId;
         const token = scopedStore.capture(capturedUserId);
         if (!token) return () => undefined;

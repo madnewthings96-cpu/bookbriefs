@@ -51,6 +51,23 @@ export class UserScopedRealtimeStore<T> {
     return true;
   }
 
+  /**
+   * Re-arm a persistent store at the beginning of an effect setup.
+   *
+   * React StrictMode can run an effect's cleanup and setup again without a
+   * render in between. Providers therefore call this explicitly before they
+   * capture a subscription or mutation token. The identity/version gate still
+   * invalidates every token from the destroyed setup.
+   */
+  activate(userId: string | null) {
+    if (!this.mounted) {
+      this.mounted = true;
+      this.currentUserId = null;
+      this.state = this.emptyState();
+    }
+    return this.observe(userId);
+  }
+
   capture(userId: string | null): UserIdentityToken | null {
     if (!this.mounted || !userId || userId !== this.currentUserId) return null;
     return { userId, version: this.version };

@@ -50,10 +50,11 @@ service cloud.firestore {
     // granting anonymous, cross-user, or un-namespaced reads.
     function isReadingChallengePathForUser(challengeId) {
       return isAuthenticated() &&
-             challengeId.size() >= request.auth.uid.size() + 5 &&
+             challengeId.size() == request.auth.uid.size() + 5 &&
              challengeId[0:request.auth.uid.size()] == request.auth.uid &&
              challengeId[request.auth.uid.size()] == '_' &&
-             challengeId.matches('^.*_[0-9]{4}$');
+             challengeId[request.auth.uid.size() + 1:request.auth.uid.size() + 5]
+               .matches('^(20(2[0-9]|[3-9][0-9])|2100)$');
     }
 
     // Admins have full access to everything

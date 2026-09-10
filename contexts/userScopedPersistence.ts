@@ -143,7 +143,11 @@ const safeGetItem = (storage: StorageLike | null, key: string): { ok: boolean; v
   }
 };
 
-const safeRemoveItem = (storage: StorageLike | null, key: string) => {
+export const safeReadItem = (storage: StorageLike | null, key: string): string | null => (
+  safeGetItem(storage, key).value
+);
+
+export const safeRemoveItem = (storage: StorageLike | null, key: string) => {
   if (!storage) return;
   try {
     storage.removeItem(key);

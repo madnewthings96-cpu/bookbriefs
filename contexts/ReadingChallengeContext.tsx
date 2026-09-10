@@ -62,6 +62,7 @@ export const ReadingChallengeProvider: React.FC<{ children: ReactNode }> = ({ ch
   };
 
   useEffect(() => {
+    scopedStore.activate(currentUserId);
     const capturedUserId = currentUserId;
     const token = scopedStore.capture(capturedUserId);
     if (!token) return () => undefined;

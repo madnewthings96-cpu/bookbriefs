@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import { db } from '../firebase';
 import { UserScopedRealtimeStore, type UserIdentityToken } from './userScopedRealtime';
 import { OptimisticFavoritesState } from './favoritesState';
+import { getBrowserStorage, safeReadItem, safeRemoveItem } from './userScopedPersistence';
 
 interface FavoritesContextType {
   favorites: string[];
@@ -40,14 +41,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const readLegacyFavorites = (storageKey: string): string[] => {
-    if (typeof localStorage === 'undefined') return [];
-    let storedFavorites: string | null = null;
-    try {
-      storedFavorites = localStorage.getItem(storageKey);
-    } catch (error) {
-      console.error('Failed to read legacy favorites:', error);
-      return [];
-    }
+    const storedFavorites = safeReadItem(getBrowserStorage(), storageKey);
     if (!storedFavorites) return [];
 
     try {
@@ -66,6 +60,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 
   useEffect(() => {
+    scopedStore.activate(currentUserId);
     const capturedUserId = currentUserId;
     const token = scopedStore.capture(capturedUserId);
     if (!token || !user) return () => undefined;
@@ -94,8 +89,8 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             updatedAt: serverTimestamp(),
           }, { merge: true })
             .then(() => {
-              if (scopedStore.isCurrent(snapshotToken) && typeof localStorage !== 'undefined') {
-                localStorage.removeItem(legacyStorageKey);
+              if (scopedStore.isCurrent(snapshotToken)) {
+                safeRemoveItem(getBrowserStorage(), legacyStorageKey);
               }
             })
             .catch((error) => {
