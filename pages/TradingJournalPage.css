@@ -284,6 +284,166 @@
 .fieldbook-panel .bg-emerald-500 { background-color: var(--fieldbook-profit) !important; }
 .fieldbook-panel .bg-rose-500 { background-color: var(--fieldbook-loss) !important; }
 
+.equity-story-card {
+  border: 1px solid var(--fieldbook-line);
+  background: var(--fieldbook-paper) !important;
+  color: var(--fieldbook-ink);
+}
+
+.equity-story-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-block-end: 16px;
+}
+
+.equity-story-kicker {
+  margin: 0;
+  color: var(--fieldbook-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.equity-story-title,
+.equity-story-insight { font-family: Newsreader, Georgia, serif; }
+
+.equity-story-title {
+  margin: 3px 0 0;
+  color: var(--fieldbook-ink);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.equity-story-headline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-block-start: 10px;
+  color: var(--fieldbook-ink);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.equity-story-headline > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+}
+
+.equity-story-headline svg { width: 14px; height: 14px; }
+
+.equity-story-ranges {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(44px, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 12px;
+  background: var(--fieldbook-parchment);
+}
+
+.equity-story-range-button {
+  min-block-size: 44px;
+  border-radius: 9px;
+  padding-inline: 9px;
+  color: var(--fieldbook-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.equity-story-range-button[aria-pressed='true'] {
+  background: var(--fieldbook-forest);
+  color: var(--fieldbook-paper);
+}
+
+.equity-story-range-button:focus-visible {
+  outline: 2px solid var(--fieldbook-brass);
+  outline-offset: 2px;
+}
+
+.equity-story-chart,
+.equity-story-drawdown-chart { min-inline-size: 0; }
+
+.equity-story-drawdown-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block: 16px 2px;
+  color: var(--fieldbook-ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.equity-story-drawdown-heading span:last-child {
+  color: var(--fieldbook-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.equity-story-tooltip {
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 10px;
+  background: var(--fieldbook-paper);
+  padding: 10px 12px;
+  color: var(--fieldbook-ink);
+  box-shadow: 0 10px 24px var(--fieldbook-line);
+  font-size: 12px;
+}
+
+.equity-story-tooltip p { margin: 0; }
+.equity-story-tooltip-date { margin-block-end: 4px !important; color: var(--fieldbook-muted); font-size: 11px; }
+.equity-story-tooltip-drawdown { margin-block-start: 4px !important; color: var(--fieldbook-loss); }
+.equity-story-tooltip-trade { margin-block-start: 7px; border-block-start: 1px solid var(--fieldbook-line); padding-block-start: 7px; }
+.equity-story-profit { color: var(--fieldbook-profit); }
+.equity-story-loss { color: var(--fieldbook-loss); }
+
+.equity-story-insight {
+  margin: 18px 0 0;
+  color: var(--fieldbook-canopy);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.equity-story-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0 0;
+}
+
+.equity-story-metrics > div {
+  min-inline-size: 0;
+  border: 1px solid var(--fieldbook-line);
+  border-radius: 10px;
+  background: var(--fieldbook-parchment);
+  padding: 10px;
+}
+
+.equity-story-metrics dt {
+  color: var(--fieldbook-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.equity-story-metrics dd {
+  margin: 5px 0 0;
+  color: var(--fieldbook-ink);
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 .fieldbook-panel table thead {
   background: var(--fieldbook-forest) !important;
   color: var(--fieldbook-paper) !important;
@@ -367,6 +527,10 @@
   }
 
   .fieldbook-panel { scroll-margin-top: 72px; }
+
+  .equity-story-header { flex-direction: column; }
+  .equity-story-ranges { width: 100%; }
+  .equity-story-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
