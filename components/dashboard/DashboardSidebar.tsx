@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,6 +9,7 @@ interface DashboardSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   onFeedback: () => void;
+  onLogout: () => void | Promise<void>;
 }
 
 const DashboardNavigationItem = ({ item, pathname, onFeedback }: {
@@ -37,10 +39,20 @@ const DashboardNavigationItem = ({ item, pathname, onFeedback }: {
   );
 };
 
-export function DashboardSidebar({ collapsed, onToggle, onFeedback }: DashboardSidebarProps) {
+export function DashboardSidebar({ collapsed, onToggle, onFeedback, onLogout }: DashboardSidebarProps) {
   const { pathname } = useLocation();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { t } = useLanguage();
+  const [isRtl, setIsRtl] = useState(() => typeof document !== 'undefined' && document.documentElement.dir === 'rtl');
+
+  useEffect(() => {
+    const updateDirection = () => setIsRtl(document.documentElement.dir === 'rtl');
+    updateDirection();
+    window.addEventListener('languagechange', updateDirection);
+    return () => window.removeEventListener('languagechange', updateDirection);
+  }, []);
+
+  const CollapseIcon = collapsed === isRtl ? ChevronLeft : ChevronRight;
 
   return (
     <aside className="dashboard-sidebar" aria-label="Dashboard navigation">
@@ -50,7 +62,7 @@ export function DashboardSidebar({ collapsed, onToggle, onFeedback }: DashboardS
           <span className="dashboard-brand-wordmark">Ta7leel</span>
         </NavLink>
         <button type="button" className="dashboard-icon-button" onClick={onToggle} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
-          {collapsed ? <ChevronRight aria-hidden="true" size={20} /> : <ChevronLeft aria-hidden="true" size={20} />}
+          <CollapseIcon aria-hidden="true" size={20} />
         </button>
       </div>
 
@@ -74,7 +86,7 @@ export function DashboardSidebar({ collapsed, onToggle, onFeedback }: DashboardS
             <small>{user?.email ?? 'Your reading desk'}</small>
           </span>
         </div>
-        <button type="button" className="dashboard-nav-item dashboard-sign-out" onClick={logout} aria-label="Sign out" title="Sign out">
+        <button type="button" className="dashboard-nav-item dashboard-sign-out" onClick={() => { void onLogout(); }} aria-label="Sign out" title="Sign out">
           <LogOut aria-hidden="true" size={20} />
           <span className="dashboard-nav-label">Sign out</span>
         </button>

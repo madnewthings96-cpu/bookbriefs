@@ -4,6 +4,7 @@ import { getModalFocusWrapTarget } from '../components/modalFocusTrap';
 interface UseModalDialogOptions {
   open: boolean;
   onClose: () => void;
+  initialFocusRef?: RefObject<HTMLElement | null>;
 }
 
 const focusableSelector = [
@@ -19,7 +20,7 @@ const getFocusableElements = (container: HTMLElement) => Array.from(
   container.querySelectorAll<HTMLElement>(focusableSelector),
 ).filter(element => element.tabIndex >= 0 && !element.hasAttribute('disabled'));
 
-export const useModalDialog = ({ open, onClose }: UseModalDialogOptions): RefObject<HTMLDivElement | null> => {
+export const useModalDialog = ({ open, onClose, initialFocusRef }: UseModalDialogOptions): RefObject<HTMLDivElement | null> => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
 
@@ -30,7 +31,9 @@ export const useModalDialog = ({ open, onClose }: UseModalDialogOptions): RefObj
 
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
-    const frame = window.requestAnimationFrame(() => dialogRef.current?.focus());
+    const frame = window.requestAnimationFrame(() => {
+      (initialFocusRef?.current ?? dialogRef.current)?.focus();
+    });
     document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (event: KeyboardEvent) => {

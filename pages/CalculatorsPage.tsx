@@ -208,7 +208,7 @@ const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ surface = 'public' })
   const tabCopy = calculatorTabLabels[currentLanguage];
 
   return (
-    <div className="overflow-x-hidden bg-[#FBFBFA]" dir={isArabic ? 'rtl' : 'ltr'}>
+    <div className="overflow-x-hidden bg-[#FBFBFA]" dir={surface === 'dashboard' ? undefined : isArabic ? 'rtl' : 'ltr'}>
       {/* HERO SECTION */}
       <section className="relative isolate overflow-hidden bg-white px-4 pb-16 pt-8 sm:px-6 md:pb-24 md:pt-12 lg:px-8 border-b border-forest-900/[0.06]">
         {/* Subtle Ambient Radial Glow */}
@@ -319,7 +319,7 @@ const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ surface = 'public' })
                     <Link
                       key={tab.id}
                       to={getCalculatorPath(tab.id, currentLanguage, surface)}
-                      className={`pressable inline-flex min-h-9 items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
+                      className={`pressable inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${surface === 'dashboard' ? 'min-h-11 min-w-11' : 'min-h-9'} ${
                         isActiveTab
                           ? 'bg-forest-800 text-white shadow-sm'
                           : 'text-forest-900/70 hover:text-forest-950 hover:bg-white/60'

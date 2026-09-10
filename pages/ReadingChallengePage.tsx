@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -25,6 +25,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useBooks } from '../contexts/BooksContext';
 import { Book } from '../types';
 import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 const clamp = (value: number, min = 0, max = 100) => Math.min(Math.max(value, min), max);
 
@@ -395,7 +396,7 @@ const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = '
                         <button
                           type="button"
                           onClick={() => handleUnmarkRead(book.id)}
-                          className="pressable absolute right-1.5 top-1.5 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500"
+                          className={`pressable absolute right-1.5 top-1.5 flex items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-8 w-8'}`}
                           aria-label={`Mark ${book.title} as unread`}
                         >
                           <Check className="h-4 w-4" aria-hidden="true" />
@@ -535,7 +536,7 @@ const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, sur
       <button
         type="button"
         onClick={onToggle}
-        className={`pressable absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${
+        className={`pressable absolute right-2 top-2 flex items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-9 w-9'} ${
           isRead ? 'bg-emerald-500 text-white hover:bg-red-500' : 'bg-white text-gray-500 hover:bg-emerald-500 hover:text-white'
         }`}
         aria-label={isRead ? `Mark ${book.title} as unread` : `Mark ${book.title} as read`}
@@ -572,12 +573,16 @@ const GoalModal: React.FC<GoalModalProps> = ({
   setGoalInput,
   onClose,
   onSubmit,
-}) => (
-  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm">
-    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
+}) => {
+  const goalInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useModalDialog({ open: true, onClose, initialFocusRef: goalInputRef });
+
+  return (
+  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="reading-goal-modal-title" tabIndex={-1} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-black text-gray-950">{challengeGoal ? 'Update your goal' : 'Set your reading goal'}</h3>
+          <h3 id="reading-goal-modal-title" className="text-2xl font-black text-gray-950">{challengeGoal ? 'Update your goal' : 'Set your reading goal'}</h3>
           <p className="mt-2 text-sm leading-6 text-gray-600">How many summaries do you want to finish in {currentYear}?</p>
         </div>
         <button
@@ -616,7 +621,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
         className="h-12 w-full rounded-xl bg-gray-50 px-4 text-base font-bold text-gray-950 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 focus:bg-white focus:ring-2 focus:ring-orange-300"
         min="1"
         max="1000"
-        autoFocus
+        ref={goalInputRef}
         disabled={isSubmitting}
       />
 
@@ -653,7 +658,8 @@ const GoalModal: React.FC<GoalModalProps> = ({
       </div>
     </div>
   </div>
-);
+  );
+};
 
 interface DeleteChallengeModalProps {
   currentYear: number;
@@ -663,13 +669,17 @@ interface DeleteChallengeModalProps {
   onDelete: () => void;
 }
 
-const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear, error, isSubmitting, onClose, onDelete }) => (
-  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm">
-    <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
+const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear, error, isSubmitting, onClose, onDelete }) => {
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useModalDialog({ open: true, onClose, initialFocusRef: cancelButtonRef });
+
+  return (
+  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="delete-challenge-modal-title" tabIndex={-1} className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
         <Trash2 className="h-7 w-7" aria-hidden="true" />
       </div>
-      <h3 className="text-2xl font-black text-gray-950">Delete challenge?</h3>
+      <h3 id="delete-challenge-modal-title" className="text-2xl font-black text-gray-950">Delete challenge?</h3>
       <p className="mt-2 text-sm leading-6 text-gray-600">
         This will delete your {currentYear} reading challenge and progress. This action cannot be undone.
       </p>
@@ -682,6 +692,7 @@ const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <button
+          ref={cancelButtonRef}
           type="button"
           onClick={onClose}
           disabled={isSubmitting}
@@ -700,6 +711,7 @@ const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default ReadingChallengePage;

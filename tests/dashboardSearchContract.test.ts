@@ -19,8 +19,8 @@ test('dashboard search contracts retain keyboard navigation, route reset, outsid
 
   assert.match(search, /role="combobox"/);
   assert.match(search, /aria-expanded=\{isOpen && hasQuery\}/);
-  assert.match(search, /aria-controls=\{RESULTS_ID\}/);
-  assert.match(search, /aria-activedescendant=\{activeIndex >= 0 && activeIndex < results\.length/);
+  assert.match(search, /aria-controls=\{isOpen && hasQuery \? RESULTS_ID : undefined\}/);
+  assert.match(search, /aria-activedescendant=\{isOpen && hasQuery && activeIndex >= 0 && activeIndex < results\.length/);
   assert.match(search, /event\.key === 'ArrowDown'[\s\S]*getDashboardSearchActiveIndex\(index, results\.length, 'next'\)/);
   assert.match(search, /event\.key === 'ArrowUp'[\s\S]*getDashboardSearchActiveIndex\(index, results\.length, 'previous'\)/);
   assert.match(search, /event\.key === 'Enter'[\s\S]*activeIndex >= 0 && activeIndex < results\.length[\s\S]*selectResult\(activeIndex\)[\s\S]*setActiveIndex\(-1\)/);

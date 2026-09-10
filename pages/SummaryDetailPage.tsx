@@ -350,6 +350,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
           onRequireSignUp={() => setShowSignUpModal(true)}
           getBookSummaryHref={(candidate) => getBookSummaryHref(candidate, surface)}
           t={t}
+          surface={surface}
         />
       )}
       {bookId && showRedesignedLayout && (
@@ -2735,6 +2736,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
           bookId={bookId || ''}
           isOpen={showAddNoteModal}
           onClose={() => setShowAddNoteModal(false)}
+          surface={surface}
         />
 
         {/* Sign Up Prompt Modal */}
@@ -2751,6 +2753,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
             bookId={bookId || ''}
             isOpen={showAddNoteModal}
             onClose={() => setShowAddNoteModal(false)}
+            surface={surface}
           />
 
           <SignUpPromptModal

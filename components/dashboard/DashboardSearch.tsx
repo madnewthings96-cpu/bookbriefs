@@ -112,8 +112,8 @@ export default function DashboardSearch() {
           placeholder="Search books, authors, or categories"
           aria-autocomplete="list"
           aria-expanded={isOpen && hasQuery}
-          aria-controls={RESULTS_ID}
-          aria-activedescendant={activeIndex >= 0 && activeIndex < results.length ? `dashboard-search-result-${activeIndex}` : undefined}
+          aria-controls={isOpen && hasQuery ? RESULTS_ID : undefined}
+          aria-activedescendant={isOpen && hasQuery && activeIndex >= 0 && activeIndex < results.length ? `dashboard-search-result-${activeIndex}` : undefined}
           onChange={event => {
             setQuery(event.target.value);
             setIsOpen(true);

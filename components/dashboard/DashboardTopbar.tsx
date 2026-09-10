@@ -17,7 +17,7 @@ export function DashboardTopbar({ onOpenMore }: DashboardTopbarProps) {
     <header className="dashboard-topbar">
       <div>
         <p className="dashboard-topbar-kicker">{t('welcome') || 'Welcome'}</p>
-        <h1>{title}</h1>
+        <p className="dashboard-topbar-title">{title}</p>
       </div>
       <div className="dashboard-topbar-actions">
         <DashboardSearch />

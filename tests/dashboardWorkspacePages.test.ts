@@ -8,13 +8,14 @@ test('workspace pages provide a single page heading and purposeful empty states'
   const libraryView = await readFile('components/dashboard/DashboardLibraryView.tsx', 'utf8');
   const notesView = await readFile('components/dashboard/DashboardNotesView.tsx', 'utf8');
   const settings = await readFile('pages/DashboardSettingsPage.tsx', 'utf8');
+  const sidebarPreference = await readFile('components/dashboard/sidebarPreference.ts', 'utf8');
   assert.match(library, /DashboardLibraryView/);
   assert.match(libraryView, /<h1/);
   assert.match(libraryView, /aria-live="polite"/);
   assert.match(notes, /DashboardNotesView/);
   assert.match(notesView, /Highlights/);
   assert.match(notesView, /getBookSummaryHref\(\{ id: group\.bookSlug \}, 'dashboard'\)/);
-  assert.match(settings, /ta7leel_dashboard_sidebar_collapsed/);
+  assert.match(sidebarPreference, /ta7leel_dashboard_sidebar_collapsed/);
   assert.doesNotMatch(settings, /Dark mode|Arabic|Theme/);
 });
 

@@ -18,6 +18,7 @@ import {
   Star,
 } from 'lucide-react';
 import { Book, SummaryData } from '../types';
+import { type ReadingSurface } from './readingRouteModel';
 import { getAffiliateLinksForBook } from '../utils/affiliateLinks';
 import FavoriteButton from './FavoriteButton';
 import HighlightableText from './HighlightableText';
@@ -43,6 +44,7 @@ interface SummaryReadingExperienceProps {
   onRequireSignUp: () => void;
   getBookSummaryHref: (book: Pick<Book, 'id' | 'arabicSlug'>) => string;
   t: (key: string) => string;
+  surface?: ReadingSurface;
 }
 
 interface TocItem {
@@ -73,6 +75,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
   onRequireSignUp,
   getBookSummaryHref,
   t,
+  surface = 'public',
 }) => {
   const plainSummary = useMemo(() => stripSummaryMarkdown(summaryData.summary), [summaryData.summary]);
   const wordCount = useMemo(() => plainSummary.split(/\s+/).filter(Boolean).length, [plainSummary]);
@@ -136,6 +139,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
   const actionButtonClass =
     'inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition duration-200 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]';
+  const ContentElement = surface === 'dashboard' ? 'div' : 'main';
 
   const renderSectionNav = (compact = false) => (
     <nav aria-label="Summary sections" className={compact ? 'flex min-w-max gap-1.5' : 'space-y-1'}>
@@ -312,7 +316,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
       <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_310px] xl:gap-10">
-          <main className="min-w-0 space-y-9 lg:space-y-11">
+          <ContentElement className="min-w-0 space-y-9 lg:space-y-11">
             <section
               id="quick-brief"
               className="relative scroll-mt-32 overflow-hidden rounded-[26px] border border-[#304529]/10 bg-[#FFFDF8] px-5 py-6 shadow-[0_18px_48px_rgba(16,41,31,0.08)] sm:px-7 sm:py-8"
@@ -403,7 +407,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 </div>
               </div>
             </article>
-          </main>
+          </ContentElement>
 
           <aside className="hidden space-y-5 lg:sticky lg:top-24 lg:block lg:self-start">
             <section className="rounded-[22px] border border-[#304529]/10 bg-[#FFFDF8] p-4 shadow-[0_14px_36px_rgba(16,41,31,0.07)]">
