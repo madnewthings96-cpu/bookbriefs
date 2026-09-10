@@ -24,8 +24,7 @@
 
 .dashboard-sidebar { position: sticky; inset-block-start: 0; block-size: 100vh; display: flex; flex-direction: column; overflow-y: auto; border-inline-end: 1px solid rgb(255 255 255 / 12%); background: var(--dashboard-forest-deep); color: #eff4ed; transition-property: inline-size; transition-duration: 180ms; }
 .dashboard-sidebar-header { display: flex; min-block-size: 80px; align-items: center; justify-content: space-between; gap: 8px; padding-inline: 14px; border-block-end: 1px solid rgb(255 255 255 / 10%); }
-.dashboard-brand { display: inline-flex; min-inline-size: 0; align-items: center; gap: 9px; color: inherit; text-decoration: none; font-family: Georgia, serif; font-size: 20px; font-weight: 700; }
-.dashboard-brand img { inline-size: 32px; block-size: 32px; object-fit: contain; }
+.dashboard-sidebar-name { min-inline-size: 0; overflow: hidden; margin: 0; color: #fffdf8; font-family: Newsreader, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
 .dashboard-icon-button { display: inline-grid; inline-size: 44px; min-block-size: 44px; flex: 0 0 44px; place-items: center; border: 0; border-radius: 10px; background: transparent; color: inherit; transition-property: background-color, color; transition-duration: 160ms; }
 .dashboard-icon-button:hover { background: rgb(255 255 255 / 12%); }
 .dashboard-navigation { display: grid; gap: 20px; padding: 20px 12px; }
@@ -40,9 +39,8 @@
 .dashboard-user strong, .dashboard-user small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dashboard-user small { margin-block-start: 2px; color: #a5c1b1; font-size: 11px; }
 .dashboard-sign-out { color: #c9d7ce; }
-.dashboard-shell[data-sidebar-collapsed] .dashboard-brand-wordmark, .dashboard-shell[data-sidebar-collapsed] .dashboard-nav-label, .dashboard-shell[data-sidebar-collapsed] .dashboard-nav-group-label { display: none; }
+.dashboard-shell[data-sidebar-collapsed] .dashboard-sidebar-name, .dashboard-shell[data-sidebar-collapsed] .dashboard-nav-label, .dashboard-shell[data-sidebar-collapsed] .dashboard-nav-group-label { display: none; }
 .dashboard-shell[data-sidebar-collapsed] .dashboard-sidebar-header { justify-content: center; padding-inline: 8px; }
-.dashboard-shell[data-sidebar-collapsed] .dashboard-brand { display: none; }
 .dashboard-shell[data-sidebar-collapsed] .dashboard-nav-item, .dashboard-shell[data-sidebar-collapsed] .dashboard-user { justify-content: center; padding-inline: 0; }
 
 .dashboard-workspace { min-inline-size: 0; }

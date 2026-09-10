@@ -49,3 +49,14 @@ test('dashboard CSS is scoped, direction-safe, and reduced-motion aware', async 
   assert.doesNotMatch(css, /transition:\s*all/);
   assert.doesNotMatch(css, /will-change/);
 });
+
+test('sidebar header identifies the reader without repeating the Ta7leel logo', async () => {
+  const sidebar = await readFile('components/dashboard/DashboardSidebar.tsx', 'utf8');
+  const css = await readFile('components/dashboard/DashboardShell.css', 'utf8');
+
+  assert.doesNotMatch(sidebar, /ta7leel-navbar-logo|dashboard-brand-wordmark/);
+  assert.match(sidebar, /className="dashboard-sidebar-name"/);
+  assert.match(sidebar, /user\?\.name \?\? 'Reader'/);
+  assert.match(css, /\.dashboard-sidebar-name\s*\{[^}]*font-family:\s*Newsreader, Georgia, serif;/s);
+  assert.match(css, /\.dashboard-shell\[data-sidebar-collapsed\]\s+\.dashboard-sidebar-name,[^{]*\{\s*display:\s*none;/s);
+});

@@ -7,7 +7,7 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Book } from '../types';
-import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 import './SummariesPage.css';
 
@@ -156,9 +156,6 @@ const SummariesPage: React.FC<SummariesPageProps> = ({ surface = 'public' }) => 
               </div>
               <button type="button" className={'library-filter-toggle' + (showFilters ? ' is-active' : '')} aria-expanded={showFilters} aria-controls="library-advanced-filters" onClick={() => setShowFilters(!showFilters)}><SlidersHorizontal aria-hidden="true" />Filters{activeFilterCount > 0 && <span>{activeFilterCount}</span>}</button>
             </div>
-            <nav aria-label="Book category guides" className="flex flex-wrap gap-x-4 gap-y-2 mb-4 text-sm">
-              {CATEGORY_HUBS.map(hub => <Link key={hub.slug} to={`/categories/${hub.slug}/`} className="underline">{hub.englishTitle}</Link>)}
-            </nav>
             <div className="library-topics" role="group" aria-label="Filter by topic">
               <button type="button" aria-pressed={!selectedGenre} onClick={() => setSelectedGenre('')}>All books<span>{books.length}</span></button>
               {visibleTopics.map(genre => <button key={genre} type="button" aria-pressed={selectedGenre === genre} onClick={() => setSelectedGenre(genre)}>{genre}</button>)}

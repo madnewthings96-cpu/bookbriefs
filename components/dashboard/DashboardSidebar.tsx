@@ -47,10 +47,7 @@ export function DashboardSidebar({ collapsed, onToggle, onFeedback, onLogout }: 
   return (
     <aside className="dashboard-sidebar" aria-label="Dashboard navigation">
       <div className="dashboard-sidebar-header">
-        <NavLink className="dashboard-brand" to="/dashboard" aria-label="Ta7leel dashboard">
-          <img src="/images/ta7leel-navbar-logo-mind-leaf.png" alt="Ta7leel" />
-          <span className="dashboard-brand-wordmark">Ta7leel</span>
-        </NavLink>
+        <p className="dashboard-sidebar-name" title={user?.name ?? 'Reader'}>{user?.name ?? 'Reader'}</p>
         <button type="button" className="dashboard-icon-button" onClick={onToggle} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
           <CollapseIcon aria-hidden="true" size={20} />
         </button>
