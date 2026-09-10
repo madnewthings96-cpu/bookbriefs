@@ -20,4 +20,12 @@
 - Storage compatibility: scoped keys and JSON shapes are unchanged; malformed scalars, dates, optional fields, arrays, or child items invalidate/remove only that user record, while valid legacy records normalize dates and remain intact. Access/parse/write failures degrade safely.
 - Catalog behavior: Library and Notes consume the pure catalog surface model; stale usable content wins over loading/error banners, while true empty/error/loading states remain distinct. Overview retry controls render only when a callback is supplied; retry handlers call `refreshBooks`.
 - Verification: `npm run build` passed (sitemap, Vite, prerender, SEO tests); `git diff --check` passed. `npx tsc --noEmit` still reports only the pre-existing downloads/UI command, library-script, and PDF typing errors.
-- Commit: pending for this fix round.
+- Commit: `a89d960` (`fix: close hydration and catalog review gaps`).
+
+## Fix round 2
+
+- Scope: preserved stale overview content during catalog refreshes, strengthened Library/Notes presenter coverage, and removed extra EOF blank lines from the catalog and summary models.
+- Catalog behavior: Continue Reading, Recent Notes, Your Library, and Recommended Reading now use per-section catalog state; existing content remains visible while loading or retrying, while empty/error/loading states remain purposeful when no content exists.
+- Presenter coverage: extracted route-connected `DashboardLibraryView` and `DashboardNotesView` components used by their pages. Server-rendered tests cover loading, stale content, errors, true empty state, retry button presence, and direct `refreshBooks` callback invocation.
+- Verification: focused dashboard/catalog/persistence/summary tests passed 52/52; full TS/TSX suite passed 142/142; `npm run build` passed sitemap, Vite, prerender, and SEO tests; `git diff --check` passed. `npx tsc --noEmit` still reports only the pre-existing repository errors.
+- Commit: `e3ded4a` (`fix: preserve stale dashboard catalog content`).
