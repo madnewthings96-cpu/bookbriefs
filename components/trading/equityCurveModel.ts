@@ -29,34 +29,43 @@ export interface EquityCurveStory {
 
 const roundPercentage = (value: number) => Math.round(value * 100) / 100;
 
-const getRecovery = (data: EquityPoint[], maxDrawdownPercent: number) => {
-    if (maxDrawdownPercent === 0) {
-        return { recoveryTrades: 0, recoveryLabel: 'At peak' };
-    }
+interface RawDrawdownState {
+    drawdown: number;
+    peakEquity: number;
+}
 
-    let runningPeak = data[0].cumulativePnL;
-    let troughIndex = -1;
-    let troughPeak = runningPeak;
+const calculateRawDrawdowns = (data: EquityPoint[]): RawDrawdownState[] => {
+    let peakEquity = data[0].cumulativePnL;
 
-    for (let index = 0; index < data.length; index += 1) {
-        const point = data[index];
-        runningPeak = Math.max(runningPeak, point.cumulativePnL);
-        const drawdown = runningPeak > 0
-            ? roundPercentage(((runningPeak - point.cumulativePnL) / runningPeak) * 100)
-            : 0;
+    return data.map((point) => {
+        peakEquity = Math.max(peakEquity, point.cumulativePnL);
+        return {
+            drawdown: peakEquity > 0 ? ((peakEquity - point.cumulativePnL) / peakEquity) * 100 : 0,
+            peakEquity,
+        };
+    });
+};
 
-        if (troughIndex === -1 && drawdown === maxDrawdownPercent) {
-            troughIndex = index;
-            troughPeak = runningPeak;
+const getRecovery = (data: EquityPoint[], rawDrawdowns: RawDrawdownState[]) => {
+    let worstTroughIndex = 0;
+
+    for (let index = 1; index < rawDrawdowns.length; index += 1) {
+        if (rawDrawdowns[index].drawdown > rawDrawdowns[worstTroughIndex].drawdown) {
+            worstTroughIndex = index;
         }
     }
 
+    const worstTrough = rawDrawdowns[worstTroughIndex];
+    if (worstTrough.drawdown === 0) {
+        return { recoveryTrades: 0, recoveryLabel: 'At peak' };
+    }
+
     let recoveryTrades = 0;
-    for (let index = troughIndex + 1; index < data.length; index += 1) {
+    for (let index = worstTroughIndex + 1; index < data.length; index += 1) {
         const point = data[index];
         if (point.tradeNumber > 0) recoveryTrades += 1;
 
-        if (point.cumulativePnL >= troughPeak) {
+        if (point.cumulativePnL >= worstTrough.peakEquity) {
             return {
                 recoveryTrades,
                 recoveryLabel: `${recoveryTrades} trade${recoveryTrades === 1 ? '' : 's'}`,
@@ -88,9 +97,11 @@ export const buildEquityCurveStory = (
         };
     }
 
+    const displayedDrawdowns = calculateDrawdown(data);
     const drawdownByTimestamp = new Map(
-        calculateDrawdown(data).map((point) => [point.timestamp, point.drawdown]),
+        displayedDrawdowns.map((point) => [point.timestamp, point.drawdown]),
     );
+    const rawDrawdowns = calculateRawDrawdowns(data);
     const visiblePoints = filterEquityByTimeRange(data, range, now);
     const points = visiblePoints.map((point, displayIndex) => {
         const drawdown = drawdownByTimestamp.get(point.timestamp) || 0;
@@ -107,10 +118,11 @@ export const buildEquityCurveStory = (
         ? roundPercentage((totalReturn / startingEquity) * 100)
         : 0;
     const peakEquity = Math.max(...data.map((point) => point.cumulativePnL));
-    const maxDrawdownPercent = Math.max(...calculateDrawdown(data).map((point) => point.drawdown));
-    const currentDrawdownPercent = calculateDrawdown(data)[data.length - 1].drawdown;
-    const recovery = getRecovery(data, maxDrawdownPercent);
-    const insight = maxDrawdownPercent === 0
+    const maxRawDrawdownPercent = Math.max(...rawDrawdowns.map((point) => point.drawdown));
+    const maxDrawdownPercent = roundPercentage(maxRawDrawdownPercent);
+    const currentDrawdownPercent = roundPercentage(rawDrawdowns[data.length - 1].drawdown);
+    const recovery = getRecovery(data, rawDrawdowns);
+    const insight = maxRawDrawdownPercent === 0
         ? 'The account is at its equity high with no recorded drawdown.'
         : recovery.recoveryTrades === null
             ? `Equity is ${currentDrawdownPercent.toFixed(2)}% below its latest peak; protect the recovery.`

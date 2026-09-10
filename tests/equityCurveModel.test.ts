@@ -67,3 +67,30 @@ test('a flat starting ledger reports an honest at-peak state', () => {
   assert.equal(story.recoveryLabel, 'At peak');
   assert.equal(story.insight, 'The account is at its equity high with no recorded drawdown.');
 });
+
+test('equity story keeps an unfinished worst trough when rounded drawdowns collide', () => {
+  const story = buildEquityCurveStory([
+    point(0, 100_000, 0),
+    point(1, 89_996, 1),
+    point(2, 100_000, 2),
+    point(3, 110_000, 3),
+    point(4, 98_994.61, 4),
+  ], 'ALL');
+
+  assert.equal(story.maxDrawdownPercent, 10);
+  assert.equal(story.recoveryTrades, null);
+  assert.equal(story.recoveryLabel, 'In progress');
+  assert.equal(story.insight, 'Equity is 10.00% below its latest peak; protect the recovery.');
+});
+
+test('equity story does not treat a sub-display nonzero drawdown as at peak', () => {
+  const story = buildEquityCurveStory([
+    point(0, 100_000, 0),
+    point(1, 99_999.999, 1),
+  ], 'ALL');
+
+  assert.equal(story.maxDrawdownPercent, 0);
+  assert.equal(story.recoveryTrades, null);
+  assert.equal(story.recoveryLabel, 'In progress');
+  assert.equal(story.insight, 'Equity is 0.00% below its latest peak; protect the recovery.');
+});
