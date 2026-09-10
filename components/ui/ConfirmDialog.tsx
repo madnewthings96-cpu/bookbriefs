@@ -14,6 +14,10 @@ interface ConfirmDialogProps {
     isLoading?: boolean;
 }
 
+export const getConfirmDialogInitialFocusMode = (isLoading: boolean): 'cancel' | 'dialog' => (
+    isLoading ? 'dialog' : 'cancel'
+);
+
 const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     isOpen,
     onClose,
@@ -32,7 +36,11 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     const handleClose = () => {
         if (!isLoading) onClose();
     };
-    const dialogRef = useModalDialog({ open: isOpen, onClose: handleClose, initialFocusRef: cancelButtonRef });
+    const dialogRef = useModalDialog({
+        open: isOpen,
+        onClose: handleClose,
+        initialFocusRef: getConfirmDialogInitialFocusMode(isLoading) === 'cancel' ? cancelButtonRef : undefined,
+    });
 
     if (!isOpen) return null;
 

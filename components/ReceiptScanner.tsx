@@ -6,7 +6,7 @@ import { useModalDialog } from '../hooks/useModalDialog';
 // Lazy load types
 import type { Worker } from 'tesseract.js';
 
-interface ScannedData {
+export interface ScannedData {
     date: string;
     amount: string;
     description: string;
@@ -19,6 +19,185 @@ interface ReceiptScannerProps {
     label?: string;
 }
 
+export interface ReceiptScannerModalProps {
+    showModal: boolean;
+    isScanning: boolean;
+    previewUrl: string | null;
+    progress: number;
+    status: string;
+    scannedData: ScannedData;
+    modalInstanceId: string;
+    onChange: (data: ScannedData) => void;
+    onCancel: () => void;
+    onConfirm: () => void;
+    closeButtonRef: React.RefObject<HTMLButtonElement | null>;
+    fileInputRef: React.RefObject<HTMLInputElement | null>;
+    onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const getReceiptFieldIds = (modalInstanceId: string) => ({
+    file: `receipt-file-${modalInstanceId}`,
+    date: `receipt-date-${modalInstanceId}`,
+    amount: `receipt-amount-${modalInstanceId}`,
+    description: `receipt-description-${modalInstanceId}`,
+    category: `receipt-category-${modalInstanceId}`,
+});
+
+export const ReceiptScannerModal: React.FC<ReceiptScannerModalProps> = ({
+    showModal,
+    isScanning,
+    previewUrl,
+    progress,
+    status,
+    scannedData,
+    modalInstanceId,
+    onChange,
+    onCancel,
+    onConfirm,
+    closeButtonRef,
+    fileInputRef,
+    onFileChange,
+}) => {
+    const dialogRef = useModalDialog({ open: showModal, onClose: onCancel, initialFocusRef: closeButtonRef });
+    const titleId = `receipt-scanner-title-${modalInstanceId}`;
+    const descriptionId = `receipt-scanner-description-${modalInstanceId}`;
+    const fieldIds = getReceiptFieldIds(modalInstanceId);
+
+    return (
+        <>
+            <label htmlFor={fieldIds.file} className="sr-only">Receipt image</label>
+            <input
+                id={fieldIds.file}
+                type="file"
+                accept="image/*;capture=camera"
+                ref={fileInputRef}
+                onChange={onFileChange}
+                className="hidden"
+            />
+            {showModal && <div
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+                onMouseDown={(event) => event.target === event.currentTarget && onCancel()}
+            >
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                aria-describedby={descriptionId}
+                tabIndex={-1}
+                className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
+            >
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h2 id={titleId} className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span className="text-xl">🧾</span> Verify Receipt Data
+                    </h2>
+                    <button
+                        ref={closeButtonRef}
+                        type="button"
+                        onClick={onCancel}
+                        aria-label="Close receipt verification dialog"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                    >
+                        <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+
+                <div className="overflow-y-auto p-6 space-y-6">
+                    <p id={descriptionId} className="sr-only">Review and correct the information extracted from your receipt before saving it.</p>
+                    {previewUrl && (
+                        <div className="relative rounded-xl overflow-hidden bg-gray-100 border border-gray-200 h-48 sm:h-64 flex-shrink-0">
+                            <img src={previewUrl} alt="Receipt Preview" className="w-full h-full object-contain" />
+                            {isScanning && (
+                                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
+                                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-white/30 border-t-white mb-3"></div>
+                                    <p className="font-medium text-sm">{status}</p>
+                                    {progress > 0 && <p className="text-xs opacity-80">{Math.round(progress)}%</p>}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor={fieldIds.date} className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
+                                <input
+                                    id={fieldIds.date}
+                                    type="date"
+                                    value={scannedData.date}
+                                    onChange={e => onChange({ ...scannedData, date: e.target.value })}
+                                    className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-gray-800"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor={fieldIds.amount} className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Amount ($)</label>
+                                <input
+                                    id={fieldIds.amount}
+                                    type="number" step="0.01"
+                                    value={scannedData.amount}
+                                    onChange={e => onChange({ ...scannedData, amount: e.target.value })}
+                                    placeholder="0.00"
+                                    className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-gray-800"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label htmlFor={fieldIds.description} className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Description (Merchant)</label>
+                            <input
+                                id={fieldIds.description}
+                                type="text"
+                                value={scannedData.description}
+                                onChange={e => onChange({ ...scannedData, description: e.target.value })}
+                                placeholder="e.g. Starbucks, Walmart..."
+                                className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor={fieldIds.category} className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category (Review)</label>
+                            <select
+                                id={fieldIds.category}
+                                value={scannedData.category}
+                                onChange={e => onChange({ ...scannedData, category: e.target.value })}
+                                className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+                            >
+                                <option>Food</option>
+                                <option>Transport</option>
+                                <option>Housing</option>
+                                <option>Entertainment</option>
+                                <option>Shopping</option>
+                                <option>Utilities</option>
+                                <option>Healthcare</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-4 border-t border-gray-100 bg-gray-50 flex gap-3">
+                    <button
+                        onClick={onCancel}
+                        type="button"
+                        className="min-h-11 flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        type="button"
+                        disabled={isScanning || !scannedData.amount}
+                        className="min-h-11 flex-1 px-4 py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-700 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                    >
+                        Confirm & Save
+                    </button>
+                </div>
+            </div>
+            </div>}
+        </>
+    );
+};
+
 const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, className = 'uiverse-btn', label = 'Scan Receipt' }) => {
     const [isScanning, setIsScanning] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -26,8 +205,7 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState('');
     const modalInstanceId = useId().replace(/:/g, '');
-    const titleId = `receipt-scanner-title-${modalInstanceId}`;
-    const descriptionId = `receipt-scanner-description-${modalInstanceId}`;
+    const fieldIds = getReceiptFieldIds(modalInstanceId);
 
     // Form state for verification
     const [scannedData, setScannedData] = useState<ScannedData>({
@@ -201,8 +379,6 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
         setPreviewUrl(null);
     };
 
-    const dialogRef = useModalDialog({ open: showModal, onClose: handleCancel, initialFocusRef: closeButtonRef });
-
     const triggerCamera = () => {
         fileInputRef.current?.click();
     };
@@ -217,142 +393,21 @@ const ReceiptScanner: React.FC<ReceiptScannerProps> = ({ onScanComplete, classNa
                 <span>{label}</span>
             </button>
 
-            <label htmlFor="receipt-file" className="sr-only">Receipt image</label>
-            <input
-                id="receipt-file"
-                type="file"
-                accept="image/*;capture=camera"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
+            <ReceiptScannerModal
+                showModal={showModal}
+                isScanning={isScanning}
+                previewUrl={previewUrl}
+                progress={progress}
+                status={status}
+                scannedData={scannedData}
+                modalInstanceId={modalInstanceId}
+                onChange={setScannedData}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+                closeButtonRef={closeButtonRef}
+                fileInputRef={fileInputRef}
+                onFileChange={handleFileChange}
             />
-
-            {showModal && (
-                <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
-                    onMouseDown={(event) => event.target === event.currentTarget && handleCancel()}
-                >
-                    <div
-                        ref={dialogRef}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby={titleId}
-                        aria-describedby={descriptionId}
-                        tabIndex={-1}
-                        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
-                    >
-
-                        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h2 id={titleId} className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <span className="text-xl">🧾</span> Verify Receipt Data
-                            </h2>
-                            <button
-                                ref={closeButtonRef}
-                                type="button"
-                                onClick={handleCancel}
-                                aria-label="Close receipt verification dialog"
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-                            >
-                                <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                        </div>
-
-                        <div className="overflow-y-auto p-6 space-y-6">
-                            <p id={descriptionId} className="sr-only">Review and correct the information extracted from your receipt before saving it.</p>
-                            {/* Image Preview */}
-                            {previewUrl && (
-                                <div className="relative rounded-xl overflow-hidden bg-gray-100 border border-gray-200 h-48 sm:h-64 flex-shrink-0">
-                                    <img src={previewUrl} alt="Receipt Preview" className="w-full h-full object-contain" />
-                                    {isScanning && (
-                                        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white">
-                                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-white/30 border-t-white mb-3"></div>
-                                            <p className="font-medium text-sm">{status}</p>
-                                            {progress > 0 && <p className="text-xs opacity-80">{Math.round(progress)}%</p>}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Form Fields */}
-                            <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label htmlFor="receipt-date" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</label>
-                                        <input
-                                            id="receipt-date"
-                                            type="date"
-                                            value={scannedData.date}
-                                            onChange={e => setScannedData({ ...scannedData, date: e.target.value })}
-                                            className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-gray-800"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="receipt-amount" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Amount ($)</label>
-                                        <input
-                                            id="receipt-amount"
-                                            type="number" step="0.01"
-                                            value={scannedData.amount}
-                                            onChange={e => setScannedData({ ...scannedData, amount: e.target.value })}
-                                            placeholder="0.00"
-                                            className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold text-gray-800"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="receipt-description" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Description (Merchant)</label>
-                                    <input
-                                        id="receipt-description"
-                                        type="text"
-                                        value={scannedData.description}
-                                        onChange={e => setScannedData({ ...scannedData, description: e.target.value })}
-                                        placeholder="e.g. Starbucks, Walmart..."
-                                        className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="receipt-category" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category (Review)</label>
-                                    <select
-                                        id="receipt-category"
-                                        value={scannedData.category}
-                                        onChange={e => setScannedData({ ...scannedData, category: e.target.value })}
-                                        className="min-h-11 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus-visible:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
-                                    >
-                                        <option>Food</option>
-                                        <option>Transport</option>
-                                        <option>Housing</option>
-                                        <option>Entertainment</option>
-                                        <option>Shopping</option>
-                                        <option>Utilities</option>
-                                        <option>Healthcare</option>
-                                        <option>Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="p-4 border-t border-gray-100 bg-gray-50 flex gap-3">
-                            <button
-                                onClick={handleCancel}
-                                type="button"
-                                className="min-h-11 flex-1 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleConfirm}
-                                type="button"
-                                disabled={isScanning || !scannedData.amount}
-                                className="min-h-11 flex-1 px-4 py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-700 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
-                            >
-                                Confirm & Save
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            )}
         </>
     );
 };
