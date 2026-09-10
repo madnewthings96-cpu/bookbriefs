@@ -444,6 +444,8 @@
   overflow-wrap: anywhere;
 }
 
+.equity-story-metrics dd.equity-story-loss { color: var(--fieldbook-loss); }
+
 .fieldbook-panel table thead {
   background: var(--fieldbook-forest) !important;
   color: var(--fieldbook-paper) !important;

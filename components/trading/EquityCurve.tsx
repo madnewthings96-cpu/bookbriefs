@@ -31,6 +31,12 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
     currency: 'USD',
     maximumFractionDigits: 0,
 });
+const tooltipCurrencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+});
 
 const EquityCurve: React.FC<EquityCurveProps> = ({ data, goals = [] }) => {
     const [range, setRange] = useState<EquityCurveRange>('ALL');
@@ -65,7 +71,7 @@ const EquityCurve: React.FC<EquityCurveProps> = ({ data, goals = [] }) => {
             <div className="equity-story-tooltip">
                 <p className="equity-story-tooltip-date">{point.date}</p>
                 <p className={point.cumulativePnL >= story.startingEquity ? 'equity-story-profit' : 'equity-story-loss'}>
-                    {currencyFormatter.format(point.cumulativePnL)}
+                    {tooltipCurrencyFormatter.format(point.cumulativePnL)}
                 </p>
                 {point.drawdownDepth < 0 && (
                     <p className="equity-story-tooltip-drawdown">Drawdown: {Math.abs(point.drawdownDepth).toFixed(2)}%</p>
@@ -132,7 +138,7 @@ const EquityCurve: React.FC<EquityCurveProps> = ({ data, goals = [] }) => {
                             tickFormatter={(value) => `$${value >= 1000 ? `${(value / 1000).toFixed(1)}K` : value}`}
                             domain={['dataMin - 100', 'dataMax + 100']}
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
                         <Area
                             yAxisId="equity"
                             type="monotone"
@@ -216,7 +222,7 @@ const EquityCurve: React.FC<EquityCurveProps> = ({ data, goals = [] }) => {
                             tickFormatter={(value) => `${value}%`}
                             domain={['dataMin - 1', 0]}
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip />} isAnimationActive={false} />
                         <ReferenceLine y={0} stroke="#66766e" strokeWidth={1} />
                         <Area
                             type="monotone"
