@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,16 +42,7 @@ export function DashboardSidebar({ collapsed, onToggle, onFeedback, onLogout }: 
   const { pathname } = useLocation();
   const { user } = useAuth();
   const { t } = useLanguage();
-  const [isRtl, setIsRtl] = useState(() => typeof document !== 'undefined' && document.documentElement.dir === 'rtl');
-
-  useEffect(() => {
-    const updateDirection = () => setIsRtl(document.documentElement.dir === 'rtl');
-    updateDirection();
-    window.addEventListener('languagechange', updateDirection);
-    return () => window.removeEventListener('languagechange', updateDirection);
-  }, []);
-
-  const CollapseIcon = collapsed === isRtl ? ChevronLeft : ChevronRight;
+  const CollapseIcon = collapsed ? ChevronRight : ChevronLeft;
 
   return (
     <aside className="dashboard-sidebar" aria-label="Dashboard navigation">

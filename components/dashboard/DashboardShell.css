@@ -71,6 +71,7 @@
 .dashboard-mobile-nav, .dashboard-more-drawer-layer { display: none; }
 
 [dir='rtl'] .dashboard-shell { direction: rtl; }
+[dir='rtl'] .dashboard-sidebar .dashboard-icon-button svg { transform: scaleX(-1); }
 [dir='rtl'] .dashboard-nav-item:hover { transform: translateX(-2px); }
 
 @media (max-width: 1023px) {

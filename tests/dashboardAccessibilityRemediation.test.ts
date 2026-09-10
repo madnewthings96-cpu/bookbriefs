@@ -86,17 +86,21 @@ test('ordinary reader user menu does not expose the admin feedback destination',
   assert.match(userMenu, /Send Feedback/);
 });
 
-test('RTL and logical dashboard contracts are explicit', async () => {
+test('RTL layout contracts follow live direction changes without React-only state', async () => {
   const shell = await read('components/dashboard/DashboardShell.css');
   const sidebar = await read('components/dashboard/DashboardSidebar.tsx');
   const summaries = await read('pages/SummariesPage.css');
   const calculators = await read('pages/CalculatorsPage.tsx');
 
   assert.match(shell, /\[dir=['"]rtl['"]\][\s\S]*dashboard/);
-  assert.match(sidebar, /isRtl/);
-  assert.match(sidebar, /ChevronLeft[\s\S]*ChevronRight/);
+  assert.match(shell, /\[dir=['"]rtl['"]\]\s+\.dashboard-sidebar\s+\.dashboard-icon-button\s+svg\s*\{\s*transform:\s*scaleX\(-1\);\s*\}/);
+  assert.match(sidebar, /const CollapseIcon = collapsed \? ChevronRight : ChevronLeft;/);
+  assert.doesNotMatch(sidebar, /isRtl|languagechange|MutationObserver/);
+  assert.match(sidebar, /aria-label=\{collapsed \? 'Expand sidebar' : 'Collapse sidebar'\}/);
   assert.doesNotMatch(summaries, /\bright:\s*|margin-left:/);
-  assert.match(summaries, /inset-inline-end|margin-inline-start/);
+  assert.match(summaries, /\.library-sort select \{[^}]*padding-block:\s*10px;[^}]*padding-inline:\s*0\s+22px;/s);
+  assert.doesNotMatch(summaries, /\.library-sort select \{[^}]*padding:\s*10px\s+22px\s+10px\s+0/s);
+  assert.match(summaries, /\.library-sort svg \{[^}]*inset-inline-end:/s);
   assert.match(calculators, /surface === 'dashboard' \? undefined :/);
 });
 

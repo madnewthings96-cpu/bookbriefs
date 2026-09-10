@@ -80,7 +80,7 @@
 .library-results-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 27px 0 20px; font-size: 11px; color: var(--library-muted); }
 .library-results-count strong { color: var(--library-ink); font-weight: 700; }
 .library-sort { display: flex; align-items: center; position: relative; gap: 9px; }
-.library-sort select { max-width: 160px; appearance: none; padding: 10px 22px 10px 0; background: transparent; color: var(--library-ink); font-size: 11px; font-weight: 650; }
+.library-sort select { max-width: 160px; appearance: none; padding-block: 10px; padding-inline: 0 22px; background: transparent; color: var(--library-ink); font-size: 11px; font-weight: 650; }
 .library-sort svg { position: absolute; inset-inline-end: 0; width: 13px; height: 13px; pointer-events: none; }
 .library-active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -5px 0 22px; }
 .library-active-filters button { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; overflow-wrap: anywhere; border-radius: 6px; padding: 9px 12px; background: var(--library-sage); font-size: 11px; color: var(--library-green); }
