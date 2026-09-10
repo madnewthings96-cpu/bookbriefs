@@ -3,9 +3,10 @@ export type ProtectedRouteDecision = 'loading' | 'allow' | 'redirect';
 export const getProtectedRouteDecision = (
   isAuthReady: boolean,
   isAuthenticated: boolean,
+  authError?: string | null,
 ): ProtectedRouteDecision => {
   if (!isAuthReady) return 'loading';
-  return isAuthenticated ? 'allow' : 'redirect';
+  return isAuthenticated && !authError ? 'allow' : 'redirect';
 };
 
 const POST_AUTH_URL_BASE = 'https://ta7leel.local';

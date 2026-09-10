@@ -7,6 +7,7 @@ test('protected routes wait for auth before allowing or redirecting', () => {
   assert.equal(getProtectedRouteDecision(false, true), 'loading');
   assert.equal(getProtectedRouteDecision(true, true), 'allow');
   assert.equal(getProtectedRouteDecision(true, false), 'redirect');
+  assert.equal(getProtectedRouteDecision(true, true, 'observer failed'), 'redirect');
 });
 
 test('post-auth redirects accept dashboard paths only', () => {

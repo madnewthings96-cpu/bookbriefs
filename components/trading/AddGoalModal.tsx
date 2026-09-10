@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GoalType } from '../../utils/tradingUtils';
 import { X, Target, TrendingUp, Brain, Flame } from 'lucide-react';
 import { AsyncIdentityGuard } from '../asyncIdentityGuard';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface AddGoalModalProps {
     isOpen: boolean;
@@ -34,6 +35,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
     const [behaviorToAvoid, setBehaviorToAvoid] = useState('FOMO');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const operationGuard = useRef(new AsyncIdentityGuard()).current;
+    const targetInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         operationGuard.mount();
@@ -47,11 +49,19 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
         }
     }, [isOpen, operationGuard]);
 
-    if (!isOpen) return null;
+    const handleClose = () => {
+        operationGuard.invalidate();
+        setSelectedType('balance');
+        setTitle('');
+        setTarget('');
+        setBehaviorToAvoid('FOMO');
+        onClose();
+    };
+
+    const dialogRef = useModalDialog({ open: isOpen, onClose: handleClose, initialFocusRef: targetInputRef });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitting goal:', { selectedType, title, target, behaviorToAvoid });
         const token = operationGuard.begin();
         if (!token) return;
         setIsSubmitting(true);
@@ -77,15 +87,6 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
         } finally {
             if (operationGuard.isCurrent(token)) setIsSubmitting(false);
         }
-    };
-
-    const handleClose = () => {
-        operationGuard.invalidate();
-        setSelectedType('balance');
-        setTitle('');
-        setTarget('');
-        setBehaviorToAvoid('FOMO');
-        onClose();
     };
 
     const getDefaultTitle = () => {
@@ -148,34 +149,47 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
         }
     };
 
+    if (!isOpen) return null;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
-            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onMouseDown={(event) => event.target === event.currentTarget && handleClose()}
+        >
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" onMouseDown={handleClose} />
+            <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="add-goal-modal-title"
+                tabIndex={-1}
+                className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-xl [&_input]:min-h-11 [&_select]:min-h-11"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-gray-100">
-                    <h2 className="text-xl font-bold text-gray-800">Add New Goal</h2>
+                    <h2 id="add-goal-modal-title" className="text-xl font-bold text-gray-800">Add New Goal</h2>
                     <button
+                        type="button"
                         onClick={handleClose}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        aria-label="Close goal dialog"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-lg p-2 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                     >
-                        <X className="w-5 h-5 text-gray-500" />
+                        <X aria-hidden="true" className="w-5 h-5 text-gray-500" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-5 space-y-5">
                     {/* Goal Type Selection */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                            Goal Type
-                        </label>
+                        <fieldset>
+                            <legend className="mb-3 block text-sm font-medium text-gray-700">Goal Type</legend>
                         <div className="grid grid-cols-2 gap-3">
                             {GOAL_TYPES.map(({ value, label, icon: Icon, color, description }) => (
                                 <button
                                     key={value}
                                     type="button"
                                     onClick={() => setSelectedType(value as GoalType)}
-                                    className={`p-4 rounded-xl border-2 transition-all text-left ${selectedType === value
+                                    className={`min-h-11 rounded-xl border-2 p-4 text-left transition-[border-color,background-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ${selectedType === value
                                         ? 'border-orange-500 bg-orange-50'
                                         : 'border-gray-200 hover:border-gray-300'
                                         }`}
@@ -186,15 +200,17 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
                                 </button>
                             ))}
                         </div>
+                        </fieldset>
                     </div>
 
                     {/* Behavior Selection (for behavior goals) */}
                     {selectedType === 'behavior' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="goal-behavior" className="block text-sm font-medium text-gray-700 mb-2">
                                 Emotion to Avoid
                             </label>
                             <select
+                                id="goal-behavior"
                                 value={behaviorToAvoid}
                                 onChange={(e) => setBehaviorToAvoid(e.target.value)}
                                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -210,10 +226,12 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
 
                     {/* Target Input */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="goal-target" className="block text-sm font-medium text-gray-700 mb-2">
                             {getTargetLabel()}
                         </label>
                         <input
+                            id="goal-target"
+                            ref={targetInputRef}
                             type="number"
                             value={target}
                             onChange={(e) => setTarget(e.target.value)}
@@ -230,10 +248,11 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
 
                     {/* Custom Title (optional) */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="goal-title" className="block text-sm font-medium text-gray-700 mb-2">
                             Goal Title (optional)
                         </label>
                         <input
+                            id="goal-title"
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -246,7 +265,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
                     <button
                         type="submit"
                         disabled={isSubmitting || !target}
-                        className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {isSubmitting ? (
                             <>

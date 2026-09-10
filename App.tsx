@@ -20,6 +20,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
 import NotFoundPage from './pages/NotFoundPage';
+import DashboardNotFoundPage from './components/dashboard/DashboardNotFoundPage';
 import PrivatePageSEO from './components/PrivatePageSEO';
 import { isPrivateSeoRoute } from './utils/seoConfig';
 import { getAppLayoutFamily, LEGACY_DASHBOARD_REDIRECTS } from './components/appLayoutModel';
@@ -135,6 +136,9 @@ const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     }, (error) => {
       // Error callback for auth state changes
       console.error('Firebase auth error:', error);
+      // Auth can no longer verify the prior identity; fail closed for any
+      // consumer of this legacy provider as well.
+      setCurrentUser(null);
       clearTimeout(timeoutId);
       setLoading(false);
     });
@@ -225,6 +229,7 @@ const AppRoutes: React.FC = () => (
         <Route path="trading" element={<TradingJournalPage surface="dashboard" />} />
         <Route path="settings" element={<DashboardSettingsPage />} />
         <Route path="admin/feedback" element={<FeedbackPage />} />
+        <Route path="*" element={<DashboardNotFoundPage />} />
       </Route>
       <Route path="/dashboard/summary/:bookId" element={<FocusedReaderLayout />}>
         <Route index element={<SummaryDetailPage surface="dashboard" />} />

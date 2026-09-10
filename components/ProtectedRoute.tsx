@@ -9,9 +9,9 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, isAuthenticated, isAuthReady } = useAuth();
+  const { user, isAuthenticated, isAuthReady, authError } = useAuth();
   const location = useLocation();
-  const decision = getProtectedRouteDecision(isAuthReady, isAuthenticated);
+  const decision = getProtectedRouteDecision(isAuthReady, isAuthenticated, authError);
 
   if (decision === 'loading') {
     return <div className="dashboard-auth-loading" role="status">Preparing your reading desk…</div>;

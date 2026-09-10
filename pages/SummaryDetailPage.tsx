@@ -29,6 +29,7 @@ import { getBookLibraryHref, getBookSummaryHref, type ReadingSurface } from '../
 import { SummaryVisitTracker } from '../components/summaryVisitModel';
 import { AsyncIdentityGuard, type AsyncIdentityToken } from '../components/asyncIdentityGuard';
 import { getSummaryCatalogSurfaceState } from '../components/summaryCatalogState';
+import { openPdfBlobUrl } from '../utils/pdfDownloadGuard';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -123,6 +124,7 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const summaryRequestGuard = useRef(new AsyncIdentityGuard()).current;
+  const summaryPdfGuard = useRef(new AsyncIdentityGuard()).current;
   const summaryBookIdRef = useRef<string | null>(null);
   const summaryLoadedBookIdRef = useRef<string | null>(null);
   const summaryLoadedLanguageRef = useRef<string | null>(null);
@@ -142,6 +144,8 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
 
   const bookId = resolveBookId(bookIdOrSlug);
   const currentUserId = user?.id ?? null;
+  const summaryPdfIdentity = `${surface}:${currentUserId ?? 'guest'}:${bookIdOrSlug ?? ''}`;
+  summaryPdfGuard.setIdentity(summaryPdfIdentity);
   const summaryVisit = useRef(new SummaryVisitTracker());
   summaryVisit.current.observe(currentUserId);
 
@@ -171,6 +175,11 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     summaryRequestGuard.mount();
     return () => summaryRequestGuard.unmount();
   }, [summaryRequestGuard]);
+
+  useEffect(() => {
+    summaryPdfGuard.mount();
+    return () => summaryPdfGuard.unmount();
+  }, [summaryPdfGuard]);
 
   const fetchSummary = useCallback(async (currentBook: Book, requestToken: AsyncIdentityToken) => {
     if (!summaryRequestGuard.isCurrent(requestToken)) return;
@@ -332,12 +341,17 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
     }
 
     const directPdfUrl = book.arabicPdfUrl || PDF_PATHS[book.id];
+    const pdfToken = summaryPdfGuard.begin(summaryPdfIdentity);
+    if (!pdfToken) return;
+
     if (directPdfUrl) {
-      window.open(directPdfUrl, '_blank');
+      if (summaryPdfGuard.isCurrent(pdfToken)) {
+        window.open(directPdfUrl, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
-    if (!summaryData) return;
+    if (!summaryData || !summaryPdfGuard.isCurrent(pdfToken)) return;
 
     try {
       const { default: jsPDF } = await import('jspdf');
@@ -394,13 +408,16 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
       });
 
       const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
+      openPdfBlobUrl(pdfBlob, {
+        canCommit: () => summaryPdfGuard.isCurrent(pdfToken),
+      });
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      if (summaryPdfGuard.isCurrent(pdfToken)) {
+        alert('Failed to generate PDF. Please try again.');
+      }
     }
-  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
+  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData, summaryPdfGuard, summaryPdfIdentity]);
 
   const summaryCatalogState = getSummaryCatalogSurfaceState({
     loading: booksLoading,
@@ -2408,320 +2425,20 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
                     <button
                       onClick={async () => {
                         if (!book) return;
+                        const pdfToken = summaryPdfGuard.begin(summaryPdfIdentity);
+                        if (!pdfToken) return;
 
-                        // If arabicPdfUrl is defined, use it directly
-                        if (book.arabicPdfUrl) {
-                          window.open(book.arabicPdfUrl, '_blank');
-                          return;
-                        }
-
-                        // For America's Bank, open the actual PDF file
-                        if (book.id === 'americas-bank') {
-                          window.open('/pdfs/americas bank.pdf', '_blank');
+                        const directPdfUrl = book.arabicPdfUrl || PDF_PATHS[book.id];
+                        if (directPdfUrl) {
+                          if (summaryPdfGuard.isCurrent(pdfToken)) {
+                            window.open(directPdfUrl, '_blank', 'noopener,noreferrer');
+                          }
                           return;
                         }
 
-                        // For Broken Money, open the actual PDF file
-                        if (book.id === 'broken-money') {
-                          window.open('/pdfs/broken money.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Rich Dad Poor Dad, open the actual PDF file
-                        if (book.id === 'rich-dad-poor-dad') {
-                          window.open('/pdfs/rich dad poor dad.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Mental Game of Trading, open the actual PDF file
-                        if (book.id === 'the-mental-game-of-trading') {
-                          window.open('/pdfs/the mental game of trading.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Alchemist, open the actual PDF file
-                        if (book.id === 'the-alchemist') {
-                          window.open('/pdfs/the alchemist.pdf', '_blank');
-                          return;
-                        }
-
-                        // For How To Day Trade for a Living, open the actual PDF file
-                        if (book.id === 'howtodaytradeforaliving') {
-                          window.open('/pdfs/how to day trade for a living.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Trading in the Zone, open the actual PDF file
-                        if (book.id === 'trading-in-the-zone') {
-                          window.open('/pdfs/trading in the zone 2.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Atomic Habits, open the actual PDF file
-                        if (book.id === 'atomic-habits') {
-                          window.open('/pdfs/atomic habits.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Best Loser Wins, open the actual PDF file
-                        if (book.id === 'best-loser-wins') {
-                          window.open('/pdfs/best loser wins.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Richest Man in Babylon, open the actual PDF file
-                        if (book.id === 'therichestmaninbabylon') {
-                          window.open('/pdfs/the richest man in babylon.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Secrets of the Millionaire Mind, open the actual PDF file
-                        if (book.id === 'secretsofthemillionairemind') {
-                          window.open('/pdfs/secrets of the millionaire mind.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Market Wizards, open the actual PDF file
-                        if (book.id === 'marketwizards') {
-                          window.open('/pdfs/market wizards.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Becoming, open the actual PDF file
-                        if (book.id === 'becoming') {
-                          window.open('/pdfs/becoming.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Dune, open the actual PDF file
-                        if (book.id === 'dune') {
-                          window.open('/pdfs/dune.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Educated, open the actual PDF file
-                        if (book.id === 'educated') {
-                          window.open('/pdfs/educated.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Project Hail Mary, open the actual PDF file
-                        if (book.id === 'project-hail-mary') {
-                          window.open('/pdfs/project hail mary.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Subtle Art of Not Giving a F*ck, open the actual PDF file
-                        if (book.id === 'the-subtle-art-of-not-giving-a-f') {
-                          window.open('/pdfs/the subtle art of not giving a fck.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Sapiens, open the actual PDF file
-                        if (book.id === 'sapiens') {
-                          window.open('/pdfs/sapiens.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Four Agreements, open the actual PDF file
-                        if (book.id === 'the-four-agreements') {
-                          window.open('/pdfs/the four agreements.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 4-Hour Workweek, open the actual PDF file
-                        if (book.id === 'the-4-hour-workweek') {
-                          window.open('/pdfs/the 4 hour workweek.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Laws of Human Nature, open the actual PDF file
-                        if (book.id === 'the-laws-of-human-nature') {
-                          window.open('/pdfs/the laws of human nature.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Thinking, Fast and Slow, open the actual PDF file
-                        if (book.id === 'thinking-fast-and-slow') {
-                          window.open('/pdfs/thinking fast and slow.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Be Less Zombie, open the actual PDF file
-                        if (book.id === 'belesszombie') {
-                          window.open('/pdfs/be less zombie.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 48 Laws of Power, open the actual PDF file
-                        if (book.id === 'the48lawsofpower') {
-                          window.open('/pdfs/the 48 laws of power.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 33 Strategies of War, open the actual PDF file
-                        if (book.id === 'the33strategiesofwar') {
-                          window.open('/pdfs/the 33 strategies of war.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Relentless, open the actual PDF file
-                        if (book.id === 'relentless') {
-                          window.open('/pdfs/relentless.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Intelligent Investor, open the actual PDF file
-                        if (book.id === 'the-intelligent-investor') {
-                          window.open('/pdfs/the intelligent investor.pdf', '_blank');
-                          return;
-                        }
-
-                        // For One Up on Wall Street, open the actual PDF file
-                        if (book.id === 'one-up-on-wall-street') {
-                          window.open('/pdfs/one up on wall street.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Psychology of Money, open the actual PDF file
-                        if (book.id === 'the-psychology-of-money') {
-                          window.open('/pdfs/the psychology of money.pdf', '_blank');
-                          return;
-                        }
-
-                        // For One Good Trade, open the actual PDF file
-                        if (book.id === 'one-good-trade') {
-                          window.open('/pdfs/one good trade.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Can't Hurt Me, open the actual PDF file
-                        if (book.id === 'cant-hurt-me') {
-                          window.open("/pdfs/can't hurt me.pdf", '_blank');
-                          return;
-                        }
-
-                        // For The Alchemy of Finance, open the actual PDF file
-                        if (book.id === 'the-alchemy-of-finance') {
-                          window.open('/pdfs/the alchemy of finance.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Competition Demystified, open the actual PDF file
-                        if (book.id === 'competition-demystified') {
-                          window.open('/pdfs/competition demystified.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 4-Hour Work Week, open the actual PDF file
-                        if (book.id === 'the-4-hour-work-week') {
-                          window.open('/pdfs/the 4 hour work week.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Black Swan, open the actual PDF file
-                        if (book.id === 'the-black-swan') {
-                          window.open('/pdfs/the black swan.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The PlayBook, open the actual PDF file
-                        if (book.id === 'the-playbook') {
-                          window.open('/pdfs/the playbook.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The ChatGPT Millionaire, open the actual PDF file
-                        if (book.id === 'the-chatgpt-millionaire') {
-                          window.open('/pdfs/the chatgpt millionaire.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Miracle Morning, open the actual PDF file
-                        if (book.id === 'the-miracle-morning') {
-                          window.open('/pdfs/the miracle morning.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The First 90 Days, open the actual PDF file
-                        if (book.id === 'the-first-90-days') {
-                          window.open('/pdfs/the first 90 days.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Leading Change, open the actual PDF file
-                        if (book.id === 'leading-change') {
-                          window.open('/pdfs/leading change.pdf', '_blank');
-                          return;
-                        }
-
-                        // For I Will Teach You to Be Rich, open the actual PDF file
-                        if (book.id === 'i-will-teach-you-to-be-rich') {
-                          window.open('/pdfs/i will teach you to be rich.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Money: Master the Game, open the actual PDF file
-                        if (book.id === 'money-master-the-game') {
-                          window.open('/pdfs/money master the game.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Total Money Makeover, open the actual PDF file
-                        if (book.id === 'the-total-money-makeover') {
-                          window.open('/pdfs/the total money makeover.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 7 Habits of Highly Effective People, open the actual PDF file
-                        if (book.id === 'the-7-habits-of-highly-effective-people') {
-                          window.open('/pdfs/the 7 habits of highly effective people.pdf', '_blank');
-                          return;
-                        }
-
-                        // For How to Win Friends and Influence People, open the actual PDF file
-                        if (book.id === 'how-to-win-friends-and-influence-people') {
-                          window.open('/pdfs/how to win friends and influence people.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Influence: The Psychology of Persuasion, open the actual PDF file
-                        if (book.id === 'influence-the-psychology-of-persuasion') {
-                          window.open('/pdfs/influence.pdf', '_blank');
-                          return;
-                        }
-
-                        // For A Random Walk Down Wall Street, open the actual PDF file
-                        if (book.id === 'a-random-walk-down-wall-street') {
-                          window.open('/pdfs/a random walk down wall street.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Simple Path to Wealth, open the actual PDF file
-                        if (book.id === 'the-simple-path-to-wealth') {
-                          window.open('/pdfs/the simple path to wealth.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Basic Economics, open the actual PDF file
-                        if (book.id === 'basic-economics') {
-                          window.open('/pdfs/basic economics.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'black-rednecks-and-white-liberals') {
-                          window.open('/pdfs/black rednecks and white liberals.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'how-to-trade-in-stocks') {
-                          window.open('/pdfs/how to trade in stocks.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'reminiscences-of-a-stock-operator') {
-                          window.open('/pdfs/reminiscences of a stock operator.pdf', '_blank');
-                          return;
-                        }                      // For other books, generate PDF dynamically
+                        // For other books, generate PDF dynamically
                         // Lazy load jsPDF only when needed (saves 385KB from initial bundle!)
-                        if (!summaryData) return;
+                        if (!summaryData || !summaryPdfGuard.isCurrent(pdfToken)) return;
 
                         try {
                           // Dynamic import - only loads when user clicks download
@@ -2770,11 +2487,14 @@ const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public
 
                           // Open in new tab using blob URL with proper MIME type
                           const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-                          const pdfUrl = URL.createObjectURL(pdfBlob);
-                          window.open(pdfUrl, '_blank');
+                          openPdfBlobUrl(pdfBlob, {
+                            canCommit: () => summaryPdfGuard.isCurrent(pdfToken),
+                          });
                         } catch (error) {
                           console.error('Error generating PDF:', error);
-                          alert('Failed to generate PDF. Please try again.');
+                          if (summaryPdfGuard.isCurrent(pdfToken)) {
+                            alert('Failed to generate PDF. Please try again.');
+                          }
                         }
                       }}
                       className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-[100%_100%] border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"

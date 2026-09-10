@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useModalDialog } from '../../hooks/useModalDialog';
 import { DASHBOARD_NAVIGATION, isDashboardNavItemActive, type DashboardNavGroup, type DashboardNavItem } from './dashboardNavigation';
+import { subscribeToDesktopBreakpointFromWindow } from './dashboardMobileNavModel';
 
 interface DashboardMobileNavProps {
   open: boolean;
@@ -42,6 +44,14 @@ export function DashboardMobileNav({ open, onOpenChange, onFeedback }: Dashboard
   const { t } = useLanguage();
   const closeDrawer = () => onOpenChange(false);
   const drawerRef = useModalDialog({ open, onClose: closeDrawer });
+
+  useEffect(() => {
+    if (!open || typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+    const unsubscribe = subscribeToDesktopBreakpointFromWindow(window.matchMedia.bind(window), (isDesktop) => {
+      if (isDesktop) onOpenChange(false);
+    });
+    return () => unsubscribe();
+  }, [onOpenChange, open]);
 
   return (
     <>
