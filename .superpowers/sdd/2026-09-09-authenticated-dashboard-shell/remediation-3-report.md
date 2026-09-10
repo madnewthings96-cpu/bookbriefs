@@ -33,4 +33,4 @@
 - `npx tsc --noEmit` still reports unrelated baseline errors in downloads/Radix dependencies, library scripts, and jsPDF typings; no new remediation errors were reported.
 - Node emits the existing `module.register()` deprecation warning during TSX runs.
 
-Commit: implementation commit recorded in the handoff.
+Commit: `98c0acf` (`fix dashboard accessibility and shell robustness`).
