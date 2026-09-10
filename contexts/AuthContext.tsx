@@ -1,16 +1,16 @@
-import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
 } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, googleProvider } from '../firebase';
 import {
-  applyAuthObserverError,
-  applyAuthObserverUser,
-  INITIAL_AUTH_OBSERVER_STATE,
+  createAuthObserverFlow,
+  type AuthAttemptKind,
   type AuthObserverState,
   type AuthUser,
 } from './authStateModel';
@@ -22,9 +22,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAuthReady: boolean;
   authError: string | null;
-  retryAuth: () => void;
+  retryAuth: (kind?: AuthAttemptKind) => void;
   login: (email: string, password: string) => Promise<boolean>;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: () => Promise<boolean>;
   logout: () => Promise<boolean>;
 }
 
@@ -43,20 +44,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [observerState, setObserverState] = useState<AuthObserverState>(INITIAL_AUTH_OBSERVER_STATE);
-  const [authSubscriptionKey, setAuthSubscriptionKey] = useState(0);
+  const observerFlow = useRef(createAuthObserverFlow()).current;
+  const [observerState, setObserverState] = useState<AuthObserverState>(() => observerFlow.getState());
+  const observerSubscriptionRef = useRef<(() => void) | null>(null);
 
-  const retryAuth = useCallback(() => {
-    setObserverState((state) => ({
-      ...state,
-      user: null,
-      isAuthReady: false,
-      authError: null,
-    }));
-    setAuthSubscriptionKey((key) => key + 1);
-  }, []);
+  const subscribeAuthObserver = useCallback(() => {
+    observerSubscriptionRef.current?.();
 
-  useEffect(() => {
     let active = true;
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (!active) return;
@@ -67,39 +61,66 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
           }
         : null;
-      setObserverState((state) => applyAuthObserverUser(state, nextUser));
+      setObserverState(observerFlow.observerUser(nextUser));
     }, (error) => {
       if (!active) return;
       console.error('Firebase auth observer error:', error);
-      setObserverState((state) => applyAuthObserverError(state, error));
+      setObserverState(observerFlow.observerError(error));
     });
 
-    return () => {
+    const cleanup = () => {
+      if (!active) return;
       active = false;
       unsubscribe();
     };
-  }, [authSubscriptionKey]);
+    observerSubscriptionRef.current = cleanup;
+    return cleanup;
+  }, [observerFlow]);
+
+  useEffect(() => {
+    const cleanup = subscribeAuthObserver();
+    return () => {
+      cleanup();
+      if (observerSubscriptionRef.current === cleanup) observerSubscriptionRef.current = null;
+    };
+  }, [subscribeAuthObserver]);
+
+  const retryAuth = useCallback((kind: AuthAttemptKind = 'login') => {
+    setObserverState(observerFlow.beginAttempt(kind));
+    subscribeAuthObserver();
+  }, [observerFlow, subscribeAuthObserver]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      if (observerState.authError) retryAuth();
+      if (observerFlow.getState().authError) retryAuth('login');
       await signInWithEmailAndPassword(auth, email.trim(), password);
       return true;
     } catch (error) {
       console.error('Login failed:', error);
-      return false;
+      throw error;
     }
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      if (observerState.authError) retryAuth();
+      if (observerFlow.getState().authError) retryAuth('signup');
       const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
-      await updateProfile(credential.user, { displayName: name.trim() });
+      if (name.trim()) await updateProfile(credential.user, { displayName: name.trim() });
       return true;
     } catch (error) {
       console.error('Signup failed:', error);
-      return false;
+      throw error;
+    }
+  };
+
+  const loginWithGoogle = async (): Promise<boolean> => {
+    try {
+      if (observerFlow.getState().authError) retryAuth('google');
+      await signInWithPopup(auth, googleProvider);
+      return true;
+    } catch (error) {
+      console.error('Google login failed:', error);
+      throw error;
     }
   };
 
@@ -121,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     retryAuth,
     login,
     signup,
+    loginWithGoogle,
     logout
   };
 

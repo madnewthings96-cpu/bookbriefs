@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
 import { AuthGateway } from '../components/AuthGateway';
 import { getSafePostAuthDestination } from '../components/authRouteModel';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignUpPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -17,6 +16,7 @@ const SignUpPage: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { signup, loginWithGoogle } = useAuth();
   const destination = getSafePostAuthDestination(
     typeof location.state?.from === 'string' ? location.state.from : undefined,
   );
@@ -49,14 +49,7 @@ const SignUpPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Create user with Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Update the user's display name
-      await updateProfile(user, {
-        displayName: name.trim()
-      });
+      await signup(name.trim(), email, password);
 
       navigate(destination, { replace: true });
     } catch (err: any) {
@@ -98,8 +91,7 @@ const SignUpPage: React.FC = () => {
     setIsGoogleLoading(true);
 
     try {
-      // Sign up with Google
-      await signInWithPopup(auth, googleProvider);
+      await loginWithGoogle();
 
       navigate(destination, { replace: true });
     } catch (err: any) {

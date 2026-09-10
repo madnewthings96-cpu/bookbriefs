@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
 import { AuthGateway } from '../components/AuthGateway';
 import { getSafePostAuthDestination } from '../components/authRouteModel';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +14,7 @@ const LoginPage: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { login, loginWithGoogle } = useAuth();
   const destination = getSafePostAuthDestination(
     typeof location.state?.from === 'string' ? location.state.from : undefined,
   );
@@ -37,8 +37,7 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Sign in with Firebase Auth
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      await login(email.trim(), password);
 
       navigate(destination, { replace: true });
     } catch (err: any) {
@@ -83,8 +82,7 @@ const LoginPage: React.FC = () => {
     setIsGoogleLoading(true);
 
     try {
-      // Sign in with Google
-      await signInWithPopup(auth, googleProvider);
+      await loginWithGoogle();
 
       navigate(destination, { replace: true });
     } catch (err: any) {

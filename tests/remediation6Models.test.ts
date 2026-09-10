@@ -45,9 +45,50 @@ test('auth observer errors clear prior identity, expose failure, and permit reco
 test('auth provider handles observer failure and exposes a resubscription path', async () => {
   const source = await readFile('contexts/AuthContext.tsx', 'utf8');
   assert.match(source, /authError/);
-  assert.match(source, /user: null/);
-  assert.match(source, /setAuthSubscriptionKey|retryAuth/);
+  assert.match(source, /observerFlow\.observerError/);
+  assert.match(source, /observerFlow\.beginAttempt/);
+  assert.match(source, /subscribeAuthObserver/);
   assert.match(source, /onAuthStateChanged\(auth/);
+});
+
+test('observer recovery flow accepts email login, signup, and Google retries', async () => {
+  const model = await load<typeof import('../contexts/authStateModel')>('../contexts/authStateModel');
+  const prior = {
+    user: { id: 'user-a', email: 'a@example.com', name: 'A' },
+    isAuthReady: true,
+    authError: null,
+  };
+  const recoveredUser = { id: 'user-b', email: 'b@example.com', name: 'B' };
+  const flow = model.createAuthObserverFlow(prior);
+  const attempts = ['login', 'signup', 'google'] as const;
+
+  flow.observerError(new Error('observer failed'));
+  for (const kind of attempts) {
+    const retryState = flow.beginAttempt(kind);
+    assert.equal(retryState.user, null, `${kind} must clear stale identity`);
+    assert.equal(retryState.isAuthReady, false, `${kind} must await observer recovery`);
+    assert.equal(retryState.authError, null, `${kind} must clear observer failure`);
+    const successState = flow.observerUser(recoveredUser);
+    assert.deepEqual(successState.user, recoveredUser, `${kind} must accept observer success`);
+    assert.equal(successState.isAuthReady, true);
+    assert.equal(successState.authError, null);
+    if (kind !== 'google') flow.observerError(new Error(`${kind} observer failed again`));
+  }
+});
+
+test('UI authentication entry points delegate to AuthContext recovery APIs', async () => {
+  const provider = await readFile('contexts/AuthContext.tsx', 'utf8');
+  assert.match(provider, /createAuthObserverFlow/);
+  assert.match(provider, /loginWithGoogle/);
+  assert.match(provider, /retryAuth\('login'\)/);
+  assert.match(provider, /retryAuth\('signup'\)/);
+  assert.match(provider, /retryAuth\('google'\)/);
+  for (const path of ['pages/LoginPage.tsx', 'pages/SignUpPage.tsx', 'components/ExitIntentPopup.tsx']) {
+    const source = await readFile(path, 'utf8');
+    assert.match(source, /useAuth/ , path);
+    assert.doesNotMatch(source, /from ['"]firebase\/auth['"]/ , path);
+    assert.doesNotMatch(source, /(signInWithEmailAndPassword|createUserWithEmailAndPassword|signInWithPopup)\s*\(/, path);
+  }
 });
 
 test('Trading Journal overlays use the shared dialog contract and labelled controls', async () => {

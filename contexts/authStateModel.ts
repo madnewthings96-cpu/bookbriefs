@@ -10,6 +10,8 @@ export interface AuthObserverState {
   authError: string | null;
 }
 
+export type AuthAttemptKind = 'login' | 'signup' | 'google';
+
 export const INITIAL_AUTH_OBSERVER_STATE: AuthObserverState = {
   user: null,
   isAuthReady: false,
@@ -44,3 +46,41 @@ export const applyAuthObserverError = (
   isAuthReady: true,
   authError: getObserverErrorMessage(error),
 });
+
+export interface AuthObserverFlow {
+  getState: () => AuthObserverState;
+  observerUser: (user: AuthUser | null) => AuthObserverState;
+  observerError: (error: unknown) => AuthObserverState;
+  beginAttempt: (kind: AuthAttemptKind) => AuthObserverState;
+}
+
+/**
+ * Keeps the React provider and its tests on one recovery contract. A UI auth
+ * attempt is allowed to clear a failed observer only before its Firebase
+ * observer can publish the successful identity again.
+ */
+export const createAuthObserverFlow = (
+  initialState: AuthObserverState = INITIAL_AUTH_OBSERVER_STATE,
+): AuthObserverFlow => {
+  let state = initialState;
+
+  return {
+    getState: () => state,
+    observerUser: (user) => {
+      state = applyAuthObserverUser(state, user);
+      return state;
+    },
+    observerError: (error) => {
+      state = applyAuthObserverError(state, error);
+      return state;
+    },
+    beginAttempt: (_kind) => {
+      state = {
+        user: null,
+        isAuthReady: false,
+        authError: null,
+      };
+      return state;
+    },
+  };
+};
