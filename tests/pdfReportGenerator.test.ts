@@ -71,6 +71,37 @@ test('monthly PDF embeds the official site-logo image in a multi-page A4 fieldbo
   assert.ok((output.match(/\/Subtype\s*\/Image/g) ?? []).length >= 3);
 });
 
+test('monthly PDF right-aligns the ledger R header and values to one column anchor', async () => {
+  const { createMonthlyReportDocument } = await import('../utils/pdfReportGenerator');
+  const doc = await createMonthlyReportDocument({
+    trades: [createTrade('r-anchor', '2026-02-11', 250)],
+    startingBalance: 10_000,
+    currentBalance: 10_250,
+    month: 1,
+    year: 2026,
+  });
+  const ledgerPage = doc.internal.pages[3]?.join('\n') ?? '';
+  const textStartX = (text: string): number => {
+    const textIndex = ledgerPage.indexOf(`(${text}) Tj`);
+    assert.ok(textIndex >= 0, `ledger page should contain ${text}`);
+    const preceding = ledgerPage.slice(0, textIndex);
+    const operatorIndex = preceding.lastIndexOf(' Td');
+    const operatorLineStart = preceding.lastIndexOf('\n', operatorIndex) + 1;
+    return Number(preceding.slice(operatorLineStart, operatorIndex).trim().split(/\s+/)[0]) / doc.internal.scaleFactor;
+  };
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setCharSpace(0.45);
+  const headerRightEdge = textStartX('R') + doc.getTextWidth('R');
+  doc.setFontSize(8);
+  doc.setCharSpace(0);
+  const valueRightEdge = textStartX('2.0R') + doc.getTextWidth('2.0R');
+
+  assert.ok(Math.abs(headerRightEdge - 145) < 0.01);
+  assert.ok(Math.abs(valueRightEdge - 145) < 0.01);
+});
+
 test('monthly PDF embeds a Unicode font for Arabic journal content', async () => {
   const { createMonthlyReportDocument } = await import('../utils/pdfReportGenerator');
   const fontBytes = await readFile(new URL('../public/fonts/NotoSansArabic-Regular.ttf', import.meta.url));

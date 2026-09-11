@@ -460,7 +460,7 @@ const drawTableHeader = (doc: jsPDF, y: number) => {
         ['RESULT', 189],
     ] as const;
     headers.forEach(([label, x]) => doc.text(label, x, y + 6.5, {
-        align: label === 'RESULT' ? 'right' : undefined,
+        align: label === 'R' || label === 'RESULT' ? 'right' : undefined,
         charSpace: 0.45,
     }));
 };
@@ -521,7 +521,7 @@ const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography
         const setupIsRtl = setJournalFont(doc, setup, typography, 'bold');
         doc.text(setup, setupIsRtl ? 133 : 96, y + 5, setupIsRtl ? { align: 'right', R2L: true } : undefined);
         doc.setFont('helvetica', 'bold');
-        doc.text(trade.rr === null ? '--' : `${trade.rr.toFixed(1)}R`, 139, y + 5);
+        doc.text(trade.rr === null ? '--' : `${trade.rr.toFixed(1)}R`, 145, y + 5, { align: 'right' });
         setText(doc, trade.pnl >= 0 ? COLORS.profit : COLORS.loss);
         doc.text(formatMoney(trade.pnl, true), 189, y + 5, { align: 'right' });
 
