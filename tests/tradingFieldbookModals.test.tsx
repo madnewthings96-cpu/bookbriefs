@@ -59,6 +59,7 @@ test('fieldbook trade and goal dialogs render labelled landmarks, actions, and t
   for (const goalType of ['Balance Target', 'Win Rate Target', 'Behavior Goal', 'Streak Goal']) {
     assert.match(goal, new RegExp(`>${goalType}<`));
   }
+  assert.match(goal, /class="grid grid-cols-1 gap-3 sm:grid-cols-2"/);
   assert.match(goal, /id="goal-target"/);
   assert.match(goal, /id="goal-title"/);
   assert.match(goal, />Cancel</);

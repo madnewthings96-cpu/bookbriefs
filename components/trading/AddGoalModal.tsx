@@ -241,7 +241,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({ isOpen, onClose, onSave, cu
                     <div>
                         <fieldset>
                             <legend className="mb-3 block text-sm font-semibold text-[#294a3e]">Goal Type</legend>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             {GOAL_TYPES.map(({ value, label, icon: Icon, color, description }) => (
                                 <button
                                     key={value}
