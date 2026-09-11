@@ -174,6 +174,61 @@ describe('Firestore security rules', () => {
             unexpected: true,
           })
       );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-2_2026')
+          .set(challengePayload('reader-1'))
+      );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-1_2027')
+          .set(challengePayload('reader-1'))
+      );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-1_extra_2026')
+          .set(challengePayload('reader-1'))
+      );
+
+      await assertFails(
+        authContext('reader-1').firestore()
+          .collection('reading_challenges')
+          .doc('reader-1_0000')
+          .set({
+            ...challengePayload('reader-1'),
+            year: 0,
+          })
+      );
+    });
+
+    it('lets the owner read a missing first-use challenge but denies anonymous and non-owner paths', async () => {
+      const ownerMissing = authContext('reader-1').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const nonOwnerMissing = authContext('reader-2').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const anonymousMissing = testEnv.unauthenticatedContext().firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const ownerExtra = authContext('reader-1').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_extra_2026');
+      const ownerZero = authContext('reader-1').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_0000');
+
+      await assertSucceeds(ownerMissing.get());
+      await assertFails(nonOwnerMissing.get());
+      await assertFails(anonymousMissing.get());
+      await assertFails(ownerExtra.get());
+      await assertFails(ownerZero.get());
     });
 
     it('lets only the owner update progress without changing ownership or creation metadata', async () => {
@@ -227,7 +282,7 @@ describe('Firestore security rules', () => {
       );
     });
 
-    it('keeps public reads but restricts deletes to the owner', async () => {
+    it('keeps challenge reads and deletes private to the owner', async () => {
       await seedDocument('reading_challenges/reader-1_2026', {
         userId: 'reader-1',
         year: 2026,
@@ -237,25 +292,27 @@ describe('Firestore security rules', () => {
         updatedAt: storedTimestamp(),
       });
 
-      const publicDoc = testEnv.unauthenticatedContext().firestore()
+      const anonymousDoc = testEnv.unauthenticatedContext().firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const ownerDoc = authContext('reader-1').firestore()
+        .collection('reading_challenges')
+        .doc('reader-1_2026');
+      const nonOwnerDoc = authContext('reader-2').firestore()
         .collection('reading_challenges')
         .doc('reader-1_2026');
 
-      await assertSucceeds(publicDoc.get());
-      assert.equal((await publicDoc.get()).exists, true);
+      await assertFails(anonymousDoc.get());
+      await assertFails(nonOwnerDoc.get());
+      await assertSucceeds(ownerDoc.get());
+      assert.equal((await ownerDoc.get()).exists, true);
 
       await assertFails(
-        authContext('reader-2').firestore()
-          .collection('reading_challenges')
-          .doc('reader-1_2026')
-          .delete()
+        nonOwnerDoc.delete()
       );
 
       await assertSucceeds(
-        authContext('reader-1').firestore()
-          .collection('reading_challenges')
-          .doc('reader-1_2026')
-          .delete()
+        ownerDoc.delete()
       );
     });
   });

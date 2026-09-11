@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { CALCULATOR_ROUTES, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import type { CalculatorLanguage, CalculatorRoute } from '../utils/seoConfig';
+import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 
 type CalculatorTab = 'pipValue' | 'positionSize' | 'fire' | 'compound';
 
@@ -148,16 +149,44 @@ const defaultCalculatorRoute = CALCULATOR_ROUTES.find(
 const getCalculatorRoute = (path: string): CalculatorRoute =>
   CALCULATOR_ROUTES.find((route) => route.path === path) ?? defaultCalculatorRoute;
 
-const getCalculatorPath = (tabId: CalculatorTab, language: CalculatorLanguage): string =>
-  CALCULATOR_ROUTES.find((route) => route.tabId === tabId && route.language === language)?.path ??
-  CALCULATOR_ROUTES.find((route) => route.tabId === tabId && route.language === 'en')?.path ??
-  '/calculators';
+export const normalizeDashboardCalculatorPath = (pathname: string) => {
+  const normalized = (pathname.replace(/\/+$/, '') || '/').toLowerCase();
+  if (normalized === '/dashboard/calculators') return '/calculators';
+  const prefix = '/dashboard/calculators/';
+  return normalized.startsWith(prefix) ? `/calculators/${normalized.slice(prefix.length)}` : normalized;
+};
+
+const getDashboardCalculatorHref = (path: string) => {
+  const route = getCalculatorRoute(path);
+  if (route.path === '/calculators') return '/dashboard/calculators';
+  const englishRoute = CALCULATOR_ROUTES.find(candidate =>
+    candidate.language === 'en' && candidate.tabId === route.tabId,
+  );
+  return `/dashboard${englishRoute?.path || '/calculators'}`;
+};
+
+const getCalculatorPath = (
+  tabId: CalculatorTab,
+  language: CalculatorLanguage,
+  surface: ReadingSurface = 'public',
+): string => {
+  const publicPath = CALCULATOR_ROUTES.find((route) => route.tabId === tabId && route.language === language)?.path ??
+    CALCULATOR_ROUTES.find((route) => route.tabId === tabId && route.language === 'en')?.path ??
+    '/calculators';
+  return surface === 'dashboard' ? getDashboardCalculatorHref(publicPath) : publicPath;
+};
 
 const getTabFromRoute = (route: CalculatorRoute): CalculatorTab => route.tabId ?? 'positionSize';
 
-const CalculatorsPage: React.FC = () => {
+interface CalculatorsPageProps {
+  surface?: ReadingSurface;
+}
+
+const CalculatorsPage: React.FC<CalculatorsPageProps> = ({ surface = 'public' }) => {
   const location = useLocation();
-  const activeRoute = getCalculatorRoute(location.pathname);
+  const activeRoute = getCalculatorRoute(
+    surface === 'dashboard' ? normalizeDashboardCalculatorPath(location.pathname) : location.pathname,
+  );
   const activeTab = getTabFromRoute(activeRoute);
   const currentLanguage = activeRoute.language;
   const isArabic = currentLanguage === 'ar';
@@ -169,6 +198,7 @@ const CalculatorsPage: React.FC = () => {
     canonical: `${SITE_URL}${canonicalRoutePath(activeRoute.path)}`,
     type: 'website',
     language: currentLanguage,
+    noindex: surface === 'dashboard',
   });
 
   const activeCalculator =
@@ -178,21 +208,21 @@ const CalculatorsPage: React.FC = () => {
   const tabCopy = calculatorTabLabels[currentLanguage];
 
   return (
-    <div className="overflow-x-hidden bg-[#FBFBFA]" dir={isArabic ? 'rtl' : 'ltr'}>
+    <div className="overflow-x-hidden bg-[#FBFBFA]" dir={surface === 'dashboard' ? undefined : isArabic ? 'rtl' : 'ltr'}>
       {/* HERO SECTION */}
       <section className="relative isolate overflow-hidden bg-white px-4 pb-16 pt-8 sm:px-6 md:pb-24 md:pt-12 lg:px-8 border-b border-forest-900/[0.06]">
         {/* Subtle Ambient Radial Glow */}
         <div
-          className="pointer-events-none absolute -left-20 -top-20 h-[500px] w-[500px] rounded-full bg-forest-100/40 blur-3xl"
+          className="pointer-events-none absolute -start-20 -top-20 h-[500px] w-[500px] rounded-full bg-forest-100/40 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute right-0 top-1/4 h-[400px] w-[400px] rounded-full bg-emerald-50/50 blur-3xl"
+          className="pointer-events-none absolute end-0 top-1/4 h-[400px] w-[400px] rounded-full bg-emerald-50/50 blur-3xl"
           aria-hidden="true"
         />
 
         <div className="container relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="text-left">
+          <div className="text-start">
             {/* Pill Tag */}
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-forest-50 border border-forest-800/15 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-forest-800 shadow-sm">
               <Sparkles className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
@@ -238,7 +268,7 @@ const CalculatorsPage: React.FC = () => {
               />
 
               {/* Floating Formula Badge */}
-              <div className="absolute -bottom-4 -left-4 z-20 hidden max-w-[260px] rounded-2xl bg-forest-950/92 p-4 text-left text-white shadow-xl border border-forest-800/60 backdrop-blur-md sm:block">
+              <div className="absolute -bottom-4 -start-4 z-20 hidden max-w-[260px] rounded-2xl bg-forest-950/92 p-4 text-start text-white shadow-xl border border-forest-800/60 backdrop-blur-md sm:block">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-400">
                   <Sparkles className="h-3 w-3" />
                   {activeRoute.formulaLabel}
@@ -288,8 +318,8 @@ const CalculatorsPage: React.FC = () => {
                   return (
                     <Link
                       key={tab.id}
-                      to={getCalculatorPath(tab.id, currentLanguage)}
-                      className={`pressable inline-flex min-h-9 items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
+                      to={getCalculatorPath(tab.id, currentLanguage, surface)}
+                      className={`pressable inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${surface === 'dashboard' ? 'min-h-11 min-w-11' : 'min-h-9'} ${
                         isActiveTab
                           ? 'bg-forest-800 text-white shadow-sm'
                           : 'text-forest-900/70 hover:text-forest-950 hover:bg-white/60'
@@ -466,7 +496,7 @@ const CalculatorsPage: React.FC = () => {
                 {activeRoute.relatedTools.map((tool) => (
                   <Link
                     key={tool.path}
-                    to={tool.path}
+                    to={surface === 'dashboard' ? getDashboardCalculatorHref(tool.path) : tool.path}
                     className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-xs font-bold text-forest-900 border border-forest-900/10 transition-all duration-200 hover:bg-forest-800 hover:text-white hover:border-forest-800 shadow-sm"
                   >
                     <span>{tool.label}</span>
@@ -488,7 +518,7 @@ const CalculatorsPage: React.FC = () => {
                 {activeRoute.relatedSummaries.map((summary) => (
                   <Link
                     key={summary.path}
-                    to={summary.path}
+                    to={getBookSummaryHref({ id: summary.path.split('/').filter(Boolean).pop() || '' }, surface)}
                     className="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-xs font-bold text-forest-900 border border-forest-900/10 transition-all duration-200 hover:bg-white hover:border-emerald-500/40 hover:shadow-sm"
                   >
                     <span>{summary.label}</span>

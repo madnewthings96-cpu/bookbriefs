@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -24,13 +24,28 @@ import { useReadingChallenge } from '../contexts/ReadingChallengeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useBooks } from '../contexts/BooksContext';
 import { Book } from '../types';
-
-const getBookUrl = (book: Book) => `/summary/${book.arabicSlug || book.id}`;
+import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 const clamp = (value: number, min = 0, max = 100) => Math.min(Math.max(value, min), max);
 
-const ReadingChallengePage: React.FC = () => {
-  const { challenge, loading, setGoal, deleteGoal, progress, isBookRead, markBookAsRead, unmarkBookAsRead } = useReadingChallenge();
+interface ReadingChallengePageProps {
+  surface?: ReadingSurface;
+}
+
+const ReadingChallengePage: React.FC<ReadingChallengePageProps> = ({ surface = 'public' }) => {
+  const {
+    challenge,
+    loading,
+    error: challengeLoadError,
+    refreshChallenge,
+    setGoal,
+    deleteGoal,
+    progress,
+    isBookRead,
+    markBookAsRead,
+    unmarkBookAsRead,
+  } = useReadingChallenge();
   const { isAuthenticated } = useAuth();
   const { books } = useBooks();
   const [goalInput, setGoalInput] = useState('');
@@ -196,7 +211,7 @@ const ReadingChallengePage: React.FC = () => {
     );
   }
 
-  if (loading) {
+  if (loading && !challenge) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="text-center">
@@ -206,6 +221,8 @@ const ReadingChallengePage: React.FC = () => {
       </div>
     );
   }
+
+  const PageElement = surface === 'dashboard' ? 'div' : 'main';
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -224,7 +241,7 @@ const ReadingChallengePage: React.FC = () => {
                 Set a target, mark summaries as read, and use the dashboard to choose the next book with less friction.
               </p>
 
-              {!challenge && (
+              {!challenge && !challengeLoadError && (
                 <div className="mt-7 flex flex-wrap gap-3">
                   {[12, 24, 52].map((preset) => (
                     <button
@@ -294,6 +311,21 @@ const ReadingChallengePage: React.FC = () => {
                     </button>
                   </div>
                 </>
+              ) : challengeLoadError ? (
+                <div className="py-3" role="alert">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+                    <Target className="h-7 w-7" aria-hidden="true" />
+                  </div>
+                  <h2 className="text-2xl font-black text-gray-950">Your challenge is unavailable</h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-600">We couldn&apos;t confirm your current challenge. Retry before creating a new goal.</p>
+                  <button
+                    type="button"
+                    onClick={refreshChallenge}
+                    className="pressable mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-black text-white"
+                  >
+                    Try again
+                  </button>
+                </div>
               ) : (
                 <div className="py-3">
                   <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-600">
@@ -318,7 +350,28 @@ const ReadingChallengePage: React.FC = () => {
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <PageElement className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {challengeLoadError && (
+          <div className="mb-6 flex flex-wrap items-start justify-between gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 ring-1 ring-red-100" role="alert">
+            <div className="flex items-start gap-3">
+              <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <div>
+                <p>{challengeLoadError}</p>
+                <p className="mt-1 font-medium text-red-600">Your visible challenge data remains available. Retry to sync the latest state.</p>
+              </div>
+            </div>
+            <button type="button" onClick={refreshChallenge} className="min-h-11 rounded-xl bg-white px-4 py-2 font-black text-red-700 ring-1 ring-red-200 hover:bg-red-100">
+              Try again
+            </button>
+          </div>
+        )}
+
+        {loading && challenge && (
+          <p className="mb-6 rounded-xl bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-800" role="status">
+            Refreshing your reading challenge…
+          </p>
+        )}
+
         {error && (
           <div className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-700 ring-1 ring-red-100">
             <X className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -357,7 +410,7 @@ const ReadingChallengePage: React.FC = () => {
                           <span className="block text-sm font-black text-gray-950">{achievement.label}</span>
                           <span className="block text-xs font-semibold text-gray-500">{achievement.detail}</span>
                         </span>
-                        {achievement.unlocked && <CheckCircle2 className="ml-auto h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />}
+                        {achievement.unlocked && <CheckCircle2 className="ms-auto h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />}
                       </div>
                     );
                   })}
@@ -379,7 +432,7 @@ const ReadingChallengePage: React.FC = () => {
                   <div className="grid grid-cols-3 gap-3">
                     {recentReadBooks.map((book) => (
                       <div key={book.id} className="group relative">
-                        <Link to={getBookUrl(book)} className="block">
+                        <Link to={getBookSummaryHref(book, surface)} className="block">
                           <img
                             src={book.coverImageUrl}
                             alt={book.title}
@@ -390,7 +443,7 @@ const ReadingChallengePage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleUnmarkRead(book.id)}
-                          className="pressable absolute right-1.5 top-1.5 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500"
+                          className={`pressable absolute end-1.5 top-1.5 flex items-center justify-center rounded-xl bg-emerald-500 text-white shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,transform] duration-200 hover:bg-red-500 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-8 w-8'}`}
                           aria-label={`Mark ${book.title} as unread`}
                         >
                           <Check className="h-4 w-4" aria-hidden="true" />
@@ -417,13 +470,13 @@ const ReadingChallengePage: React.FC = () => {
 
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <div className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                    <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
                     <input
                       type="search"
                       value={query}
                       onChange={(event) => setQuery(event.target.value)}
                       placeholder="Search books"
-                      className="h-11 w-full rounded-xl bg-gray-50 pl-10 pr-3 text-sm font-semibold text-gray-900 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-300 sm:w-56"
+                      className="h-11 w-full rounded-xl bg-gray-50 ps-10 pe-3 text-sm font-semibold text-gray-900 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-300 sm:w-56"
                     />
                   </div>
                   <select
@@ -446,6 +499,7 @@ const ReadingChallengePage: React.FC = () => {
                       key={book.id}
                       book={book}
                       isRead={false}
+                      surface={surface}
                       onToggle={() => handleMarkRead(book.id)}
                     />
                   ))}
@@ -460,7 +514,7 @@ const ReadingChallengePage: React.FC = () => {
             </section>
           </div>
         )}
-      </main>
+      </PageElement>
 
       {showGoalModal && (
         <GoalModal
@@ -511,13 +565,14 @@ const Metric: React.FC<MetricProps> = ({ label, value }) => (
 interface BookChallengeCardProps {
   book: Book;
   isRead: boolean;
+  surface: ReadingSurface;
   onToggle: () => void;
 }
 
-const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, onToggle }) => (
+const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, surface, onToggle }) => (
   <div className="group">
     <div className="relative">
-      <Link to={getBookUrl(book)} className="block overflow-hidden rounded-xl bg-gray-100 shadow-[0_10px_24px_rgba(17,24,39,0.12)]">
+      <Link to={getBookSummaryHref(book, surface)} className="block overflow-hidden rounded-xl bg-gray-100 shadow-[0_10px_24px_rgba(17,24,39,0.12)]">
         <img
           src={book.coverImageUrl}
           alt={book.title}
@@ -528,7 +583,7 @@ const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, onT
       <button
         type="button"
         onClick={onToggle}
-        className={`pressable absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${
+        className={`pressable absolute end-2 top-2 flex items-center justify-center rounded-xl shadow-[0_10px_22px_rgba(17,24,39,0.18)] transition-[background-color,color,transform] duration-200 ${surface === 'dashboard' ? 'h-11 w-11' : 'h-9 w-9'} ${
           isRead ? 'bg-emerald-500 text-white hover:bg-red-500' : 'bg-white text-gray-500 hover:bg-emerald-500 hover:text-white'
         }`}
         aria-label={isRead ? `Mark ${book.title} as unread` : `Mark ${book.title} as read`}
@@ -536,7 +591,7 @@ const BookChallengeCard: React.FC<BookChallengeCardProps> = ({ book, isRead, onT
         {isRead ? <Check className="h-4 w-4" aria-hidden="true" /> : <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
       </button>
     </div>
-    <Link to={getBookUrl(book)} className="mt-3 block">
+    <Link to={getBookSummaryHref(book, surface)} className="mt-3 block">
       <h3 className="line-clamp-2 text-sm font-black leading-5 text-gray-950 transition-colors duration-200 group-hover:text-orange-600">{book.title}</h3>
       <p className="mt-1 line-clamp-1 text-xs font-semibold text-gray-500">{book.author}</p>
     </Link>
@@ -565,12 +620,16 @@ const GoalModal: React.FC<GoalModalProps> = ({
   setGoalInput,
   onClose,
   onSubmit,
-}) => (
-  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm">
-    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
+}) => {
+  const goalInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useModalDialog({ open: true, onClose, initialFocusRef: goalInputRef });
+
+  return (
+  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="reading-goal-modal-title" tabIndex={-1} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-black text-gray-950">{challengeGoal ? 'Update your goal' : 'Set your reading goal'}</h3>
+          <h3 id="reading-goal-modal-title" className="text-2xl font-black text-gray-950">{challengeGoal ? 'Update your goal' : 'Set your reading goal'}</h3>
           <p className="mt-2 text-sm leading-6 text-gray-600">How many summaries do you want to finish in {currentYear}?</p>
         </div>
         <button
@@ -609,7 +668,7 @@ const GoalModal: React.FC<GoalModalProps> = ({
         className="h-12 w-full rounded-xl bg-gray-50 px-4 text-base font-bold text-gray-950 outline-none ring-1 ring-gray-950/5 transition-[background-color,box-shadow] duration-200 focus:bg-white focus:ring-2 focus:ring-orange-300"
         min="1"
         max="1000"
-        autoFocus
+        ref={goalInputRef}
         disabled={isSubmitting}
       />
 
@@ -646,7 +705,8 @@ const GoalModal: React.FC<GoalModalProps> = ({
       </div>
     </div>
   </div>
-);
+  );
+};
 
 interface DeleteChallengeModalProps {
   currentYear: number;
@@ -656,13 +716,17 @@ interface DeleteChallengeModalProps {
   onDelete: () => void;
 }
 
-const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear, error, isSubmitting, onClose, onDelete }) => (
-  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm">
-    <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
+const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear, error, isSubmitting, onClose, onDelete }) => {
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useModalDialog({ open: true, onClose, initialFocusRef: cancelButtonRef });
+
+  return (
+  <div className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-950/45 p-4 backdrop-blur-sm" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="delete-challenge-modal-title" tabIndex={-1} className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-[0_24px_70px_rgba(17,24,39,0.24)]">
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600">
         <Trash2 className="h-7 w-7" aria-hidden="true" />
       </div>
-      <h3 className="text-2xl font-black text-gray-950">Delete challenge?</h3>
+      <h3 id="delete-challenge-modal-title" className="text-2xl font-black text-gray-950">Delete challenge?</h3>
       <p className="mt-2 text-sm leading-6 text-gray-600">
         This will delete your {currentYear} reading challenge and progress. This action cannot be undone.
       </p>
@@ -675,6 +739,7 @@ const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <button
+          ref={cancelButtonRef}
           type="button"
           onClick={onClose}
           disabled={isSubmitting}
@@ -693,6 +758,7 @@ const DeleteChallengeModal: React.FC<DeleteChallengeModalProps> = ({ currentYear
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default ReadingChallengePage;

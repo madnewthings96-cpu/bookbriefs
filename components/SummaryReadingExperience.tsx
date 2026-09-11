@@ -18,6 +18,7 @@ import {
   Star,
 } from 'lucide-react';
 import { Book, SummaryData } from '../types';
+import { type ReadingSurface } from './readingRouteModel';
 import { getAffiliateLinksForBook } from '../utils/affiliateLinks';
 import FavoriteButton from './FavoriteButton';
 import HighlightableText from './HighlightableText';
@@ -41,7 +42,9 @@ interface SummaryReadingExperienceProps {
   onDownloadPdf: () => void;
   onAddNote: () => void;
   onRequireSignUp: () => void;
+  getBookSummaryHref: (book: Pick<Book, 'id' | 'arabicSlug'>) => string;
   t: (key: string) => string;
+  surface?: ReadingSurface;
 }
 
 interface TocItem {
@@ -70,7 +73,9 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
   onDownloadPdf,
   onAddNote,
   onRequireSignUp,
+  getBookSummaryHref,
   t,
+  surface = 'public',
 }) => {
   const plainSummary = useMemo(() => stripSummaryMarkdown(summaryData.summary), [summaryData.summary]);
   const wordCount = useMemo(() => plainSummary.split(/\s+/).filter(Boolean).length, [plainSummary]);
@@ -117,7 +122,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
     const shareData = {
       title: `${displayTitle} Summary`,
       text: `Read the key ideas from ${displayTitle} by ${displayAuthor}.`,
-      url: window.location.href,
+      url: new URL(getBookSummaryHref(book), window.location.origin).href,
     };
 
     try {
@@ -134,6 +139,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
   const actionButtonClass =
     'inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition duration-200 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]';
+  const ContentElement = surface === 'dashboard' ? 'div' : 'main';
 
   const renderSectionNav = (compact = false) => (
     <nav aria-label="Summary sections" className={compact ? 'flex min-w-max gap-1.5' : 'space-y-1'}>
@@ -175,16 +181,16 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
           <div className="grid gap-7 md:grid-cols-[210px_minmax(0,1fr)] md:items-center lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-12">
             <div className="mx-auto w-full max-w-[180px] sm:max-w-[205px] md:max-w-none">
               <div className="relative isolate">
-                <div aria-hidden="true" className="absolute -bottom-3 -right-3 -z-10 h-full w-full rounded-[20px] border border-[#C49552]/28 bg-[#E9DEC9]" />
+                <div aria-hidden="true" className="absolute -bottom-3 -end-3 -z-10 h-full w-full rounded-[20px] border border-[#C49552]/28 bg-[#E9DEC9]" />
                 <img
                   src={book.coverImageUrl}
                   alt={`Cover of ${displayTitle}`}
                   className="aspect-[2/3] w-full rounded-[18px] object-cover shadow-[0_24px_55px_rgba(16,41,31,0.2)] ring-1 ring-[#10291F]/12"
                 />
-                <div className="absolute right-3 top-3">
+                <div className="absolute end-3 top-3">
                   <FavoriteButton bookId={book.id} size="md" />
                 </div>
-                <div className="absolute -bottom-3 left-3 rounded-full border border-white/70 bg-[#304529] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-lg">
+                <div className="absolute -bottom-3 start-3 rounded-full border border-white/70 bg-[#304529] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-lg">
                   {readMinutes} min read
                 </div>
               </div>
@@ -292,7 +298,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                       );
                     })}
                   </div>
-                  <span className="text-[10px] font-medium leading-4 text-[#8A786C] sm:ml-auto sm:max-w-[210px]">
+                  <span className="text-[10px] font-medium leading-4 text-[#8A786C] sm:ms-auto sm:max-w-[210px]">
                     Affiliate links may earn us a commission at no extra cost to you.
                   </span>
                 </div>
@@ -310,12 +316,12 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
       <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_310px] xl:gap-10">
-          <main className="min-w-0 space-y-9 lg:space-y-11">
+          <ContentElement className="min-w-0 space-y-9 lg:space-y-11">
             <section
               id="quick-brief"
               className="relative scroll-mt-32 overflow-hidden rounded-[26px] border border-[#304529]/10 bg-[#FFFDF8] px-5 py-6 shadow-[0_18px_48px_rgba(16,41,31,0.08)] sm:px-7 sm:py-8"
             >
-              <div aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-[#C49552] via-[#E3BE7D] to-[#4A6741]" />
+              <div aria-hidden="true" className="absolute inset-y-0 start-0 w-1.5 bg-gradient-to-b from-[#C49552] via-[#E3BE7D] to-[#4A6741]" />
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.17em] text-[#8A6536]">
                 <FileText aria-hidden="true" className="h-4 w-4" />
                 Quick brief
@@ -324,7 +330,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 {quickBrief}
               </p>
               <div className="mt-6 grid border-t border-[#304529]/10 pt-5 sm:grid-cols-3 sm:divide-x sm:divide-[#304529]/10">
-                <div className="py-2 sm:pr-5">
+                <div className="py-2 sm:pe-5">
                   <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Best for</p>
                   <p className="mt-1.5 text-sm font-bold text-[#18372B]">{book.category} readers</p>
                 </div>
@@ -332,7 +338,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Read time</p>
                   <p className="mt-1.5 text-sm font-bold tabular-nums text-[#18372B]">{readMinutes} minutes</p>
                 </div>
-                <div className="border-t border-[#304529]/8 py-3 sm:border-t-0 sm:pl-5 sm:py-2">
+                <div className="border-t border-[#304529]/8 py-3 sm:border-t-0 sm:ps-5 sm:py-2">
                   <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Reading promise</p>
                   <p className="mt-1.5 text-sm font-bold text-[#18372B]">Useful ideas, without the filler</p>
                 </div>
@@ -401,7 +407,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 </div>
               </div>
             </article>
-          </main>
+          </ContentElement>
 
           <aside className="hidden space-y-5 lg:sticky lg:top-24 lg:block lg:self-start">
             <section className="rounded-[22px] border border-[#304529]/10 bg-[#FFFDF8] p-4 shadow-[0_14px_36px_rgba(16,41,31,0.07)]">
@@ -447,7 +453,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                       >
                         <AffiliateIcon aria-hidden="true" className="h-4 w-4" />
                         {link.label}
-                        <ArrowUpRight aria-hidden="true" className="ml-auto h-3.5 w-3.5 text-[#809086]" />
+                        <ArrowUpRight aria-hidden="true" className="ms-auto h-3.5 w-3.5 text-[#809086]" />
                       </a>
                     );
                   })}
@@ -461,7 +467,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
             </section>
 
             <section className="relative overflow-hidden rounded-[22px] border border-[#304529]/10 bg-[#D9DFC9] p-5 text-[#10291F] shadow-[0_16px_38px_rgba(16,41,31,0.1)]">
-              <div aria-hidden="true" className="absolute -right-8 -top-8 h-28 w-28 rounded-full border border-white/35" />
+              <div aria-hidden="true" className="absolute -end-8 -top-8 h-28 w-28 rounded-full border border-white/35" />
               <div className="relative flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/55 text-[#304529]">
                   <MessageCircle aria-hidden="true" className="h-4 w-4" />

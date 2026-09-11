@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Book, SummaryData } from '../types';
 import Spinner from '../components/Spinner';
@@ -25,6 +25,11 @@ import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { getBookLibraryHref, getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
+import { SummaryVisitTracker } from '../components/summaryVisitModel';
+import { AsyncIdentityGuard, type AsyncIdentityToken } from '../components/asyncIdentityGuard';
+import { getSummaryCatalogSurfaceState } from '../components/summaryCatalogState';
+import { openPdfBlobUrl } from '../utils/pdfDownloadGuard';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -81,16 +86,48 @@ const PDF_PATHS: Record<string, string> = {
   'reminiscences-of-a-stock-operator': '/pdfs/reminiscences of a stock operator.pdf',
 };
 
-const SummaryDetailPage: React.FC = () => {
+interface SummaryDetailPageProps {
+  surface?: ReadingSurface;
+}
+
+function CatalogErrorBanner({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="mx-auto mb-6 flex max-w-5xl flex-wrap items-start justify-between gap-3 rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-800 ring-1 ring-red-100" role="alert">
+      <div>
+        <p>We couldn&apos;t refresh the book catalog.</p>
+        <p className="mt-1 font-medium text-red-700">{message} Existing book content remains available.</p>
+      </div>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="min-h-11 rounded-xl bg-white px-4 py-2 font-black text-red-800 ring-1 ring-red-200 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+
+const SummaryDetailPage: React.FC<SummaryDetailPageProps> = ({ surface = 'public' }) => {
   const { bookId: bookIdOrSlug } = useParams<{ bookId: string }>();
   const { currentLanguage, getBookTitle, getBookAuthor, t } = useLanguage();
-  const { isAuthenticated } = useAuth();
-  const { updateBookProgress, recordReadingActivity, getBookProgress } = useUserProgress();
-  const { books, loading: booksLoading, error: booksError } = useBooks();
+  const { isAuthenticated, user } = useAuth();
+  const { updateBookProgress, getBookProgress, isUserDataReady } = useUserProgress();
+  const {
+    books,
+    loading: booksLoading,
+    error: booksError,
+    refreshBooks,
+  } = useBooks();
   const [book, setBook] = useState<Book | undefined>(undefined);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const summaryRequestGuard = useRef(new AsyncIdentityGuard()).current;
+  const summaryPdfGuard = useRef(new AsyncIdentityGuard()).current;
+  const summaryBookIdRef = useRef<string | null>(null);
+  const summaryLoadedBookIdRef = useRef<string | null>(null);
+  const summaryLoadedLanguageRef = useRef<string | null>(null);
 
   // Helper function to resolve Arabic slug to book ID
   const resolveBookId = useCallback((idOrSlug: string | undefined): string | undefined => {
@@ -106,6 +143,11 @@ const SummaryDetailPage: React.FC = () => {
   }, [books]);
 
   const bookId = resolveBookId(bookIdOrSlug);
+  const currentUserId = user?.id ?? null;
+  const summaryPdfIdentity = `${surface}:${currentUserId ?? 'guest'}:${bookIdOrSlug ?? ''}`;
+  summaryPdfGuard.setIdentity(summaryPdfIdentity);
+  const summaryVisit = useRef(new SummaryVisitTracker());
+  summaryVisit.current.observe(currentUserId);
 
   const displayTitle = book ? (getBookTitle(book.id) === book.id ? book.title : getBookTitle(book.id)) : '';
   const displayAuthor = book ? (getBookAuthor(book.id) === book.id ? book.author : getBookAuthor(book.id)) : '';
@@ -118,8 +160,10 @@ const SummaryDetailPage: React.FC = () => {
     image: book?.coverImageUrl || '/favicon/ta7leel.png',
     type: 'book',
     language: 'en',
-    noindex: !booksLoading && !booksError && !bookId,
-    canonical: canonicalSlug ? `${SITE_URL}${canonicalRoutePath(`/summary/${canonicalSlug}`)}` : undefined,
+    noindex: surface === 'dashboard' || (!booksLoading && !booksError && !bookId),
+    canonical: canonicalSlug
+      ? `${SITE_URL}${canonicalRoutePath(getBookSummaryHref({ id: canonicalSlug }, 'public'))}`
+      : undefined,
   });
 
   // Personal Notes & Highlights state
@@ -127,7 +171,25 @@ const SummaryDetailPage: React.FC = () => {
   const [showSignUpModal, setShowSignUpModal] = useState(false);
 
 
-  const fetchSummary = useCallback(async (currentBook: Book) => {
+  useEffect(() => {
+    summaryRequestGuard.mount();
+    return () => summaryRequestGuard.unmount();
+  }, [summaryRequestGuard]);
+
+  useEffect(() => {
+    summaryPdfGuard.mount();
+    return () => summaryPdfGuard.unmount();
+  }, [summaryPdfGuard]);
+
+  const fetchSummary = useCallback(async (currentBook: Book, requestToken: AsyncIdentityToken) => {
+    if (!summaryRequestGuard.isCurrent(requestToken)) return;
+
+    if (summaryBookIdRef.current !== currentBook.id) {
+      summaryBookIdRef.current = currentBook.id;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+    }
     setLoading(true);
     setError(null);
 
@@ -136,10 +198,13 @@ const SummaryDetailPage: React.FC = () => {
 
     if (translatedSummary) {
       // Use translated summary
+      if (!summaryRequestGuard.isCurrent(requestToken)) return;
       setSummaryData({
         summary: translatedSummary.summary,
         keyTakeaways: translatedSummary.keyTakeaways
       });
+      summaryLoadedBookIdRef.current = currentBook.id;
+      summaryLoadedLanguageRef.current = currentLanguage;
       setLoading(false);
     } else {
       // Load from Firestore
@@ -151,10 +216,13 @@ const SummaryDetailPage: React.FC = () => {
         if (bookDoc.exists()) {
           const firestoreData = bookDoc.data();
           if (firestoreData.summary && firestoreData.keyTakeaways) {
+            if (!summaryRequestGuard.isCurrent(requestToken)) return;
             setSummaryData({
               summary: firestoreData.summary,
               keyTakeaways: firestoreData.keyTakeaways
             });
+            summaryLoadedBookIdRef.current = currentBook.id;
+            summaryLoadedLanguageRef.current = currentLanguage;
             setLoading(false);
             return;
           }
@@ -164,6 +232,7 @@ const SummaryDetailPage: React.FC = () => {
       }
 
       // Final fallback: show placeholder
+      if (!summaryRequestGuard.isCurrent(requestToken)) return;
       setSummaryData({
         summary: t('summaryComingSoon') || "This book summary is coming soon. We're working on providing detailed summaries for all books in our collection.",
         keyTakeaways: [
@@ -171,32 +240,64 @@ const SummaryDetailPage: React.FC = () => {
           t('checkBackSoon') || "Check back soon for detailed content"
         ]
       });
+      summaryLoadedBookIdRef.current = currentBook.id;
+      summaryLoadedLanguageRef.current = currentLanguage;
       setLoading(false);
     }
-  }, [currentLanguage, t]);
+  }, [currentLanguage, summaryRequestGuard, t]);
 
   useEffect(() => {
+    const requestIdentity = bookIdOrSlug ?? null;
+    summaryRequestGuard.setIdentity(requestIdentity);
+    const requestToken = summaryRequestGuard.begin(requestIdentity);
+    if (!requestToken) return () => undefined;
+
     // Wait for books to load if they are loading
-    if (booksLoading && books.length === 0) return;
+    if (booksLoading && books.length === 0) {
+      setBook(undefined);
+      setError(null);
+      setLoading(true);
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+      return () => summaryRequestGuard.invalidate();
+    }
+
+    // A failed catalog request is not evidence that the requested book does
+    // not exist. Keep the failure distinct so readers have a recovery path.
+    if (booksError && books.length === 0) {
+      setBook(undefined);
+      setError(booksError);
+      setLoading(false);
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
+      return () => summaryRequestGuard.invalidate();
+    }
 
     const currentBook = books.find((b) => b.id === bookId);
     setBook(currentBook);
     if (currentBook) {
-      fetchSummary(currentBook);
-
-      // Record reading activity when user opens a book summary
-      if (isAuthenticated && bookId) {
-        recordReadingActivity();
-
-        // Update book progress - add 25% progress each time they visit
-        const currentProgress = getBookProgress(bookId);
-        const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
-        updateBookProgress(bookId, newProgress);
+      if (
+        summaryLoadedBookIdRef.current !== currentBook.id
+        || summaryLoadedLanguageRef.current !== currentLanguage
+      ) {
+        void fetchSummary(currentBook, requestToken);
+      } else {
+        setError(null);
+        setLoading(false);
       }
+
     } else {
+      summaryBookIdRef.current = null;
+      summaryLoadedBookIdRef.current = null;
+      summaryLoadedLanguageRef.current = null;
+      setSummaryData(null);
       // Only set error if we are sure the book is not found (books are loaded)
       if (!booksLoading) {
-        setError(t('bookNotFound') || "Book not found.");
+        setError(booksError || t('bookNotFound') || "Book not found.");
         setLoading(false);
       }
     }
@@ -204,7 +305,8 @@ const SummaryDetailPage: React.FC = () => {
     // Refresh translated summary when language changes
     const handleLanguageChange = () => {
       if (currentBook) {
-        fetchSummary(currentBook);
+        const languageToken = summaryRequestGuard.begin(requestIdentity);
+        if (languageToken) void fetchSummary(currentBook, languageToken);
       }
     };
 
@@ -212,10 +314,23 @@ const SummaryDetailPage: React.FC = () => {
 
     // Cleanup event listener on component unmount
     return () => {
+      summaryRequestGuard.invalidate();
       window.removeEventListener('languagechange', handleLanguageChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookId, fetchSummary, books, booksLoading]);
+  }, [bookId, bookIdOrSlug, books, booksError, booksLoading, fetchSummary, summaryRequestGuard, t]);
+
+  // User-scoped progress must wait for the captured identity's local record to
+  // hydrate. The tracker makes this idempotent across hydration rerenders and
+  // StrictMode-style effect repeats while still allowing a new account visit.
+  useEffect(() => {
+    if (!isAuthenticated || !bookId
+      || !summaryVisit.current.shouldRecord(currentUserId, bookId, isUserDataReady)) return;
+
+    const currentProgress = getBookProgress(bookId);
+    const newProgress = currentProgress ? Math.min(currentProgress.progress + 25, 100) : 25;
+    updateBookProgress(bookId, newProgress);
+  }, [bookId, currentUserId, getBookProgress, isAuthenticated, isUserDataReady, updateBookProgress]);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!book) return;
@@ -226,12 +341,17 @@ const SummaryDetailPage: React.FC = () => {
     }
 
     const directPdfUrl = book.arabicPdfUrl || PDF_PATHS[book.id];
+    const pdfToken = summaryPdfGuard.begin(summaryPdfIdentity);
+    if (!pdfToken) return;
+
     if (directPdfUrl) {
-      window.open(directPdfUrl, '_blank');
+      if (summaryPdfGuard.isCurrent(pdfToken)) {
+        window.open(directPdfUrl, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
-    if (!summaryData) return;
+    if (!summaryData || !summaryPdfGuard.isCurrent(pdfToken)) return;
 
     try {
       const { default: jsPDF } = await import('jspdf');
@@ -288,31 +408,66 @@ const SummaryDetailPage: React.FC = () => {
       });
 
       const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
+      openPdfBlobUrl(pdfBlob, {
+        canCommit: () => summaryPdfGuard.isCurrent(pdfToken),
+      });
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      if (summaryPdfGuard.isCurrent(pdfToken)) {
+        alert('Failed to generate PDF. Please try again.');
+      }
     }
-  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
+  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData, summaryPdfGuard, summaryPdfIdentity]);
 
-  if (!book && !loading) {
+  const summaryCatalogState = getSummaryCatalogSurfaceState({
+    loading: booksLoading,
+    error: booksError,
+    hasBook: Boolean(book),
+  });
+
+  if (summaryCatalogState === 'loading') {
+    return (
+      <div className="flex min-h-48 items-center justify-center" role="status" aria-label="Loading book">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (summaryCatalogState === 'error' && !book) {
+    return (
+      <>
+        <CatalogErrorBanner message={booksError || 'Please try again.'} onRetry={() => { void refreshBooks(); }} />
+        <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 text-center shadow-sm">
+          <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>We couldn&apos;t load this book</h1>
+          <p className="mt-2 text-gray-600">The catalog request failed before we could confirm this book.</p>
+        </div>
+      </>
+    );
+  }
+
+  if (summaryCatalogState === 'not-found') {
     return (
       <div className="text-center">
         <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>{t('bookNotFound') || 'Book Not Found'}</h1>
         <p className="text-gray-600 mt-2">{t('bookNotFoundMessage') || "We couldn't find the book you were looking for."}</p>
-        <Link to="/summaries" className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
+        <Link to={getBookLibraryHref(surface)} className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
           {t('backToSummaries') || 'Back to Summaries'}
         </Link>
       </div>
     );
   }
 
-  const showRedesignedLayout = Boolean(book && summaryData && !loading && !error);
+  const hasSummaryForCurrentBook = Boolean(book && summaryData && summaryBookIdRef.current === book.id);
+  const showRedesignedLayout = Boolean(
+    hasSummaryForCurrentBook
+    && !error
+    && (!loading || Boolean(booksError)),
+  );
 
   return (
     <>
-      {book && (
+      {booksError && <CatalogErrorBanner message={booksError} onRetry={() => { void refreshBooks(); }} />}
+      {surface === 'public' && book && (
         <StructuredData
           type="book"
           name={displayTitle}
@@ -334,7 +489,9 @@ const SummaryDetailPage: React.FC = () => {
           onDownloadPdf={handleDownloadPdf}
           onAddNote={() => setShowAddNoteModal(true)}
           onRequireSignUp={() => setShowSignUpModal(true)}
+          getBookSummaryHref={(candidate) => getBookSummaryHref(candidate, surface)}
           t={t}
+          surface={surface}
         />
       )}
       {bookId && showRedesignedLayout && (
@@ -405,8 +562,8 @@ const SummaryDetailPage: React.FC = () => {
         {book && !loading && (
           <div className="mb-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-5 text-center border border-indigo-100 shadow-md relative overflow-hidden">
             {/* Decorative background elements */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+            <div className="absolute top-0 end-0 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 start-0 w-24 h-24 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-2xl"></div>
 
             <div className="relative z-10">
               <h3 className="text-lg md:text-xl font-bold mb-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -2204,7 +2361,7 @@ const SummaryDetailPage: React.FC = () => {
                     <div className="relative">
                       <img src={book.coverImageUrl} alt={`Cover of ${getBookTitle(book.id)}`} className="w-full h-auto rounded-lg shadow-lg mb-4" />
                       {/* Favorite Button */}
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 end-3">
                         <FavoriteButton bookId={book.id} size="md" />
                       </div>
                     </div>
@@ -2214,11 +2371,11 @@ const SummaryDetailPage: React.FC = () => {
               <div className="lg:col-span-3">
                 <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-5 sm:p-6 shadow-lg border border-indigo-100/50 relative overflow-hidden">
                   {/* Decorative background elements */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-3xl -z-10"></div>
-                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-3xl -z-10"></div>
+                  <div className="absolute top-0 end-0 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-3xl -z-10"></div>
+                  <div className="absolute bottom-0 start-0 w-40 h-40 bg-gradient-to-tr from-pink-200/20 to-purple-200/20 rounded-full blur-3xl -z-10"></div>
                   
                   <h2 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6 flex items-center">
-                    <div className="p-2 sm:p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mr-3 shadow-lg shadow-indigo-500/30">
+                    <div className="p-2 sm:p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl me-3 shadow-lg shadow-indigo-500/30">
                       <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                       </svg>
@@ -2240,11 +2397,11 @@ const SummaryDetailPage: React.FC = () => {
                           <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-purple-50/0 group-hover:from-indigo-50/50 group-hover:to-purple-50/50 transition-all duration-300 rounded-xl"></div>
                           
                           {/* Number badge */}
-                          <div className="absolute -top-1 -left-1 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-br-xl rounded-tl-lg flex items-center justify-center shadow-lg">
+                          <div className="absolute -top-1 -start-1 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-se-xl rounded-ss-lg flex items-center justify-center shadow-lg">
                             <span className="text-white text-xs font-bold">{index + 1}</span>
                           </div>
                           
-                          <div className="relative z-10 pl-5 pt-1">
+                          <div className="relative z-10 ps-5 pt-1">
                             <p className="text-sm sm:text-base text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors duration-300">{cleanTakeaway}</p>
                           </div>
                         </div>
@@ -2258,330 +2415,30 @@ const SummaryDetailPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border-b border-gray-100">
                 <h2 className="text-xl sm:text-2xl font-bold flex items-center mb-3 sm:mb-0" style={{ color: '#2F4F4F' }}>
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 me-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                   {t('detailedSummary') || 'Detailed Summary'}
                 </h2>
-                <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:space-x-4">
+                <div className="flex flex-wrap gap-3 sm:flex-nowrap sm:items-center sm:gap-4">
                   {isAuthenticated ? (
                     <button
                       onClick={async () => {
                         if (!book) return;
+                        const pdfToken = summaryPdfGuard.begin(summaryPdfIdentity);
+                        if (!pdfToken) return;
 
-                        // If arabicPdfUrl is defined, use it directly
-                        if (book.arabicPdfUrl) {
-                          window.open(book.arabicPdfUrl, '_blank');
-                          return;
-                        }
-
-                        // For America's Bank, open the actual PDF file
-                        if (book.id === 'americas-bank') {
-                          window.open('/pdfs/americas bank.pdf', '_blank');
+                        const directPdfUrl = book.arabicPdfUrl || PDF_PATHS[book.id];
+                        if (directPdfUrl) {
+                          if (summaryPdfGuard.isCurrent(pdfToken)) {
+                            window.open(directPdfUrl, '_blank', 'noopener,noreferrer');
+                          }
                           return;
                         }
 
-                        // For Broken Money, open the actual PDF file
-                        if (book.id === 'broken-money') {
-                          window.open('/pdfs/broken money.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Rich Dad Poor Dad, open the actual PDF file
-                        if (book.id === 'rich-dad-poor-dad') {
-                          window.open('/pdfs/rich dad poor dad.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Mental Game of Trading, open the actual PDF file
-                        if (book.id === 'the-mental-game-of-trading') {
-                          window.open('/pdfs/the mental game of trading.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Alchemist, open the actual PDF file
-                        if (book.id === 'the-alchemist') {
-                          window.open('/pdfs/the alchemist.pdf', '_blank');
-                          return;
-                        }
-
-                        // For How To Day Trade for a Living, open the actual PDF file
-                        if (book.id === 'howtodaytradeforaliving') {
-                          window.open('/pdfs/how to day trade for a living.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Trading in the Zone, open the actual PDF file
-                        if (book.id === 'trading-in-the-zone') {
-                          window.open('/pdfs/trading in the zone 2.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Atomic Habits, open the actual PDF file
-                        if (book.id === 'atomic-habits') {
-                          window.open('/pdfs/atomic habits.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Best Loser Wins, open the actual PDF file
-                        if (book.id === 'best-loser-wins') {
-                          window.open('/pdfs/best loser wins.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Richest Man in Babylon, open the actual PDF file
-                        if (book.id === 'therichestmaninbabylon') {
-                          window.open('/pdfs/the richest man in babylon.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Secrets of the Millionaire Mind, open the actual PDF file
-                        if (book.id === 'secretsofthemillionairemind') {
-                          window.open('/pdfs/secrets of the millionaire mind.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Market Wizards, open the actual PDF file
-                        if (book.id === 'marketwizards') {
-                          window.open('/pdfs/market wizards.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Becoming, open the actual PDF file
-                        if (book.id === 'becoming') {
-                          window.open('/pdfs/becoming.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Dune, open the actual PDF file
-                        if (book.id === 'dune') {
-                          window.open('/pdfs/dune.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Educated, open the actual PDF file
-                        if (book.id === 'educated') {
-                          window.open('/pdfs/educated.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Project Hail Mary, open the actual PDF file
-                        if (book.id === 'project-hail-mary') {
-                          window.open('/pdfs/project hail mary.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Subtle Art of Not Giving a F*ck, open the actual PDF file
-                        if (book.id === 'the-subtle-art-of-not-giving-a-f') {
-                          window.open('/pdfs/the subtle art of not giving a fck.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Sapiens, open the actual PDF file
-                        if (book.id === 'sapiens') {
-                          window.open('/pdfs/sapiens.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Four Agreements, open the actual PDF file
-                        if (book.id === 'the-four-agreements') {
-                          window.open('/pdfs/the four agreements.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 4-Hour Workweek, open the actual PDF file
-                        if (book.id === 'the-4-hour-workweek') {
-                          window.open('/pdfs/the 4 hour workweek.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Laws of Human Nature, open the actual PDF file
-                        if (book.id === 'the-laws-of-human-nature') {
-                          window.open('/pdfs/the laws of human nature.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Thinking, Fast and Slow, open the actual PDF file
-                        if (book.id === 'thinking-fast-and-slow') {
-                          window.open('/pdfs/thinking fast and slow.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Be Less Zombie, open the actual PDF file
-                        if (book.id === 'belesszombie') {
-                          window.open('/pdfs/be less zombie.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 48 Laws of Power, open the actual PDF file
-                        if (book.id === 'the48lawsofpower') {
-                          window.open('/pdfs/the 48 laws of power.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 33 Strategies of War, open the actual PDF file
-                        if (book.id === 'the33strategiesofwar') {
-                          window.open('/pdfs/the 33 strategies of war.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Relentless, open the actual PDF file
-                        if (book.id === 'relentless') {
-                          window.open('/pdfs/relentless.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Intelligent Investor, open the actual PDF file
-                        if (book.id === 'the-intelligent-investor') {
-                          window.open('/pdfs/the intelligent investor.pdf', '_blank');
-                          return;
-                        }
-
-                        // For One Up on Wall Street, open the actual PDF file
-                        if (book.id === 'one-up-on-wall-street') {
-                          window.open('/pdfs/one up on wall street.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Psychology of Money, open the actual PDF file
-                        if (book.id === 'the-psychology-of-money') {
-                          window.open('/pdfs/the psychology of money.pdf', '_blank');
-                          return;
-                        }
-
-                        // For One Good Trade, open the actual PDF file
-                        if (book.id === 'one-good-trade') {
-                          window.open('/pdfs/one good trade.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Can't Hurt Me, open the actual PDF file
-                        if (book.id === 'cant-hurt-me') {
-                          window.open("/pdfs/can't hurt me.pdf", '_blank');
-                          return;
-                        }
-
-                        // For The Alchemy of Finance, open the actual PDF file
-                        if (book.id === 'the-alchemy-of-finance') {
-                          window.open('/pdfs/the alchemy of finance.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Competition Demystified, open the actual PDF file
-                        if (book.id === 'competition-demystified') {
-                          window.open('/pdfs/competition demystified.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 4-Hour Work Week, open the actual PDF file
-                        if (book.id === 'the-4-hour-work-week') {
-                          window.open('/pdfs/the 4 hour work week.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Black Swan, open the actual PDF file
-                        if (book.id === 'the-black-swan') {
-                          window.open('/pdfs/the black swan.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The PlayBook, open the actual PDF file
-                        if (book.id === 'the-playbook') {
-                          window.open('/pdfs/the playbook.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The ChatGPT Millionaire, open the actual PDF file
-                        if (book.id === 'the-chatgpt-millionaire') {
-                          window.open('/pdfs/the chatgpt millionaire.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Miracle Morning, open the actual PDF file
-                        if (book.id === 'the-miracle-morning') {
-                          window.open('/pdfs/the miracle morning.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The First 90 Days, open the actual PDF file
-                        if (book.id === 'the-first-90-days') {
-                          window.open('/pdfs/the first 90 days.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Leading Change, open the actual PDF file
-                        if (book.id === 'leading-change') {
-                          window.open('/pdfs/leading change.pdf', '_blank');
-                          return;
-                        }
-
-                        // For I Will Teach You to Be Rich, open the actual PDF file
-                        if (book.id === 'i-will-teach-you-to-be-rich') {
-                          window.open('/pdfs/i will teach you to be rich.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Money: Master the Game, open the actual PDF file
-                        if (book.id === 'money-master-the-game') {
-                          window.open('/pdfs/money master the game.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Total Money Makeover, open the actual PDF file
-                        if (book.id === 'the-total-money-makeover') {
-                          window.open('/pdfs/the total money makeover.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The 7 Habits of Highly Effective People, open the actual PDF file
-                        if (book.id === 'the-7-habits-of-highly-effective-people') {
-                          window.open('/pdfs/the 7 habits of highly effective people.pdf', '_blank');
-                          return;
-                        }
-
-                        // For How to Win Friends and Influence People, open the actual PDF file
-                        if (book.id === 'how-to-win-friends-and-influence-people') {
-                          window.open('/pdfs/how to win friends and influence people.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Influence: The Psychology of Persuasion, open the actual PDF file
-                        if (book.id === 'influence-the-psychology-of-persuasion') {
-                          window.open('/pdfs/influence.pdf', '_blank');
-                          return;
-                        }
-
-                        // For A Random Walk Down Wall Street, open the actual PDF file
-                        if (book.id === 'a-random-walk-down-wall-street') {
-                          window.open('/pdfs/a random walk down wall street.pdf', '_blank');
-                          return;
-                        }
-
-                        // For The Simple Path to Wealth, open the actual PDF file
-                        if (book.id === 'the-simple-path-to-wealth') {
-                          window.open('/pdfs/the simple path to wealth.pdf', '_blank');
-                          return;
-                        }
-
-                        // For Basic Economics, open the actual PDF file
-                        if (book.id === 'basic-economics') {
-                          window.open('/pdfs/basic economics.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'black-rednecks-and-white-liberals') {
-                          window.open('/pdfs/black rednecks and white liberals.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'how-to-trade-in-stocks') {
-                          window.open('/pdfs/how to trade in stocks.pdf', '_blank');
-                          return;
-                        }
-                        if (book.id === 'reminiscences-of-a-stock-operator') {
-                          window.open('/pdfs/reminiscences of a stock operator.pdf', '_blank');
-                          return;
-                        }                      // For other books, generate PDF dynamically
+                        // For other books, generate PDF dynamically
                         // Lazy load jsPDF only when needed (saves 385KB from initial bundle!)
-                        if (!summaryData) return;
+                        if (!summaryData || !summaryPdfGuard.isCurrent(pdfToken)) return;
 
                         try {
                           // Dynamic import - only loads when user clicks download
@@ -2630,14 +2487,17 @@ const SummaryDetailPage: React.FC = () => {
 
                           // Open in new tab using blob URL with proper MIME type
                           const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-                          const pdfUrl = URL.createObjectURL(pdfBlob);
-                          window.open(pdfUrl, '_blank');
+                          openPdfBlobUrl(pdfBlob, {
+                            canCommit: () => summaryPdfGuard.isCurrent(pdfToken),
+                          });
                         } catch (error) {
                           console.error('Error generating PDF:', error);
-                          alert('Failed to generate PDF. Please try again.');
+                          if (summaryPdfGuard.isCurrent(pdfToken)) {
+                            alert('Failed to generate PDF. Please try again.');
+                          }
                         }
                       }}
-                      className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
+                      className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-[100%_100%] border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                     >
                       {/* Animated neon border */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>
@@ -2659,7 +2519,7 @@ const SummaryDetailPage: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => setShowSignUpModal(true)}
-                      className="group relative flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-right-bottom border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
+                      className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 bg-size-200 hover:bg-[100%_100%] border-2 border-orange-400 hover:border-orange-300 shadow-[0_0_15px_rgba(251,146,60,0.5)] hover:shadow-[0_0_25px_rgba(251,146,60,0.8)]"
                     >
                       {/* Animated neon border */}
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 rounded-xl opacity-75 blur-sm group-hover:opacity-100 transition-opacity duration-300 animate-gradient-xy"></div>
@@ -2720,6 +2580,7 @@ const SummaryDetailPage: React.FC = () => {
           bookId={bookId || ''}
           isOpen={showAddNoteModal}
           onClose={() => setShowAddNoteModal(false)}
+          surface={surface}
         />
 
         {/* Sign Up Prompt Modal */}
@@ -2736,6 +2597,7 @@ const SummaryDetailPage: React.FC = () => {
             bookId={bookId || ''}
             isOpen={showAddNoteModal}
             onClose={() => setShowAddNoteModal(false)}
+            surface={surface}
           />
 
           <SignUpPromptModal
@@ -2753,6 +2615,7 @@ const SummaryDetailPage: React.FC = () => {
             currentBookCategory={book.category}
             books={books}
             maxBooks={8}
+            getBookSummaryHref={(candidate) => getBookSummaryHref(candidate, surface)}
           />
         )
       }

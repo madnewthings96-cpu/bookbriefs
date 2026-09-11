@@ -7,16 +7,15 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Book } from '../types';
-import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
 import './SummariesPage.css';
 
 const starterBookIds = ['atomic-habits', 'the-psychology-of-money', 'rich-dad-poor-dad', 'thinking-fast-and-slow', 'trading-in-the-zone'];
 const priorityTopics = ['Personal Development', 'Finance', 'Business', 'Trading', 'Psychology', 'Self-Help'];
-const bookUrl = (book: Book) => '/summary/' + (book.arabicSlug || book.id);
-
-const LibraryBook: React.FC<{ book: Book; title: string; author: string }> = ({ book, title, author }) => (
+const LibraryBook: React.FC<{ book: Book; title: string; author: string; surface: ReadingSurface }> = ({ book, title, author, surface }) => (
   <article className="library-book">
-    <Link to={bookUrl(book)} className="library-book-link" aria-label={'Read ' + title + ' by ' + author}>
+    <Link to={getBookSummaryHref(book, surface)} className="library-book-link" aria-label={'Read ' + title + ' by ' + author}>
       <div className="library-book-stage">
         <img src={book.coverImageUrl} alt={'Cover of ' + title} loading="lazy" decoding="async" />
       </div>
@@ -35,7 +34,11 @@ const LibraryBook: React.FC<{ book: Book; title: string; author: string }> = ({ 
   </article>
 );
 
-const SummariesPage: React.FC = () => {
+interface SummariesPageProps {
+  surface?: ReadingSurface;
+}
+
+const SummariesPage: React.FC<SummariesPageProps> = ({ surface = 'public' }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState(() => new URLSearchParams(location.search).get('search') || '');
   useEffect(() => {
@@ -61,8 +64,8 @@ const SummariesPage: React.FC = () => {
       ? 'ملخصات كتب, ملخصات كتب عربية, كتب تطوير الذات, كتب الاستثمار, كتب التداول'
       : 'book summaries, business book summaries, trading book summaries, finance book summaries, self-help books',
     type: 'website',
-    noindex: Boolean(new URLSearchParams(location.search).get('search')),
-    canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
+    noindex: surface === 'dashboard' || Boolean(new URLSearchParams(location.search).get('search')),
+    canonical: `${SITE_URL}${canonicalRoutePath(surface === 'dashboard' ? '/summaries' : location.pathname)}`,
   });
 
   const library = useMemo(() => books.map(book => ({
@@ -108,7 +111,7 @@ const SummariesPage: React.FC = () => {
 
   return (
     <>
-      <StructuredData type="website" />
+      {surface === 'public' && <StructuredData type="website" />}
       <div className="summaries-library">
         <div className="library-shell">
           <section className="library-hero" aria-labelledby="library-title">
@@ -123,7 +126,7 @@ const SummariesPage: React.FC = () => {
               </div>
             </div>
             {featured ? (
-              <Link to={bookUrl(featured.book)} className="library-feature" aria-label={'Read featured summary: ' + featured.title}>
+              <Link to={getBookSummaryHref(featured.book, surface)} className="library-feature" aria-label={'Read featured summary: ' + featured.title}>
                 <div className="library-feature-top"><span><Sparkles aria-hidden="true" />A GOOD PLACE TO START</span><span className="library-feature-ribbon" aria-hidden="true" /></div>
                 <div className="library-feature-body">
                   <div className="library-feature-cover"><img src={featured.book.coverImageUrl} alt={'Cover of ' + featured.title} decoding="async" loading="eager" /></div>
@@ -153,9 +156,6 @@ const SummariesPage: React.FC = () => {
               </div>
               <button type="button" className={'library-filter-toggle' + (showFilters ? ' is-active' : '')} aria-expanded={showFilters} aria-controls="library-advanced-filters" onClick={() => setShowFilters(!showFilters)}><SlidersHorizontal aria-hidden="true" />Filters{activeFilterCount > 0 && <span>{activeFilterCount}</span>}</button>
             </div>
-            <nav aria-label="Book category guides" className="flex flex-wrap gap-x-4 gap-y-2 mb-4 text-sm">
-              {CATEGORY_HUBS.map(hub => <Link key={hub.slug} to={`/categories/${hub.slug}/`} className="underline">{hub.englishTitle}</Link>)}
-            </nav>
             <div className="library-topics" role="group" aria-label="Filter by topic">
               <button type="button" aria-pressed={!selectedGenre} onClick={() => setSelectedGenre('')}>All books<span>{books.length}</span></button>
               {visibleTopics.map(genre => <button key={genre} type="button" aria-pressed={selectedGenre === genre} onClick={() => setSelectedGenre(genre)}>{genre}</button>)}
@@ -179,7 +179,7 @@ const SummariesPage: React.FC = () => {
             </div>}
             {error && <div className="library-error" role="alert"><p>{books.length ? 'The library could not refresh. Showing your last loaded collection.' : 'The library could not load. Try again to see the collection.'}</p><button type="button" onClick={() => void refreshBooks()} disabled={loading}>{loading ? 'Retrying…' : 'Try again'}</button></div>}
             {loading ? <div className="library-grid" aria-hidden="true">{Array.from({ length: 8 }, (_, index) => <div className="library-skeleton" key={index}><div /><span /><span /></div>)}</div> : filteredBooks.length ? (
-              <div className="library-grid">{filteredBooks.map(({ book, title, author }) => <LibraryBook key={book.id} book={book} title={title} author={author} />)}</div>
+              <div className="library-grid">{filteredBooks.map(({ book, title, author }) => <LibraryBook key={book.id} book={book} title={title} author={author} surface={surface} />)}</div>
             ) : !error && <div className="library-empty"><Search aria-hidden="true" /><h3>{hasActiveFilters ? 'A different search might open a new chapter.' : 'The collection is on its way.'}</h3><p>{hasActiveFilters ? 'Try another title or author, or clear your filters to explore all books.' : 'Check back soon for new book summaries.'}</p>{hasActiveFilters && <button type="button" className="library-primary" onClick={clearFilters}>Explore all books<ArrowRight aria-hidden="true" /></button>}</div>}
             {!loading && filteredBooks.length > 0 && <p className="library-endnote"><BookOpen aria-hidden="true" />{hasActiveFilters ? 'A new perspective is waiting in every book.' : 'You’ve reached the end of the shelf. Your next chapter is above.'}</p>}
           </section>

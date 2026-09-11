@@ -24,6 +24,54 @@
   compress = true  # Automatic image compression
 
 # Security Headers
+# Authenticated dashboard routes should never be indexed, including direct deep links.
+# Keep these specific blocks before the broad public block for Netlify first-match semantics.
+[[headers]]
+  for = "/dashboard"
+  [headers.values]
+    Content-Security-Policy = """
+      default-src 'self' 'unsafe-inline' 'unsafe-eval';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://* http://localhost:* http://127.0.0.1:*;
+      style-src 'self' 'unsafe-inline' https://*;
+      img-src 'self' data: https: blob: http:;
+      font-src 'self' data: https://*;
+      connect-src 'self' https://* http://localhost:* http://127.0.0.1:* wss://*;
+      frame-src 'self' https://*;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' https://*;
+    """
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/dashboard/*"
+  [headers.values]
+    Content-Security-Policy = """
+      default-src 'self' 'unsafe-inline' 'unsafe-eval';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://* http://localhost:* http://127.0.0.1:*;
+      style-src 'self' 'unsafe-inline' https://*;
+      img-src 'self' data: https: blob: http:;
+      font-src 'self' data: https://*;
+      connect-src 'self' https://* http://localhost:* http://127.0.0.1:* wss://*;
+      frame-src 'self' https://*;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' https://*;
+    """
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -131,6 +179,17 @@
 
 [[redirects]]
   from = "/terms-of-use"
+  to = "/index.html"
+  status = 200
+
+# Preserve the authenticated SPA shell for direct dashboard visits and deep links.
+[[redirects]]
+  from = "/dashboard"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard/*"
   to = "/index.html"
   status = 200
 

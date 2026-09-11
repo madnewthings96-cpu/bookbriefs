@@ -1,15 +1,23 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { PersonalNote, Highlight, PersonalNotesData } from '../types';
 import { useAuth } from './AuthContext';
+import {
+  emptyPersonalNotesData,
+  getBrowserStorage,
+  readPersonalNotes,
+  safeWriteItem,
+  UserScopedStore,
+} from './userScopedPersistence';
 
 interface PersonalNotesContextType {
   personalNotesData: PersonalNotesData;
-  addNote: (bookId: string, content: string) => void;
-  updateNote: (noteId: string, content: string) => void;
-  deleteNote: (noteId: string) => void;
-  addHighlight: (bookId: string, text: string, context?: string) => void;
-  updateHighlight: (highlightId: string, text: string, context?: string) => void;
-  deleteHighlight: (highlightId: string) => void;
+  isUserDataReady: boolean;
+  addNote: (bookId: string, content: string) => boolean;
+  updateNote: (noteId: string, content: string) => boolean;
+  deleteNote: (noteId: string) => boolean;
+  addHighlight: (bookId: string, text: string, context?: string) => boolean;
+  updateHighlight: (highlightId: string, text: string, context?: string) => boolean;
+  deleteHighlight: (highlightId: string) => boolean;
   getNotesForBook: (bookId: string) => PersonalNote[];
   getHighlightsForBook: (bookId: string) => Highlight[];
 }
@@ -23,129 +31,155 @@ export const usePersonalNotes = () => {
   }
   return context;
 };
-
 interface PersonalNotesProviderProps {
   children: ReactNode;
 }
 
 export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ children }) => {
   const { user } = useAuth();
-  const [personalNotesData, setPersonalNotesData] = useState<PersonalNotesData>({
-    notes: [],
-    highlights: []
-  });
+  const currentUserId = user?.id ?? null;
+  const scopedStore = useRef(new UserScopedStore(emptyPersonalNotesData));
+  // Mark identity changes during render so old notes are never exposed while
+  // the new user's local record is being hydrated.
+  scopedStore.current.observe(currentUserId);
+  const [storeRevision, forceRender] = useState(0);
 
-  // Load data from localStorage on mount
   useEffect(() => {
-    if (user) {
-      const savedData = localStorage.getItem(`bookbriefs_personal_notes_${user.id}`);
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        // Convert date strings back to Date objects
-        const notes = parsedData.notes.map((note: any) => ({
-          ...note,
-          createdAt: new Date(note.createdAt),
-          updatedAt: new Date(note.updatedAt)
-        }));
-        const highlights = parsedData.highlights.map((highlight: any) => ({
-          ...highlight,
-          createdAt: new Date(highlight.createdAt),
-          updatedAt: new Date(highlight.updatedAt)
-        }));
+    let cancelled = false;
+    const capturedUserId = currentUserId;
+    const storage = getBrowserStorage();
 
-        setPersonalNotesData({ notes, highlights });
-      }
-    }
-  }, [user]);
+    if (!capturedUserId) return () => { cancelled = true; };
 
-  // Save data to localStorage whenever personalNotesData changes
+    void scopedStore.current.hydrate(capturedUserId, (userId) => readPersonalNotes(storage, userId))
+      .then((loaded) => {
+        if (cancelled || loaded === undefined || !scopedStore.current.canWrite(capturedUserId)) return;
+        forceRender((revision) => revision + 1);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentUserId]);
+
   useEffect(() => {
-    if (user && personalNotesData.notes.length > 0 || personalNotesData.highlights.length > 0) {
-      localStorage.setItem(`bookbriefs_personal_notes_${user.id}`, JSON.stringify(personalNotesData));
-    }
-  }, [personalNotesData, user]);
+    const capturedUserId = currentUserId;
+    scopedStore.current.persist(capturedUserId, (persisted) => {
+      safeWriteItem(
+        getBrowserStorage(),
+        `bookbriefs_personal_notes_${capturedUserId}`,
+        JSON.stringify(persisted),
+      );
+    });
+  }, [currentUserId, storeRevision]);
 
-  const addNote = (bookId: string, content: string) => {
-    if (!user) return;
-
+  const addNote = (bookId: string, content: string): boolean => {
+    const capturedUserId = currentUserId;
+    const now = new Date();
     const newNote: PersonalNote = {
       id: Date.now().toString(),
       bookId,
       content,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: now,
+      updatedAt: now,
     };
 
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: [...prev.notes, newNote]
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      notes: [...state.notes, newNote],
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const updateNote = (noteId: string, content: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: prev.notes.map(note =>
+  const updateNote = (noteId: string, content: string): boolean => {
+    const capturedUserId = currentUserId;
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      notes: state.notes.map(note =>
         note.id === noteId
           ? { ...note, content, updatedAt: new Date() }
           : note
-      )
+      ),
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const deleteNote = (noteId: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      notes: prev.notes.filter(note => note.id !== noteId)
+  const deleteNote = (noteId: string): boolean => {
+    const capturedUserId = currentUserId;
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      notes: state.notes.filter(note => note.id !== noteId),
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const addHighlight = (bookId: string, text: string, context?: string) => {
-    if (!user) return;
-
+  const addHighlight = (bookId: string, text: string, context?: string): boolean => {
+    const capturedUserId = currentUserId;
+    const now = new Date();
     const newHighlight: Highlight = {
       id: Date.now().toString(),
       bookId,
       text,
       context,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: now,
+      updatedAt: now,
     };
 
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: [...prev.highlights, newHighlight]
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      highlights: [...state.highlights, newHighlight],
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const updateHighlight = (highlightId: string, text: string, context?: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: prev.highlights.map(highlight =>
+  const updateHighlight = (highlightId: string, text: string, context?: string): boolean => {
+    const capturedUserId = currentUserId;
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      highlights: state.highlights.map(highlight =>
         highlight.id === highlightId
           ? { ...highlight, text, context, updatedAt: new Date() }
           : highlight
-      )
+      ),
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
 
-  const deleteHighlight = (highlightId: string) => {
-    setPersonalNotesData(prev => ({
-      ...prev,
-      highlights: prev.highlights.filter(highlight => highlight.id !== highlightId)
+  const deleteHighlight = (highlightId: string): boolean => {
+    const capturedUserId = currentUserId;
+    const updated = scopedStore.current.update(capturedUserId, (state) => ({
+      ...state,
+      highlights: state.highlights.filter(highlight => highlight.id !== highlightId),
     }));
+    if (!updated) return false;
+    forceRender((revision) => revision + 1);
+    return true;
   };
+
+  const exposedData = scopedStore.current.getExposedState(currentUserId);
+  const isUserDataReady = scopedStore.current.canWrite(currentUserId);
 
   const getNotesForBook = (bookId: string): PersonalNote[] => {
-    return personalNotesData.notes.filter(note => note.bookId === bookId);
+    return exposedData.notes.filter(note => note.bookId === bookId);
   };
 
   const getHighlightsForBook = (bookId: string): Highlight[] => {
-    return personalNotesData.highlights.filter(highlight => highlight.bookId === bookId);
+    return exposedData.highlights.filter(highlight => highlight.bookId === bookId);
   };
 
   const value: PersonalNotesContextType = {
-    personalNotesData,
+    personalNotesData: exposedData,
+    isUserDataReady,
     addNote,
     updateNote,
     deleteNote,
@@ -153,7 +187,7 @@ export const PersonalNotesProvider: React.FC<PersonalNotesProviderProps> = ({ ch
     updateHighlight,
     deleteHighlight,
     getNotesForBook,
-    getHighlightsForBook
+    getHighlightsForBook,
   };
 
   return (
