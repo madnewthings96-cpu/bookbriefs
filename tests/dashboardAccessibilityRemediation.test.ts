@@ -4,13 +4,15 @@ import test from 'node:test';
 
 const read = (path: string) => readFile(path, 'utf8');
 
-test('composed dashboard topbar and overview expose one page h1 owned by the page', async () => {
+test('dashboard topbar uses the home-linked brand while the page owns the single h1', async () => {
   const topbar = await read('components/dashboard/DashboardTopbar.tsx');
   const overview = await read('components/dashboard/DashboardOverviewView.tsx');
   const composedSource = `${topbar}\n${overview}`;
 
   assert.equal((composedSource.match(/<h1\b/g) ?? []).length, 1);
-  assert.match(topbar, /className="dashboard-topbar-title"/);
+  assert.match(topbar, /to="\/dashboard"/);
+  assert.match(topbar, /ta7leel-navbar-logo-mind-leaf\.png/);
+  assert.doesNotMatch(topbar, /dashboard-topbar-title|dashboard-topbar-kicker/);
 });
 
 test('challenge and focused-reader note dialogs use the shared modal contract', async () => {

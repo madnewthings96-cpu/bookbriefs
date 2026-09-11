@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -14,6 +15,7 @@ import {
   type AuthAttemptKind,
   type AuthObserverState,
   type AuthUser,
+  toAuthUser,
 } from './authStateModel';
 
 export type User = AuthUser;
@@ -27,6 +29,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<boolean>;
+  updateName: (name: string) => Promise<void>;
+  sendPasswordReset: () => Promise<void>;
   logout: () => Promise<boolean>;
 }
 
@@ -55,13 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     let active = true;
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (!active) return;
-      const nextUser: User | null = firebaseUser
-        ? {
-            id: firebaseUser.uid,
-            email: firebaseUser.email || '',
-            name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
-          }
-        : null;
+      const nextUser: User | null = firebaseUser ? toAuthUser(firebaseUser) : null;
       setObserverState(observerFlow.observerUser(nextUser));
     }, (error) => {
       if (!active) return;
@@ -124,6 +122,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateName = async (name: string): Promise<void> => {
+    const firebaseUser = auth.currentUser;
+    const currentUser = observerFlow.getState().user;
+    if (!firebaseUser || !currentUser) throw new Error('No authenticated user is available.');
+
+    await updateProfile(firebaseUser, { displayName: name });
+    setObserverState(observerFlow.observerUser({ ...currentUser, name }));
+  };
+
+  const sendPasswordReset = async (): Promise<void> => {
+    const email = observerFlow.getState().user?.email || auth.currentUser?.email;
+    if (!email) throw new Error('No account email is available.');
+    await sendPasswordResetEmail(auth, email);
+  };
+
   const logout = async (): Promise<boolean> => {
     try {
       await signOut(auth);
@@ -143,6 +156,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     signup,
     loginWithGoogle,
+    updateName,
+    sendPasswordReset,
     logout
   };
 

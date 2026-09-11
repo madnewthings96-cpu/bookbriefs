@@ -2,7 +2,22 @@ export interface AuthUser {
   id: string;
   email: string;
   name: string;
+  providerIds?: string[];
 }
+
+export interface FirebaseAuthIdentity {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  providerData: Array<{ providerId: string }>;
+}
+
+export const toAuthUser = (firebaseUser: FirebaseAuthIdentity): AuthUser => ({
+  id: firebaseUser.uid,
+  email: firebaseUser.email || '',
+  name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+  providerIds: firebaseUser.providerData.map(provider => provider.providerId),
+});
 
 export interface AuthObserverState {
   user: AuthUser | null;

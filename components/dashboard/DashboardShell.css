@@ -45,8 +45,8 @@
 
 .dashboard-workspace { min-inline-size: 0; }
 .dashboard-topbar { display: flex; min-block-size: 80px; align-items: center; justify-content: space-between; gap: 16px; border-block-end: 1px solid var(--dashboard-border); background: rgb(255 253 248 / 80%); padding: 14px clamp(16px, 2.5vw, 40px); }
-.dashboard-topbar-kicker { margin: 0 0 2px; color: #607168; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.dashboard-topbar-title { margin: 0; font-family: Georgia, serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.05; }
+.dashboard-topbar-brand { display: inline-flex; min-inline-size: 0; flex: 0 0 auto; align-items: center; border-radius: 8px; }
+.dashboard-topbar-brand img { display: block; inline-size: clamp(116px, 12vw, 142px); block-size: auto; }
 .dashboard-topbar-actions { display: flex; min-inline-size: 0; align-items: center; justify-content: flex-end; gap: 12px; flex: 1; }
 .dashboard-topbar-more { display: none; min-block-size: 44px; align-items: center; gap: 7px; border: 1px solid var(--dashboard-border); border-radius: 10px; background: var(--dashboard-card); color: var(--dashboard-forest-deep); padding-inline: 12px; font-weight: 800; }
 .dashboard-search { position: relative; inline-size: min(100%, 430px); }
