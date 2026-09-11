@@ -1,8 +1,11 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom/server';
+import IdeasInTheWildPage from '../pages/IdeasInTheWildPage.tsx';
+import { CONNECTIONS_SEO } from '../components/connections/connectionsModel.ts';
 import MarkdownRenderer from '../components/MarkdownRenderer.tsx';
 import { getBookSummaryTranslation } from '../translations/bookSummaries.ts';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, PRIVATE_SEO_ROUTES, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import {
@@ -28,6 +31,7 @@ interface PrerenderPage {
   keywords: string;
   image?: string;
   noindex?: boolean;
+  styles?: string[];
   body: string;
   schema: Record<string, unknown>[];
 }
@@ -113,6 +117,9 @@ function renderPage(template: string, page: PrerenderPage): string {
   html = upsertMeta(html, 'name', 'twitter:image', absoluteImage);
   html = injectJsonLd(html, page.schema);
   html = replaceRoot(html, page.body);
+  if (page.styles?.length) {
+    html = html.replace('</head>', `${page.styles.map(href => `<link rel="stylesheet" href="${escapeHtml(href)}" />`).join('\n')}\n</head>`);
+  }
 
   return html;
 }
@@ -489,6 +496,20 @@ function articleIndexPage(): PrerenderPage {
   };
 }
 
+function connectionsPage(styles: string[]): PrerenderPage {
+  return {
+    path: '/connections', lang: 'en', dir: 'ltr', ...CONNECTIONS_SEO, styles,
+    // Render the actual page: content and internal links stay in sync with the UI.
+    body: renderToStaticMarkup(React.createElement(StaticRouter, { location: '/connections/' },
+      React.createElement('main', null, React.createElement(IdeasInTheWildPage)))),
+    schema: [{
+      '@context': 'https://schema.org', '@type': 'CollectionPage',
+      name: CONNECTIONS_SEO.title, description: CONNECTIONS_SEO.description,
+      url: absoluteUrl(SITE_URL, '/connections/'), inLanguage: 'en',
+    }, breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Ideas in the Wild', path: '/connections' }])],
+  };
+}
+
 function homePage(): PrerenderPage {
   return {
     path: '/', lang: 'en', dir: 'ltr', title: 'Ta7leel - High-Signal Book Summaries & Mental Models',
@@ -520,9 +541,13 @@ async function main() {
   const distIndex = path.join(process.cwd(), 'dist', 'index.html');
   const template = await readFile(distIndex, 'utf8');
   const books = await loadBookCatalog();
+  const connectionStyles = (await readdir(path.join(process.cwd(), 'dist', 'assets')))
+    .filter(file => /^IdeasInTheWildPage-.*\.css$/.test(file)).map(file => `/assets/${file}`);
+  if (!connectionStyles.length) throw new Error('Missing Ideas in the Wild stylesheet in production build.');
 
   const pages: PrerenderPage[] = [
     homePage(),
+    connectionsPage(connectionStyles),
     summariesLandingPage(books, false, '/summaries'),
     ...blogPosts.map(articlePage),
     articleIndexPage(),

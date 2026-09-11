@@ -41,3 +41,30 @@ test('unknown pages and private pages have crawlable noindex responses configure
   const robots = await read('dist/robots.txt');
   assert.doesNotMatch(robots, /User-agent: Googlebot|Disallow: \/login|Disallow: \/pdfs/);
 });
+
+test('every sitemap URL has static HTML or an explicit server route', async () => {
+  const xml = await read('dist/sitemap.xml');
+  const config = await read('netlify.toml');
+  const explicitRoutes = config.split('[[redirects]]').slice(1)
+    .filter(block => /status\s*=\s*200\b/.test(block))
+    .map(block => block.match(/from\s*=\s*"([^"]+)"/)?.[1]);
+  for (const [, location] of xml.matchAll(/<loc>(.*?)<\/loc>/g)) {
+    const pathname = decodeURIComponent(new URL(location).pathname).replace(/\/$/, '');
+    try {
+      await read(`dist${pathname}/index.html`);
+    } catch {
+      assert.ok(explicitRoutes.includes(pathname), `Sitemap URL has no deployable route: ${pathname}`);
+    }
+  }
+});
+
+test('Ideas in the Wild serves its real content, metadata and styles before JavaScript', async () => {
+  const html = await read('dist/connections/index.html');
+  assert.match(html, /<title>Ideas in the Wild - See the World Through Books \| Ta7leel<\/title>/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/www.ta7leel.pro\/connections\/"/);
+  assert.match(html, /id="connection-library"/);
+  assert.match(html, /href="\/summary\/atomic-habits"/);
+  assert.match(html, /Why market fear travels faster than fundamentals/);
+  assert.match(html, /<link rel="stylesheet" href="\/assets\/IdeasInTheWildPage-[^"]+\.css"/);
+  assert.doesNotMatch(html, /noindex/);
+});
