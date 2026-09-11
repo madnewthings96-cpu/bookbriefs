@@ -29,7 +29,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
     const [calculatedPnL, setCalculatedPnL] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCustomSetup, setIsCustomSetup] = useState(false);
-    const [isManualPnL, setIsManualPnL] = useState(false);
+    const [isManualPnL, setIsManualPnL] = useState(Boolean(editingTrade));
     const operationGuard = useRef(new AsyncIdentityGuard()).current;
     const symbolInputRef = useRef<HTMLInputElement>(null);
 
@@ -154,16 +154,16 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                 <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#b08d57]/30 px-6 py-5">
                     <div>
                         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a6b3f]">Fieldbook entry</p>
-                        <h2 id="add-trade-modal-title" className="mt-1 font-serif text-2xl font-bold text-[#173b2f]">Log a trade</h2>
+                        <h2 id="add-trade-modal-title" className="mt-1 font-serif text-2xl font-bold text-[#173b2f]">{editingTrade ? 'Edit trade' : 'Log a trade'}</h2>
                         <p id="add-trade-modal-description" className="mt-1 text-sm text-[#52665e]">Record the execution and decision context.</p>
                     </div>
                     <button
                         type="button"
                         onClick={handleClose}
                         aria-label="Close trade dialog"
-                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-[#52665e] transition-[scale,color,background-color] duration-150 ease-out hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96]"
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-[#52665e] transition-[scale,color,background-color] duration-150 ease-out hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
                     >
-                        <X aria-hidden="true" className="w-6 h-6" />
+                        <X aria-hidden="true" className="h-5 w-5" />
                     </button>
                 </div>
 
@@ -183,7 +183,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.symbol}
                                 onChange={(e) => setFormData({ ...formData, symbol: e.target.value.toUpperCase() })}
                                 placeholder="XAUUSD"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
@@ -194,7 +194,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'LONG' })}
-                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 active:scale-[0.96] ${formData.direction === 'LONG'
+                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${formData.direction === 'LONG'
                                         ? 'bg-emerald-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -204,7 +204,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'SHORT' })}
-                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 active:scale-[0.96] ${formData.direction === 'SHORT'
+                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${formData.direction === 'SHORT'
                                         ? 'bg-rose-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -224,7 +224,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             type="date"
                             value={formData.entryDate}
                             onChange={(e) => setFormData({ ...formData, entryDate: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                             required
                         />
                     </div>
@@ -240,7 +240,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.entryPrice}
                                 onChange={(e) => setFormData({ ...formData, entryPrice: e.target.value })}
                                 placeholder="Entry Price"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
@@ -253,7 +253,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.exitPrice}
                                 onChange={(e) => setFormData({ ...formData, exitPrice: e.target.value })}
                                 placeholder="Exit Price"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
@@ -266,7 +266,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.stopLoss}
                                 onChange={(e) => setFormData({ ...formData, stopLoss: e.target.value })}
                                 placeholder="Stop Loss"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
@@ -284,7 +284,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 value={formData.lotSize}
                                 onChange={(e) => setFormData({ ...formData, lotSize: e.target.value })}
                                 placeholder="0.10"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
@@ -294,8 +294,8 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={handleManualPnLToggle}
-                                    className={`min-h-11 rounded-md px-2 py-1 text-xs font-semibold transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 active:scale-[0.96] ${isManualPnL
-                                        ? 'bg-orange-50 text-orange-600'
+                                    className={`min-h-11 rounded-md px-2 py-1 text-xs font-semibold transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${isManualPnL
+                                        ? 'bg-[#efe7d6] text-[#6f5834]'
                                         : 'bg-emerald-50 text-emerald-600'
                                         }`}
                                     title={isManualPnL ? 'Switch to automatic P&L' : 'Override calculated P&L'}
@@ -311,7 +311,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 onChange={(e) => setCalculatedPnL(e.target.value)}
                                 readOnly={!isManualPnL}
                                 placeholder={isManualPnL ? '0.00' : 'Auto'}
-                                className={`w-full rounded-lg border px-4 py-2.5 text-lg font-bold tabular-nums transition-colors focus:border-transparent focus:ring-2 focus:ring-orange-400 ${!isManualPnL ? 'cursor-not-allowed' : ''} ${parseFloat(calculatedPnL || '0') > 0
+                                className={`w-full rounded-lg border px-4 py-2.5 text-lg font-bold tabular-nums transition-colors focus:border-transparent focus:ring-2 focus:ring-[#9a7b45] ${!isManualPnL ? 'cursor-not-allowed' : ''} ${parseFloat(calculatedPnL || '0') > 0
                                     ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                     : parseFloat(calculatedPnL || '0') < 0
                                         ? 'bg-rose-50 text-rose-600 border-rose-200'
@@ -335,7 +335,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                     value={formData.setup}
                                     onChange={(e) => setFormData({ ...formData, setup: e.target.value })}
                                     placeholder="Enter your custom strategy..."
-                                    className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                    className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                     required
                                     autoFocus
                                 />
@@ -346,9 +346,9 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                         setFormData({ ...formData, setup: '' });
                                     }}
                                     aria-label="Back to setup list"
-                                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-200 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 active:scale-[0.96]"
+                                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-200 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <ArrowLeft className="w-5 h-5" />
+                                    <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
                                 </button>
                             </div>
                         ) : (
@@ -363,14 +363,14 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                         setFormData({ ...formData, setup: e.target.value });
                                     }
                                 }}
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             >
                                 <option value="">Select setup...</option>
                                 {SETUP_OPTIONS.map((setup) => (
                                     <option key={setup} value={setup}>{setup}</option>
                                 ))}
-                                <option value="__custom__" className="font-semibold text-orange-600 bg-orange-50">
+                                <option value="__custom__" className="bg-[#efe7d6] font-semibold text-[#6f5834]">
                                     + Add New Strategy...
                                 </option>
                             </select>
@@ -381,13 +381,13 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     <div>
                         <label htmlFor="trade-emotions" className="block text-sm font-medium text-gray-700 mb-1.5">
                             Psychology / Emotions
-                            <span className="ml-2 text-xs text-orange-500 font-normal">Key Insight</span>
+                            <span className="ms-2 text-xs font-normal text-[#8a6b3f]">Key Insight</span>
                         </label>
                         <select
                             id="trade-emotions"
                             value={formData.emotions}
                             onChange={(e) => setFormData({ ...formData, emotions: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                             required
                         >
                             {EMOTION_OPTIONS.map((emotion) => (
@@ -405,7 +405,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             placeholder="What did you learn from this trade?"
                             rows={3}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent resize-none"
                         />
                     </div>
 
@@ -418,7 +418,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             value={formData.screenshotUrl}
                             onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
                             placeholder="https://tradingview.com/..."
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                         />
                     </div>
                     </section>
@@ -428,7 +428,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     <button
                         type="button"
                         onClick={handleClose}
-                        className="min-h-11 rounded-lg px-4 py-2 text-sm font-semibold text-[#52665e] transition-[scale,color,background-color] hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96]"
+                        className="min-h-11 rounded-lg px-4 py-2 text-sm font-semibold text-[#52665e] transition-[scale,color,background-color] hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
                     >
                         Cancel
                     </button>
@@ -436,14 +436,14 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         type="submit"
                         form="add-trade-form"
                         disabled={isSubmitting}
-                        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#173b2f] px-5 py-3 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-[#102e24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#173b2f] px-5 py-3 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-[#102e24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {isSubmitting ? (
                             <>
-                                <Loader2 className="h-5 w-5 animate-spin" />
+                                <Loader2 className="h-5 w-5 animate-spin motion-reduce:animate-none" />
                                 Saving...
                             </>
-                        ) : 'Log trade'}
+                        ) : (editingTrade ? 'Update trade' : 'Log trade')}
                     </button>
                 </div>
             </div >
