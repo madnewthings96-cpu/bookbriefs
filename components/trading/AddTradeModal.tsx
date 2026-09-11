@@ -137,7 +137,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#102e24]/75 p-4 backdrop-blur-[8px]"
             onMouseDown={(event) => event.target === event.currentTarget && handleClose()}
         >
             <div
@@ -145,29 +145,35 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="add-trade-modal-title"
+                aria-describedby="add-trade-modal-description"
                 tabIndex={-1}
-                className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200 [&_input]:min-h-11 [&_select]:min-h-11 [&_textarea]:min-h-11"
+                className="flex max-h-[90vh] w-full max-w-[800px] flex-col overflow-hidden rounded-[20px] border border-[#b08d57]/45 bg-[#fffdf7] shadow-[0_24px_70px_rgba(16,46,36,0.34)] [&_input]:min-h-11 [&_select]:min-h-11 [&_textarea]:min-h-11"
                 style={{ fontFamily: "'Inter', 'Manrope', sans-serif" }}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-5 border-b border-gray-200">
-                    <h2 id="add-trade-modal-title" className="text-xl font-bold text-gray-800">
-                        {editingTrade ? 'Edit Trade' : 'Log New Trade'}
-                    </h2>
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#b08d57]/30 px-6 py-5">
+                    <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a6b3f]">Fieldbook entry</p>
+                        <h2 id="add-trade-modal-title" className="mt-1 font-serif text-2xl font-bold text-[#173b2f]">Log a trade</h2>
+                        <p id="add-trade-modal-description" className="mt-1 text-sm text-[#52665e]">Record the execution and decision context.</p>
+                    </div>
                     <button
                         type="button"
                         onClick={handleClose}
                         aria-label="Close trade dialog"
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 transition-[scale,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96]"
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-[#52665e] transition-[scale,color,background-color] duration-150 ease-out hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96]"
                     >
                         <X aria-hidden="true" className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                <form id="add-trade-form" onSubmit={handleSubmit} className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <section aria-labelledby="trade-execution-heading" className="space-y-4">
+                    <h3 id="trade-execution-heading" className="border-b border-[#b08d57]/25 pb-2 text-sm font-bold uppercase tracking-[0.14em] text-[#6f5834]">Execution</h3>
                     {/* Symbol & Direction Row */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label htmlFor="trade-symbol" className="block text-sm font-medium text-gray-700 mb-1.5">Symbol</label>
                             <input
@@ -224,7 +230,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     </div>
 
                     {/* Entry/Exit/Stop Loss Row */}
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div>
                             <label htmlFor="trade-entry-price" className="block text-sm font-medium text-gray-700 mb-1.5">Entry Price</label>
                             <input
@@ -267,7 +273,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                     </div>
 
                     {/* Lot Size & Calculated P&L Row */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label htmlFor="trade-lot-size" className="block text-sm font-medium text-gray-700 mb-1.5">Lot Size</label>
                             <input
@@ -282,7 +288,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 required
                             />
                         </div>
-                        <div>
+                        <div className="rounded-xl border border-[#b08d57]/40 bg-[#f5eedf] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                             <div className="mb-1.5 flex items-center justify-between gap-2">
                                 <label htmlFor="trade-pnl" className="block text-sm font-medium text-gray-700">P&L ($)</label>
                                 <button
@@ -315,7 +321,9 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Setup */}
+                    </section>
+                    <section aria-labelledby="trade-review-heading" className="space-y-4">
+                    <h3 id="trade-review-heading" className="border-b border-[#b08d57]/25 pb-2 text-sm font-bold uppercase tracking-[0.14em] text-[#6f5834]">Review context</h3>
                     {/* Setup */}
                     <div>
                         <label htmlFor="trade-setup" className="block text-sm font-medium text-gray-700 mb-1.5">Setup / Strategy</label>
@@ -413,25 +421,31 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                         />
                     </div>
-
-                    {/* Submit Button */}
-                    <div className="pt-2">
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="animate-spin h-5 w-5" />
-                                    Saving...
-                                </>
-                            ) : (
-                                editingTrade ? 'Update Trade' : 'Log Trade'
-                            )}
-                        </button>
+                    </section>
                     </div>
                 </form>
+                <div className="flex shrink-0 items-center justify-end gap-3 border-t border-[#b08d57]/30 bg-[#fffaf0] px-6 py-4">
+                    <button
+                        type="button"
+                        onClick={handleClose}
+                        className="min-h-11 rounded-lg px-4 py-2 text-sm font-semibold text-[#52665e] transition-[scale,color,background-color] hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96]"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        form="add-trade-form"
+                        disabled={isSubmitting}
+                        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#173b2f] px-5 py-3 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-[#102e24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                                Saving...
+                            </>
+                        ) : 'Log trade'}
+                    </button>
+                </div>
             </div >
         </div >
     );
