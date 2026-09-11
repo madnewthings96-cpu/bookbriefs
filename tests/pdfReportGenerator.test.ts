@@ -47,6 +47,30 @@ test('monthly PDF renders a multi-page fieldbook from the shared report model', 
   assert.ok(bytes.byteLength > 10_000);
 });
 
+test('monthly PDF embeds the official site-logo image in a multi-page A4 fieldbook', async () => {
+  const { createMonthlyReportDocument } = await import('../utils/pdfReportGenerator');
+  const logoBytes = await readFile(new URL('../public/images/ta7leel-navbar-logo-mind-leaf.png', import.meta.url));
+  const doc = await createMonthlyReportDocument({
+    trades: [createTrade('official-logo', '2026-02-11', 250)],
+    startingBalance: 10_000,
+    currentBalance: 10_250,
+    month: 1,
+    year: 2026,
+    userEmail: 'reader@example.com',
+  }, {
+    officialLogoBase64: logoBytes.toString('base64'),
+  });
+
+  const bytes = new Uint8Array(doc.output('arraybuffer'));
+  const output = new TextDecoder('latin1').decode(bytes);
+  assert.equal(doc.getNumberOfPages(), 3);
+  assert.ok(Math.abs(doc.internal.pageSize.getWidth() - 210) < 0.01);
+  assert.ok(Math.abs(doc.internal.pageSize.getHeight() - 297) < 0.01);
+  assert.equal(new TextDecoder().decode(bytes.slice(0, 4)), '%PDF');
+  assert.match(output, /\/Subtype\s*\/Image/);
+  assert.ok((output.match(/\/Subtype\s*\/Image/g) ?? []).length >= 3);
+});
+
 test('monthly PDF embeds a Unicode font for Arabic journal content', async () => {
   const { createMonthlyReportDocument } = await import('../utils/pdfReportGenerator');
   const fontBytes = await readFile(new URL('../public/fonts/NotoSansArabic-Regular.ttf', import.meta.url));
