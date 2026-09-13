@@ -48,6 +48,13 @@ test('validation enforces field lengths, slug syntax, and secure source URLs', (
   assert.deepEqual(Object.keys(errors).sort(), ['authorName', 'body', 'excerpt', 'imageAlt', 'slug', 'sources', 'title']);
 });
 
+test('source validation requires the literal https:// URL prefix', () => {
+  const draft = makeNewsArticleFixture({
+    sources: [{ label: 'Malformed secure URL', url: 'https:example.com' }],
+  });
+  assert.equal(validateNewsDraft(draft, 'publish').sources, 'Sources need a label and an https:// URL.');
+});
+
 test('featured selection honors a published configured article and falls back by publication date', () => {
   const newest = makeNewsArticleFixture({ id: 'new', publishedAt: new Date('2026-09-13') });
   const old = makeNewsArticleFixture({ id: 'old', publishedAt: new Date('2026-09-06') });

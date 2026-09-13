@@ -128,7 +128,7 @@ export function validateNewsDraft(
       if (!source || typeof source.label !== 'string' || !source.label.trim() || source.label.length > MAX_SOURCE_LABEL_LENGTH) {
         return true;
       }
-      if (typeof source.url !== 'string') return true;
+      if (typeof source.url !== 'string' || !source.url.startsWith('https://')) return true;
       try {
         return new URL(source.url).protocol !== 'https:';
       } catch {
