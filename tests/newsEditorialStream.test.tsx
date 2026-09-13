@@ -96,6 +96,32 @@ test('stream reflects category and pagination state without hiding its controls'
   assert.match(markup, /<button[^>]*class="news-load-more"[^>]*disabled=""[^>]*>Loading more…<\/button>/);
 });
 
+test('short streams keep one advertisement after every available card', async () => {
+  const markup = await renderStream({ articles: articles.slice(0, 3) });
+
+  assert.equal((markup.match(/aria-label="Advertisements"/g) || []).length, 1);
+  assert.ok(
+    markup.indexOf('Inflation data returns to focus') < markup.indexOf('aria-label="Advertisements"'),
+    'the ad follows both available non-featured cards',
+  );
+});
+
+test('a stream without cards keeps its advertisement after the lead or empty state', async () => {
+  const leadOnlyMarkup = await renderStream({ articles: [articles[1]] });
+  const emptyMarkup = await renderStream({ articles: [] });
+
+  assert.equal((leadOnlyMarkup.match(/aria-label="Advertisements"/g) || []).length, 1);
+  assert.ok(
+    leadOnlyMarkup.indexOf('The market map for the week ahead') < leadOnlyMarkup.indexOf('aria-label="Advertisements"'),
+    'the ad follows the lead when no cards exist',
+  );
+  assert.equal((emptyMarkup.match(/aria-label="Advertisements"/g) || []).length, 1);
+  assert.ok(
+    emptyMarkup.indexOf('The next weekly briefing is being prepared.') < emptyMarkup.indexOf('aria-label="Advertisements"'),
+    'the ad follows the empty state when no stories exist',
+  );
+});
+
 test('AdSense configuration requires both identifiers and reserves an honest fallback', async () => {
   const { AdSlot, readAdSenseConfig } = await import('../components/news/AdSlot');
 
@@ -122,7 +148,10 @@ test('editorial stylesheet keeps the single ad node responsive, stable, and acce
   assert.match(styles, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(260px,\s*300px\)/i);
   assert.match(styles, /min-height:\s*250px/i);
   assert.match(styles, /min-width:\s*300px/i);
-  assert.match(styles, /position:\s*sticky/i);
+  assert.match(styles, /\.news-ad\s*\{[^}]*position:\s*absolute/i);
+  assert.match(styles, /\.news-ad\s*\{[^}]*inset-block:\s*0/i);
+  assert.match(styles, /\.news-ad__sticky\s*\{[^}]*position:\s*sticky/i);
+  assert.doesNotMatch(styles, /\.news-ad\s*\{[^}]*grid-row:\s*1/i);
   assert.match(styles, /@media\s*\(max-width:\s*900px\)/i);
   assert.match(styles, /@media\s*\(max-width:\s*720px\)/i);
   assert.match(styles, /prefers-reduced-motion/);

@@ -37,9 +37,10 @@ export function AdSlot({
       aria-label="Advertisements"
       data-configured={configured}
     >
-      <span className="news-ad__label">Advertisements</span>
-      <div className="news-ad__space" aria-hidden="true" />
+      <div className="news-ad__sticky">
+        <span className="news-ad__label">Advertisements</span>
+        <div className="news-ad__space" aria-hidden="true" />
+      </div>
     </aside>
   );
 }
-
