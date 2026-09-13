@@ -45,19 +45,120 @@ service cloud.firestore {
              data.updatedAt is timestamp;
     }
 
-    // Admins have full access to everything
-    match /{document=**} {
-      allow read, write: if isAdmin();
+    function isValidNewsSource(source) {
+      return source is map && source.keys().hasOnly(['label', 'url']) &&
+             source.keys().hasAll(['label', 'url']) &&
+             source.label is string && source.label.size() > 0 && source.label.size() <= 120 &&
+             source.url is string && source.url.size() <= 2048 && source.url.matches('https://[^/]+.*');
+    }
+
+    function isValidNewsSourceAt(sources, index) {
+      return sources.size() <= index || isValidNewsSource(sources[index]);
+    }
+
+    function isValidNewsArticle(data) {
+      return data.keys().hasOnly([
+               'title', 'slug', 'excerpt', 'body', 'category', 'language', 'authorName',
+               'imageUrl', 'imagePath', 'imageAlt', 'sources', 'status',
+               'createdAt', 'updatedAt', 'publishedAt'
+             ]) && data.keys().hasAll([
+               'title', 'slug', 'excerpt', 'body', 'category', 'language', 'authorName',
+               'imageUrl', 'imagePath', 'imageAlt', 'sources', 'status',
+               'createdAt', 'updatedAt', 'publishedAt'
+             ]) &&
+             data.title is string && data.title.matches('.*[^\\s].*') && data.title.size() <= 140 &&
+             data.slug is string && data.slug.size() <= 100 &&
+             (data.slug == '' || data.slug.matches('[a-z0-9]+(-[a-z0-9]+)*')) &&
+             data.excerpt is string && data.excerpt.size() <= 240 &&
+             data.body is string && data.body.size() <= 100000 &&
+             data.category in ['markets', 'forex', 'economy', 'crypto'] && data.language == 'en' &&
+             data.authorName is string && data.authorName.size() <= 80 &&
+             data.imageUrl is string && data.imageUrl.size() <= 4096 &&
+             data.imagePath is string && data.imagePath.size() <= 1024 &&
+             data.imageAlt is string && data.imageAlt.size() <= 180 &&
+             data.sources is list && data.sources.size() <= 20 &&
+             isValidNewsSourceAt(data.sources, 0) && isValidNewsSourceAt(data.sources, 1) &&
+             isValidNewsSourceAt(data.sources, 2) && isValidNewsSourceAt(data.sources, 3) &&
+             isValidNewsSourceAt(data.sources, 4) && isValidNewsSourceAt(data.sources, 5) &&
+             isValidNewsSourceAt(data.sources, 6) && isValidNewsSourceAt(data.sources, 7) &&
+             isValidNewsSourceAt(data.sources, 8) && isValidNewsSourceAt(data.sources, 9) &&
+             isValidNewsSourceAt(data.sources, 10) && isValidNewsSourceAt(data.sources, 11) &&
+             isValidNewsSourceAt(data.sources, 12) && isValidNewsSourceAt(data.sources, 13) &&
+             isValidNewsSourceAt(data.sources, 14) && isValidNewsSourceAt(data.sources, 15) &&
+             isValidNewsSourceAt(data.sources, 16) && isValidNewsSourceAt(data.sources, 17) &&
+             isValidNewsSourceAt(data.sources, 18) && isValidNewsSourceAt(data.sources, 19) &&
+             data.status in ['draft', 'published'] &&
+             data.createdAt is timestamp && data.updatedAt == request.time &&
+             (data.publishedAt == null || data.publishedAt is timestamp) &&
+             (data.status == 'draft' || (
+               data.slug.size() > 0 && data.excerpt.matches('(?s).*[^\\s].*') &&
+               data.body.matches('(?s).*[^\\s].*') && data.authorName.matches('.*[^\\s].*') &&
+               data.imageUrl.matches('https://[^/]+.*') && data.imageAlt.matches('.*[^\\s].*') &&
+               data.publishedAt is timestamp
+             ));
+    }
+
+    function isPublishedNews(articleId) {
+      return articleId is string &&
+             exists(/databases/$(database)/documents/newsArticles/$(articleId)) &&
+             get(/databases/$(database)/documents/newsArticles/$(articleId)).data.status == 'published';
+    }
+
+    function isPublishedNewsAfter(articleId) {
+      return articleId is string &&
+             existsAfter(/databases/$(database)/documents/newsArticles/$(articleId)) &&
+             getAfter(/databases/$(database)/documents/newsArticles/$(articleId)).data.status == 'published';
+    }
+
+    match /newsArticles/{articleId} {
+      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow create: if isAdmin() && isValidNewsArticle(request.resource.data) &&
+                    request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && isValidNewsArticle(request.resource.data) &&
+                    request.resource.data.createdAt == resource.data.createdAt &&
+                    (resource.data.publishedAt == null || (
+                      request.resource.data.publishedAt == resource.data.publishedAt &&
+                      request.resource.data.slug == resource.data.slug
+                    ));
+      allow delete: if isAdmin();
+    }
+
+    match /newsArticleSlugs/{slug} {
+      allow get: if isAdmin() || isPublishedNews(resource.data.articleId);
+      allow list: if isAdmin();
+      allow create: if isAdmin() &&
+                    request.resource.data.keys().hasOnly(['articleId', 'createdAt']) &&
+                    request.resource.data.keys().hasAll(['articleId']) &&
+                    (!request.resource.data.keys().hasAny(['createdAt']) || request.resource.data.createdAt == request.time) &&
+                    isPublishedNewsAfter(request.resource.data.articleId) &&
+                    getAfter(/databases/$(database)/documents/newsArticles/$(request.resource.data.articleId)).data.slug == slug;
+      // Slugs remain permanently reserved, including after unpublish or deletion.
+      allow update, delete: if false;
+    }
+
+    match /newsConfig/editorial {
+      // Empty/missing configuration is public so the feed can use its fallback.
+      allow get: if isAdmin() || !exists(/databases/$(database)/documents/newsConfig/editorial) ||
+                 resource.data.featuredArticleId == null || isPublishedNews(resource.data.featuredArticleId);
+      allow create, update: if isAdmin() &&
+                            request.resource.data.keys().hasOnly(['featuredArticleId', 'updatedAt']) &&
+                            request.resource.data.keys().hasAll(['featuredArticleId', 'updatedAt']) &&
+                            request.resource.data.updatedAt == request.time &&
+                            (request.resource.data.featuredArticleId == null ||
+                             isPublishedNewsAfter(request.resource.data.featuredArticleId));
+      allow delete: if isAdmin();
     }
 
     // Users collection
     match /users/{userId} {
+      allow read, write: if isAdmin();
       allow read, write: if request.auth != null && request.auth.uid == userId;
 
       // --- Security Rules for Subcollections ---
       
       // Goals Collection
       match /goals/{goalId} {
+        allow read, write: if isAdmin();
         allow read, write: if request.auth != null && request.auth.uid == userId;
         allow create: if request.auth != null && request.auth.uid == userId &&
                       // Basic validation
@@ -69,6 +170,7 @@ service cloud.firestore {
 
       // Trades Collection
       match /trades/{tradeId} {
+        allow read, write: if isAdmin();
         allow read, write: if request.auth != null && request.auth.uid == userId;
         allow create: if request.auth != null && request.auth.uid == userId &&
                       // Basic validation
@@ -82,12 +184,14 @@ service cloud.firestore {
       
       // Allow general access to other subcollections (fallback)
       match /{document=**} {
+        allow read, write: if isAdmin();
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
     }
 
     // Feedback collection - Secured
     match /feedback/{feedbackId} {
+      allow read, write: if isAdmin();
       allow create: if isAuthenticated() &&
                     request.auth.token.email is string &&
                     request.resource.data.keys().hasOnly([
@@ -130,6 +234,7 @@ service cloud.firestore {
 
     // Reading Challenges
     match /reading_challenges/{challengeId} {
+      allow read, write: if isAdmin();
       allow read: if true;
       allow create: if isAuthenticated() &&
                    isValidReadingChallenge(request.resource.data) &&
@@ -148,6 +253,7 @@ service cloud.firestore {
 
     // Community Messages (Chat)
     match /communityMessages/{messageId} {
+      allow read, write: if isAdmin();
       allow read: if true;
       allow create: if isAuthenticated() && 
                    request.resource.data.userId == request.auth.uid;
@@ -170,21 +276,25 @@ service cloud.firestore {
 
     // Progress collection
     match /progress/{userId} {
+      allow read, write: if isAdmin();
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Favorites collection
     match /favorites/{userId} {
+      allow read, write: if isAdmin();
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Notes collection
     match /notes/{userId} {
+      allow read, write: if isAdmin();
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Highlights collection
     match /highlights/{userId} {
+      allow read, write: if isAdmin();
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
