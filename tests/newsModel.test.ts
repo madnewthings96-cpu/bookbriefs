@@ -9,6 +9,7 @@ import {
   validateNewsDraft,
 } from '../components/news/newsModel';
 import { getSampleNewsDraft, makeNewsArticleFixture } from '../components/news/newsFixtures';
+import { createNewsCursor, normalizeNewsDocument } from '../components/news/newsRepository';
 
 test('slugifyNewsTitle produces a stable ASCII route segment', () => {
   assert.equal(slugifyNewsTitle('Dollar Outlook: What Changes Next?'), 'dollar-outlook-what-changes-next');
@@ -89,4 +90,19 @@ test('fixture defaults to a valid published article and sample draft is isolated
   assert.equal(sample.status, 'draft');
   assert.match(sample.id, /^sample-/);
   assert.equal(Object.isFrozen(sample), true);
+});
+
+test('normalizeNewsDocument rejects malformed categories and timestamps', () => {
+  assert.equal(normalizeNewsDocument('bad', { category: 'sports' }), null);
+});
+
+test('cursor serialization preserves publication time and id', () => {
+  const cursor = createNewsCursor(makeNewsArticleFixture({
+    id: 'story-1',
+    publishedAt: new Date('2026-09-13T10:00:00.000Z'),
+  }));
+  assert.deepEqual(cursor, {
+    id: 'story-1',
+    publishedAt: new Date('2026-09-13T10:00:00.000Z'),
+  });
 });
