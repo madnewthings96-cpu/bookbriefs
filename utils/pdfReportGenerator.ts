@@ -13,10 +13,14 @@ export interface ReportData {
     month: number;
     year: number;
     userEmail?: string;
+    /** Return false when the owning modal/account has unmounted or changed. */
+    canCommit?: () => boolean;
 }
 
 export interface MonthlyReportDocumentOptions {
     unicodeFontBase64?: string;
+    /** Base64-encoded PNG for the official Ta7leel site logo. */
+    officialLogoBase64?: string;
 }
 
 type PdfColor = readonly [number, number, number];
@@ -27,6 +31,8 @@ interface PdfTypography {
 
 const UNICODE_FONT_FILE = 'NotoSansArabic-Regular.ttf';
 const UNICODE_FONT_FAMILY = 'NotoSansArabic';
+const OFFICIAL_LOGO_PATH = '/images/ta7leel-navbar-logo-mind-leaf.png';
+const OFFICIAL_LOGO_ASPECT_RATIO = 1016 / 272;
 const ARABIC_TEXT_PATTERN = /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/;
 
 const COLORS = {
@@ -149,8 +155,41 @@ const drawWordmark = (doc: jsPDF, x: number, y: number, inverse = false) => {
     doc.text('Ta7leel', x + 17, y);
 };
 
-const drawPageHeader = (doc: jsPDF, label: string) => {
-    drawWordmark(doc, 17, 17);
+const drawOfficialLogo = (
+    doc: jsPDF,
+    logoBase64: string | undefined,
+    x: number,
+    y: number,
+    width: number,
+): boolean => {
+    if (!logoBase64) return false;
+    const pageNumber = doc.getCurrentPageInfo().pageNumber;
+    doc.addImage(
+        `data:image/png;base64,${logoBase64}`,
+        'PNG',
+        x,
+        y,
+        width,
+        width / OFFICIAL_LOGO_ASPECT_RATIO,
+        `official-logo-page-${pageNumber}`,
+    );
+    return true;
+};
+
+const drawCoverBrand = (doc: jsPDF, logoBase64?: string) => {
+    setFill(doc, COLORS.paper);
+    setDraw(doc, COLORS.brass);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(19, 16, 67, 21, 2.5, 2.5, 'FD');
+    if (!drawOfficialLogo(doc, logoBase64, 23, 20, 58)) {
+        drawWordmark(doc, 24, 29, false);
+    }
+};
+
+const drawPageHeader = (doc: jsPDF, label: string, logoBase64?: string) => {
+    if (!drawOfficialLogo(doc, logoBase64, 17, 10.5, 35)) {
+        drawWordmark(doc, 17, 17);
+    }
     setText(doc, COLORS.muted);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7.25);
@@ -195,7 +234,7 @@ const drawMetricCard = (
 const drawEquityChart = (doc: jsPDF, model: MonthlyTradingReportModel, y: number) => {
     const x = 17;
     const width = 176;
-    const height = 52;
+    const height = 73;
     setFill(doc, COLORS.paper);
     setDraw(doc, COLORS.line);
     doc.roundedRect(x, y, width, height, 3, 3, 'FD');
@@ -203,16 +242,26 @@ const drawEquityChart = (doc: jsPDF, model: MonthlyTradingReportModel, y: number
     setText(doc, COLORS.ink);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
-    doc.text('Performance inkline', x + 7, y + 10);
+    doc.text('Equity trajectory', x + 7, y + 10);
     setText(doc, COLORS.muted);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.5);
     doc.text(`${model.equityCurve.length - 1} recorded trades`, x + width - 7, y + 10, { align: 'right' });
 
+    setText(doc, COLORS.muted);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.text('START', x + 7, y + 18, { charSpace: 0.5 });
+    doc.text('CLOSE', x + width - 7, y + 18, { align: 'right', charSpace: 0.5 });
+    setText(doc, COLORS.ink);
+    doc.setFontSize(10);
+    doc.text(formatMoney(model.openingBalance), x + 7, y + 24);
+    doc.text(formatMoney(model.closingBalance), x + width - 7, y + 24, { align: 'right' });
+
     const chartX = x + 8;
-    const chartY = y + 16;
+    const chartY = y + 31;
     const chartW = width - 16;
-    const chartH = height - 23;
+    const chartH = 27;
     const values = model.equityCurve.map((point) => point.balance);
     const min = Math.min(...values);
     const max = Math.max(...values);
@@ -239,6 +288,12 @@ const drawEquityChart = (doc: jsPDF, model: MonthlyTradingReportModel, y: number
         setFill(doc, COLORS.brass);
         doc.circle(point.x, point.y, 1.15, 'F');
     });
+
+    setText(doc, COLORS.muted);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.text('OPENING BALANCE', chartX, y + height - 7, { charSpace: 0.45 });
+    doc.text('MONTHLY CLOSE', chartX + chartW, y + height - 7, { align: 'right', charSpace: 0.45 });
 };
 
 const addCoverPage = (
@@ -246,49 +301,60 @@ const addCoverPage = (
     model: MonthlyTradingReportModel,
     typography: PdfTypography,
     userEmail?: string,
+    officialLogoBase64?: string,
 ) => {
     const width = doc.internal.pageSize.getWidth();
     const height = doc.internal.pageSize.getHeight();
     setFill(doc, COLORS.forest);
     doc.rect(0, 0, width, height, 'F');
 
-    drawWordmark(doc, 19, 24, true);
+    drawCoverBrand(doc, officialLogoBase64);
     setText(doc, COLORS.brass);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text('TRADING FIELDBOOK / MONTHLY REVIEW', 19, 64, { charSpace: 1.7 });
+    doc.text('TRADING FIELDBOOK / MONTHLY REVIEW', 19, 57, { charSpace: 1.7 });
 
     setText(doc, COLORS.paper);
     doc.setFontSize(34);
-    doc.text(model.periodLabel, 19, 90);
+    doc.text(model.periodLabel, 19, 83);
     doc.setFontSize(15);
     doc.setFont('helvetica', 'normal');
-    doc.text('A record of performance, risk, and decision quality.', 19, 105);
+    doc.text('A record of performance, risk, and decision quality.', 19, 97);
 
     setDraw(doc, COLORS.brass);
     doc.setLineWidth(1.25);
-    doc.line(19, 128, 149, 128);
-    doc.line(149, 128, 181, 107);
+    doc.line(19, 121, 149, 121);
+    doc.line(149, 121, 181, 100);
     setFill(doc, COLORS.brass);
-    doc.circle(149, 128, 2.1, 'F');
-    doc.circle(181, 107, 2.1, 'F');
+    doc.circle(149, 121, 2.1, 'F');
+    doc.circle(181, 100, 2.1, 'F');
+
+    setText(doc, [185, 198, 190]);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text('OPENING BALANCE', 19, 140, { charSpace: 0.8 });
+    doc.text('CLOSING BALANCE', 191, 140, { align: 'right', charSpace: 0.8 });
+    setText(doc, COLORS.paper);
+    doc.setFontSize(14);
+    doc.text(formatMoney(model.openingBalance), 19, 150);
+    doc.text(formatMoney(model.closingBalance), 191, 150, { align: 'right' });
 
     setFill(doc, COLORS.canopy);
-    doc.roundedRect(19, 155, 172, 60, 4, 4, 'F');
+    doc.roundedRect(19, 164, 172, 60, 4, 4, 'F');
     setText(doc, COLORS.paper);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text('MONTHLY CLOSE', 29, 171, { charSpace: 1.25 });
+    doc.text('MONTHLY CLOSE', 29, 180, { charSpace: 1.25 });
     doc.setFontSize(27);
-    doc.text(formatMoney(model.closingBalance), 29, 190);
+    doc.text(formatMoney(model.closingBalance), 29, 199);
     setText(doc, model.returnAmount >= 0 ? [141, 214, 180] : [244, 161, 150]);
     doc.setFontSize(12);
-    doc.text(`${formatMoney(model.returnAmount, true)}  /  ${model.returnPercent >= 0 ? '+' : ''}${model.returnPercent.toFixed(2)}%`, 29, 203);
+    doc.text(`${formatMoney(model.returnAmount, true)}  /  ${model.returnPercent >= 0 ? '+' : ''}${model.returnPercent.toFixed(2)}%`, 29, 212);
     setText(doc, COLORS.paper);
     doc.setFontSize(9);
-    doc.text(`${model.stats.totalTrades} trades`, 177, 174, { align: 'right' });
-    doc.text(`${model.stats.winRate.toFixed(1)}% win rate`, 177, 186, { align: 'right' });
-    doc.text(model.stats.profitFactor >= 999 ? 'No losing trades' : `${formatProfitFactor(model.stats.profitFactor)} profit factor`, 177, 198, { align: 'right' });
+    doc.text(`${model.stats.totalTrades} trades`, 177, 183, { align: 'right' });
+    doc.text(`${model.stats.winRate.toFixed(1)}% win rate`, 177, 195, { align: 'right' });
+    doc.text(model.stats.profitFactor >= 999 ? 'No losing trades' : `${formatProfitFactor(model.stats.profitFactor)} profit factor`, 177, 207, { align: 'right' });
 
     setText(doc, [185, 198, 190]);
     doc.setFont('helvetica', 'normal');
@@ -301,11 +367,11 @@ const addCoverPage = (
     doc.text(`REPORT ID  ${model.periodKey}`, 191, 267, { align: 'right', charSpace: 0.8 });
 };
 
-const addExecutivePage = (doc: jsPDF, model: MonthlyTradingReportModel, typography: PdfTypography) => {
+const addExecutivePage = (doc: jsPDF, model: MonthlyTradingReportModel, typography: PdfTypography, officialLogoBase64?: string) => {
     doc.addPage();
     setFill(doc, COLORS.parchment);
     doc.rect(0, 0, 210, 297, 'F');
-    drawPageHeader(doc, `${model.periodLabel} / Executive review`);
+    drawPageHeader(doc, `${model.periodLabel} / Executive review`, officialLogoBase64);
     drawSectionTitle(doc, '01 / Performance', 'The month at a glance', 38);
 
     const cardWidth = 54;
@@ -318,22 +384,7 @@ const addExecutivePage = (doc: jsPDF, model: MonthlyTradingReportModel, typograp
     drawMetricCard(doc, 17 + cardWidth + gap, 91, cardWidth, 'Max drawdown', formatMoney(-model.advancedStats.maxDrawdownValue), model.advancedStats.maxDrawdownValue > 0 ? COLORS.loss : COLORS.muted);
     drawMetricCard(doc, 17 + (cardWidth + gap) * 2, 91, cardWidth, 'Average R', `${formatMetric(model.advancedStats.avgR)}R`);
 
-    setText(doc, COLORS.muted);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
-    doc.text('OPENING BALANCE', 17, 132, { charSpace: 0.8 });
-    doc.text('CLOSING BALANCE', 193, 132, { align: 'right', charSpace: 0.8 });
-    setText(doc, COLORS.ink);
-    doc.setFontSize(13);
-    doc.text(formatMoney(model.openingBalance), 17, 141);
-    doc.text(formatMoney(model.closingBalance), 193, 141, { align: 'right' });
-    setDraw(doc, COLORS.brass);
-    doc.setLineWidth(0.9);
-    doc.line(69, 138, 141, 138);
-    setFill(doc, COLORS.brass);
-    doc.circle(105, 138, 1.7, 'F');
-
-    drawEquityChart(doc, model, 151);
+    drawEquityChart(doc, model, 128);
 
     setText(doc, COLORS.brass);
     doc.setFont('helvetica', 'bold');
@@ -387,10 +438,10 @@ const addExecutivePage = (doc: jsPDF, model: MonthlyTradingReportModel, typograp
     });
 };
 
-const drawLedgerHeader = (doc: jsPDF, model: MonthlyTradingReportModel, continued = false) => {
+const drawLedgerHeader = (doc: jsPDF, model: MonthlyTradingReportModel, continued = false, officialLogoBase64?: string) => {
     setFill(doc, COLORS.parchment);
     doc.rect(0, 0, 210, 297, 'F');
-    drawPageHeader(doc, `${model.periodLabel} / Trade ledger`);
+    drawPageHeader(doc, `${model.periodLabel} / Trade ledger`, officialLogoBase64);
     drawSectionTitle(doc, '02 / Ledger', continued ? 'Trade ledger, continued' : 'Every decision, in sequence', 38);
 };
 
@@ -405,15 +456,18 @@ const drawTableHeader = (doc: jsPDF, y: number) => {
         ['MARKET', 46],
         ['SIDE', 76],
         ['SETUP', 96],
-        ['R', 139],
-        ['RESULT', 156],
+        ['R', 145],
+        ['RESULT', 189],
     ] as const;
-    headers.forEach(([label, x]) => doc.text(label, x, y + 6.5, { charSpace: 0.45 }));
+    headers.forEach(([label, x]) => doc.text(label, x, y + 6.5, {
+        align: label === 'R' || label === 'RESULT' ? 'right' : undefined,
+        charSpace: 0.45,
+    }));
 };
 
-const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography: PdfTypography) => {
+const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography: PdfTypography, officialLogoBase64?: string) => {
     doc.addPage();
-    drawLedgerHeader(doc, model);
+    drawLedgerHeader(doc, model, false, officialLogoBase64);
     let y = 59;
     drawTableHeader(doc, y);
     y += 13;
@@ -440,16 +494,18 @@ const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography
 
         if (y + rowHeight > 276) {
             doc.addPage();
-            drawLedgerHeader(doc, model, true);
+            drawLedgerHeader(doc, model, true, officialLogoBase64);
             y = 59;
             drawTableHeader(doc, y);
             y += 13;
         }
 
-        if (index % 2 === 0) {
-            setFill(doc, COLORS.paper);
-            doc.roundedRect(17, y - 2, 176, rowHeight, 2, 2, 'F');
-        }
+        setFill(doc, index % 2 === 0 ? COLORS.paper : COLORS.parchment);
+        setDraw(doc, COLORS.line);
+        doc.setLineWidth(0.2);
+        doc.roundedRect(17, y - 2, 176, rowHeight, 2, 2, 'FD');
+        setFill(doc, trade.pnl >= 0 ? COLORS.profit : COLORS.loss);
+        doc.roundedRect(17, y - 2, 1.8, rowHeight, 1, 1, 'F');
         setText(doc, COLORS.ink);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
@@ -465,7 +521,7 @@ const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography
         const setupIsRtl = setJournalFont(doc, setup, typography, 'bold');
         doc.text(setup, setupIsRtl ? 133 : 96, y + 5, setupIsRtl ? { align: 'right', R2L: true } : undefined);
         doc.setFont('helvetica', 'bold');
-        doc.text(trade.rr === null ? '--' : `${trade.rr.toFixed(1)}R`, 139, y + 5);
+        doc.text(trade.rr === null ? '--' : `${trade.rr.toFixed(1)}R`, 145, y + 5, { align: 'right' });
         setText(doc, trade.pnl >= 0 ? COLORS.profit : COLORS.loss);
         doc.text(formatMoney(trade.pnl, true), 189, y + 5, { align: 'right' });
 
@@ -480,6 +536,9 @@ const addLedgerPages = (doc: jsPDF, model: MonthlyTradingReportModel, typography
         } else {
             doc.text(`${trade.emotion}  /  ${trade.status}`, 21, y + 12);
         }
+        setDraw(doc, COLORS.line);
+        doc.setLineWidth(0.2);
+        doc.line(59, y + 8, 59, y + rowHeight - 3);
         const notesAreRtl = setJournalFont(doc, noteLines, typography);
         doc.text(noteLines, notesAreRtl ? 189 : 63, y + 12, notesAreRtl ? { align: 'right', R2L: true } : undefined);
         y += rowHeight + 2;
@@ -536,27 +595,43 @@ export const createMonthlyReportDocument = async (
         keywords: 'trading journal, monthly review, performance, risk, discipline',
     });
 
-    addCoverPage(doc, model, typography, data.userEmail);
-    addExecutivePage(doc, model, typography);
-    addLedgerPages(doc, model, typography);
+    addCoverPage(doc, model, typography, data.userEmail, options.officialLogoBase64);
+    addExecutivePage(doc, model, typography, options.officialLogoBase64);
+    addLedgerPages(doc, model, typography, options.officialLogoBase64);
     addFooters(doc, model);
     return doc;
 };
 
 export const generateMonthlyReport = async (data: ReportData): Promise<void> => {
-    const response = await fetch('/fonts/NotoSansArabic-Regular.ttf');
-    if (!response.ok) {
-        throw new Error(`Unable to load the PDF Unicode font (${response.status}).`);
+    if (data.canCommit && !data.canCommit()) return;
+    const [fontResponse, logoResponse] = await Promise.all([
+        fetch('/fonts/NotoSansArabic-Regular.ttf'),
+        fetch(OFFICIAL_LOGO_PATH),
+    ]);
+    if (!fontResponse.ok) {
+        throw new Error(`Unable to load the PDF Unicode font (${fontResponse.status}).`);
     }
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    let binary = '';
-    const chunkSize = 0x8000;
-    for (let offset = 0; offset < bytes.length; offset += chunkSize) {
-        binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+    if (!logoResponse.ok) {
+        throw new Error(`Unable to load the official PDF logo (${logoResponse.status}).`);
     }
+    const [fontBytes, logoBytes] = await Promise.all([
+        fontResponse.arrayBuffer(),
+        logoResponse.arrayBuffer(),
+    ]).then(([font, logo]) => [new Uint8Array(font), new Uint8Array(logo)]);
+    if (data.canCommit && !data.canCommit()) return;
+    const toBase64 = (bytes: Uint8Array): string => {
+        let binary = '';
+        const chunkSize = 0x8000;
+        for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+        }
+        return btoa(binary);
+    };
     const doc = await createMonthlyReportDocument(data, {
-        unicodeFontBase64: btoa(binary),
+        unicodeFontBase64: toBase64(fontBytes),
+        officialLogoBase64: toBase64(logoBytes),
     });
+    if (data.canCommit && !data.canCommit()) return;
     doc.save(getTradingReportFilename(data.month, data.year));
 };
 

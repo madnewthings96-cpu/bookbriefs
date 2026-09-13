@@ -8,11 +8,9 @@
   --downloads-brass: #c89a49;
   --downloads-muted: #64756c;
   position: relative;
-  left: 50%;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   margin-top: -2rem;
-  margin-left: -50vw;
   overflow: hidden;
   background:
     radial-gradient(circle at 82% 15%, rgba(200, 154, 73, 0.12), transparent 24rem),

@@ -1,5 +1,5 @@
-import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
     X,
     ExternalLink,
@@ -11,6 +11,7 @@ import {
     Target,
 } from 'lucide-react';
 import { Trade, formatCurrency } from '../../utils/tradingUtils';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface SelectedDay {
     date: Date;
@@ -72,7 +73,8 @@ const TradeBody: React.FC<{
     trade: Trade;
     onEdit: (trade: Trade) => void;
     onDelete: (tradeId: string) => void;
-}> = ({ trade, onEdit, onDelete }) => {
+    titleId: string;
+}> = ({ trade, onEdit, onDelete, titleId }) => {
     const pnlTone = trade.pnl > 0 ? 'profit' : trade.pnl < 0 ? 'loss' : 'neutral';
     const pricePrecision = trade.symbol.toUpperCase().includes('XAUUSD')
         ? 2
@@ -87,7 +89,7 @@ const TradeBody: React.FC<{
                     <div>
                         <p className="text-sm font-medium text-gray-500">{formatTradeDate(trade)}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                            <h2 className="text-2xl font-bold text-gray-900 text-balance">{trade.symbol}</h2>
+                            <h2 id={titleId} className="text-2xl font-bold text-gray-900 text-balance">{trade.symbol}</h2>
                             <span className={`rounded-md px-2 py-1 text-xs font-semibold ${trade.direction === 'LONG'
                                 ? 'bg-emerald-50 text-emerald-700'
                                 : 'bg-rose-50 text-rose-700'
@@ -159,10 +161,10 @@ const TradeBody: React.FC<{
                                 href={trade.screenshotUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-gray-800 active:scale-[0.96]"
+                                className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96]"
                             >
                                 Open screenshot
-                                <ExternalLink className="h-4 w-4" />
+                                <ExternalLink aria-hidden="true" className="h-4 w-4" />
                             </a>
                         </section>
                     )}
@@ -173,18 +175,18 @@ const TradeBody: React.FC<{
                 <button
                     type="button"
                     onClick={() => onEdit(trade)}
-                    className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 active:scale-[0.96]"
+                    className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96]"
                 >
-                    <Pencil className="h-4 w-4" />
+                    <Pencil aria-hidden="true" className="h-4 w-4" />
                     Edit
                 </button>
                 <button
                     type="button"
                     onClick={() => onDelete(trade.id)}
-                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition-[scale,background-color] duration-150 ease-out hover:bg-rose-100 active:scale-[0.96]"
-                    title="Delete trade"
-                >
-                    <Trash2 className="h-4 w-4" />
+                                aria-label={`Delete ${trade.symbol} trade`}
+                                className="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-600 transition-[scale,background-color] duration-150 ease-out hover:bg-rose-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 active:scale-[0.96]"
+                            >
+                                <Trash2 aria-hidden="true" className="h-4 w-4" />
                 </button>
             </div>
         </div>
@@ -194,7 +196,8 @@ const TradeBody: React.FC<{
 const DayBody: React.FC<{
     day: SelectedDay;
     onSelectTrade: (trade: Trade) => void;
-}> = ({ day, onSelectTrade }) => {
+    titleId: string;
+}> = ({ day, onSelectTrade, titleId }) => {
     const dayPnL = day.trades.reduce((sum, trade) => sum + trade.pnl, 0);
     const wins = day.trades.filter((trade) => trade.status === 'WIN').length;
     const losses = day.trades.filter((trade) => trade.status === 'LOSS').length;
@@ -211,7 +214,7 @@ const DayBody: React.FC<{
                     <CalendarDays className="h-4 w-4" />
                     Day Review
                 </p>
-                <h2 className="mt-2 text-2xl font-bold text-gray-900 text-balance">{formatDayDate(day.date)}</h2>
+                <h2 id={titleId} className="mt-2 text-2xl font-bold text-gray-900 text-balance">{formatDayDate(day.date)}</h2>
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-5">
@@ -228,7 +231,7 @@ const DayBody: React.FC<{
                             key={trade.id}
                             type="button"
                             onClick={() => onSelectTrade(trade)}
-                            className="w-full rounded-xl bg-white p-4 text-left shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] transition-[scale,box-shadow] duration-150 ease-out hover:shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_2px_-1px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.06)] active:scale-[0.96]"
+                            className="min-h-11 w-full rounded-xl bg-white p-4 text-left shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)] transition-[scale,box-shadow] duration-150 ease-out hover:shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_2px_-1px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96]"
                         >
                             <div className="flex items-start justify-between gap-3">
                                 <div>
@@ -272,6 +275,11 @@ const TradingReviewDrawer: React.FC<TradingReviewDrawerProps> = ({
     onSelectTrade,
 }) => {
     const isOpen = !!trade || !!day;
+    const titleId = 'trading-review-drawer-title';
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
+    const dialogRef = useModalDialog({ open: isOpen, onClose, initialFocusRef: closeButtonRef });
+    const shouldReduceMotion = useReducedMotion();
+    const inlineEndOffset = typeof document !== 'undefined' && document.documentElement.dir === 'rtl' ? '-100%' : '100%';
 
     return (
         <AnimatePresence initial={false}>
@@ -280,35 +288,41 @@ const TradingReviewDrawer: React.FC<TradingReviewDrawerProps> = ({
                     <motion.button
                         type="button"
                         aria-label="Close review drawer"
-                        className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px]"
+                        className="absolute inset-0 bg-gray-900/40 backdrop-blur-[2px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
                         onClick={onClose}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        transition={{ duration: shouldReduceMotion ? 0 : 0.15, ease: 'easeOut' }}
                     />
                     <motion.aside
+                        ref={dialogRef}
                         role="dialog"
                         aria-modal="true"
-                        className="absolute right-0 top-0 h-full w-full max-w-xl overflow-hidden bg-white shadow-2xl sm:rounded-l-2xl"
-                        initial={{ x: '100%' }}
+                        aria-labelledby={titleId}
+                        aria-label="Trading review"
+                        tabIndex={-1}
+                        className="absolute inset-y-0 end-0 h-full w-full max-w-xl overflow-hidden bg-white shadow-2xl sm:rounded-s-2xl"
+                        style={{ insetInlineEnd: 0 }}
+                        initial={{ x: shouldReduceMotion ? 0 : inlineEndOffset }}
                         animate={{ x: 0 }}
-                        exit={{ x: '100%' }}
-                        transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
+                        exit={{ x: shouldReduceMotion ? 0 : inlineEndOffset }}
+                        transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', duration: 0.3, bounce: 0 }}
                     >
                         <button
                             type="button"
+                            ref={closeButtonRef}
                             onClick={onClose}
-                            className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/90 text-gray-500 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-900 active:scale-[0.96]"
-                            title="Close"
+                            aria-label="Close review drawer"
+                            className="absolute end-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-white/90 text-gray-500 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)] transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 active:scale-[0.96]"
                         >
-                            <X className="h-5 w-5" />
+                            <X aria-hidden="true" className="h-5 w-5" />
                         </button>
 
                         {trade ? (
-                            <TradeBody trade={trade} onEdit={onEdit} onDelete={onDelete} />
+                            <TradeBody trade={trade} onEdit={onEdit} onDelete={onDelete} titleId={titleId} />
                         ) : day ? (
-                            <DayBody day={day} onSelectTrade={onSelectTrade} />
+                            <DayBody day={day} onSelectTrade={onSelectTrade} titleId={titleId} />
                         ) : null}
                     </motion.aside>
                 </div>

@@ -256,7 +256,7 @@ const TradingCommandCenter: React.FC<TradingCommandCenterProps> = ({
                 </div>
             </section>
 
-            <section className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+            <section className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
                 <EquityCurve data={equityCurveData} goals={goals} />
 
                 <div className="space-y-4">

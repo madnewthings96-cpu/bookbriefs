@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { useModalDialog } from '../hooks/useModalDialog';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -15,30 +16,15 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
   const { user } = useAuth();
 
-  // Close modal on Escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
-
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+  const handleClose = () => {
+    if (!isSubmitting) {
+      setFeedback('');
+      setSubmitSuccess(false);
+      onClose();
     }
+  };
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const dialogRef = useModalDialog({ open: isOpen, onClose });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,32 +70,34 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleClose = () => {
-    if (!isSubmitting) {
-      setFeedback('');
-      setSubmitSuccess(false);
-      onClose();
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fadeIn">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={handleClose}
+        aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 animate-scaleIn">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-modal-title"
+        tabIndex={-1}
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 animate-scaleIn"
+      >
+        <h2 id="feedback-modal-title" className="sr-only">Send feedback</h2>
         {/* Close Button */}
         <button
+          type="button"
           onClick={handleClose}
           disabled={isSubmitting}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200 disabled:opacity-50"
           aria-label="Close modal"
+          className="absolute top-4 right-4 inline-flex h-11 w-11 items-center justify-center text-gray-400 hover:text-gray-600 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-50"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -140,11 +128,13 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
             <form onSubmit={handleSubmit}>
               {/* Textarea */}
               <div className="mb-6">
+                <label htmlFor="feedback-message" className="sr-only">Tell us what we can improve</label>
                 <textarea
+                  id="feedback-message"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Start typing..."
-                  className="w-full h-32 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all duration-200"
+                  className="w-full h-32 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors duration-200"
                   disabled={isSubmitting}
                   required
                 />
@@ -161,7 +151,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isSubmitting || !feedback.trim()}
-                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl"
+                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded-full transition-[background-color,box-shadow,transform] duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">

@@ -34,6 +34,21 @@ const translations = {
     signup: 'Sign Up',
     logout: 'Logout',
     welcome: 'Welcome',
+
+    // Dashboard shell
+    dashboardOverview: 'Overview',
+    dashboardDiscover: 'Discover',
+    dashboardLibrary: 'Library',
+    dashboardNotes: 'Notes',
+    dashboardChallenge: 'Challenge',
+    dashboardTools: 'Tools',
+    dashboardDownloads: 'Downloads',
+    dashboardCalculators: 'Calculators',
+    dashboardFinance: 'Finance Tracker',
+    dashboardTrading: 'Trading Journal',
+    dashboardSendFeedback: 'Send feedback',
+    dashboardSettings: 'Settings',
+    dashboardMore: 'More',
     
     // Homepage
     heroTitle: 'Unlock Big Ideas, Faster.',

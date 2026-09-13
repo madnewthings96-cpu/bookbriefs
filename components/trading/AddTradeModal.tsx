@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     TradeFormData,
     Trade,
@@ -9,6 +9,8 @@ import {
     getInitialTradeFormData,
 } from '../../utils/tradingUtils';
 import { X, ArrowLeft, Loader2 } from 'lucide-react';
+import { AsyncIdentityGuard } from '../asyncIdentityGuard';
+import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface AddTradeModalProps {
     isOpen: boolean;
@@ -27,7 +29,21 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
     const [calculatedPnL, setCalculatedPnL] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isCustomSetup, setIsCustomSetup] = useState(false);
-    const [isManualPnL, setIsManualPnL] = useState(false);
+    const [isManualPnL, setIsManualPnL] = useState(Boolean(editingTrade));
+    const operationGuard = useRef(new AsyncIdentityGuard()).current;
+    const symbolInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        operationGuard.mount();
+        return () => operationGuard.unmount();
+    }, [operationGuard]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            operationGuard.invalidate();
+            setIsSubmitting(false);
+        }
+    }, [isOpen, operationGuard]);
 
     // Initialize form when editing or opening
     useEffect(() => {
@@ -87,67 +103,98 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
         setIsManualPnL((current) => !current);
     };
 
+    const handleClose = () => {
+        operationGuard.invalidate();
+        onClose();
+    };
+
+    const dialogRef = useModalDialog({ open: isOpen, onClose: handleClose, initialFocusRef: symbolInputRef });
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) return;
 
+        const token = operationGuard.begin();
+        if (!token) return;
         setIsSubmitting(true);
         try {
             const pnlValue = parseFloat(calculatedPnL) || 0;
             const status = determineStatus(pnlValue);
+            if (!operationGuard.isCurrent(token)) return;
             await onSave(formData, pnlValue, status);
+            if (!operationGuard.isCurrent(token)) return;
+            setIsSubmitting(false);
+            operationGuard.invalidate();
             onClose();
         } catch (error) {
-            console.error('Error saving trade:', error);
+            if (operationGuard.isCurrent(token)) console.error('Error saving trade:', error);
         } finally {
-            setIsSubmitting(false);
+            if (operationGuard.isCurrent(token)) setIsSubmitting(false);
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#102e24]/75 p-4 backdrop-blur-[8px]"
+            onMouseDown={(event) => event.target === event.currentTarget && handleClose()}
+        >
             <div
-                className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto border border-gray-200"
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="add-trade-modal-title"
+                aria-describedby="add-trade-modal-description"
+                tabIndex={-1}
+                className="flex max-h-[90vh] w-full max-w-[800px] flex-col overflow-hidden rounded-[20px] border border-[#b08d57]/45 bg-[#fffdf7] shadow-[0_24px_70px_rgba(16,46,36,0.34)] [&_input]:min-h-11 [&_select]:min-h-11 [&_textarea]:min-h-11"
                 style={{ fontFamily: "'Inter', 'Manrope', sans-serif" }}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-5 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-800">
-                        {editingTrade ? 'Edit Trade' : 'Log New Trade'}
-                    </h2>
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[#b08d57]/30 px-6 py-5">
+                    <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a6b3f]">Fieldbook entry</p>
+                        <h2 id="add-trade-modal-title" className="mt-1 font-serif text-2xl font-bold text-[#173b2f]">{editingTrade ? 'Edit trade' : 'Log a trade'}</h2>
+                        <p id="add-trade-modal-description" className="mt-1 text-sm text-[#52665e]">Record the execution and decision context.</p>
+                    </div>
                     <button
-                        onClick={onClose}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-[scale,color,background-color] duration-150 ease-out hover:bg-gray-50 hover:text-gray-600 active:scale-[0.96]"
-                        title="Close"
+                        type="button"
+                        onClick={handleClose}
+                        aria-label="Close trade dialog"
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-[#52665e] transition-[scale,color,background-color] duration-150 ease-out hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
                     >
-                        <X className="w-6 h-6" />
+                        <X aria-hidden="true" className="h-5 w-5" />
                     </button>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                <form id="add-trade-form" onSubmit={handleSubmit} className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    <section aria-labelledby="trade-execution-heading" className="space-y-4">
+                    <h3 id="trade-execution-heading" className="border-b border-[#b08d57]/25 pb-2 text-sm font-bold uppercase tracking-[0.14em] text-[#6f5834]">Execution</h3>
                     {/* Symbol & Direction Row */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Symbol</label>
+                            <label htmlFor="trade-symbol" className="block text-sm font-medium text-gray-700 mb-1.5">Symbol</label>
                             <input
+                                id="trade-symbol"
+                                ref={symbolInputRef}
                                 type="text"
                                 value={formData.symbol}
                                 onChange={(e) => setFormData({ ...formData, symbol: e.target.value.toUpperCase() })}
                                 placeholder="XAUUSD"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Direction</label>
+                            <fieldset>
+                                <legend className="mb-1.5 block text-sm font-medium text-gray-700">Direction</legend>
                             <div className="flex bg-gray-100 rounded-lg p-1">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'LONG' })}
-                                    className={`flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${formData.direction === 'LONG'
+                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${formData.direction === 'LONG'
                                         ? 'bg-emerald-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -157,7 +204,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, direction: 'SHORT' })}
-                                    className={`flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${formData.direction === 'SHORT'
+                                    className={`min-h-11 flex-1 rounded-md py-2 font-medium transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${formData.direction === 'SHORT'
                                         ? 'bg-rose-500 text-white'
                                         : 'text-gray-600 hover:text-gray-800'
                                         }`}
@@ -165,84 +212,90 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                     SHORT
                                 </button>
                             </div>
+                            </fieldset>
                         </div>
                     </div>
 
                     {/* Entry Date */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Entry Date</label>
+                        <label htmlFor="trade-entry-date" className="block text-sm font-medium text-gray-700 mb-1.5">Entry Date</label>
                         <input
+                            id="trade-entry-date"
                             type="date"
                             value={formData.entryDate}
                             onChange={(e) => setFormData({ ...formData, entryDate: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                             required
                         />
                     </div>
 
                     {/* Entry/Exit/Stop Loss Row */}
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Entry Price</label>
+                            <label htmlFor="trade-entry-price" className="block text-sm font-medium text-gray-700 mb-1.5">Entry Price</label>
                             <input
+                                id="trade-entry-price"
                                 type="number"
                                 step="any"
                                 value={formData.entryPrice}
                                 onChange={(e) => setFormData({ ...formData, entryPrice: e.target.value })}
                                 placeholder="Entry Price"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Exit Price</label>
+                            <label htmlFor="trade-exit-price" className="block text-sm font-medium text-gray-700 mb-1.5">Exit Price</label>
                             <input
+                                id="trade-exit-price"
                                 type="number"
                                 step="any"
                                 value={formData.exitPrice}
                                 onChange={(e) => setFormData({ ...formData, exitPrice: e.target.value })}
                                 placeholder="Exit Price"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Stop Loss</label>
+                            <label htmlFor="trade-stop-loss" className="block text-sm font-medium text-gray-700 mb-1.5">Stop Loss</label>
                             <input
+                                id="trade-stop-loss"
                                 type="number"
                                 step="any"
                                 value={formData.stopLoss}
                                 onChange={(e) => setFormData({ ...formData, stopLoss: e.target.value })}
                                 placeholder="Stop Loss"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
                     </div>
 
                     {/* Lot Size & Calculated P&L Row */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Lot Size</label>
+                            <label htmlFor="trade-lot-size" className="block text-sm font-medium text-gray-700 mb-1.5">Lot Size</label>
                             <input
+                                id="trade-lot-size"
                                 type="number"
                                 step="0.01"
                                 min="0.01"
                                 value={formData.lotSize}
                                 onChange={(e) => setFormData({ ...formData, lotSize: e.target.value })}
                                 placeholder="0.10"
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             />
                         </div>
-                        <div>
+                        <div className="rounded-xl border border-[#b08d57]/40 bg-[#f5eedf] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                             <div className="mb-1.5 flex items-center justify-between gap-2">
-                                <label className="block text-sm font-medium text-gray-700">P&L ($)</label>
+                                <label htmlFor="trade-pnl" className="block text-sm font-medium text-gray-700">P&L ($)</label>
                                 <button
                                     type="button"
                                     onClick={handleManualPnLToggle}
-                                    className={`rounded-md px-2 py-1 text-xs font-semibold transition-[scale,background-color,color] duration-150 ease-out active:scale-[0.96] ${isManualPnL
-                                        ? 'bg-orange-50 text-orange-600'
+                                    className={`min-h-11 rounded-md px-2 py-1 text-xs font-semibold transition-[scale,background-color,color] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none ${isManualPnL
+                                        ? 'bg-[#efe7d6] text-[#6f5834]'
                                         : 'bg-emerald-50 text-emerald-600'
                                         }`}
                                     title={isManualPnL ? 'Switch to automatic P&L' : 'Override calculated P&L'}
@@ -251,13 +304,14 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 </button>
                             </div>
                             <input
+                                id="trade-pnl"
                                 type="number"
                                 step="any"
                                 value={calculatedPnL}
                                 onChange={(e) => setCalculatedPnL(e.target.value)}
                                 readOnly={!isManualPnL}
                                 placeholder={isManualPnL ? '0.00' : 'Auto'}
-                                className={`w-full rounded-lg border px-4 py-2.5 text-lg font-bold tabular-nums transition-colors focus:border-transparent focus:ring-2 focus:ring-orange-400 ${!isManualPnL ? 'cursor-not-allowed' : ''} ${parseFloat(calculatedPnL || '0') > 0
+                                className={`w-full rounded-lg border px-4 py-2.5 text-lg font-bold tabular-nums transition-colors focus:border-transparent focus:ring-2 focus:ring-[#9a7b45] ${!isManualPnL ? 'cursor-not-allowed' : ''} ${parseFloat(calculatedPnL || '0') > 0
                                     ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                     : parseFloat(calculatedPnL || '0') < 0
                                         ? 'bg-rose-50 text-rose-600 border-rose-200'
@@ -267,18 +321,21 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Setup */}
+                    </section>
+                    <section aria-labelledby="trade-review-heading" className="space-y-4">
+                    <h3 id="trade-review-heading" className="border-b border-[#b08d57]/25 pb-2 text-sm font-bold uppercase tracking-[0.14em] text-[#6f5834]">Review context</h3>
                     {/* Setup */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Setup / Strategy</label>
+                        <label htmlFor="trade-setup" className="block text-sm font-medium text-gray-700 mb-1.5">Setup / Strategy</label>
                         {isCustomSetup ? (
                             <div className="flex gap-2">
                                 <input
+                                    id="trade-setup"
                                     type="text"
                                     value={formData.setup}
                                     onChange={(e) => setFormData({ ...formData, setup: e.target.value })}
                                     placeholder="Enter your custom strategy..."
-                                    className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                    className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                     required
                                     autoFocus
                                 />
@@ -288,14 +345,15 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                         setIsCustomSetup(false);
                                         setFormData({ ...formData, setup: '' });
                                     }}
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-200 hover:text-gray-700 active:scale-[0.96]"
-                                    title="Back to list"
+                                    aria-label="Back to setup list"
+                                    className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-[scale,background-color,color] duration-150 ease-out hover:bg-gray-200 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-1 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <ArrowLeft className="w-5 h-5" />
+                                    <ArrowLeft className="h-5 w-5 rtl:rotate-180" />
                                 </button>
                             </div>
                         ) : (
                             <select
+                                id="trade-setup"
                                 value={formData.setup}
                                 onChange={(e) => {
                                     if (e.target.value === '__custom__') {
@@ -305,14 +363,14 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                         setFormData({ ...formData, setup: e.target.value });
                                     }
                                 }}
-                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                                 required
                             >
                                 <option value="">Select setup...</option>
                                 {SETUP_OPTIONS.map((setup) => (
                                     <option key={setup} value={setup}>{setup}</option>
                                 ))}
-                                <option value="__custom__" className="font-semibold text-orange-600 bg-orange-50">
+                                <option value="__custom__" className="bg-[#efe7d6] font-semibold text-[#6f5834]">
                                     + Add New Strategy...
                                 </option>
                             </select>
@@ -321,14 +379,15 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
 
                     {/* Psychology / Emotions - Key Feature */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label htmlFor="trade-emotions" className="block text-sm font-medium text-gray-700 mb-1.5">
                             Psychology / Emotions
-                            <span className="ml-2 text-xs text-orange-500 font-normal">Key Insight</span>
+                            <span className="ms-2 text-xs font-normal text-[#8a6b3f]">Key Insight</span>
                         </label>
                         <select
+                            id="trade-emotions"
                             value={formData.emotions}
                             onChange={(e) => setFormData({ ...formData, emotions: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                             required
                         >
                             {EMOTION_OPTIONS.map((emotion) => (
@@ -339,46 +398,54 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
 
                     {/* Notes */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Notes (Optional)</label>
+                        <label htmlFor="trade-notes" className="block text-sm font-medium text-gray-700 mb-1.5">Notes (Optional)</label>
                         <textarea
+                            id="trade-notes"
                             value={formData.notes}
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             placeholder="What did you learn from this trade?"
                             rows={3}
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent resize-none"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent resize-none"
                         />
                     </div>
 
                     {/* Screenshot URL */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Screenshot URL (Optional)</label>
+                        <label htmlFor="trade-screenshot-url" className="block text-sm font-medium text-gray-700 mb-1.5">Screenshot URL (Optional)</label>
                         <input
+                            id="trade-screenshot-url"
                             type="url"
                             value={formData.screenshotUrl}
                             onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
                             placeholder="https://tradingview.com/..."
-                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                            className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-[#9a7b45] focus:border-transparent"
                         />
                     </div>
-
-                    {/* Submit Button */}
-                    <div className="pt-2">
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 py-3 font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-orange-600 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="animate-spin h-5 w-5" />
-                                    Saving...
-                                </>
-                            ) : (
-                                editingTrade ? 'Update Trade' : 'Log Trade'
-                            )}
-                        </button>
+                    </section>
                     </div>
                 </form>
+                <div className="flex shrink-0 items-center justify-end gap-3 border-t border-[#b08d57]/30 bg-[#fffaf0] px-6 py-4">
+                    <button
+                        type="button"
+                        onClick={handleClose}
+                        className="min-h-11 rounded-lg px-4 py-2 text-sm font-semibold text-[#52665e] transition-[scale,color,background-color] hover:bg-[#efe7d6] hover:text-[#173b2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        form="add-trade-form"
+                        disabled={isSubmitting}
+                        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#173b2f] px-5 py-3 text-sm font-semibold text-white transition-[scale,background-color] duration-150 ease-out hover:bg-[#102e24] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7b45] focus-visible:ring-offset-2 active:scale-[0.96] motion-reduce:transform-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="h-5 w-5 animate-spin motion-reduce:animate-none" />
+                                Saving...
+                            </>
+                        ) : (editingTrade ? 'Update trade' : 'Log trade')}
+                    </button>
+                </div>
             </div >
         </div >
     );

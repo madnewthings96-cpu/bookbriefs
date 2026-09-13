@@ -524,13 +524,13 @@ export const calculateBreakdownStats = (
  */
 export const filterEquityByTimeRange = (
     equityPoints: EquityPoint[],
-    range: TimeRange
+    range: TimeRange,
+    now: Date = new Date()
 ): EquityPoint[] => {
     if (range === 'ALL' || equityPoints.length === 0) {
         return equityPoints;
     }
 
-    const now = new Date();
     let cutoffDate: Date;
 
     switch (range) {
@@ -558,22 +558,16 @@ export const filterEquityByTimeRange = (
 
     const cutoffTime = cutoffDate.getTime();
 
-    // Filter points, but always include the starting point if it falls within range OR just re-normalize?
-    // Actually, usually charts just show data within that range.
-    // If we cut off the start, we might start from a non-zero PnL relative to that range start.
-    // But equity curve usually shows absolute equity. So it's fine.
-
-    // Strategy: Include all points after cutoff. 
-    // And include the point just BEFORE cutoff as the "start" for continuity?
-
     const filtered = equityPoints.filter((point) => point.timestamp >= cutoffTime);
 
-    // If no points in range, return at least the last known point or something
     if (filtered.length === 0) {
         return [equityPoints[equityPoints.length - 1]];
     }
 
-    return filtered;
+    const firstPointIndex = equityPoints.indexOf(filtered[0]);
+    const precedingPoint = firstPointIndex > 0 ? equityPoints[firstPointIndex - 1] : undefined;
+
+    return precedingPoint ? [precedingPoint, ...filtered] : filtered;
 };
 
 /**
