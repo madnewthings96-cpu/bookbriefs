@@ -1,5 +1,5 @@
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { deleteObject, getBlob, ref, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 
 export type NewsRepositoryErrorCode = 'permission' | 'offline' | 'validation' | 'conflict' | 'unknown';
@@ -18,6 +18,22 @@ export class NewsRepositoryError extends Error {
 export interface NewsImageUpload {
   imagePath: string;
   imageUrl: string;
+}
+
+const STORAGE_MEDIA_BASE_URL = 'https://firebasestorage.googleapis.com/v0/b';
+
+export function buildNewsImageUrl(bucket: string, imagePath: string): string {
+  const normalizedBucket = bucket.replace(/^gs:\/\//, '').replace(/\/$/, '');
+  if (!normalizedBucket || !imagePath) {
+    throw new NewsRepositoryError('validation', 'A configured Storage bucket and image path are required.');
+  }
+  return `${STORAGE_MEDIA_BASE_URL}/${encodeURIComponent(normalizedBucket)}/o/${encodeURIComponent(imagePath)}?alt=media`;
+}
+
+export function getNewsImageUrl(imagePath: string): string {
+  const bucket = storage.app.options.storageBucket;
+  if (!bucket) throw new NewsRepositoryError('validation', 'A Firebase Storage bucket is not configured.');
+  return buildNewsImageUrl(bucket, imagePath);
 }
 
 const isRepositoryError = (error: unknown): error is NewsRepositoryError => error instanceof NewsRepositoryError;
@@ -75,11 +91,18 @@ export async function uploadNewsImage(
         if (snapshot.totalBytes > 0) onProgress?.(snapshot.bytesTransferred / snapshot.totalBytes);
       }, reject, resolve);
     });
-    const imageUrl = await getDownloadURL(imageRef);
+    const imageUrl = getNewsImageUrl(imagePath);
     const oldImagePath = typeof existing.data().imagePath === 'string' ? existing.data().imagePath : '';
     await updateDoc(articleRef, { imagePath, imageUrl, updatedAt: serverTimestamp() });
     if (oldImagePath && oldImagePath !== imagePath) await deleteNewsImage(oldImagePath);
     return { imagePath, imageUrl };
+  });
+}
+
+export async function loadNewsImageBlob(imagePath: string): Promise<Blob> {
+  return imageOperation(async () => {
+    if (!imagePath) throw new NewsRepositoryError('validation', 'An image path is required.');
+    return getBlob(ref(storage, imagePath));
   });
 }
 

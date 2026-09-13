@@ -130,6 +130,25 @@ describe('Firestore security rules', () => {
       await assertFails(db.doc('newsArticles/missing').set(missingTitle));
     });
 
+    it('requires server timestamps and protects first-publication time', async () => {
+      const db = adminContext().firestore();
+      await assertFails(db.doc('newsArticles/forged-draft').set(newsPayload({
+        status: 'draft', createdAt: storedTimestamp(), updatedAt: storedTimestamp(), publishedAt: storedTimestamp(),
+      })));
+      await assertFails(db.doc('newsArticles/forged-publication').set(newsPayload({ publishedAt: storedTimestamp() })));
+
+      const article = db.doc('newsArticles/timestamped');
+      await assertSucceeds(article.set(newsPayload({ status: 'draft', publishedAt: null })));
+      await assertFails(article.update({ status: 'published', publishedAt: storedTimestamp(), updatedAt: timestamp() }));
+      await assertSucceeds(article.update({ status: 'published', publishedAt: timestamp(), updatedAt: timestamp() }));
+      const publishedAt = (await article.get()).data().publishedAt;
+      await assertFails(article.update({ status: 'draft', publishedAt: storedTimestamp(), updatedAt: timestamp() }));
+      await assertFails(article.update({ status: 'draft', publishedAt, updatedAt: storedTimestamp() }));
+      await assertSucceeds(article.update({ status: 'draft', updatedAt: timestamp() }));
+      await assertSucceeds(article.update({ status: 'published', updatedAt: timestamp() }));
+      assert.equal((await article.get()).data().publishedAt.toMillis(), publishedAt.toMillis());
+    });
+
     it('supports incomplete drafts and the publish, feature, unpublish, republish, delete lifecycle', async () => {
       const db = adminContext().firestore();
       const article = db.doc('newsArticles/story');

@@ -98,6 +98,13 @@ service cloud.firestore {
              ));
     }
 
+    function isValidNewsPublicationTransition(existing, next) {
+      return existing.publishedAt == null
+        ? ((next.status == 'draft' && next.publishedAt == null) ||
+           (next.status == 'published' && next.publishedAt == request.time))
+        : next.publishedAt == existing.publishedAt;
+    }
+
     function isPublishedNews(articleId) {
       return articleId is string &&
              exists(/databases/$(database)/documents/newsArticles/$(articleId)) &&
@@ -113,13 +120,13 @@ service cloud.firestore {
     match /newsArticles/{articleId} {
       allow get, list: if isAdmin() || resource.data.status == 'published';
       allow create: if isAdmin() && isValidNewsArticle(request.resource.data) &&
-                    request.resource.data.createdAt == request.time;
+                    request.resource.data.createdAt == request.time &&
+                    ((request.resource.data.status == 'draft' && request.resource.data.publishedAt == null) ||
+                     (request.resource.data.status == 'published' && request.resource.data.publishedAt == request.time));
       allow update: if isAdmin() && isValidNewsArticle(request.resource.data) &&
                     request.resource.data.createdAt == resource.data.createdAt &&
-                    (resource.data.publishedAt == null || (
-                      request.resource.data.publishedAt == resource.data.publishedAt &&
-                      request.resource.data.slug == resource.data.slug
-                    ));
+                    isValidNewsPublicationTransition(resource.data, request.resource.data) &&
+                    (resource.data.publishedAt == null || request.resource.data.slug == resource.data.slug);
       allow delete: if isAdmin();
     }
 

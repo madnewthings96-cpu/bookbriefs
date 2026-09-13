@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { after, before, beforeEach, describe, it } from 'node:test';
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing';
@@ -10,6 +11,10 @@ const adminContext = () => testEnv.authenticatedContext('admin-user', { email: '
 const authContext = () => testEnv.authenticatedContext('reader', { email: 'reader@example.com' });
 const upload = (context, path = 'news/story/lead.jpg', contentType = 'image/jpeg', bytes = new Uint8Array(5)) =>
   context.storage().ref(path).put(bytes, { contentType });
+const mediaUrl = (storageRef) => {
+  const host = process.env.FIREBASE_STORAGE_EMULATOR_HOST ?? '127.0.0.1:9199';
+  return `http://${host}/v0/b/${encodeURIComponent(storageRef.bucket)}/o/${encodeURIComponent(storageRef.fullPath)}?alt=media`;
+};
 
 describe('News Storage security rules', () => {
   before(async () => {
@@ -68,6 +73,25 @@ describe('News Storage security rules', () => {
       await context.firestore().doc('newsArticles/published').update({ status: 'draft' });
     });
     await assertFails(testEnv.unauthenticatedContext().storage().ref('news/published/lead.jpg').getMetadata());
+  });
+
+  it('allows anonymous media fetches only while their linked article is published', async () => {
+    const bytes = new Uint8Array([11, 22, 33, 44]);
+    const imageRef = adminContext().storage().ref('news/media-fetch/lead.jpg');
+    await assertSucceeds(imageRef.put(bytes, { contentType: 'image/jpeg' }));
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context.firestore().doc('newsArticles/media-fetch').set({ status: 'published' });
+    });
+
+    const publishedResponse = await fetch(mediaUrl(imageRef));
+    assert.equal(publishedResponse.status, 200);
+    assert.deepEqual(new Uint8Array(await publishedResponse.arrayBuffer()), bytes);
+
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context.firestore().doc('newsArticles/media-fetch').update({ status: 'draft' });
+    });
+    const draftResponse = await fetch(mediaUrl(imageRef));
+    assert.equal(draftResponse.status, 403);
   });
 
   it('allows admin deletes even after the article is removed and request.resource is null', async () => {

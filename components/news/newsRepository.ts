@@ -30,7 +30,7 @@ import {
   NewsRepositoryError,
 } from './newsImages';
 
-export { deleteNewsImage, uploadNewsImage, NewsRepositoryError } from './newsImages';
+export { deleteNewsImage, getNewsImageUrl, loadNewsImageBlob, uploadNewsImage, NewsRepositoryError } from './newsImages';
 export type { NewsImageUpload, NewsRepositoryErrorCode } from './newsImages';
 
 const ARTICLES_COLLECTION = 'newsArticles';
