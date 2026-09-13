@@ -57,6 +57,15 @@ const renderStream = async (overrides: Record<string, unknown> = {}) => {
   );
 };
 
+test('news page exposes calm loading, empty, and retry states', async () => {
+  const source = await readFile(new URL('../pages/NewsPage.tsx', import.meta.url), 'utf8');
+
+  assert.match(source, /NewsEditorialStream/);
+  assert.match(source, /The next weekly briefing is being prepared/);
+  assert.match(source, />Retry</);
+  assert.doesNotMatch(source, /mountEconomicCalendarWidget|marketBriefs|signalItems/);
+});
+
 test('editorial stream renders one lead, chronological cards, filters, and one ad rail', async () => {
   const markup = await renderStream();
 
