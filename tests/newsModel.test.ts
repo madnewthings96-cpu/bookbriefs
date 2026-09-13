@@ -9,7 +9,12 @@ import {
   validateNewsDraft,
 } from '../components/news/newsModel';
 import { getSampleNewsDraft, makeNewsArticleFixture } from '../components/news/newsFixtures';
-import { createNewsCursor, normalizeNewsDocument } from '../components/news/newsRepository';
+import {
+  assertNewsArticleTransition,
+  createNewsCursor,
+  NewsRepositoryError,
+  normalizeNewsDocument,
+} from '../components/news/newsRepository';
 
 test('slugifyNewsTitle produces a stable ASCII route segment', () => {
   assert.equal(slugifyNewsTitle('Dollar Outlook: What Changes Next?'), 'dollar-outlook-what-changes-next');
@@ -105,4 +110,31 @@ test('cursor serialization preserves publication time and id', () => {
     id: 'story-1',
     publishedAt: new Date('2026-09-13T10:00:00.000Z'),
   });
+});
+
+test('article slugs remain immutable after the first publication for draft saves and publishing', () => {
+  const previouslyPublishedDraft = {
+    status: 'draft',
+    slug: 'original-route',
+    publishedAt: new Date('2026-09-13T10:00:00.000Z'),
+  };
+
+  for (const operation of ['save', 'publish'] as const) {
+    assert.throws(
+      () => assertNewsArticleTransition(previouslyPublishedDraft, { slug: 'changed-route' }, operation),
+      (error: unknown) => error instanceof NewsRepositoryError && error.code === 'validation',
+    );
+  }
+});
+
+test('draft saves reject a record that became published while allowing an unpublished draft with its original slug', () => {
+  assert.throws(
+    () => assertNewsArticleTransition({ status: 'published', slug: 'stable-route', publishedAt: new Date('2026-09-13T10:00:00.000Z') }, { slug: 'stable-route' }, 'save'),
+    (error: unknown) => error instanceof NewsRepositoryError && error.code === 'conflict',
+  );
+  assert.doesNotThrow(() => assertNewsArticleTransition(
+    { status: 'draft', slug: 'stable-route', publishedAt: new Date('2026-09-13T10:00:00.000Z') },
+    { slug: 'stable-route' },
+    'save',
+  ));
 });

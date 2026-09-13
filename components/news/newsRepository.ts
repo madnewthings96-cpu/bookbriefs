@@ -9,7 +9,6 @@ import {
   query,
   runTransaction,
   serverTimestamp,
-  setDoc,
   startAfter,
   where,
   type QueryConstraint,
@@ -50,6 +49,9 @@ export interface NewsPageResult {
 
 type DraftNewsArticle = NewsArticleDraft & { status: 'draft' };
 type NormalizedNewsArticle = NewsArticle | DraftNewsArticle;
+type StoredNewsArticleTransition = { status?: unknown; slug?: unknown; publishedAt?: unknown } | null;
+
+export type NewsArticleTransitionOperation = 'save' | 'publish';
 
 const asDate = (value: unknown): Date | null => {
   if (value instanceof Date && !Number.isNaN(value.getTime())) return new Date(value.getTime());
@@ -85,6 +87,21 @@ function requireValidDraft(draft: NewsArticleDraft, mode: 'draft' | 'publish'): 
   const errors = validateNewsDraft(draft, mode);
   if (Object.keys(errors).length > 0) {
     throw new NewsRepositoryError('validation', 'The news draft contains invalid fields.');
+  }
+}
+
+export function assertNewsArticleTransition(
+  existing: StoredNewsArticleTransition,
+  draft: Pick<NewsArticleDraft, 'slug'>,
+  operation: NewsArticleTransitionOperation,
+): void {
+  if (!existing) return;
+  const hasPublishedAt = existing.publishedAt !== null && existing.publishedAt !== undefined;
+  if (hasPublishedAt && existing.slug !== draft.slug) {
+    throw new NewsRepositoryError('validation', 'A news article slug cannot change after first publication.');
+  }
+  if (operation === 'save' && existing.status === 'published') {
+    throw new NewsRepositoryError('conflict', 'Published news articles must be edited through publication.');
   }
 }
 
@@ -221,13 +238,17 @@ export async function saveNewsDraft(draft: NewsArticleDraft): Promise<Normalized
   return repositoryOperation(async () => {
     requireValidDraft(draft, 'draft');
     const articleRef = draft.id ? doc(db, ARTICLES_COLLECTION, draft.id) : doc(collection(db, ARTICLES_COLLECTION));
-    const existing = await getDoc(articleRef);
-    await setDoc(articleRef, {
-      ...articleFields(draft),
-      status: 'draft',
-      createdAt: existing.exists() ? existing.data().createdAt ?? serverTimestamp() : serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      publishedAt: existing.exists() ? existing.data().publishedAt ?? null : null,
+    await runTransaction(db, async (transaction) => {
+      const existing = await transaction.get(articleRef);
+      const existingData = existing.exists() ? existing.data() : null;
+      assertNewsArticleTransition(existingData, draft, 'save');
+      transaction.set(articleRef, {
+        ...articleFields(draft),
+        status: 'draft',
+        createdAt: existingData?.createdAt ?? serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        publishedAt: existingData?.publishedAt ?? null,
+      });
     });
     const saved = await getAdminNewsArticle(articleRef.id);
     if (!saved) throw new NewsRepositoryError('unknown', 'The saved news draft could not be read.');
@@ -243,16 +264,18 @@ export async function publishNewsArticle(draft: NewsArticleDraft, makeFeatured: 
     const configRef = doc(db, CONFIG_DOCUMENT);
     await runTransaction(db, async (transaction) => {
       const [existing, slugMapping] = await Promise.all([transaction.get(articleRef), transaction.get(slugRef)]);
+      const existingData = existing.exists() ? existing.data() : null;
+      assertNewsArticleTransition(existingData, draft, 'publish');
       if (slugMapping.exists() && slugMapping.data().articleId !== articleRef.id) {
         throw new NewsRepositoryError('conflict', 'This slug is permanently reserved by another news article.');
       }
-      const publishedAt = existing.exists() && asDate(existing.data().publishedAt)
-        ? existing.data().publishedAt
+      const publishedAt = existingData && asDate(existingData.publishedAt)
+        ? existingData.publishedAt
         : serverTimestamp();
       transaction.set(articleRef, {
         ...articleFields(draft),
         status: 'published',
-        createdAt: existing.exists() ? existing.data().createdAt ?? serverTimestamp() : serverTimestamp(),
+        createdAt: existingData?.createdAt ?? serverTimestamp(),
         updatedAt: serverTimestamp(),
         publishedAt,
       }, { merge: true });
