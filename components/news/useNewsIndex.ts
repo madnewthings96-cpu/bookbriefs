@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getFeaturedNewsArticleId,
+  getPublishedNewsArticle,
   listPublishedNews,
   type NewsCursor,
+  type NewsPageResult,
 } from './newsRepository';
 import {
   NEWS_PAGE_SIZE,
@@ -23,14 +25,38 @@ export type NewsIndexState = {
   retry(): void;
 };
 
-type InternalNewsIndexState = Omit<NewsIndexState, 'loadMore' | 'retry'> & {
+export type NewsIndexSnapshot = Omit<NewsIndexState, 'loadMore' | 'retry'> & {
   category: NewsIndexCategory;
   cursor: NewsCursor | null;
 };
 
+export type NewsIndexDataSource = {
+  listPublishedNews(options?: {
+    category?: NewsCategory;
+    cursor?: NewsCursor | null;
+  }): Promise<NewsPageResult>;
+  getFeaturedNewsArticleId(): Promise<string | null>;
+  getPublishedNewsArticle(id: string): Promise<NewsArticle | null>;
+};
+
+export type NewsIndexController = {
+  getSnapshot(): NewsIndexSnapshot;
+  subscribe(listener: (snapshot: NewsIndexSnapshot) => void): () => void;
+  setCategory(category: NewsIndexCategory): void;
+  loadMore(): Promise<void>;
+  retry(): Promise<void>;
+  cancel(): void;
+};
+
 const NEWS_LOAD_ERROR = 'Market news is temporarily unavailable. Please try again.';
 
-const createInitialState = (category: NewsIndexCategory): InternalNewsIndexState => ({
+const defaultSource: NewsIndexDataSource = {
+  listPublishedNews,
+  getFeaturedNewsArticleId,
+  getPublishedNewsArticle,
+};
+
+const createInitialSnapshot = (category: NewsIndexCategory): NewsIndexSnapshot => ({
   category,
   articles: [],
   featuredArticleId: null,
@@ -45,123 +71,179 @@ const pageHasMore = (articleCount: number, cursor: NewsCursor | null): boolean =
   articleCount === NEWS_PAGE_SIZE && cursor !== null
 );
 
-export function useNewsIndex(activeCategory: NewsIndexCategory): NewsIndexState {
-  const [state, setState] = useState<InternalNewsIndexState>(() => createInitialState(activeCategory));
-  const [reloadKey, setReloadKey] = useState(0);
-  const requestVersionRef = useRef(0);
-  const loadMoreInFlightRef = useRef(false);
-  const stateRef = useRef(state);
-  stateRef.current = state;
+const appendUniqueArticles = (current: NewsArticle[], incoming: NewsArticle[]): NewsArticle[] => {
+  const knownIds = new Set(current.map((article) => article.id));
+  return [
+    ...current,
+    ...incoming.filter((article) => !knownIds.has(article.id)),
+  ];
+};
 
-  useEffect(() => {
-    const requestVersion = ++requestVersionRef.current;
-    loadMoreInFlightRef.current = false;
-    const initialState = createInitialState(activeCategory);
-    stateRef.current = initialState;
-    setState(initialState);
+export function createNewsIndexController(
+  initialCategory: NewsIndexCategory,
+  source: NewsIndexDataSource = defaultSource,
+): NewsIndexController {
+  let snapshot = createInitialSnapshot(initialCategory);
+  let requestVersion = 0;
+  let started = false;
+  let loadMoreInFlight = false;
+  const listeners = new Set<(nextSnapshot: NewsIndexSnapshot) => void>();
 
-    const loadInitialPage = async () => {
-      try {
-        const [page, featuredArticleId] = await Promise.all([
-          listPublishedNews({ category: activeCategory === 'all' ? undefined : activeCategory }),
-          getFeaturedNewsArticleId(),
-        ]);
-        if (requestVersionRef.current !== requestVersion) return;
+  const publish = (nextSnapshot: NewsIndexSnapshot) => {
+    snapshot = nextSnapshot;
+    listeners.forEach((listener) => listener(snapshot));
+  };
 
-        setState({
-          category: activeCategory,
-          articles: page.articles,
-          featuredArticleId,
-          loading: false,
-          loadingMore: false,
-          error: null,
-          hasMore: pageHasMore(page.articles.length, page.nextCursor),
-          cursor: page.nextCursor,
-        });
-      } catch {
-        if (requestVersionRef.current !== requestVersion) return;
-        setState({
-          ...createInitialState(activeCategory),
-          loading: false,
-          error: NEWS_LOAD_ERROR,
-        });
-      }
-    };
+  const isCurrentRequest = (version: number, category: NewsIndexCategory): boolean => (
+    version === requestVersion && category === snapshot.category
+  );
 
-    void loadInitialPage();
+  const loadConfiguredFeaturedArticle = async (category: NewsIndexCategory): Promise<NewsArticle | null> => {
+    const featuredArticleId = await source.getFeaturedNewsArticleId();
+    if (!featuredArticleId) return null;
+    const article = await source.getPublishedNewsArticle(featuredArticleId);
+    if (!article || (category !== 'all' && article.category !== category)) return null;
+    return article;
+  };
 
-    return () => {
-      requestVersionRef.current += 1;
-      loadMoreInFlightRef.current = false;
-    };
-  }, [activeCategory, reloadKey]);
+  const loadInitialPage = async (category: NewsIndexCategory, version: number) => {
+    try {
+      const [page, featuredArticle] = await Promise.all([
+        source.listPublishedNews({ category: category === 'all' ? undefined : category }),
+        loadConfiguredFeaturedArticle(category),
+      ]);
+      if (!isCurrentRequest(version, category)) return;
 
-  const loadMore = useCallback(async (): Promise<void> => {
-    const current = stateRef.current;
+      const articles = featuredArticle
+        ? appendUniqueArticles(page.articles, [featuredArticle])
+        : page.articles;
+      publish({
+        category,
+        articles,
+        featuredArticleId: featuredArticle?.id ?? null,
+        loading: false,
+        loadingMore: false,
+        error: null,
+        hasMore: pageHasMore(page.articles.length, page.nextCursor),
+        cursor: page.nextCursor,
+      });
+    } catch {
+      if (!isCurrentRequest(version, category)) return;
+      publish({
+        ...createInitialSnapshot(category),
+        loading: false,
+        error: NEWS_LOAD_ERROR,
+      });
+    }
+  };
+
+  const setCategory = (category: NewsIndexCategory) => {
+    if (started && snapshot.category === category) return;
+    started = true;
+    loadMoreInFlight = false;
+    const version = ++requestVersion;
+    publish(createInitialSnapshot(category));
+    void loadInitialPage(category, version);
+  };
+
+  const loadMore = async (): Promise<void> => {
+    const current = snapshot;
     if (
-      current.category !== activeCategory
-      || current.loading
+      current.loading
       || current.loadingMore
       || !current.hasMore
       || !current.cursor
-      || loadMoreInFlightRef.current
+      || loadMoreInFlight
     ) return;
 
-    loadMoreInFlightRef.current = true;
-    const requestVersion = ++requestVersionRef.current;
-    setState((previous) => previous.category === activeCategory
-      ? { ...previous, loadingMore: true, error: null }
-      : previous);
+    loadMoreInFlight = true;
+    const category = current.category;
+    const version = ++requestVersion;
+    publish({ ...current, loadingMore: true, error: null });
 
     try {
-      const page = await listPublishedNews({
-        category: activeCategory === 'all' ? undefined : activeCategory,
+      const page = await source.listPublishedNews({
+        category: category === 'all' ? undefined : category,
         cursor: current.cursor,
       });
-      if (requestVersionRef.current !== requestVersion) return;
+      if (!isCurrentRequest(version, category)) return;
 
-      setState((previous) => {
-        if (previous.category !== activeCategory) return previous;
-        const knownIds = new Set(previous.articles.map((article) => article.id));
-        const newArticles = page.articles.filter((article) => !knownIds.has(article.id));
-        return {
-          ...previous,
-          articles: [...previous.articles, ...newArticles],
-          loadingMore: false,
-          error: null,
-          hasMore: pageHasMore(page.articles.length, page.nextCursor),
-          cursor: page.nextCursor,
-        };
+      publish({
+        ...snapshot,
+        articles: appendUniqueArticles(snapshot.articles, page.articles),
+        loadingMore: false,
+        error: null,
+        hasMore: pageHasMore(page.articles.length, page.nextCursor),
+        cursor: page.nextCursor,
       });
     } catch {
-      if (requestVersionRef.current !== requestVersion) return;
-      setState((previous) => previous.category === activeCategory
-        ? { ...previous, loadingMore: false, error: NEWS_LOAD_ERROR }
-        : previous);
+      if (!isCurrentRequest(version, category)) return;
+      publish({ ...snapshot, loadingMore: false, error: NEWS_LOAD_ERROR });
     } finally {
-      if (requestVersionRef.current === requestVersion) {
-        loadMoreInFlightRef.current = false;
-      }
+      if (isCurrentRequest(version, category)) loadMoreInFlight = false;
     }
-  }, [activeCategory]);
+  };
 
-  const retry = useCallback(() => {
-    const current = stateRef.current;
-    if (current.category === activeCategory && current.articles.length > 0 && current.cursor) {
-      void loadMore();
+  const retry = async (): Promise<void> => {
+    if (snapshot.articles.length > 0 && snapshot.cursor) {
+      await loadMore();
       return;
     }
-    setReloadKey((key) => key + 1);
-  }, [activeCategory, loadMore]);
+    started = false;
+    setCategory(snapshot.category);
+  };
 
-  const visibleState = state.category === activeCategory ? state : createInitialState(activeCategory);
+  const cancel = () => {
+    requestVersion += 1;
+    started = false;
+    loadMoreInFlight = false;
+  };
+
   return {
-    articles: visibleState.articles,
-    featuredArticleId: visibleState.featuredArticleId,
-    loading: visibleState.loading,
-    loadingMore: visibleState.loadingMore,
-    error: visibleState.error,
-    hasMore: visibleState.hasMore,
+    getSnapshot: () => snapshot,
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    setCategory,
+    loadMore,
+    retry,
+    cancel,
+  };
+}
+
+export function useNewsIndex(activeCategory: NewsIndexCategory): NewsIndexState {
+  const controllerRef = useRef<NewsIndexController | null>(null);
+  if (!controllerRef.current) {
+    controllerRef.current = createNewsIndexController(activeCategory);
+  }
+  const controller = controllerRef.current;
+  const [snapshot, setSnapshot] = useState<NewsIndexSnapshot>(() => controller.getSnapshot());
+
+  useEffect(() => {
+    const unsubscribe = controller.subscribe(setSnapshot);
+    controller.setCategory(activeCategory);
+    return () => {
+      unsubscribe();
+      controller.cancel();
+    };
+  }, [activeCategory, controller]);
+
+  const loadMore = useCallback(() => controller.loadMore(), [controller]);
+  const retry = useCallback(() => {
+    void controller.retry();
+  }, [controller]);
+  const visibleSnapshot = snapshot.category === activeCategory
+    ? snapshot
+    : createInitialSnapshot(activeCategory);
+
+  return {
+    articles: visibleSnapshot.articles,
+    featuredArticleId: visibleSnapshot.featuredArticleId,
+    loading: visibleSnapshot.loading,
+    loadingMore: visibleSnapshot.loadingMore,
+    error: visibleSnapshot.error,
+    hasMore: visibleSnapshot.hasMore,
     loadMore,
     retry,
   };

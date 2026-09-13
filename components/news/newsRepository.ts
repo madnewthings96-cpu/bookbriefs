@@ -195,6 +195,15 @@ export async function listPublishedNews({
   });
 }
 
+export async function getPublishedNewsArticle(id: string): Promise<NewsArticle | null> {
+  return repositoryOperation(async () => {
+    if (!id) return null;
+    const snapshot = await getDoc(doc(db, ARTICLES_COLLECTION, id));
+    const article = snapshot.exists() ? normalizeNewsDocument(snapshot.id, snapshot.data()) : null;
+    return article?.status === 'published' ? article : null;
+  });
+}
+
 export async function getPublishedNewsArticleBySlug(slug: string): Promise<NewsArticle | null> {
   return repositoryOperation(async () => {
     if (!slug) return null;

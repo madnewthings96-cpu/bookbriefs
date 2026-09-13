@@ -5,6 +5,8 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { makeNewsArticleFixture } from '../components/news/newsFixtures';
+import { NEWS_PAGE_SIZE, type NewsArticle } from '../components/news/newsModel';
+import type { NewsCursor, NewsPageResult } from '../components/news/newsRepository';
 
 const articles = [
   makeNewsArticleFixture({
@@ -56,6 +58,127 @@ const renderStream = async (overrides: Record<string, unknown> = {}) => {
     ),
   );
 };
+
+const deferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  let reject!: (error: unknown) => void;
+  const promise = new Promise<T>((promiseResolve, promiseReject) => {
+    resolve = promiseResolve;
+    reject = promiseReject;
+  });
+  return { promise, resolve, reject };
+};
+
+const flushPromises = () => new Promise<void>((resolve) => setImmediate(resolve));
+
+test('news index resets on category change and ignores the stale category response', async () => {
+  const { createNewsIndexController } = await import('../components/news/useNewsIndex');
+  const allRequest = deferred<NewsPageResult>();
+  const forexRequest = deferred<NewsPageResult>();
+  const source = {
+    listPublishedNews: ({ category }: { category?: string }) => (
+      category === 'forex' ? forexRequest.promise : allRequest.promise
+    ),
+    getFeaturedNewsArticleId: async () => null,
+    getPublishedNewsArticle: async () => null,
+  };
+  const controller = createNewsIndexController('all', source);
+
+  controller.setCategory('all');
+  controller.setCategory('forex');
+  assert.deepEqual(controller.getSnapshot().articles, []);
+  assert.equal(controller.getSnapshot().loading, true);
+
+  const forexArticle = makeNewsArticleFixture({ id: 'forex-story', category: 'forex' });
+  forexRequest.resolve({ articles: [forexArticle], nextCursor: null });
+  await flushPromises();
+  assert.deepEqual(controller.getSnapshot().articles.map((article) => article.id), ['forex-story']);
+
+  allRequest.resolve({ articles: [makeNewsArticleFixture({ id: 'stale-story' })], nextCursor: null });
+  await flushPromises();
+  assert.deepEqual(controller.getSnapshot().articles.map((article) => article.id), ['forex-story']);
+  controller.cancel();
+});
+
+test('news index retains loaded stories when pagination fails and retry resumes from the cursor', async () => {
+  const { createNewsIndexController } = await import('../components/news/useNewsIndex');
+  const firstPage = Array.from({ length: NEWS_PAGE_SIZE }, (_, index) => (
+    makeNewsArticleFixture({ id: `story-${index}` })
+  ));
+  const cursor: NewsCursor = { id: 'story-9', publishedAt: new Date('2026-09-01T00:00:00.000Z') };
+  let requestCount = 0;
+  const seenCursors: Array<NewsCursor | null | undefined> = [];
+  const source = {
+    listPublishedNews: async ({ cursor: requestedCursor }: { cursor?: NewsCursor | null } = {}) => {
+      seenCursors.push(requestedCursor);
+      requestCount += 1;
+      if (requestCount === 1) return { articles: firstPage, nextCursor: cursor };
+      if (requestCount === 2) throw new Error('offline');
+      return {
+        articles: [makeNewsArticleFixture({ id: 'story-10' })],
+        nextCursor: null,
+      };
+    },
+    getFeaturedNewsArticleId: async () => null,
+    getPublishedNewsArticle: async () => null,
+  };
+  const controller = createNewsIndexController('all', source);
+
+  controller.setCategory('all');
+  await flushPromises();
+  assert.equal(controller.getSnapshot().hasMore, true);
+
+  await controller.loadMore();
+  assert.deepEqual(controller.getSnapshot().articles.map((article) => article.id), firstPage.map((article) => article.id));
+  assert.match(controller.getSnapshot().error || '', /temporarily unavailable/i);
+
+  await controller.retry();
+  assert.equal(controller.getSnapshot().articles.length, NEWS_PAGE_SIZE + 1);
+  assert.equal(controller.getSnapshot().error, null);
+  assert.equal(controller.getSnapshot().hasMore, false);
+  assert.deepEqual(seenCursors.slice(1), [cursor, cursor]);
+  controller.cancel();
+});
+
+test('news index merges an older configured lead without changing the list cursor or duplicating it later', async () => {
+  const { createNewsIndexController } = await import('../components/news/useNewsIndex');
+  const firstPage = Array.from({ length: NEWS_PAGE_SIZE }, (_, index) => (
+    makeNewsArticleFixture({ id: `recent-${index}` })
+  ));
+  const olderLead = makeNewsArticleFixture({
+    id: 'older-lead',
+    publishedAt: new Date('2026-08-01T00:00:00.000Z'),
+  });
+  const cursor: NewsCursor = { id: 'recent-9', publishedAt: new Date('2026-09-01T00:00:00.000Z') };
+  let page = 0;
+  const source = {
+    listPublishedNews: async (): Promise<NewsPageResult> => {
+      page += 1;
+      return page === 1
+        ? { articles: firstPage, nextCursor: cursor }
+        : { articles: [olderLead, makeNewsArticleFixture({ id: 'later-story' })], nextCursor: null };
+    },
+    getFeaturedNewsArticleId: async () => 'older-lead',
+    getPublishedNewsArticle: async (id: string): Promise<NewsArticle | null> => (
+      id === 'older-lead' ? olderLead : null
+    ),
+  };
+  const controller = createNewsIndexController('all', source);
+
+  controller.setCategory('all');
+  await flushPromises();
+  assert.equal(controller.getSnapshot().featuredArticleId, 'older-lead');
+  assert.equal(controller.getSnapshot().articles.length, NEWS_PAGE_SIZE + 1);
+  assert.deepEqual(controller.getSnapshot().cursor, cursor);
+
+  await controller.loadMore();
+  assert.equal(
+    controller.getSnapshot().articles.filter((article) => article.id === 'older-lead').length,
+    1,
+  );
+  assert.match(controller.getSnapshot().articles.map((article) => article.id).join(','), /later-story/);
+  controller.cancel();
+});
 
 test('news page exposes calm loading, empty, and retry states', async () => {
   const source = await readFile(new URL('../pages/NewsPage.tsx', import.meta.url), 'utf8');
