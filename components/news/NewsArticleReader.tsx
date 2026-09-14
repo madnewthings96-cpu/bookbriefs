@@ -8,13 +8,14 @@ import { formatNewsDate, type NewsArticle } from './newsModel';
 type NewsArticleReaderProps = {
   article: NewsArticle;
   relatedArticles: NewsArticle[];
+  showAd?: boolean;
 };
 
 const hasMaterialUpdate = (article: NewsArticle): boolean => (
   article.updatedAt.getTime() !== article.publishedAt.getTime()
 );
 
-export function NewsArticleReader({ article, relatedArticles }: NewsArticleReaderProps) {
+export function NewsArticleReader({ article, relatedArticles, showAd = true }: NewsArticleReaderProps) {
   return (
     <section className="news-editorial news-article-page" aria-labelledby="news-article-title">
       <nav className="news-article-breadcrumb" aria-label="Breadcrumb">
@@ -104,7 +105,7 @@ export function NewsArticleReader({ article, relatedArticles }: NewsArticleReade
             )}
           </div>
 
-          <AdSlot placement="news-article" />
+          {showAd && <AdSlot placement="news-article" />}
         </div>
       </article>
     </section>

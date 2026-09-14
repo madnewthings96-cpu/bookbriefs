@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isAdminIdentity } from '../utils/adminAuth';
 import FeedbackModal from './FeedbackModal';
 
 const UserMenu: React.FC = () => {
@@ -86,6 +87,21 @@ const UserMenu: React.FC = () => {
 
           {/* Menu Items */}
           <div className="py-2">
+            {isAdminIdentity(user) && (
+              <NavLink
+                to="/admin/news"
+                onClick={() => setIsMenuOpen(false)}
+                className={menuItemClassName}
+              >
+                <div className={menuIconClassName}>
+                  <svg className={menuIconSvgClassName} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5h16M4 9h16M4 13h10m-10 6h16v-2H4v2z" />
+                  </svg>
+                </div>
+                <span className={menuTextClassName}>News publishing</span>
+              </NavLink>
+            )}
+
             {/* Your Library */}
             {isAuthenticated && (
               <NavLink
