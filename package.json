@@ -11,6 +11,7 @@
     "sitemap:arabic": "tsx scripts/generate-seo-sitemaps.ts",
     "prerender:seo": "tsx scripts/prerender-seo.ts",
     "sync-library": "tsx scripts/sync-library.ts",
+    "test:news": "node --import tsx --test tests/newsModel.test.ts tests/newsImages.test.ts tests/newsEditorialStream.test.tsx tests/newsArticlePage.test.tsx tests/newsAdmin.test.tsx tests/newsAdSlot.test.tsx",
     "test:rules": "firebase emulators:exec --project demo-bookbriefs-rules --only firestore,storage \"npm run test:rules:node\"",
     "test:rules:node": "node --test --test-concurrency=1 tests/firestore.rules.test.mjs tests/storage.rules.test.mjs",
     "test:seo": "node --import tsx --test tests/seoCatalog.test.ts tests/seoOutput.test.ts"

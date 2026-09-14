@@ -189,6 +189,16 @@ test('news page exposes calm loading, empty, and retry states', async () => {
   assert.doesNotMatch(source, /mountEconomicCalendarWidget|marketBriefs|signalItems/);
 });
 
+test('repository news runtime no longer references the MQL5 calendar', async () => {
+  const app = await readFile(new URL('../App.tsx', import.meta.url), 'utf8');
+  const page = await readFile(new URL('../pages/NewsPage.tsx', import.meta.url), 'utf8');
+
+  assert.doesNotMatch(
+    `${app}\n${page}`,
+    /MQL5|tradays|economicCalendarWidget|newsCalendarWidget/i,
+  );
+});
+
 test('editorial stream renders one lead, chronological cards, filters, and one ad rail', async () => {
   const markup = await renderStream();
 
