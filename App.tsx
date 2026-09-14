@@ -34,6 +34,10 @@ const NewsPage = lazy(async () => {
   const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsPage')]);
   return pageModule;
 });
+const NewsArticlePage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsArticlePage')]);
+  return pageModule;
+});
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const IdeasInTheWildPage = lazy(async () => {
   const [, pageModule] = await Promise.all([
@@ -210,6 +214,7 @@ const AppFrame: React.FC = () => {
               <Route path="/ar/tools/fire-calculator" element={<CalculatorsPage />} />
               <Route path="/ar/tools/compound-interest-calculator" element={<CalculatorsPage />} />
               <Route path="/news" element={<NewsPage />} />
+              <Route path="/news/:slug" element={<NewsArticlePage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPage />} />
               <Route path="/connections" element={<IdeasInTheWildPage />} />
