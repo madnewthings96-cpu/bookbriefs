@@ -68,3 +68,15 @@ test('Ideas in the Wild serves its real content, metadata and styles before Java
   assert.match(html, /<link rel="stylesheet" href="\/assets\/IdeasInTheWildPage-[^"]+\.css"/);
   assert.doesNotMatch(html, /noindex/);
 });
+
+test('Market News has a crawlable weekly editorial fallback without JavaScript', async () => {
+  const html = await read('dist/news/index.html');
+  const sitemap = await read('dist/sitemap-en.xml');
+
+  assert.match(html, /<html lang="en" dir="ltr">/);
+  assert.match(html, /<title>Market News &amp; Weekly Financial Analysis \| Ta7leel<\/title>/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/www\.ta7leel\.pro\/news\/"/);
+  assert.match(html, /<h1>Market News<\/h1>/);
+  assert.doesNotMatch(html, /noindex/);
+  assert.match(sitemap, /<loc>https:\/\/www\.ta7leel\.pro\/news\/<\/loc>[\s\S]*?<changefreq>weekly<\/changefreq>/);
+});

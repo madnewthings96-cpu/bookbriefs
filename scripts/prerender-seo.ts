@@ -21,6 +21,8 @@ import { blogPosts, getFullContent } from '../components/blog/blogContent.ts';
 import { getBlogPostDirection } from '../components/blog/blogPageModel.ts';
 import type { BlogPost } from '../components/blog/blogPageModel.ts';
 import type { BookDefinition } from './types.js';
+import { loadPublishedNewsCatalog } from './newsCatalog.ts';
+import { buildNewsArticlePage, buildNewsIndexPage } from './newsSeo.ts';
 
 interface PrerenderPage {
   path: string;
@@ -103,7 +105,12 @@ function renderPage(template: string, page: PrerenderPage): string {
   html = upsertMeta(html, 'name', 'keywords', page.keywords);
   html = upsertMeta(html, 'name', 'robots', page.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   html = upsertCanonical(html, canonical);
-  html = upsertMeta(html, 'property', 'og:type', page.path.startsWith('/blog/') ? 'article' : 'website');
+  html = upsertMeta(
+    html,
+    'property',
+    'og:type',
+    page.path.startsWith('/blog/') || page.path.startsWith('/news/') ? 'article' : 'website',
+  );
   html = upsertMeta(html, 'property', 'og:url', canonical);
   html = upsertMeta(html, 'property', 'og:title', page.title);
   html = upsertMeta(html, 'property', 'og:description', page.description);
@@ -540,7 +547,10 @@ async function writeRouteFile(template: string, page: PrerenderPage) {
 async function main() {
   const distIndex = path.join(process.cwd(), 'dist', 'index.html');
   const template = await readFile(distIndex, 'utf8');
-  const books = await loadBookCatalog();
+  const [books, newsArticles] = await Promise.all([
+    loadBookCatalog(),
+    loadPublishedNewsCatalog(),
+  ]);
   const connectionStyles = (await readdir(path.join(process.cwd(), 'dist', 'assets')))
     .filter(file => /^IdeasInTheWildPage-.*\.css$/.test(file)).map(file => `/assets/${file}`);
   if (!connectionStyles.length) throw new Error('Missing Ideas in the Wild stylesheet in production build.');
@@ -551,6 +561,8 @@ async function main() {
     summariesLandingPage(books, false, '/summaries'),
     ...blogPosts.map(articlePage),
     articleIndexPage(),
+    buildNewsIndexPage(newsArticles),
+    ...newsArticles.map(buildNewsArticlePage),
     ...CALCULATOR_ROUTES.map(calculatorPage),
     ...CATEGORY_HUBS.flatMap((category) => [
       categoryPage(category, books, false),
