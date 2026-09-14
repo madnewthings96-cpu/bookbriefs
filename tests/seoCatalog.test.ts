@@ -7,6 +7,7 @@ import {
   buildNewsIndexPage,
   buildNewsSitemapUrls,
 } from '../scripts/newsSeo';
+import { renderPage } from '../scripts/prerender-seo';
 import { absoluteUrl } from '../scripts/seoCatalog';
 import { canonicalRoutePath } from '../utils/seoConfig';
 
@@ -101,7 +102,7 @@ test('news article fallback includes escaped crawlable copy and NewsArticle sche
   const page = buildNewsArticlePage(article);
 
   assert.match(page.body, /<article>/);
-  assert.match(page.body, /<h2>Rates &amp; growth<\/h2>/);
+  assert.match(page.body, /<h3>Rates &amp; growth<\/h3>/);
   assert.match(page.body, /&lt;script&gt;alert\(&quot;unsafe&quot;\)&lt;\/script&gt; remains visible\./);
   assert.doesNotMatch(page.body, /<script>alert/);
   assert.equal(page.schema[0]['@type'], 'NewsArticle');
@@ -109,6 +110,39 @@ test('news article fallback includes escaped crawlable copy and NewsArticle sche
   assert.deepEqual(page.schema[0].author, { '@type': 'Person', name: article.authorName });
   assert.equal(page.schema[0].mainEntityOfPage, 'https://www.ta7leel.pro/news/weekly-outlook/');
   assert.equal(page.path, '/news/weekly-outlook');
+});
+
+test('news article fallback parses body headings line by line without creating another h1', () => {
+  const page = buildNewsArticlePage(makeNewsArticleFixture({
+    body: '# Body title\nFollowing body line.\n\n## Section\nSection copy.\n\n###### Deep section',
+  }));
+
+  assert.equal((page.body.match(/<h1>/g) || []).length, 1);
+  assert.match(page.body, /<h3>Body title<\/h3>\n<p>Following body line\.<\/p>/);
+  assert.match(page.body, /<h3>Section<\/h3>\n<p>Section copy\.<\/p>/);
+  assert.match(page.body, /<h6>Deep section<\/h6>/);
+});
+
+test('news article prerender metadata matches the runtime article fields', () => {
+  const excerpt = `${'Detailed market context. '.repeat(8)}End.`;
+  const article = makeNewsArticleFixture({ excerpt });
+  const page = buildNewsArticlePage(article);
+  const template = '<!doctype html><html><head><title>Old</title><meta name="author" content="Old" /></head><body><div id="root"></div></body></html>';
+  const html = renderPage(template, page);
+
+  assert.equal(page.description, excerpt);
+  assert.equal(page.type, 'article');
+  assert.equal(page.author, article.authorName);
+  assert.equal(page.publishedTime, article.publishedAt.toISOString());
+  assert.equal(page.modifiedTime, article.updatedAt.toISOString());
+  assert.match(html, new RegExp(`<meta name="description" content="${excerpt.replaceAll('.', '\\.')}" />`));
+  assert.match(html, new RegExp(`<meta property="og:description" content="${excerpt.replaceAll('.', '\\.')}" />`));
+  assert.match(html, new RegExp(`<meta name="twitter:description" content="${excerpt.replaceAll('.', '\\.')}" />`));
+  assert.match(html, /<meta property="og:type" content="article" \/>/);
+  assert.match(html, new RegExp(`<meta name="author" content="${article.authorName}" />`));
+  assert.match(html, new RegExp(`<meta property="article:published_time" content="${article.publishedAt.toISOString().replaceAll('.', '\\.')}" />`));
+  assert.match(html, new RegExp(`<meta property="article:modified_time" content="${article.updatedAt.toISOString().replaceAll('.', '\\.')}" />`));
+  assert.match(html, new RegExp(`<meta property="article:author" content="${article.authorName}" />`));
 });
 
 test('news index fallback exposes article links and escapes Firestore text', () => {

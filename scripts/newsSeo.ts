@@ -1,6 +1,6 @@
 import type { NewsArticle } from '../components/news/newsModel.ts';
 import { BRAND_NAME, DEFAULT_OG_IMAGE, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
-import { absoluteUrl, escapeHtml, truncateText } from './seoCatalog.ts';
+import { absoluteUrl, escapeHtml } from './seoCatalog.ts';
 
 export interface NewsSitemapUrl {
   path: string;
@@ -17,6 +17,10 @@ export interface NewsPrerenderPage {
   description: string;
   keywords: string;
   image?: string;
+  type?: 'website' | 'article';
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
   body: string;
   schema: Record<string, unknown>[];
 }
@@ -47,20 +51,37 @@ function markdownInlineText(value: string): string {
 }
 
 function renderSafeNewsMarkdown(markdown: string): string {
-  const blocks = markdown.replace(/\r\n?/g, '\n').split(/\n{2,}/);
-  return blocks
-    .map((block) => {
-      const text = block.trim();
-      if (!text) return '';
-      const heading = text.match(/^(#{1,6})\s+([\s\S]+)$/);
-      if (heading) {
-        const level = Math.min(heading[1].length, 6);
-        return `<h${level}>${escapeHtml(markdownInlineText(heading[2].replace(/\n+/g, ' ')))}</h${level}>`;
-      }
-      return `<p>${escapeHtml(markdownInlineText(text.replace(/\n+/g, ' ')))}</p>`;
-    })
-    .filter(Boolean)
-    .join('\n');
+  const lines = markdown.replace(/\r\n?/g, '\n').split('\n');
+  const blocks: string[] = [];
+  let index = 0;
+
+  while (index < lines.length) {
+    const text = lines[index].trim();
+    if (!text) {
+      index += 1;
+      continue;
+    }
+
+    const heading = text.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      const level = Math.min(Math.max(heading[1].length + 1, 3), 6);
+      blocks.push(`<h${level}>${escapeHtml(markdownInlineText(heading[2]))}</h${level}>`);
+      index += 1;
+      continue;
+    }
+
+    const paragraphLines = [text];
+    index += 1;
+    while (index < lines.length) {
+      const nextLine = lines[index].trim();
+      if (!nextLine || /^(#{1,6})\s+/.test(nextLine)) break;
+      paragraphLines.push(nextLine);
+      index += 1;
+    }
+    blocks.push(`<p>${escapeHtml(markdownInlineText(paragraphLines.join(' ')))}</p>`);
+  }
+
+  return blocks.join('\n');
 }
 
 function newsPublisherSchema() {
@@ -135,9 +156,13 @@ export function buildNewsArticlePage(article: NewsArticle): NewsPrerenderPage {
     lang: 'en',
     dir: 'ltr',
     title: `${article.title} | Ta7leel Market News`,
-    description: truncateText(article.excerpt, 155),
+    description: article.excerpt,
     keywords: `${article.category} news, market analysis, weekly market news`,
     image,
+    type: 'article',
+    author: article.authorName,
+    publishedTime: article.publishedAt.toISOString(),
+    modifiedTime: article.updatedAt.toISOString(),
     body: `<main class="seo-prerender mx-auto max-w-3xl px-4 py-10"><article>
       <p>${escapeHtml(article.category)}</p>
       <h1>${escapeHtml(article.title)}</h1>

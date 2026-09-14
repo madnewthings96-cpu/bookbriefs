@@ -138,6 +138,13 @@
   to = "/index.html"
   status = 200
 
+# A published article is immediately available through Firestore, before its next prerendered deploy.
+# Existing prerendered article files shadow this non-forced runtime fallback.
+[[redirects]]
+  from = "/news/*"
+  to = "/index.html"
+  status = 200
+
 [[redirects]]
   from = "/privacy-policy"
   to = "/index.html"

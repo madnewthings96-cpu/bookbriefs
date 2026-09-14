@@ -7,6 +7,7 @@ import MarkdownRenderer from '../components/MarkdownRenderer.tsx';
 import { getBookSummaryTranslation } from '../translations/bookSummaries.ts';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, PRIVATE_SEO_ROUTES, SITE_URL, canonicalRoutePath } from '../utils/seoConfig.ts';
 import {
   absoluteUrl,
@@ -32,6 +33,10 @@ interface PrerenderPage {
   description: string;
   keywords: string;
   image?: string;
+  type?: 'website' | 'article';
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
   noindex?: boolean;
   styles?: string[];
   body: string;
@@ -91,10 +96,12 @@ function replaceRoot(html: string, body: string): string {
   );
 }
 
-function renderPage(template: string, page: PrerenderPage): string {
+export function renderPage(template: string, page: PrerenderPage): string {
   const canonical = absoluteUrl(SITE_URL, canonicalRoutePath(page.path));
   const image = page.image || DEFAULT_OG_IMAGE;
   const absoluteImage = image.startsWith('http') ? image : absoluteUrl(SITE_URL, image);
+  const pageType = page.type
+    ?? (page.path.startsWith('/blog/') || page.path.startsWith('/news/') ? 'article' : 'website');
 
   let html = template;
   html = setHtmlAttrs(html, page.lang, page.dir);
@@ -103,14 +110,10 @@ function renderPage(template: string, page: PrerenderPage): string {
   html = upsertMeta(html, 'name', 'title', page.title);
   html = upsertMeta(html, 'name', 'description', page.description);
   html = upsertMeta(html, 'name', 'keywords', page.keywords);
+  if (page.author) html = upsertMeta(html, 'name', 'author', page.author);
   html = upsertMeta(html, 'name', 'robots', page.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   html = upsertCanonical(html, canonical);
-  html = upsertMeta(
-    html,
-    'property',
-    'og:type',
-    page.path.startsWith('/blog/') || page.path.startsWith('/news/') ? 'article' : 'website',
-  );
+  html = upsertMeta(html, 'property', 'og:type', pageType);
   html = upsertMeta(html, 'property', 'og:url', canonical);
   html = upsertMeta(html, 'property', 'og:title', page.title);
   html = upsertMeta(html, 'property', 'og:description', page.description);
@@ -122,6 +125,15 @@ function renderPage(template: string, page: PrerenderPage): string {
   html = upsertMeta(html, 'name', 'twitter:title', page.title);
   html = upsertMeta(html, 'name', 'twitter:description', page.description);
   html = upsertMeta(html, 'name', 'twitter:image', absoluteImage);
+  if (pageType === 'article' && page.publishedTime) {
+    html = upsertMeta(html, 'property', 'article:published_time', page.publishedTime);
+  }
+  if (pageType === 'article' && page.modifiedTime) {
+    html = upsertMeta(html, 'property', 'article:modified_time', page.modifiedTime);
+  }
+  if (pageType === 'article' && page.author) {
+    html = upsertMeta(html, 'property', 'article:author', page.author);
+  }
   html = injectJsonLd(html, page.schema);
   html = replaceRoot(html, page.body);
   if (page.styles?.length) {
@@ -584,7 +596,13 @@ async function main() {
   console.log(`Prerendered ${pages.length} SEO routes into dist.`);
 }
 
-main().catch((error) => {
-  console.error('Failed to prerender SEO routes:', error);
-  process.exit(1);
-});
+const isDirectRun = Boolean(
+  process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href,
+);
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error('Failed to prerender SEO routes:', error);
+    process.exit(1);
+  });
+}
