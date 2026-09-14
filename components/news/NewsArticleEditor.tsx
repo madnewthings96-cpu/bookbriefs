@@ -739,7 +739,12 @@ export function NewsArticleEditor({
               <button type="button" onClick={() => setSavedImageAttempt((attempt) => attempt + 1)}>Retry image</button>
             </div>
           )}
-          <NewsArticleReader article={previewArticle} relatedArticles={[]} showAd={false} />
+          <NewsArticleReader
+            article={previewArticle}
+            relatedArticles={[]}
+            showAd={false}
+            titleHeadingLevel="h2"
+          />
         </aside>
       )}
     </div>

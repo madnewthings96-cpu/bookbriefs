@@ -9,13 +9,21 @@ type NewsArticleReaderProps = {
   article: NewsArticle;
   relatedArticles: NewsArticle[];
   showAd?: boolean;
+  titleHeadingLevel?: 'h1' | 'h2';
 };
 
 const hasMaterialUpdate = (article: NewsArticle): boolean => (
   article.updatedAt.getTime() !== article.publishedAt.getTime()
 );
 
-export function NewsArticleReader({ article, relatedArticles, showAd = true }: NewsArticleReaderProps) {
+export function NewsArticleReader({
+  article,
+  relatedArticles,
+  showAd = true,
+  titleHeadingLevel = 'h1',
+}: NewsArticleReaderProps) {
+  const TitleHeading = titleHeadingLevel;
+
   return (
     <section className="news-editorial news-article-page" aria-labelledby="news-article-title">
       <nav className="news-article-breadcrumb" aria-label="Breadcrumb">
@@ -27,7 +35,7 @@ export function NewsArticleReader({ article, relatedArticles, showAd = true }: N
       <article className="news-article">
         <header className="news-article__header">
           <span className="news-article__category">{categoryLabels[article.category]}</span>
-          <h1 id="news-article-title">{article.title}</h1>
+          <TitleHeading id="news-article-title">{article.title}</TitleHeading>
           <p className="news-article__excerpt">{article.excerpt}</p>
           <div className="news-article__byline">
             <span>By {article.authorName}</span>

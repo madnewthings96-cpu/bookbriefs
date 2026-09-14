@@ -157,6 +157,8 @@ test('preview builder renders current draft values without creating a public dra
   );
   assert.match(markup, /Previewing unsaved changes/);
   assert.match(markup, /A private weekly draft/);
+  assert.equal((markup.match(/<h1/g) || []).length, 1);
+  assert.match(markup, /<h2 id="news-article-title">A private weekly draft<\/h2>/);
   assert.doesNotMatch(markup, /href="\/news\/private-weekly-draft"/);
   assert.doesNotMatch(markup, /Advertisements/);
 });

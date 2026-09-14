@@ -132,6 +132,8 @@ test('privacy policy discloses ad, consent, storage, and choice details', async 
 test('environment template documents both required news ad identifiers', async () => {
   const source = await readFile(new URL('../.env.example', import.meta.url), 'utf8');
 
-  assert.match(source, /^VITE_ADSENSE_CLIENT_ID=ca-pub-your-publisher-id$/m);
-  assert.match(source, /^VITE_ADSENSE_NEWS_SLOT_ID=your-news-slot-id$/m);
+  assert.match(source, /^# Format: ca-pub-<publisher-id>$/m);
+  assert.match(source, /^VITE_ADSENSE_CLIENT_ID=$/m);
+  assert.match(source, /^# Format: numeric ad unit slot ID$/m);
+  assert.match(source, /^VITE_ADSENSE_NEWS_SLOT_ID=$/m);
 });

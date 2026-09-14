@@ -33,6 +33,8 @@ test('article reader renders metadata, sources, disclaimer, related links, and a
   );
 
   assert.match(markup, /<article/);
+  assert.equal((markup.match(/<h1/g) || []).length, 1);
+  assert.match(markup, /<h1 id="news-article-title">Policy week comes into view<\/h1>/);
   assert.match(markup, /<time/);
   assert.match(markup, /Updated September 14, 2026/);
   assert.match(markup, />Sources</);
