@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NewsArticleReader } from './NewsArticleReader';
+import { loadNewsImageBlob } from './newsImages';
 import {
   NEWS_CATEGORIES,
   createEmptyNewsDraft,
@@ -17,7 +18,11 @@ export type NewsArticleEditorProps = {
   initialPreview?: boolean;
   initiallyFeatured?: boolean;
   uploadProgress?: number | null;
-  onSaveDraft(draft: NewsArticleDraft, image: File | null): Promise<NewsArticleDraft>;
+  onSaveDraft(
+    draft: NewsArticleDraft,
+    image: File | null,
+    makeFeatured: boolean,
+  ): Promise<NewsArticleDraft>;
   onPublish(
     draft: NewsArticleDraft,
     image: File | null,
@@ -25,6 +30,7 @@ export type NewsArticleEditorProps = {
   ): Promise<NewsArticleDraft>;
   onDelete?(article: NewsArticleDraft): Promise<void>;
   onUnpublish?(article: NewsArticleDraft): Promise<NewsArticleDraft | void>;
+  loadImageBlob?(imagePath: string): Promise<Blob>;
 };
 
 type ActiveMutation = 'save' | 'publish' | 'delete' | 'unpublish' | null;
@@ -38,6 +44,51 @@ export function validateNewsImageSelection(file: Pick<File, 'type' | 'size'>): s
   if (!NEWS_IMAGE_TYPES.has(file.type)) return 'Choose a JPEG, PNG, or WebP image.';
   if (file.size > NEWS_IMAGE_MAX_BYTES) return 'Featured images must be 5 MB or smaller.';
   return null;
+}
+
+export type SavedNewsPreviewImage =
+  | { kind: 'public'; imageUrl: string }
+  | { kind: 'authenticated'; imagePath: string }
+  | { kind: 'none' };
+
+export function getSavedNewsPreviewImage(draft: NewsArticleDraft): SavedNewsPreviewImage {
+  if (draft.status === 'published' && draft.imageUrl) {
+    return { kind: 'public', imageUrl: draft.imageUrl };
+  }
+  if (draft.status === 'draft' && draft.imagePath) {
+    return { kind: 'authenticated', imagePath: draft.imagePath };
+  }
+  return { kind: 'none' };
+}
+
+export async function loadSavedNewsPreviewObjectUrl(
+  imagePath: string,
+  loadBlob: (path: string) => Promise<Blob> = loadNewsImageBlob,
+  createObjectUrl: (blob: Blob) => string = (blob) => URL.createObjectURL(blob),
+): Promise<string> {
+  return createObjectUrl(await loadBlob(imagePath));
+}
+
+export function isNewsEditorDirty(
+  contentDirty: boolean,
+  hasSelectedImage: boolean,
+  makeFeatured: boolean,
+  persistedFeatured: boolean,
+): boolean {
+  return contentDirty || hasSelectedImage || makeFeatured !== persistedFeatured;
+}
+
+export function confirmUnsavedNewsNavigation(
+  dirty: boolean,
+  confirmLeave: () => boolean = () => window.confirm('Leave without saving your changes?'),
+): boolean {
+  return !dirty || confirmLeave();
+}
+
+export function getUnpublishConfirmation(dirty: boolean, title = 'this article'): string {
+  return dirty
+    ? `Unpublish “${title}” and discard unsaved edits? Its public page will no longer be available.`
+    : `Unpublish “${title}”? Its public page will no longer be available.`;
 }
 
 const fieldIds: Record<EditableField, string> = {
@@ -65,7 +116,7 @@ const usableSources = (sources: NewsSource[]): NewsSource[] => sources.filter((s
 
 export function createNewsPreviewArticle(
   draft: NewsArticleDraft,
-  localImageUrl = '',
+  imageOverride: string | null | undefined = undefined,
   now = new Date(),
 ): NewsArticle {
   const publishedAt = draft.publishedAt ?? now;
@@ -77,7 +128,9 @@ export function createNewsPreviewArticle(
     excerpt: draft.excerpt.trim() || 'Add an excerpt to see the article introduction here.',
     body: draft.body.trim() || 'Add the article body to preview the finished reading experience.',
     authorName: draft.authorName.trim() || 'Ta7leel Editorial',
-    imageUrl: localImageUrl || draft.imageUrl || PREVIEW_IMAGE_PLACEHOLDER,
+    imageUrl: imageOverride === null
+      ? PREVIEW_IMAGE_PLACEHOLDER
+      : imageOverride || draft.imageUrl || PREVIEW_IMAGE_PLACEHOLDER,
     imageAlt: draft.imageAlt.trim() || 'Featured image preview',
     sources: usableSources(draft.sources),
     status: 'published',
@@ -101,15 +154,21 @@ export function NewsArticleEditor({
   onPublish,
   onDelete,
   onUnpublish,
+  loadImageBlob = loadNewsImageBlob,
 }: NewsArticleEditorProps) {
   const [draft, setDraft] = useState<NewsArticleDraft>(initialDraft);
   const [errors, setErrors] = useState<NewsValidationErrors>({});
-  const [dirty, setDirty] = useState(false);
+  const [contentDirty, setContentDirty] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [localImageUrl, setLocalImageUrl] = useState('');
+  const [savedImageUrl, setSavedImageUrl] = useState('');
+  const [savedImageLoading, setSavedImageLoading] = useState(false);
+  const [savedImageError, setSavedImageError] = useState('');
+  const [savedImageAttempt, setSavedImageAttempt] = useState(0);
   const [activeMutation, setActiveMutation] = useState<ActiveMutation>(null);
   const [previewOpen, setPreviewOpen] = useState(initialPreview);
   const [makeFeatured, setMakeFeatured] = useState(initiallyFeatured);
+  const [persistedFeatured, setPersistedFeatured] = useState(initiallyFeatured);
   const [notice, setNotice] = useState('');
   const [actionError, setActionError] = useState('');
   const slugWasEdited = useRef(Boolean(initialDraft.id || initialDraft.slug));
@@ -117,10 +176,14 @@ export function NewsArticleEditor({
   useEffect(() => {
     setDraft(initialDraft);
     setErrors({});
-    setDirty(false);
+    setContentDirty(false);
     setSelectedImage(null);
+    setSavedImageUrl('');
+    setSavedImageError('');
+    setSavedImageAttempt(0);
     setPreviewOpen(initialPreview);
     setMakeFeatured(initiallyFeatured);
+    setPersistedFeatured(initiallyFeatured);
     setNotice('');
     setActionError('');
     slugWasEdited.current = Boolean(initialDraft.id || initialDraft.slug);
@@ -136,6 +199,55 @@ export function NewsArticleEditor({
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedImage]);
 
+  const savedPreviewImage = useMemo(
+    () => getSavedNewsPreviewImage(draft),
+    [draft.imagePath, draft.imageUrl, draft.status],
+  );
+
+  useEffect(() => {
+    setSavedImageUrl('');
+    setSavedImageError('');
+    if (
+      !previewOpen
+      || selectedImage
+      || savedPreviewImage.kind !== 'authenticated'
+    ) {
+      setSavedImageLoading(false);
+      return undefined;
+    }
+
+    let active = true;
+    let objectUrl = '';
+    setSavedImageLoading(true);
+    void loadSavedNewsPreviewObjectUrl(savedPreviewImage.imagePath, loadImageBlob)
+      .then((url) => {
+        if (!active) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        objectUrl = url;
+        setSavedImageUrl(url);
+      })
+      .catch((error) => {
+        if (active) setSavedImageError(errorMessage(error));
+      })
+      .finally(() => {
+        if (active) setSavedImageLoading(false);
+      });
+
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [loadImageBlob, previewOpen, savedImageAttempt, savedPreviewImage, selectedImage]);
+
+  const dirty = isNewsEditorDirty(
+    contentDirty,
+    Boolean(selectedImage),
+    makeFeatured,
+    persistedFeatured,
+  );
+
   useEffect(() => {
     if (!dirty || typeof window === 'undefined') return undefined;
     const warnBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -146,16 +258,79 @@ export function NewsArticleEditor({
     return () => window.removeEventListener('beforeunload', warnBeforeUnload);
   }, [dirty]);
 
+  useEffect(() => {
+    if (!dirty || typeof window === 'undefined' || typeof document === 'undefined') return undefined;
+    let currentHistoryIndex = typeof window.history.state?.idx === 'number'
+      ? window.history.state.idx
+      : null;
+    let restoringHistory = false;
+
+    const guardInternalLink = (event: MouseEvent) => {
+      if (
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+      ) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const anchor = target?.closest('a[href]') as HTMLAnchorElement | null;
+      if (!anchor || (anchor.target && anchor.target !== '_self') || anchor.hasAttribute('download')) return;
+      const destination = new URL(anchor.href, window.location.href);
+      if (destination.origin !== window.location.origin) return;
+      if (
+        destination.pathname === window.location.pathname
+        && destination.search === window.location.search
+        && destination.hash === window.location.hash
+      ) return;
+      if (confirmUnsavedNewsNavigation(true)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+
+    const guardHistoryNavigation = (event: PopStateEvent) => {
+      if (restoringHistory) {
+        restoringHistory = false;
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (confirmUnsavedNewsNavigation(true)) {
+        currentHistoryIndex = typeof event.state?.idx === 'number' ? event.state.idx : currentHistoryIndex;
+        return;
+      }
+
+      event.stopImmediatePropagation();
+      restoringHistory = true;
+      const nextHistoryIndex = typeof event.state?.idx === 'number' ? event.state.idx : null;
+      const restoreDelta = currentHistoryIndex !== null && nextHistoryIndex !== null
+        ? currentHistoryIndex - nextHistoryIndex
+        : 1;
+      window.history.go(restoreDelta || 1);
+    };
+
+    document.addEventListener('click', guardInternalLink, true);
+    window.addEventListener('popstate', guardHistoryNavigation, true);
+    return () => {
+      document.removeEventListener('click', guardInternalLink, true);
+      window.removeEventListener('popstate', guardHistoryNavigation, true);
+    };
+  }, [dirty]);
+
+  const resolvedPreviewImageUrl = localImageUrl
+    || savedImageUrl
+    || (savedPreviewImage.kind === 'public' ? savedPreviewImage.imageUrl : '');
+
   const previewArticle = useMemo(
-    () => createNewsPreviewArticle(draft, localImageUrl),
-    [draft, localImageUrl],
+    () => createNewsPreviewArticle(draft, resolvedPreviewImageUrl || null),
+    [draft, resolvedPreviewImageUrl],
   );
   const isBusy = activeMutation !== null;
   const isPublished = draft.status === 'published';
 
   const updateDraft = <K extends keyof NewsArticleDraft>(field: K, value: NewsArticleDraft[K]) => {
     setDraft((current) => ({ ...current, [field]: value }));
-    setDirty(true);
+    setContentDirty(true);
     setNotice('');
     setActionError('');
     if (field in fieldIds) {
@@ -169,7 +344,7 @@ export function NewsArticleEditor({
       title,
       slug: slugWasEdited.current ? current.slug : slugifyNewsTitle(title),
     }));
-    setDirty(true);
+    setContentDirty(true);
     setNotice('');
     setActionError('');
     setErrors((current) => ({ ...current, title: undefined, slug: undefined }));
@@ -207,8 +382,16 @@ export function NewsArticleEditor({
     try {
       const result = await operation();
       if (result) setDraft(result);
-      setDirty(false);
+      setContentDirty(false);
       setSelectedImage(null);
+      if (result && result.status === 'published') {
+        setPersistedFeatured(makeFeatured);
+      } else if (mutation === 'unpublish') {
+        setMakeFeatured(false);
+        setPersistedFeatured(false);
+      } else {
+        setPersistedFeatured(false);
+      }
       setNotice(successMessage);
     } catch (error) {
       if (error && typeof error === 'object' && 'persistedDraft' in error) {
@@ -225,7 +408,15 @@ export function NewsArticleEditor({
 
   const saveDraft = () => {
     if (!validateFor('draft')) return;
-    void runMutation('save', () => onSaveDraft(draft, selectedImage), isPublished ? 'Changes saved.' : 'Draft saved.');
+    void runMutation(
+      'save',
+      () => onSaveDraft(draft, selectedImage, makeFeatured),
+      isPublished
+        ? 'Changes saved.'
+        : makeFeatured
+          ? 'Draft saved. The featured selection will be applied when you publish.'
+          : 'Draft saved.',
+    );
   };
 
   const publish = () => {
@@ -243,12 +434,8 @@ export function NewsArticleEditor({
   };
 
   const unpublish = () => {
-    if (!onUnpublish || !window.confirm('Unpublish this article? Its public page will no longer be available.')) return;
+    if (!onUnpublish || !window.confirm(getUnpublishConfirmation(dirty, draft.title || 'this article'))) return;
     void runMutation('unpublish', () => onUnpublish(draft), 'Article moved back to drafts.');
-  };
-
-  const confirmLeave = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (dirty && !window.confirm('Leave without saving your changes?')) event.preventDefault();
   };
 
   const addSource = () => updateDraft('sources', [...draft.sources, { label: '', url: '' }]);
@@ -381,7 +568,6 @@ export function NewsArticleEditor({
                   return;
                 }
                 setSelectedImage(file);
-                setDirty(true);
                 setErrors((current) => ({ ...current, imageUrl: undefined }));
                 setActionError('');
               }}
@@ -466,7 +652,8 @@ export function NewsArticleEditor({
               checked={makeFeatured}
               onChange={(event) => {
                 setMakeFeatured(event.target.checked);
-                setDirty(true);
+                setNotice('');
+                setActionError('');
               }}
             />
             <span>
@@ -477,7 +664,7 @@ export function NewsArticleEditor({
         </form>
 
         <footer className="admin-news-editor__actions">
-          <Link to="/admin/news" onClick={confirmLeave}>Back to articles</Link>
+          <Link to="/admin/news">Back to articles</Link>
           <div>
             {onDelete && draft.id && (
               <button type="button" className="admin-news-danger" disabled={isBusy} onClick={remove}>Delete</button>
@@ -510,6 +697,15 @@ export function NewsArticleEditor({
             <strong>Previewing unsaved changes</strong>
             <span>This private preview does not create a public article URL.</span>
           </div>
+          {savedImageLoading && (
+            <div className="admin-news-message" role="status">Loading the saved featured image…</div>
+          )}
+          {savedImageError && (
+            <div className="admin-news-message admin-news-message--error" role="alert">
+              <span>The saved featured image could not be loaded. {savedImageError}</span>
+              <button type="button" onClick={() => setSavedImageAttempt((attempt) => attempt + 1)}>Retry image</button>
+            </div>
+          )}
           <NewsArticleReader article={previewArticle} relatedArticles={[]} showAd={false} />
         </aside>
       )}

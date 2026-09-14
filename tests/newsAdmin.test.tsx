@@ -161,6 +161,67 @@ test('preview builder renders current draft values without creating a public dra
   assert.doesNotMatch(markup, /Advertisements/);
 });
 
+test('saved draft previews load protected images as authenticated blobs while published previews use public URLs', async () => {
+  const {
+    getSavedNewsPreviewImage,
+    loadSavedNewsPreviewObjectUrl,
+  } = await import('../components/news/NewsArticleEditor');
+  const draft: NewsArticleDraft = {
+    ...createEmptyNewsDraft(),
+    id: 'protected-draft',
+    imagePath: 'news/protected-draft/chart.webp',
+    imageUrl: 'https://firebasestorage.googleapis.com/protected-draft',
+  };
+  const published = makeNewsArticleFixture({
+    id: 'public-story',
+    imagePath: 'news/public-story/chart.webp',
+    imageUrl: 'https://firebasestorage.googleapis.com/public-story',
+  });
+
+  assert.deepEqual(getSavedNewsPreviewImage(draft), {
+    kind: 'authenticated',
+    imagePath: 'news/protected-draft/chart.webp',
+  });
+  assert.deepEqual(getSavedNewsPreviewImage(published), {
+    kind: 'public',
+    imageUrl: 'https://firebasestorage.googleapis.com/public-story',
+  });
+
+  let loadedPath = '';
+  const objectUrl = await loadSavedNewsPreviewObjectUrl(
+    'news/protected-draft/chart.webp',
+    async (imagePath) => {
+      loadedPath = imagePath;
+      return new Blob(['protected image'], { type: 'image/webp' });
+    },
+    (blob) => `blob:authenticated-${blob.type}`,
+  );
+  assert.equal(loadedPath, 'news/protected-draft/chart.webp');
+  assert.equal(objectUrl, 'blob:authenticated-image/webp');
+});
+
+test('editor dirty state includes pending featured selection and navigation confirmation is decision-based', async () => {
+  const {
+    confirmUnsavedNewsNavigation,
+    getUnpublishConfirmation,
+    isNewsEditorDirty,
+  } = await import('../components/news/NewsArticleEditor');
+  let confirmations = 0;
+  const rejectLeave = () => {
+    confirmations += 1;
+    return false;
+  };
+
+  assert.equal(isNewsEditorDirty(false, false, false, false), false);
+  assert.equal(isNewsEditorDirty(false, false, true, false), true);
+  assert.equal(isNewsEditorDirty(true, false, false, false), true);
+  assert.equal(confirmUnsavedNewsNavigation(false, rejectLeave), true);
+  assert.equal(confirmations, 0);
+  assert.equal(confirmUnsavedNewsNavigation(true, rejectLeave), false);
+  assert.equal(confirmations, 1);
+  assert.match(getUnpublishConfirmation(true, 'Edited story'), /discard unsaved edits/i);
+});
+
 test('new article publishing creates a stable client id before image upload', async () => {
   const { persistNewsArticleWithImage } = await import('../pages/AdminNewsEditorPage');
   const calls: string[] = [];
@@ -272,6 +333,48 @@ test('image cleanup failure is separated from a committed article update', async
   assert.equal(publishedImagePath, 'news/published-story/new.webp');
   assert.match(result.cleanupWarning || '', /old image/i);
   assert.equal(result.article.imagePath, 'news/published-story/new.webp');
+});
+
+test('published save persists the selected featured state and clearing failures reject the operation', async () => {
+  const {
+    persistFeaturedSelection,
+    persistNewsArticleWithImage,
+  } = await import('../pages/AdminNewsEditorPage');
+  const published = makeNewsArticleFixture({ id: 'feature-me' });
+  let publishFeatured: boolean | null = null;
+  const result = await persistNewsArticleWithImage({
+    draft: published,
+    image: null,
+    mode: 'draft',
+    makeFeatured: true,
+  }, {
+    saveNewsDraft: async (draft) => draft,
+    uploadNewsImage: async () => ({ imagePath: '', imageUrl: '' }),
+    getAdminNewsArticle: async () => published,
+    publishNewsArticle: async (draft, makeFeatured) => {
+      publishFeatured = makeFeatured;
+      return { ...draft, status: 'published', publishedAt: published.publishedAt };
+    },
+  });
+  assert.equal(result.article.id, 'feature-me');
+  assert.equal(publishFeatured, true);
+
+  await assert.rejects(
+    persistFeaturedSelection(result.article, 'feature-me', false, async () => {
+      throw new Error('Feature config unavailable');
+    }),
+    /Feature config unavailable/,
+  );
+});
+
+test('inventory asks before replacing or removing the current featured story', async () => {
+  const { getFeaturedChangeConfirmation } = await import('../components/news/AdminNewsInventory');
+  const current = makeNewsArticleFixture({ id: 'current', title: 'Current lead' });
+  const replacement = makeNewsArticleFixture({ id: 'replacement', title: 'Replacement lead' });
+
+  assert.match(getFeaturedChangeConfirmation(current, 'current') || '', /remove/i);
+  assert.match(getFeaturedChangeConfirmation(replacement, 'current') || '', /replace/i);
+  assert.equal(getFeaturedChangeConfirmation(replacement, null), null);
 });
 
 test('safe deletion reports orphaned image cleanup without reporting the article as undeleted', async () => {

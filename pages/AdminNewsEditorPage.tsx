@@ -118,7 +118,7 @@ export async function persistNewsArticleWithImage(
   }
 
   if (input.mode === 'publish' || workingDraft.status === 'published') {
-    const article = await services.publishNewsArticle(workingDraft, input.mode === 'publish' && input.makeFeatured);
+    const article = await services.publishNewsArticle(workingDraft, input.makeFeatured);
     return { article, cleanupWarning };
   }
 
@@ -127,6 +127,19 @@ export async function persistNewsArticleWithImage(
   }
 
   return { article: await services.saveNewsDraft(workingDraft), cleanupWarning };
+}
+
+export async function persistFeaturedSelection(
+  article: NewsArticleDraft,
+  currentFeaturedArticleId: string | null,
+  makeFeatured: boolean,
+  setFeatured: (id: string | null) => Promise<void> = setFeaturedNewsArticle,
+): Promise<string | null> {
+  if (article.status !== 'published') return currentFeaturedArticleId;
+  if (makeFeatured) return article.id;
+  if (currentFeaturedArticleId !== article.id) return currentFeaturedArticleId;
+  await setFeatured(null);
+  return null;
 }
 
 const developmentDraft = (): NewsArticleDraft => {
@@ -228,16 +241,12 @@ const AdminNewsEditorPage: React.FC = () => {
       });
       if (result.cleanupWarning) setWorkspaceNotice(result.cleanupWarning);
       if (!articleId) setCreatedId(result.article.id);
-      if (mode === 'publish' && makeFeatured) {
-        setFeaturedArticleId(result.article.id);
-      } else if (mode === 'publish' && featuredArticleId === result.article.id) {
-        try {
-          await setFeaturedNewsArticle(null);
-          setFeaturedArticleId(null);
-        } catch {
-          setWorkspaceNotice('The article was published, but the previous featured setting could not be cleared.');
-        }
-      }
+      const nextFeaturedArticleId = await persistFeaturedSelection(
+        result.article,
+        featuredArticleId,
+        makeFeatured,
+      );
+      setFeaturedArticleId(nextFeaturedArticleId);
       return result.article;
     } finally {
       setUploadProgress(null);
@@ -274,7 +283,7 @@ const AdminNewsEditorPage: React.FC = () => {
         initialPreview={initialPreview}
         initiallyFeatured={initiallyFeatured}
         uploadProgress={uploadProgress}
-        onSaveDraft={(draft, image) => persist(draft, image, 'draft', false)}
+        onSaveDraft={(draft, image, makeFeatured) => persist(draft, image, 'draft', makeFeatured)}
         onPublish={(draft, image, makeFeatured) => persist(draft, image, 'publish', makeFeatured)}
         onDelete={initialDraft.id ? async (article) => {
           const result = await deleteNewsArticleSafely(article);

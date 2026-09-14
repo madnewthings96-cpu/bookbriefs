@@ -28,6 +28,19 @@ function UpdatedTime({ value }: { value: Date | null }) {
   return <time dateTime={value.toISOString()}>{formatNewsDate(value)}</time>;
 }
 
+export function getFeaturedChangeConfirmation(
+  article: Pick<NewsArticleDraft, 'id' | 'title'>,
+  featuredArticleId: string | null,
+): string | null {
+  if (article.id === featuredArticleId) {
+    return `Remove “${article.title || 'this article'}” from the featured position?`;
+  }
+  if (featuredArticleId) {
+    return `Replace the current featured story with “${article.title || 'this article'}”?`;
+  }
+  return null;
+}
+
 export function AdminNewsInventory({
   articles,
   filter,
@@ -90,7 +103,11 @@ export function AdminNewsInventory({
                     <button
                       type="button"
                       disabled={busy}
-                      onClick={() => onSetFeatured(isFeatured ? null : article.id)}
+                      onClick={() => {
+                        const confirmation = getFeaturedChangeConfirmation(article, featuredArticleId);
+                        if (confirmation && !window.confirm(confirmation)) return;
+                        void onSetFeatured(isFeatured ? null : article.id);
+                      }}
                     >
                       {isFeatured ? 'Remove feature' : 'Make featured'}
                     </button>
