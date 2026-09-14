@@ -5,7 +5,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { makeNewsArticleFixture } from '../components/news/newsFixtures';
-import type { NewsCategory } from '../components/news/newsModel';
+import type { NewsArticle, NewsCategory } from '../components/news/newsModel';
 import type { NewsPageResult } from '../components/news/newsRepository';
 
 const flushPromises = () => new Promise<void>((resolve) => setImmediate(resolve));
@@ -49,14 +49,14 @@ test('article controller distinguishes not found from retryable repository error
   const related = makeNewsArticleFixture({ id: 'related', slug: 'related', category: 'forex' });
   const fallback = makeNewsArticleFixture({ id: 'fallback', slug: 'fallback', category: 'economy' });
   let mode: 'notFound' | 'error' | 'success' = 'notFound';
-  let requestedCategory: string | undefined;
+  const requestedCategories: Array<NewsCategory | undefined> = [];
   const source = {
     getPublishedNewsArticleBySlug: async () => {
       if (mode === 'error') throw new Error('offline');
       return mode === 'success' ? article : null;
     },
     listPublishedNews: async (options?: { category?: NewsCategory }): Promise<NewsPageResult> => {
-      requestedCategory = options?.category;
+      requestedCategories.push(options?.category);
       return {
         articles: [article, fallback, related],
         nextCursor: null,
@@ -79,10 +79,63 @@ test('article controller distinguishes not found from retryable repository error
   await controller.retry();
   await flushPromises();
   assert.equal(controller.getSnapshot().article?.id, 'current');
-  assert.equal(requestedCategory, undefined);
+  assert.deepEqual(requestedCategories, ['forex', undefined]);
   assert.deepEqual(controller.getSnapshot().relatedArticles.map((item) => item.id), ['related', 'fallback']);
   assert.equal(controller.getSnapshot().error, null);
   controller.cancel();
+});
+
+test('article controller finds same-category stories outside the newest general page', async () => {
+  const { createNewsArticleController } = await import('../components/news/useNewsArticle');
+  const article = makeNewsArticleFixture({ id: 'current', slug: 'current', category: 'forex' });
+  const deepCategoryMatch = makeNewsArticleFixture({
+    id: 'deep-category-match',
+    slug: 'deep-category-match',
+    category: 'forex',
+    publishedAt: new Date('2026-08-01T12:00:00.000Z'),
+  });
+  const generalPage = Array.from({ length: 10 }, (_, index) => makeNewsArticleFixture({
+    id: `general-${index}`,
+    slug: `general-${index}`,
+    category: 'economy',
+    publishedAt: new Date(Date.UTC(2026, 8, 13 - index, 12)),
+  }));
+  const source = {
+    getPublishedNewsArticleBySlug: async () => article,
+    listPublishedNews: async (options?: { category?: NewsCategory }): Promise<NewsPageResult> => ({
+      articles: options?.category ? [article, deepCategoryMatch] : generalPage,
+      nextCursor: null,
+    }),
+  };
+  const controller = createNewsArticleController(source);
+
+  await controller.load('current');
+
+  assert.deepEqual(
+    controller.getSnapshot().relatedArticles.map((item) => item.id),
+    ['deep-category-match', 'general-0', 'general-1'],
+  );
+});
+
+test('a slug change synchronously hides the previous article snapshot', async () => {
+  const { selectNewsArticleRouteState } = await import('../components/news/useNewsArticle');
+  const previousArticle = makeNewsArticleFixture({ id: 'previous', slug: 'previous' });
+  const previousState = {
+    slug: 'previous',
+    snapshot: {
+      article: previousArticle,
+      relatedArticles: [] as NewsArticle[],
+      loading: false,
+      notFound: false,
+      error: null,
+    },
+  };
+
+  assert.equal(selectNewsArticleRouteState('previous', previousState).article?.slug, 'previous');
+  const nextRouteState = selectNewsArticleRouteState('next', previousState);
+  assert.equal(nextRouteState.loading, true);
+  assert.equal(nextRouteState.article, null);
+  assert.deepEqual(nextRouteState.relatedArticles, []);
 });
 
 test('article stylesheet defines a readable two-column reader with responsive ad order', async () => {

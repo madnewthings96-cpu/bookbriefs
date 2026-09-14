@@ -27,6 +27,11 @@ export type NewsArticleController = {
   cancel(): void;
 };
 
+export type NewsArticleRouteSnapshot = {
+  slug: string;
+  snapshot: NewsArticleState;
+};
+
 const NEWS_ARTICLE_ERROR = 'This article is temporarily unavailable. Please try again.';
 
 const defaultSource: NewsArticleDataSource = {
@@ -42,6 +47,33 @@ const initialState = (): NewsArticleState => ({
   error: null,
 });
 
+const normalizeSlug = (slug: string): string => slug.trim();
+
+export function selectNewsArticleRouteState(
+  slug: string,
+  routeSnapshot: NewsArticleRouteSnapshot,
+): NewsArticleState {
+  return routeSnapshot.slug === normalizeSlug(slug)
+    ? routeSnapshot.snapshot
+    : initialState();
+}
+
+function mergeRelatedCandidates(
+  currentArticleId: string,
+  ...pages: NewsPageResult[]
+): NewsArticle[] {
+  const seen = new Set([currentArticleId]);
+  const candidates: NewsArticle[] = [];
+  pages.forEach((page) => {
+    page.articles.forEach((article) => {
+      if (seen.has(article.id)) return;
+      seen.add(article.id);
+      candidates.push(article);
+    });
+  });
+  return candidates;
+}
+
 export function createNewsArticleController(
   source: NewsArticleDataSource = defaultSource,
 ): NewsArticleController {
@@ -56,7 +88,7 @@ export function createNewsArticleController(
   };
 
   const load = async (slug: string): Promise<void> => {
-    activeSlug = slug.trim();
+    activeSlug = normalizeSlug(slug);
     const version = ++requestVersion;
     publish(initialState());
 
@@ -73,13 +105,21 @@ export function createNewsArticleController(
         return;
       }
 
-      // Fetch the newest public stories across categories. The selector keeps
-      // same-category stories first, then fills any remaining related slots.
-      const relatedPage = await source.listPublishedNews();
+      // A dedicated category query guarantees that an older category match is
+      // not hidden behind the first general page. The general query fills any
+      // remaining related slots with the newest stories from other categories.
+      const [categoryPage, generalPage] = await Promise.all([
+        source.listPublishedNews({ category: article.category }),
+        source.listPublishedNews(),
+      ]);
       if (version !== requestVersion) return;
       publish({
         article,
-        relatedArticles: selectRelatedArticles(article, relatedPage.articles, 3),
+        relatedArticles: selectRelatedArticles(
+          article,
+          mergeRelatedCandidates(article.id, categoryPage, generalPage),
+          3,
+        ),
         loading: false,
         notFound: false,
         error: null,
@@ -114,10 +154,16 @@ export function useNewsArticle(slug: string): NewsArticleState & { retry: () => 
   const controllerRef = useRef<NewsArticleController | null>(null);
   if (!controllerRef.current) controllerRef.current = createNewsArticleController();
   const controller = controllerRef.current;
-  const [snapshot, setSnapshot] = useState<NewsArticleState>(() => controller.getSnapshot());
+  const [routeSnapshot, setRouteSnapshot] = useState<NewsArticleRouteSnapshot>(() => ({
+    slug: '',
+    snapshot: controller.getSnapshot(),
+  }));
 
   useEffect(() => {
-    const unsubscribe = controller.subscribe(setSnapshot);
+    const routeSlug = normalizeSlug(slug);
+    const unsubscribe = controller.subscribe((snapshot) => {
+      setRouteSnapshot({ slug: routeSlug, snapshot });
+    });
     void controller.load(slug);
     return () => {
       unsubscribe();
@@ -129,6 +175,7 @@ export function useNewsArticle(slug: string): NewsArticleState & { retry: () => 
     void controller.retry();
   }, [controller]);
 
+  const snapshot = selectNewsArticleRouteState(slug, routeSnapshot);
   return { ...snapshot, retry };
 }
 
