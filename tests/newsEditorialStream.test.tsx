@@ -269,7 +269,7 @@ test('AdSense configuration requires both identifiers and reserves an honest fal
   }));
   assert.match(markup, /data-configured="false"/);
   assert.match(markup, />Advertisements<\/span>/);
-  assert.doesNotMatch(markup, /<iframe|<script/);
+  assert.doesNotMatch(markup, /adsbygoogle|<iframe|<script/);
 });
 
 test('editorial stylesheet keeps the single ad node responsive, stable, and accessible', async () => {
