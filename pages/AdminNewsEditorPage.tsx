@@ -176,7 +176,7 @@ const AdminNewsEditorPage: React.FC = () => {
     articleId ? null : developmentDraft()
   ));
   const [featuredArticleId, setFeaturedArticleId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(Boolean(articleId));
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [workspaceNotice, setWorkspaceNotice] = useState('');
@@ -189,10 +189,14 @@ const AdminNewsEditorPage: React.FC = () => {
 
     if (!articleId) {
       setInitialDraft(developmentDraft());
-      setLoading(false);
+      setLoading(true);
       void getFeaturedNewsArticleId().then((id) => {
         if (active) setFeaturedArticleId(id);
-      }).catch(() => undefined);
+      }).catch((loadError) => {
+        if (active) setError(friendlyError(loadError));
+      }).finally(() => {
+        if (active) setLoading(false);
+      });
       return () => { active = false; };
     }
 
@@ -282,6 +286,7 @@ const AdminNewsEditorPage: React.FC = () => {
         initialDraft={initialDraft}
         initialPreview={initialPreview}
         initiallyFeatured={initiallyFeatured}
+        currentFeaturedArticleId={featuredArticleId}
         uploadProgress={uploadProgress}
         onSaveDraft={(draft, image, makeFeatured) => persist(draft, image, 'draft', makeFeatured)}
         onPublish={(draft, image, makeFeatured) => persist(draft, image, 'publish', makeFeatured)}

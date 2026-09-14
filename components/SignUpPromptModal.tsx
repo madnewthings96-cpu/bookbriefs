@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Bookmark, Download, Mail, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getModalFocusWrapTarget } from './modalFocusTrap';
+import { runGuardedNavigation, useDirtyNavigation } from '../contexts/DirtyNavigationContext';
 
 interface SignUpPromptModalProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ const SignUpPromptModal: React.FC<SignUpPromptModalProps> = ({ isOpen, onClose }
   const dialogRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   const shouldReduceMotion = useReducedMotion();
+  const { confirmNavigation } = useDirtyNavigation();
 
   onCloseRef.current = onClose;
 
@@ -87,8 +89,10 @@ const SignUpPromptModal: React.FC<SignUpPromptModalProps> = ({ isOpen, onClose }
   }, [isOpen]);
 
   const moveTo = (path: '/signup' | '/login') => {
-    navigate(path);
-    onClose();
+    runGuardedNavigation(confirmNavigation, () => {
+      navigate(path);
+      onClose();
+    });
   };
 
   return (

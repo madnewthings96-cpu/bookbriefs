@@ -222,6 +222,67 @@ test('editor dirty state includes pending featured selection and navigation conf
   assert.match(getUnpublishConfirmation(true, 'Edited story'), /discard unsaved edits/i);
 });
 
+test('shared dirty-navigation registry guards imperative shell actions and stays transparent when clean', async () => {
+  const {
+    createDirtyNavigationRegistry,
+    runGuardedNavigation,
+  } = await import('../contexts/DirtyNavigationContext');
+  const registry = createDirtyNavigationRegistry();
+  let actions = 0;
+  let confirmations = 0;
+
+  assert.equal(runGuardedNavigation(
+    () => registry.confirmNavigation(() => {
+      confirmations += 1;
+      return false;
+    }),
+    () => { actions += 1; },
+  ), true);
+  assert.equal(actions, 1);
+  assert.equal(confirmations, 0);
+
+  registry.setDirty('news-editor', true);
+  assert.equal(runGuardedNavigation(
+    () => registry.confirmNavigation(() => {
+      confirmations += 1;
+      return false;
+    }),
+    () => { actions += 1; },
+  ), false);
+  assert.equal(actions, 1);
+  assert.equal(confirmations, 1);
+
+  assert.equal(runGuardedNavigation(
+    () => registry.confirmNavigation(() => {
+      confirmations += 1;
+      return true;
+    }),
+    () => { actions += 1; },
+  ), true);
+  assert.equal(actions, 2);
+  assert.equal(confirmations, 2);
+
+  registry.setDirty('news-editor', false);
+  assert.equal(registry.isDirty(), false);
+});
+
+test('imperative header search, result selection, account logout, and modal navigation use the shared guard', async () => {
+  const [appSource, headerSource, resultsSource, menuSource, modalSource] = await Promise.all([
+    readFile(new URL('../App.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../components/Header.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../components/SearchResults.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../components/UserMenu.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../components/SignUpPromptModal.tsx', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(appSource, /<DirtyNavigationProvider>/);
+  assert.match(headerSource, /useDirtyNavigation\(\)/);
+  assert.match(headerSource, /runGuardedNavigation\(confirmNavigation/);
+  assert.match(resultsSource, /runGuardedNavigation\(confirmNavigation/);
+  assert.match(menuSource, /runGuardedNavigation\(confirmNavigation/);
+  assert.match(modalSource, /runGuardedNavigation\(confirmNavigation/);
+});
+
 test('new article publishing creates a stable client id before image upload', async () => {
   const { persistNewsArticleWithImage } = await import('../pages/AdminNewsEditorPage');
   const calls: string[] = [];
@@ -365,6 +426,18 @@ test('published save persists the selected featured state and clearing failures 
     }),
     /Feature config unavailable/,
   );
+});
+
+test('editor confirms only when its featured selection would replace another configured lead', async () => {
+  const { getEditorFeatureReplacementConfirmation } = await import('../components/news/NewsArticleEditor');
+
+  assert.match(
+    getEditorFeatureReplacementConfirmation('replacement', 'current-lead', true) || '',
+    /replace the current featured story/i,
+  );
+  assert.equal(getEditorFeatureReplacementConfirmation('current-lead', 'current-lead', true), null);
+  assert.equal(getEditorFeatureReplacementConfirmation('replacement', 'current-lead', false), null);
+  assert.equal(getEditorFeatureReplacementConfirmation('replacement', null, true), null);
 });
 
 test('inventory asks before replacing or removing the current featured story', async () => {

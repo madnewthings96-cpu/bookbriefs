@@ -22,6 +22,7 @@ import PrivatePageSEO from './components/PrivatePageSEO';
 import { isPrivateSeoRoute } from './utils/seoConfig';
 import { isStandaloneAppRoute } from './components/appLayoutModel';
 import { FirebaseProvider } from './contexts/FirebaseContext';
+import { DirtyNavigationProvider } from './contexts/DirtyNavigationContext';
 
 export { useFirebase } from './contexts/FirebaseContext';
 
@@ -79,25 +80,27 @@ const CoffeeSupportCard = lazy(() => import('./components/CoffeeSupportCard'));
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <FirebaseProvider>
-        <BooksProvider>
-          <LanguageProvider>
-            <AuthProvider>
-              <FavoritesProvider>
-                <ReadingChallengeProvider>
-                  <UserProgressProvider>
-                    <ReaderModeProvider>
-                      <PersonalNotesProvider>
-                        <AppContent />
-                      </PersonalNotesProvider>
-                    </ReaderModeProvider>
-                  </UserProgressProvider>
-                </ReadingChallengeProvider>
-              </FavoritesProvider>
-            </AuthProvider>
-          </LanguageProvider>
-        </BooksProvider>
-      </FirebaseProvider>
+      <DirtyNavigationProvider>
+        <FirebaseProvider>
+          <BooksProvider>
+            <LanguageProvider>
+              <AuthProvider>
+                <FavoritesProvider>
+                  <ReadingChallengeProvider>
+                    <UserProgressProvider>
+                      <ReaderModeProvider>
+                        <PersonalNotesProvider>
+                          <AppContent />
+                        </PersonalNotesProvider>
+                      </ReaderModeProvider>
+                    </UserProgressProvider>
+                  </ReadingChallengeProvider>
+                </FavoritesProvider>
+              </AuthProvider>
+            </LanguageProvider>
+          </BooksProvider>
+        </FirebaseProvider>
+      </DirtyNavigationProvider>
     </HelmetProvider>
   );
 };

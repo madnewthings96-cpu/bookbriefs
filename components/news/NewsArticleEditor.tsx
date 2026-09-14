@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NewsArticleReader } from './NewsArticleReader';
 import { loadNewsImageBlob } from './newsImages';
+import { useDirtyNavigation } from '../../contexts/DirtyNavigationContext';
 import {
   NEWS_CATEGORIES,
   createEmptyNewsDraft,
@@ -17,6 +18,7 @@ export type NewsArticleEditorProps = {
   initialDraft: NewsArticleDraft;
   initialPreview?: boolean;
   initiallyFeatured?: boolean;
+  currentFeaturedArticleId?: string | null;
   uploadProgress?: number | null;
   onSaveDraft(
     draft: NewsArticleDraft,
@@ -91,6 +93,15 @@ export function getUnpublishConfirmation(dirty: boolean, title = 'this article')
     : `Unpublish “${title}”? Its public page will no longer be available.`;
 }
 
+export function getEditorFeatureReplacementConfirmation(
+  articleId: string,
+  currentFeaturedArticleId: string | null,
+  makeFeatured: boolean,
+): string | null {
+  if (!makeFeatured || !currentFeaturedArticleId || currentFeaturedArticleId === articleId) return null;
+  return 'Replace the current featured story with this article?';
+}
+
 const fieldIds: Record<EditableField, string> = {
   title: 'news-title',
   slug: 'news-slug',
@@ -149,6 +160,7 @@ export function NewsArticleEditor({
   initialDraft,
   initialPreview = false,
   initiallyFeatured = false,
+  currentFeaturedArticleId = null,
   uploadProgress = null,
   onSaveDraft,
   onPublish,
@@ -172,6 +184,8 @@ export function NewsArticleEditor({
   const [notice, setNotice] = useState('');
   const [actionError, setActionError] = useState('');
   const slugWasEdited = useRef(Boolean(initialDraft.id || initialDraft.slug));
+  const dirtySource = useRef(Symbol('news-editor'));
+  const { confirmNavigation, setDirty: setSharedDirty } = useDirtyNavigation();
 
   useEffect(() => {
     setDraft(initialDraft);
@@ -249,6 +263,11 @@ export function NewsArticleEditor({
   );
 
   useEffect(() => {
+    setSharedDirty(dirtySource.current, dirty);
+    return () => setSharedDirty(dirtySource.current, false);
+  }, [dirty, setSharedDirty]);
+
+  useEffect(() => {
     if (!dirty || typeof window === 'undefined') return undefined;
     const warnBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
@@ -284,7 +303,7 @@ export function NewsArticleEditor({
         && destination.search === window.location.search
         && destination.hash === window.location.hash
       ) return;
-      if (confirmUnsavedNewsNavigation(true)) return;
+      if (confirmNavigation()) return;
       event.preventDefault();
       event.stopImmediatePropagation();
     };
@@ -295,7 +314,7 @@ export function NewsArticleEditor({
         event.stopImmediatePropagation();
         return;
       }
-      if (confirmUnsavedNewsNavigation(true)) {
+      if (confirmNavigation()) {
         currentHistoryIndex = typeof event.state?.idx === 'number' ? event.state.idx : currentHistoryIndex;
         return;
       }
@@ -315,7 +334,7 @@ export function NewsArticleEditor({
       document.removeEventListener('click', guardInternalLink, true);
       window.removeEventListener('popstate', guardHistoryNavigation, true);
     };
-  }, [dirty]);
+  }, [confirmNavigation, dirty]);
 
   const resolvedPreviewImageUrl = localImageUrl
     || savedImageUrl
@@ -408,6 +427,14 @@ export function NewsArticleEditor({
 
   const saveDraft = () => {
     if (!validateFor('draft')) return;
+    const featureConfirmation = isPublished
+      ? getEditorFeatureReplacementConfirmation(
+        draft.id,
+        currentFeaturedArticleId,
+        makeFeatured,
+      )
+      : null;
+    if (featureConfirmation && !window.confirm(featureConfirmation)) return;
     void runMutation(
       'save',
       () => onSaveDraft(draft, selectedImage, makeFeatured),
@@ -421,6 +448,12 @@ export function NewsArticleEditor({
 
   const publish = () => {
     if (!validateFor('publish')) return;
+    const featureConfirmation = getEditorFeatureReplacementConfirmation(
+      draft.id,
+      currentFeaturedArticleId,
+      makeFeatured,
+    );
+    if (featureConfirmation && !window.confirm(featureConfirmation)) return;
     void runMutation(
       'publish',
       () => onPublish(draft, selectedImage, makeFeatured),
