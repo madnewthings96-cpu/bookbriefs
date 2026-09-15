@@ -1,5 +1,5 @@
 
-import React, { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
@@ -14,15 +14,17 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
 import NotFoundPage from './pages/NotFoundPage';
 import PrivatePageSEO from './components/PrivatePageSEO';
 import { isPrivateSeoRoute } from './utils/seoConfig';
 import { isStandaloneAppRoute } from './components/appLayoutModel';
+import { FirebaseProvider } from './contexts/FirebaseContext';
+import { DirtyNavigationProvider } from './contexts/DirtyNavigationContext';
+
+export { useFirebase } from './contexts/FirebaseContext';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SummariesPage = lazy(() => import('./pages/SummariesPage'));
@@ -32,6 +34,25 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
 const NewsPage = lazy(async () => {
   const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsPage')]);
+  return pageModule;
+});
+const NewsArticlePage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsArticlePage')]);
+  return pageModule;
+});
+const AdminNewsPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([
+    import('./pages/AdminNewsPage.css'),
+    import('./pages/AdminNewsPage'),
+  ]);
+  return pageModule;
+});
+const AdminNewsEditorPage = lazy(async () => {
+  const [, , pageModule] = await Promise.all([
+    import('./pages/AdminNewsPage.css'),
+    import('./pages/NewsPage.css'),
+    import('./pages/AdminNewsEditorPage'),
+  ]);
   return pageModule;
 });
 const BlogPage = lazy(() => import('./pages/BlogPage'));
@@ -55,126 +76,31 @@ const TradingJournalPage = lazy(() => import('./pages/TradingJournalPage'));
 const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'));
 const CoffeeSupportCard = lazy(() => import('./components/CoffeeSupportCard'));
 
-interface FirebaseContextType {
-  currentUser: User | null;
-  loading: boolean;
-}
-
-const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
-
-export const useFirebase = () => {
-  const context = useContext(FirebaseContext);
-  if (context === undefined) {
-    throw new Error('useFirebase must be used within a FirebaseProvider');
-  }
-  return context;
-};
-
-// Firebase Provider Component
-const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const ensureUserDocument = async (user: User) => {
-    try {
-      const userDocRef = doc(db, 'users', user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (!userDocSnap.exists()) {
-        await setDoc(userDocRef, {
-          email: user.email,
-          displayName: user.displayName,
-          createdAt: new Date(),
-          lastLogin: new Date(),
-        });
-      }
-    } catch (error) {
-      console.error('Error ensuring user document:', error);
-    }
-  };
-
-  // Update last login timestamp
-  const updateLastLogin = async (user: User) => {
-    try {
-      const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, {
-        lastLogin: new Date(),
-      });
-    } catch (error) {
-      console.error('Error updating last login:', error);
-    }
-  };
-
-  // Firebase auth state listener
-  useEffect(() => {
-    // Set a shorter timeout to prevent blocking
-    const timeoutId = setTimeout(() => {
-      console.warn('Firebase auth initialization timeout, proceeding without auth');
-      setLoading(false);
-    }, 3000); // 3 second timeout (reduced from 10)
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      clearTimeout(timeoutId); // Clear timeout since auth resolved
-      setCurrentUser(user);
-
-      if (user) {
-        try {
-          await ensureUserDocument(user);
-          await updateLastLogin(user);
-        } catch (error) {
-          console.error('Error preparing user data:', error);
-        }
-      }
-
-      setLoading(false);
-    }, (error) => {
-      // Error callback for auth state changes
-      console.error('Firebase auth error:', error);
-      clearTimeout(timeoutId);
-      setLoading(false);
-    });
-
-    return () => {
-      clearTimeout(timeoutId);
-      unsubscribe();
-    };
-  }, []);
-
-  const value: FirebaseContextType = {
-    currentUser,
-    loading,
-  };
-
-  return (
-    <FirebaseContext.Provider value={value}>
-      {children}
-    </FirebaseContext.Provider>
-  );
-};
-
 // Main App Component
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <FirebaseProvider>
-        <BooksProvider>
-          <LanguageProvider>
-            <AuthProvider>
-              <FavoritesProvider>
-                <ReadingChallengeProvider>
-                  <UserProgressProvider>
-                    <ReaderModeProvider>
-                      <PersonalNotesProvider>
-                        <AppContent />
-                      </PersonalNotesProvider>
-                    </ReaderModeProvider>
-                  </UserProgressProvider>
-                </ReadingChallengeProvider>
-              </FavoritesProvider>
-            </AuthProvider>
-          </LanguageProvider>
-        </BooksProvider>
-      </FirebaseProvider>
+      <DirtyNavigationProvider>
+        <FirebaseProvider>
+          <BooksProvider>
+            <LanguageProvider>
+              <AuthProvider>
+                <FavoritesProvider>
+                  <ReadingChallengeProvider>
+                    <UserProgressProvider>
+                      <ReaderModeProvider>
+                        <PersonalNotesProvider>
+                          <AppContent />
+                        </PersonalNotesProvider>
+                      </ReaderModeProvider>
+                    </UserProgressProvider>
+                  </ReadingChallengeProvider>
+                </FavoritesProvider>
+              </AuthProvider>
+            </LanguageProvider>
+          </BooksProvider>
+        </FirebaseProvider>
+      </DirtyNavigationProvider>
     </HelmetProvider>
   );
 };
@@ -210,6 +136,22 @@ const AppFrame: React.FC = () => {
               <Route path="/ar/tools/fire-calculator" element={<CalculatorsPage />} />
               <Route path="/ar/tools/compound-interest-calculator" element={<CalculatorsPage />} />
               <Route path="/news" element={<NewsPage />} />
+              <Route path="/news/:slug" element={<NewsArticlePage />} />
+              <Route path="/admin/news" element={
+                <AdminRoute>
+                  <AdminNewsPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/news/new" element={
+                <AdminRoute>
+                  <AdminNewsEditorPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/news/:articleId" element={
+                <AdminRoute>
+                  <AdminNewsEditorPage />
+                </AdminRoute>
+              } />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPage />} />
               <Route path="/connections" element={<IdeasInTheWildPage />} />

@@ -9,6 +9,10 @@
   # Serve Firebase Auth helpers through the primary site so Google shows our domain.
   VITE_FIREBASE_AUTH_DOMAIN = "www.ta7leel.pro"
 
+[context.production.environment]
+  # Production deploys must not silently omit published news from static SEO output.
+  NEWS_CATALOG_REQUIRED = "true"
+
 # PERFORMANCE: Enable Brotli compression (30-40% better than gzip for mobile)
 [build.processing]
   skip_processing = false
@@ -135,6 +139,13 @@
 
 [[redirects]]
   from = "/news"
+  to = "/index.html"
+  status = 200
+
+# A published article is immediately available through Firestore, before its next prerendered deploy.
+# Existing prerendered article files shadow this non-forced runtime fallback.
+[[redirects]]
+  from = "/news/*"
   to = "/index.html"
   status = 200
 

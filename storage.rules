@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null &&
+             (request.auth.uid == 'ME2iHxeBWgcSTpc1HKwKbSCrQ7t2' ||
+              request.auth.token.email == 'belhalyt01@proton.me');
+    }
+
+    match /news/{articleId}/{fileName} {
+      allow read: if isAdmin() ||
+                  (firestore.exists(/databases/(default)/documents/newsArticles/$(articleId)) &&
+                   firestore.get(/databases/(default)/documents/newsArticles/$(articleId)).data.status == 'published');
+      allow create, update: if isAdmin() && request.resource.size <= 5 * 1024 * 1024 &&
+                            request.resource.contentType.matches('image/(jpeg|png|webp)');
+      // Deletes have no request.resource, so they cannot share upload validation.
+      allow delete: if isAdmin();
+    }
+  }
+}

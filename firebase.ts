@@ -2,17 +2,19 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
 // This code securely reads the keys from your .env.local file
+const firebaseEnvironment: Record<string, string | undefined> = (import.meta.env ?? {}) as Record<string, string | undefined>;
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: firebaseEnvironment.VITE_FIREBASE_API_KEY,
+  authDomain: firebaseEnvironment.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: firebaseEnvironment.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: firebaseEnvironment.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: firebaseEnvironment.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: firebaseEnvironment.VITE_FIREBASE_APP_ID,
+  measurementId: firebaseEnvironment.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Check that the keys were loaded correctly from the .env.local file
@@ -31,6 +33,7 @@ if (!firebaseConfig.apiKey) {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 let analytics: any;
 
@@ -77,4 +80,4 @@ export const getAnalyticsInstance = () => {
   return analytics;
 };
 
-export { auth, db, googleProvider, analytics };
+export { auth, db, storage, googleProvider, analytics };

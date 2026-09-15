@@ -5,6 +5,8 @@ import { absoluteUrl, escapeXml, getCanonicalBookSlug, loadBookCatalog } from '.
 
 import { blogPosts } from '../components/blog/blogContent.ts';
 import { getBlogPostDirection } from '../components/blog/blogPageModel.ts';
+import { loadPublishedNewsCatalog } from './newsCatalog.ts';
+import { buildNewsSitemapUrls } from './newsSeo.ts';
 
 interface SitemapUrl {
   path: string;
@@ -46,7 +48,10 @@ ${sitemaps
 }
 
 async function main() {
-  const books = await loadBookCatalog();
+  const [books, newsArticles] = await Promise.all([
+    loadBookCatalog(),
+    loadPublishedNewsCatalog(),
+  ]);
   const publicDir = path.join(process.cwd(), 'public');
   await mkdir(publicDir, { recursive: true });
 
@@ -55,7 +60,7 @@ async function main() {
     { path: '/summaries', changefreq: 'daily', priority: '0.9' },
     { path: '/blog', changefreq: 'weekly', priority: '0.8' },
     { path: '/connections', changefreq: 'weekly', priority: '0.8' },
-    { path: '/news', changefreq: 'daily', priority: '0.7' },
+    { path: '/news', changefreq: 'weekly', priority: '0.7' },
     { path: '/about', changefreq: 'monthly', priority: '0.6' },
     { path: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
     { path: '/terms-of-use', changefreq: 'yearly', priority: '0.3' },
@@ -104,8 +109,9 @@ async function main() {
     priority: '0.7',
     lastmod: post.date,
   }));
+  const newsRoutes = buildNewsSitemapUrls(newsArticles);
   const englishRoutes = [...baseRoutes, ...englishCalculatorRoutes, ...englishCategoryRoutes, ...bookRoutes,
-    ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'ltr')];
+    ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'ltr'), ...newsRoutes];
   const arabicRoutes = [...arabicCategoryRoutes,
     ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'rtl')];
   const allRoutes = [...englishRoutes, ...arabicRoutes];
@@ -115,7 +121,7 @@ async function main() {
   await writeFile(path.join(publicDir, 'sitemap-ar.xml'), renderUrlset(arabicRoutes), 'utf8');
   await writeFile(path.join(publicDir, 'sitemap-index.xml'), renderSitemapIndex(), 'utf8');
 
-  console.log(`Generated SEO sitemaps for ${books.length} books and ${CATEGORY_HUBS.length} category hubs.`);
+  console.log(`Generated SEO sitemaps for ${books.length} books, ${CATEGORY_HUBS.length} category hubs, and ${newsArticles.length} news articles.`);
 }
 
 main().catch((error) => {

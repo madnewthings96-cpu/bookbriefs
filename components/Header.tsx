@@ -34,6 +34,7 @@ import {
 } from './headerNavigation';
 import SearchResults from './SearchResults';
 import UserMenu from './UserMenu';
+import { runGuardedNavigation, useDirtyNavigation } from '../contexts/DirtyNavigationContext';
 
 type HeaderIcon = React.ComponentType<{ className?: string }>;
 
@@ -89,6 +90,7 @@ const Header: React.FC = () => {
   const { t, language } = useLanguage();
   const { isReaderMode } = useReaderMode();
   const { books } = useBooks();
+  const { confirmNavigation } = useDirtyNavigation();
 
   const navigationGroups = useMemo<Record<NavigationGroupKey, NavigationGroup>>(
     () => ({
@@ -251,12 +253,14 @@ const Header: React.FC = () => {
 
       const results = searchBooks(query, language, books);
       if (results.length > 0) {
-        navigate(results[0].path);
-        closeSearch();
-        closeMenus();
+        runGuardedNavigation(confirmNavigation, () => {
+          navigate(results[0].path);
+          closeSearch();
+          closeMenus();
+        });
       }
     },
-    [books, closeMenus, closeSearch, language, navigate, searchQuery],
+    [books, closeMenus, closeSearch, confirmNavigation, language, navigate, searchQuery],
   );
 
   const handleSearchInput = useCallback(
@@ -956,8 +960,10 @@ const Header: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => {
-                            logout();
-                            closeMenus();
+                            runGuardedNavigation(confirmNavigation, () => {
+                              logout();
+                              closeMenus();
+                            });
                           }}
                           className="flex min-h-11 items-center gap-1.5 rounded-[14px] px-3 text-xs font-semibold text-[#F5B7AA] outline-none transition-[background-color,transform] duration-150 hover:bg-[#F5B7AA]/10 active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#F5B7AA]"
                         >

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isAdminIdentity } from '../utils/adminAuth';
 import FeedbackModal from './FeedbackModal';
+import { runGuardedNavigation, useDirtyNavigation } from '../contexts/DirtyNavigationContext';
 
 const UserMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +13,7 @@ const UserMenu: React.FC = () => {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { isAuthenticated, user, logout } = useAuth();
   const { t } = useLanguage();
+  const { confirmNavigation } = useDirtyNavigation();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -86,6 +89,21 @@ const UserMenu: React.FC = () => {
 
           {/* Menu Items */}
           <div className="py-2">
+            {isAdminIdentity(user) && (
+              <NavLink
+                to="/admin/news"
+                onClick={() => setIsMenuOpen(false)}
+                className={menuItemClassName}
+              >
+                <div className={menuIconClassName}>
+                  <svg className={menuIconSvgClassName} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5h16M4 9h16M4 13h10m-10 6h16v-2H4v2z" />
+                  </svg>
+                </div>
+                <span className={menuTextClassName}>News publishing</span>
+              </NavLink>
+            )}
+
             {/* Your Library */}
             {isAuthenticated && (
               <NavLink
@@ -188,8 +206,10 @@ const UserMenu: React.FC = () => {
               <button
                 type="button"
                 onClick={() => {
-                  logout();
-                  setIsMenuOpen(false);
+                  runGuardedNavigation(confirmNavigation, () => {
+                    logout();
+                    setIsMenuOpen(false);
+                  });
                 }}
                 className="group mx-1.5 flex min-h-12 w-[calc(100%-0.75rem)] items-center rounded-[16px] px-3 py-2 text-left outline-none transition-[background-color,transform] duration-150 hover:bg-[#FBEDEA] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C95F4E]"
               >

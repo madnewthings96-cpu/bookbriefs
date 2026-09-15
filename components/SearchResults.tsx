@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { runGuardedNavigation, useDirtyNavigation } from '../contexts/DirtyNavigationContext';
 
 interface SearchResult {
   id: string;
@@ -22,12 +23,15 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   isLoading = false,
 }) => {
   const navigate = useNavigate();
+  const { confirmNavigation } = useDirtyNavigation();
 
   if (!isVisible) return null;
 
   const handleResultClick = (result: SearchResult) => {
-    navigate(result.path);
-    onClose();
+    runGuardedNavigation(confirmNavigation, () => {
+      navigate(result.path);
+      onClose();
+    });
   };
 
   return (

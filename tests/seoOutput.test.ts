@@ -42,6 +42,19 @@ test('unknown pages and private pages have crawlable noindex responses configure
   assert.doesNotMatch(robots, /User-agent: Googlebot|Disallow: \/login|Disallow: \/pdfs/);
 });
 
+test('newly published news routes reach the runtime before their next static deployment', async () => {
+  const config = await read('netlify.toml');
+  const redirects = config.split('[[redirects]]').slice(1);
+  const newsFallbackIndex = redirects.findIndex((block) => /from\s*=\s*"\/news\/\*"/.test(block));
+  const notFoundIndex = redirects.findIndex((block) => /to\s*=\s*"\/404\.html"\s+status\s*=\s*404/.test(block));
+  const newsFallback = redirects[newsFallbackIndex] || '';
+
+  assert.ok(newsFallbackIndex >= 0, 'Missing the dynamic news route fallback.');
+  assert.ok(notFoundIndex > newsFallbackIndex, 'The news fallback must run before the 404 catch-all.');
+  assert.match(newsFallback, /to\s*=\s*"\/index\.html"\s+status\s*=\s*200/);
+  assert.doesNotMatch(newsFallback, /force\s*=\s*true/);
+});
+
 test('every sitemap URL has static HTML or an explicit server route', async () => {
   const xml = await read('dist/sitemap.xml');
   const config = await read('netlify.toml');
@@ -67,4 +80,16 @@ test('Ideas in the Wild serves its real content, metadata and styles before Java
   assert.match(html, /Why market fear travels faster than fundamentals/);
   assert.match(html, /<link rel="stylesheet" href="\/assets\/IdeasInTheWildPage-[^"]+\.css"/);
   assert.doesNotMatch(html, /noindex/);
+});
+
+test('Market News has a crawlable weekly editorial fallback without JavaScript', async () => {
+  const html = await read('dist/news/index.html');
+  const sitemap = await read('dist/sitemap-en.xml');
+
+  assert.match(html, /<html lang="en" dir="ltr">/);
+  assert.match(html, /<title>Market News &amp; Weekly Financial Analysis \| Ta7leel<\/title>/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/www\.ta7leel\.pro\/news\/"/);
+  assert.match(html, /<h1>Market News<\/h1>/);
+  assert.doesNotMatch(html, /noindex/);
+  assert.match(sitemap, /<loc>https:\/\/www\.ta7leel\.pro\/news\/<\/loc>[\s\S]*?<changefreq>weekly<\/changefreq>/);
 });
