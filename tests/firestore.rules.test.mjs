@@ -179,6 +179,7 @@ describe('Firestore security rules', () => {
       await seedDocument('newsArticles/story', newsPayload());
       await seedDocument('newsArticles/draft', newsPayload({ status: 'draft', publishedAt: null }));
       const publicDb = testEnv.unauthenticatedContext().firestore();
+      await assertFails(publicDb.doc('newsArticleSlugs/not-reserved').get());
       for (const id of ['story', 'draft', 'missing']) {
         await seedDocument(`newsArticleSlugs/${id}`, { articleId: id });
         await seedDocument('newsConfig/editorial', { featuredArticleId: id, updatedAt: storedTimestamp() });

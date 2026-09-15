@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getFeaturedNewsArticleId,
   getPublishedNewsArticle,
+  isPublicNewsReferenceDenied,
   listPublishedNews,
   type NewsCursor,
   type NewsPageResult,
@@ -99,11 +100,18 @@ export function createNewsIndexController(
   );
 
   const loadConfiguredFeaturedArticle = async (category: NewsIndexCategory): Promise<NewsArticle | null> => {
-    const featuredArticleId = await source.getFeaturedNewsArticleId();
-    if (!featuredArticleId) return null;
-    const article = await source.getPublishedNewsArticle(featuredArticleId);
-    if (!article || (category !== 'all' && article.category !== category)) return null;
-    return article;
+    try {
+      const featuredArticleId = await source.getFeaturedNewsArticleId();
+      if (!featuredArticleId) return null;
+      const article = await source.getPublishedNewsArticle(featuredArticleId);
+      if (!article || (category !== 'all' && article.category !== category)) return null;
+      return article;
+    } catch (error) {
+      // A stale config points at a record the public rules intentionally hide.
+      // Other failures still fail the initial load so they remain observable.
+      if (isPublicNewsReferenceDenied(error)) return null;
+      throw error;
+    }
   };
 
   const loadInitialPage = async (category: NewsIndexCategory, version: number) => {

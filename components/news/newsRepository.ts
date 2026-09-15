@@ -56,8 +56,12 @@ export type NewsArticleTransitionOperation = 'save' | 'publish';
 const asDate = (value: unknown): Date | null => {
   if (value instanceof Date && !Number.isNaN(value.getTime())) return new Date(value.getTime());
   if (value && typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
-    const date = value.toDate();
-    return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+    try {
+      const date = value.toDate();
+      return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+    } catch {
+      return null;
+    }
   }
   return null;
 };
@@ -77,6 +81,26 @@ async function repositoryOperation<T>(operation: () => Promise<T>): Promise<T> {
     return await operation();
   } catch (error) {
     throw mapRepositoryError(error);
+  }
+}
+
+export function isPublicNewsReferenceDenied(error: unknown): boolean {
+  return mapRepositoryError(error).code === 'permission';
+}
+
+/**
+ * Firestore rules intentionally hide missing, unpublished, and deleted public
+ * references with permission-denied. At this point-read boundary those records
+ * are equivalent to absence; operational and malformed-response failures still
+ * propagate as repository errors.
+ */
+export async function resolvePublicNewsReference<T>(operation: () => Promise<T>): Promise<T | null> {
+  try {
+    return await operation();
+  } catch (error) {
+    const mappedError = mapRepositoryError(error);
+    if (mappedError.code === 'permission') return null;
+    throw mappedError;
   }
 }
 
@@ -196,7 +220,7 @@ export async function listPublishedNews({
 }
 
 export async function getPublishedNewsArticle(id: string): Promise<NewsArticle | null> {
-  return repositoryOperation(async () => {
+  return resolvePublicNewsReference(async () => {
     if (!id) return null;
     const snapshot = await getDoc(doc(db, ARTICLES_COLLECTION, id));
     const article = snapshot.exists() ? normalizeNewsDocument(snapshot.id, snapshot.data()) : null;
@@ -205,7 +229,7 @@ export async function getPublishedNewsArticle(id: string): Promise<NewsArticle |
 }
 
 export async function getPublishedNewsArticleBySlug(slug: string): Promise<NewsArticle | null> {
-  return repositoryOperation(async () => {
+  return resolvePublicNewsReference(async () => {
     if (!slug) return null;
     const mapping = await getDoc(doc(db, SLUGS_COLLECTION, slug));
     const articleId = mapping.exists() && typeof mapping.data().articleId === 'string' ? mapping.data().articleId : null;
@@ -217,7 +241,7 @@ export async function getPublishedNewsArticleBySlug(slug: string): Promise<NewsA
 }
 
 export async function getFeaturedNewsArticleId(): Promise<string | null> {
-  return repositoryOperation(async () => {
+  return resolvePublicNewsReference(async () => {
     const snapshot = await getDoc(doc(db, CONFIG_DOCUMENT));
     const featuredArticleId = snapshot.exists() ? snapshot.data().featuredArticleId : null;
     return typeof featuredArticleId === 'string' && featuredArticleId ? featuredArticleId : null;

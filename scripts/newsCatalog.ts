@@ -31,8 +31,12 @@ let didWarnAboutUnavailableCatalog = false;
 const asDate = (value: unknown): Date | null => {
   if (value instanceof Date && !Number.isNaN(value.getTime())) return new Date(value.getTime());
   if (value && typeof value === 'object' && 'toDate' in value && typeof value.toDate === 'function') {
-    const date = value.toDate();
-    return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+    try {
+      const date = value.toDate();
+      return date instanceof Date && !Number.isNaN(date.getTime()) ? date : null;
+    } catch {
+      return null;
+    }
   }
   return null;
 };

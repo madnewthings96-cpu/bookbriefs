@@ -6,7 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { makeNewsArticleFixture } from '../components/news/newsFixtures';
 import type { NewsArticle, NewsCategory } from '../components/news/newsModel';
-import type { NewsPageResult } from '../components/news/newsRepository';
+import { NewsRepositoryError, type NewsPageResult } from '../components/news/newsRepository';
 
 const flushPromises = () => new Promise<void>((resolve) => setImmediate(resolve));
 
@@ -76,6 +76,7 @@ test('article controller distinguishes not found from retryable repository error
   await controller.retry();
   assert.equal(controller.getSnapshot().notFound, false);
   assert.match(controller.getSnapshot().error || '', /temporarily unavailable/i);
+  controller.cancel();
 
   mode = 'success';
   await controller.retry();
@@ -83,6 +84,64 @@ test('article controller distinguishes not found from retryable repository error
   assert.equal(controller.getSnapshot().article?.id, 'current');
   assert.deepEqual(requestedCategories, ['forex', undefined]);
   assert.deepEqual(controller.getSnapshot().relatedArticles.map((item) => item.id), ['related', 'fallback']);
+  assert.equal(controller.getSnapshot().error, null);
+  controller.cancel();
+});
+
+test('article controller treats a rule-hidden public slug as not found but preserves unexpected errors', async () => {
+  const { createNewsArticleController } = await import('../components/news/useNewsArticle');
+  let error: unknown = new NewsRepositoryError('permission', 'The mapping is not public.');
+  const source = {
+    getPublishedNewsArticleBySlug: async (): Promise<NewsArticle | null> => {
+      throw error;
+    },
+    listPublishedNews: async (): Promise<NewsPageResult> => ({ articles: [], nextCursor: null }),
+  };
+  const controller = createNewsArticleController(source);
+
+  await controller.load('retired-story');
+  assert.equal(controller.getSnapshot().notFound, true);
+  assert.equal(controller.getSnapshot().error, null);
+
+  error = new NewsRepositoryError('offline', 'The network is unavailable.');
+  await controller.retry();
+  assert.equal(controller.getSnapshot().notFound, false);
+  assert.match(controller.getSnapshot().error || '', /temporarily unavailable/i);
+});
+
+test('article controller renders the primary story with independently degraded related results', async () => {
+  const { createNewsArticleController } = await import('../components/news/useNewsArticle');
+  const article = makeNewsArticleFixture({ id: 'current', slug: 'current', category: 'forex' });
+  const categoryStory = makeNewsArticleFixture({ id: 'category', category: 'forex' });
+  const generalStory = makeNewsArticleFixture({ id: 'general', category: 'economy' });
+  let failingQuery: NewsCategory | 'general' | 'both' = 'forex';
+  const source = {
+    getPublishedNewsArticleBySlug: async () => article,
+    listPublishedNews: async (options?: { category?: NewsCategory }): Promise<NewsPageResult> => {
+      const kind = options?.category ?? 'general';
+      if (failingQuery === 'both' || failingQuery === kind) throw new Error(`${kind} failed`);
+      return {
+        articles: kind === 'general' ? [generalStory] : [categoryStory],
+        nextCursor: null,
+      };
+    },
+  };
+  const controller = createNewsArticleController(source);
+
+  await controller.load('current');
+  assert.equal(controller.getSnapshot().article?.id, 'current');
+  assert.deepEqual(controller.getSnapshot().relatedArticles.map((item) => item.id), ['general']);
+  assert.equal(controller.getSnapshot().error, null);
+
+  failingQuery = 'general';
+  await controller.retry();
+  assert.equal(controller.getSnapshot().article?.id, 'current');
+  assert.deepEqual(controller.getSnapshot().relatedArticles.map((item) => item.id), ['category']);
+
+  failingQuery = 'both';
+  await controller.retry();
+  assert.equal(controller.getSnapshot().article?.id, 'current');
+  assert.deepEqual(controller.getSnapshot().relatedArticles, []);
   assert.equal(controller.getSnapshot().error, null);
   controller.cancel();
 });

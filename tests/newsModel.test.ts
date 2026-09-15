@@ -14,6 +14,7 @@ import {
   createNewsCursor,
   NewsRepositoryError,
   normalizeNewsDocument,
+  resolvePublicNewsReference,
 } from '../components/news/newsRepository';
 
 test('slugifyNewsTitle produces a stable ASCII route segment', () => {
@@ -97,8 +98,56 @@ test('fixture defaults to a valid published article and sample draft is isolated
   assert.equal(Object.isFrozen(sample), true);
 });
 
-test('normalizeNewsDocument rejects malformed categories and timestamps', () => {
+test('normalizeNewsDocument rejects malformed categories', () => {
   assert.equal(normalizeNewsDocument('bad', { category: 'sports' }), null);
+});
+
+test('normalizeNewsDocument converts valid timestamps and rejects each malformed timestamp', () => {
+  const fixture = makeNewsArticleFixture({ id: 'converted-story' });
+  const timestamp = (value: string) => ({ toDate: () => new Date(value) });
+  const stored = {
+    ...fixture,
+    id: undefined,
+    createdAt: timestamp('2026-09-10T10:00:00.000Z'),
+    updatedAt: timestamp('2026-09-11T11:00:00.000Z'),
+    publishedAt: timestamp('2026-09-12T12:00:00.000Z'),
+  };
+
+  const normalized = normalizeNewsDocument('converted-story', stored);
+  assert.equal(normalized?.createdAt.toISOString(), '2026-09-10T10:00:00.000Z');
+  assert.equal(normalized?.updatedAt.toISOString(), '2026-09-11T11:00:00.000Z');
+  assert.equal(normalized?.publishedAt?.toISOString(), '2026-09-12T12:00:00.000Z');
+  assert.equal(normalizeNewsDocument('bad-created', { ...stored, createdAt: 'now' }), null);
+  assert.equal(normalizeNewsDocument('bad-updated', { ...stored, updatedAt: 'now' }), null);
+  assert.equal(normalizeNewsDocument('bad-published', { ...stored, publishedAt: 'now' }), null);
+  assert.equal(normalizeNewsDocument('invalid-created-date', {
+    ...stored,
+    createdAt: { toDate: () => new Date('invalid') },
+  }), null);
+  assert.equal(normalizeNewsDocument('invalid-updated-value', {
+    ...stored,
+    updatedAt: { toDate: () => 'not-a-date' },
+  }), null);
+  assert.equal(normalizeNewsDocument('throwing-published-converter', {
+    ...stored,
+    publishedAt: { toDate: () => { throw new Error('malformed timestamp'); } },
+  }), null);
+});
+
+test('public reference reads normalize rule-hidden records without swallowing other failures', async () => {
+  assert.equal(
+    await resolvePublicNewsReference(async () => {
+      throw { code: 'permission-denied' };
+    }),
+    null,
+  );
+
+  await assert.rejects(
+    resolvePublicNewsReference(async () => {
+      throw { code: 'unavailable' };
+    }),
+    (error: unknown) => error instanceof NewsRepositoryError && error.code === 'offline',
+  );
 });
 
 test('cursor serialization preserves publication time and id', () => {

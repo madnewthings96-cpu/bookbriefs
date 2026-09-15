@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getPublishedNewsArticleBySlug,
+  isPublicNewsReferenceDenied,
   listPublishedNews,
   type NewsPageResult,
 } from './newsRepository';
@@ -108,24 +109,33 @@ export function createNewsArticleController(
       // A dedicated category query guarantees that an older category match is
       // not hidden behind the first general page. The general query fills any
       // remaining related slots with the newest stories from other categories.
-      const [categoryPage, generalPage] = await Promise.all([
+      const relatedResults = await Promise.allSettled([
         source.listPublishedNews({ category: article.category }),
         source.listPublishedNews(),
       ]);
       if (version !== requestVersion) return;
+      // Related stories are optional enrichment. Keep every successful result
+      // independently so a secondary query can never suppress the article.
+      const relatedPages = relatedResults.flatMap((result) => (
+        result.status === 'fulfilled' ? [result.value] : []
+      ));
       publish({
         article,
         relatedArticles: selectRelatedArticles(
           article,
-          mergeRelatedCandidates(article.id, categoryPage, generalPage),
+          mergeRelatedCandidates(article.id, ...relatedPages),
           3,
         ),
         loading: false,
         notFound: false,
         error: null,
       });
-    } catch {
+    } catch (error) {
       if (version !== requestVersion) return;
+      if (isPublicNewsReferenceDenied(error)) {
+        publish({ ...initialState(), loading: false, notFound: true });
+        return;
+      }
       publish({
         article: null,
         relatedArticles: [],

@@ -6,7 +6,11 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { makeNewsArticleFixture } from '../components/news/newsFixtures';
 import { NEWS_PAGE_SIZE, type NewsArticle } from '../components/news/newsModel';
-import type { NewsCursor, NewsPageResult } from '../components/news/newsRepository';
+import {
+  NewsRepositoryError,
+  type NewsCursor,
+  type NewsPageResult,
+} from '../components/news/newsRepository';
 
 const articles = [
   makeNewsArticleFixture({
@@ -177,6 +181,49 @@ test('news index merges an older configured lead without changing the list curso
     1,
   );
   assert.match(controller.getSnapshot().articles.map((article) => article.id).join(','), /later-story/);
+  controller.cancel();
+});
+
+test('news index keeps the published feed when a stale featured reference is rule-hidden', async () => {
+  const { createNewsIndexController } = await import('../components/news/useNewsIndex');
+  const newest = makeNewsArticleFixture({ id: 'newest', slug: 'newest' });
+  const source = {
+    listPublishedNews: async (): Promise<NewsPageResult> => ({ articles: [newest], nextCursor: null }),
+    getFeaturedNewsArticleId: async (): Promise<string | null> => {
+      throw new NewsRepositoryError('permission', 'The configured article is no longer public.');
+    },
+    getPublishedNewsArticle: async (): Promise<NewsArticle | null> => null,
+  };
+  const controller = createNewsIndexController('all', source);
+
+  controller.setCategory('all');
+  await flushPromises();
+
+  assert.deepEqual(controller.getSnapshot().articles.map((article) => article.id), ['newest']);
+  assert.equal(controller.getSnapshot().featuredArticleId, null);
+  assert.equal(controller.getSnapshot().error, null);
+  controller.cancel();
+});
+
+test('news index still reports unexpected featured configuration failures', async () => {
+  const { createNewsIndexController } = await import('../components/news/useNewsIndex');
+  const source = {
+    listPublishedNews: async (): Promise<NewsPageResult> => ({
+      articles: [makeNewsArticleFixture({ id: 'newest' })],
+      nextCursor: null,
+    }),
+    getFeaturedNewsArticleId: async (): Promise<string | null> => {
+      throw new Error('unexpected config failure');
+    },
+    getPublishedNewsArticle: async (): Promise<NewsArticle | null> => null,
+  };
+  const controller = createNewsIndexController('all', source);
+
+  controller.setCategory('all');
+  await flushPromises();
+
+  assert.deepEqual(controller.getSnapshot().articles, []);
+  assert.match(controller.getSnapshot().error || '', /temporarily unavailable/i);
   controller.cancel();
 });
 

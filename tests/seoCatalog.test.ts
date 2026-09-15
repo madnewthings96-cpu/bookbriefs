@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFile } from 'node:fs/promises';
 import { makeNewsArticleFixture } from '../components/news/newsFixtures';
 import { loadPublishedNewsCatalog, normalizePublishedNewsDocuments } from '../scripts/newsCatalog';
 import {
@@ -57,6 +58,14 @@ test('news catalog normalization rejects drafts and orders valid records newest 
       data: { ...base, id: undefined, status: 'draft' },
     },
     {
+      id: 'malformed-timestamp',
+      data: {
+        ...base,
+        id: undefined,
+        createdAt: { toDate: () => { throw new Error('malformed timestamp'); } },
+      },
+    },
+    {
       id: 'newer',
       data: {
         ...base,
@@ -92,6 +101,18 @@ test('required news catalog failures explain how to configure the build', async 
     loadPublishedNewsCatalog({ environment: { NEWS_CATALOG_REQUIRED: 'true' } }),
     /VITE_FIREBASE_API_KEY.*VITE_FIREBASE_PROJECT_ID.*VITE_FIREBASE_APP_ID/,
   );
+});
+
+test('Netlify production builds require the news catalog while local builds default to fallback', async () => {
+  const [netlify, environmentTemplate] = await Promise.all([
+    readFile(new URL('../netlify.toml', import.meta.url), 'utf8'),
+    readFile(new URL('../.env.example', import.meta.url), 'utf8'),
+  ]);
+  const productionEnvironment = netlify.match(/\[context\.production\.environment\]([\s\S]*?)(?=\n\[[^\n]+\]|$)/)?.[1] ?? '';
+
+  assert.match(productionEnvironment, /^\s*NEWS_CATALOG_REQUIRED\s*=\s*"true"\s*$/m);
+  assert.match(environmentTemplate, /^NEWS_CATALOG_REQUIRED=false$/m);
+  assert.match(environmentTemplate, /production builds must set this to true/i);
 });
 
 test('news article fallback includes escaped crawlable copy and NewsArticle schema', () => {
