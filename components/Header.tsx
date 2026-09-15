@@ -70,6 +70,7 @@ const Header: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<NavigationGroupKey | null>(null);
+  const [isAuthCapsuleHovered, setIsAuthCapsuleHovered] = useState(false);
 
   const headerRef = useRef<HTMLElement>(null);
   const mobilePanelRef = useRef<HTMLElement>(null);
@@ -418,7 +419,7 @@ const Header: React.FC = () => {
 
   const navButtonClassName = (key: NavigationGroupKey) => {
     const isActive = isNavigationGroupActive(key);
-    return `group relative flex min-h-11 items-center gap-1.5 rounded-[14px] px-3.5 text-[13px] font-semibold tracking-[-0.01em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
+    return `group relative flex min-h-11 items-center gap-1.5 rounded-[14px] px-3.5 font-nav text-[13.5px] font-semibold tracking-[-0.015em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
       isActive ? 'text-[#123D2F]' : 'text-[#53675E] hover:-translate-y-px hover:text-[#123D2F]'
     }`;
   };
@@ -438,7 +439,7 @@ const Header: React.FC = () => {
           ref={headerRef}
           data-testid="reading-ribbon"
           data-compact={isScrolled ? 'true' : 'false'}
-          className={`reading-ribbon-grain pointer-events-auto relative mx-auto text-[#123D2F] transition-[max-width,min-height,border-radius,background-color,box-shadow] duration-300 ease-out ${
+          className={`reading-ribbon-grain font-nav pointer-events-auto relative mx-auto text-[#123D2F] transition-[max-width,min-height,border-radius,background-color,box-shadow] duration-300 ease-out ${
             isScrolled
               ? 'min-h-[60px] max-w-[1180px] rounded-[24px] bg-[#FBF8F1]/[0.94] shadow-[0_0_0_1px_rgba(18,61,47,0.10),0_2px_4px_rgba(9,37,28,0.04),0_18px_48px_rgba(9,37,28,0.14)] backdrop-blur-2xl'
               : 'min-h-[76px] max-w-[1440px] rounded-none bg-[#FBF8F1] shadow-[0_1px_0_rgba(18,61,47,0.09),0_10px_28px_rgba(9,37,28,0.03)] sm:min-h-[84px]'
@@ -512,7 +513,7 @@ const Header: React.FC = () => {
                   to="/summaries"
                   end
                   className={({ isActive }) =>
-                    `group relative flex min-h-11 items-center rounded-[14px] px-3.5 text-[13px] font-semibold tracking-[-0.01em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
+                    `group relative flex min-h-11 items-center rounded-[14px] px-3.5 font-nav text-[13.5px] font-semibold tracking-[-0.015em] outline-none transition-[color,transform] duration-200 ease-out active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] ${
                       isActive
                         ? 'text-[#123D2F]'
                         : 'text-[#53675E] hover:-translate-y-px hover:text-[#123D2F]'
@@ -585,7 +586,7 @@ const Header: React.FC = () => {
                     aria-label="Search summaries"
                   >
                     <Search className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden text-xs font-semibold xl:inline">Search</span>
+                    <span className="hidden font-nav text-[13px] font-semibold tracking-[-0.01em] xl:inline">Search</span>
                     <kbd className="hidden rounded-md bg-white/75 px-1.5 py-1 font-sans text-[9px] font-bold tracking-wide text-[#53675E] shadow-[0_0_0_1px_rgba(18,61,47,0.09)] xl:inline">
                       ⌘K
                     </kbd>
@@ -594,17 +595,58 @@ const Header: React.FC = () => {
               </div>
 
               {!isAuthenticated && (
-                <NavLink
-                  to="/login"
-                  className="hidden min-h-11 items-center rounded-[14px] px-2.5 text-xs font-semibold text-[#53675E] outline-none transition-[color,transform] duration-150 hover:text-[#123D2F] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] lg:flex"
+                <div
+                  onMouseEnter={() => setIsAuthCapsuleHovered(true)}
+                  onMouseLeave={() => setIsAuthCapsuleHovered(false)}
+                  onFocus={() => setIsAuthCapsuleHovered(true)}
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                      setIsAuthCapsuleHovered(false);
+                    }
+                  }}
+                  className={`relative hidden h-11 items-center rounded-[16px] border p-1 font-nav backdrop-blur-sm transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out lg:flex ${
+                    isAuthCapsuleHovered
+                      ? '-translate-y-0.5 border-[rgba(196,149,82,0.45)] bg-[#F4EFE6] shadow-[0_4px_16px_rgba(18,61,47,0.08)]'
+                      : 'border-[rgba(18,61,47,0.08)] bg-white/50 shadow-[0_1px_2px_rgba(9,37,28,0.03)]'
+                  }`}
+                  aria-label="Account access"
                 >
-                  {t('login')}
-                </NavLink>
+                  <NavLink
+                    to="/login"
+                    className="flex h-9 items-center justify-center rounded-[12px] px-3 font-nav text-[13px] font-semibold tracking-[-0.01em] text-[#53675E] outline-none transition-[background-color,color,transform,box-shadow] duration-200 hover:bg-white/95 hover:text-[#123D2F] hover:shadow-[0_1px_3px_rgba(18,61,47,0.08)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                  >
+                    {t('login')}
+                  </NavLink>
+
+                  <span
+                    className={`h-3.5 w-px bg-[rgba(18,61,47,0.16)] transition-[opacity,transform,margin] duration-300 ease-out ${
+                      isAuthCapsuleHovered
+                        ? 'mx-1 opacity-100 scale-y-100'
+                        : 'mx-0 w-0 opacity-0 scale-y-0 pointer-events-none'
+                    }`}
+                    aria-hidden="true"
+                  />
+
+                  <div
+                    className={`overflow-hidden transition-[max-width,opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                      isAuthCapsuleHovered
+                        ? 'max-w-[130px] opacity-100 scale-100 pointer-events-auto'
+                        : 'max-w-0 opacity-0 scale-95 pointer-events-none'
+                    }`}
+                  >
+                    <NavLink
+                      to="/signup"
+                      className="flex h-9 whitespace-nowrap items-center justify-center rounded-[12px] bg-[#123D2F]/[0.08] px-3 font-nav text-[13px] font-semibold tracking-[-0.01em] text-[#123D2F] outline-none transition-[background-color,color,transform,box-shadow] duration-200 hover:bg-[#123D2F] hover:text-[#FBF8F1] hover:shadow-[0_2px_6px_rgba(9,37,28,0.18)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552]"
+                    >
+                      <span>{t('signup')}</span>
+                    </NavLink>
+                  </div>
+                </div>
               )}
 
               <Link
                 to="/summaries"
-                className="group relative hidden h-11 items-center gap-2 overflow-hidden rounded-[16px] bg-[#123D2F] pl-4 pr-3.5 text-xs font-bold text-[#FBF8F1] shadow-[0_1px_2px_rgba(9,37,28,0.12),0_8px_20px_rgba(9,37,28,0.16)] outline-none transition-[background-color,box-shadow,transform] duration-150 ease-out hover:bg-[#0D3327] hover:shadow-[0_1px_2px_rgba(9,37,28,0.14),0_12px_26px_rgba(9,37,28,0.22)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1] sm:flex"
+                className="group relative hidden h-11 items-center gap-2 overflow-hidden rounded-[16px] bg-[#123D2F] pl-4 pr-3.5 font-nav text-xs font-bold text-[#FBF8F1] shadow-[0_1px_2px_rgba(9,37,28,0.12),0_8px_20px_rgba(9,37,28,0.16)] outline-none transition-[background-color,box-shadow,transform] duration-150 ease-out hover:bg-[#0D3327] hover:shadow-[0_1px_2px_rgba(9,37,28,0.14),0_12px_26px_rgba(9,37,28,0.22)] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1] sm:flex"
               >
                 <span className="absolute inset-y-0 left-0 w-1 bg-[#C49552]" aria-hidden="true" />
                 <span>Explore library</span>

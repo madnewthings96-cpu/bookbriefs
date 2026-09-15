@@ -32,10 +32,10 @@ const renderHomepage = async () => {
 
 test('the hero introduces the Arabic reading companion after its calls to action', async () => {
   const markup = await renderHomepage();
-  const ctaIndex = markup.indexOf('Browse Paths');
+  const ctaIndex = markup.indexOf('Risk Calculator');
   const companionIndex = markup.indexOf('رفيقك الذكي لفهم الكتب');
 
-  assert.ok(ctaIndex >= 0, 'the hero CTA should render');
+  assert.match(markup, /href="\/calculators\/position-size"[^>]*>.*Risk Calculator/s);
   assert.ok(companionIndex > ctaIndex, 'the Arabic companion should follow the hero CTAs');
   assert.match(markup, /lang="ar" dir="rtl"/);
   assert.match(markup, /أهم الأفكار، نماذج ذهنية واضحة، وخطوات عملية قابلة للتطبيق/);

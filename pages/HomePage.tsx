@@ -271,13 +271,13 @@ const HomePage: React.FC = () => {
                     <ArrowRight className="h-4 w-4 !text-white" />
                   </Link>
 
-                  <a
-                    href="#reading-paths"
+                  <Link
+                    to="/calculators/position-size"
                     className="pressable inline-flex min-h-[50px] items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-base font-bold !text-forest-950 border border-forest-900/15 shadow-sm transition-all duration-200 hover:bg-forest-50 hover:border-forest-900/30"
                   >
-                    <span className="!text-forest-950 font-bold">Browse Paths</span>
-                    <Compass className="h-4 w-4 text-forest-700" />
-                  </a>
+                    <span className="!text-forest-950 font-bold">Risk Calculator</span>
+                    <Calculator className="h-4 w-4 text-forest-700" />
+                  </Link>
                 </div>
 
                 {/* Arabic Reading Companion */}

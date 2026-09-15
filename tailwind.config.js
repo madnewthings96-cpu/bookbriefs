@@ -13,6 +13,7 @@ export default {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Manrope', 'Inter', 'Lato', 'sans-serif'],
         display: ['"Plus Jakarta Sans"', 'Manrope', 'sans-serif'],
+        nav: ['Manrope', '"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
         serif: ['Newsreader', 'Playfair Display', 'serif'],
         arabic: ['Amiri', '"Scheherazade New"', 'sans-serif'],
       },
