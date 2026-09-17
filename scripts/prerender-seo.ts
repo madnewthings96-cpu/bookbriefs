@@ -440,6 +440,10 @@ function calculatorPage(route: (typeof CALCULATOR_ROUTES)[number]): PrerenderPag
           </ul>
         </article>
       </section>
+
+      <footer class="mt-12 border-t border-gray-200 pt-6 text-center text-sm text-gray-500">
+        <p>${route.language === 'ar' ? 'هذه الحاسبة تقدم تقديرات رياضية لأغراض تعليمية وإحصائية فقط، ولا تمثل استشارة مالية.' : 'This calculator provides mathematical estimates for educational and analytical purposes only, and does not constitute financial advice.'}</p>
+      </footer>
     </main>`;
 
   return {

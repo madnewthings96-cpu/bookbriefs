@@ -33,7 +33,13 @@ if (!firebaseConfig.apiKey) {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+let storage: ReturnType<typeof getStorage>;
+try {
+  storage = getStorage(app);
+} catch (error) {
+  console.warn('Firebase Storage initialization failed:', error);
+  storage = {} as any;
+}
 const googleProvider = new GoogleAuthProvider();
 let analytics: any;
 

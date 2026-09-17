@@ -29,6 +29,7 @@ export default defineConfig(({ mode }) => {
                 'firebase/app',
                 'firebase/auth',
                 'firebase/firestore',
+                'firebase/storage',
                 'firebase/analytics'
               ],
               
@@ -71,6 +72,7 @@ export default defineConfig(({ mode }) => {
           'firebase/app',
           'firebase/auth', 
           'firebase/firestore',
+          'firebase/storage',
           'firebase/analytics',
           'jspdf'
         ]

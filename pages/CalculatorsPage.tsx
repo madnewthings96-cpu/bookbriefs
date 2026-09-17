@@ -249,6 +249,15 @@ const CalculatorsPage: React.FC = () => {
               {activeTab === 'fire' && <FIRECalculator />}
               {activeTab === 'compound' && <CompoundCalculator />}
             </div>
+
+            {/* Educational Disclaimer */}
+            <div className="mt-6 border-t border-forest-900/[0.08] pt-4 text-center">
+              <p className="text-xs text-forest-900/60 leading-relaxed">
+                {isArabic
+                  ? 'هذه الحاسبة تقدم تقديرات رياضية لأغراض تعليمية وإحصائية فقط، ولا تمثل استشارة مالية.'
+                  : 'This calculator provides mathematical estimates for educational and analytical purposes only, and does not constitute financial advice.'}
+              </p>
+            </div>
           </div>
 
           {/* Guidance stays before advertising in mobile reading order. */}
