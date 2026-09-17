@@ -79,6 +79,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
             'https://twitter.com/ta7leel',
             'https://facebook.com/ta7leel',
             'https://linkedin.com/company/ta7leel',
+            'https://www.pinterest.com/Ta7leelPro',
           ],
           contactPoint: {
             '@type': 'ContactPoint',
