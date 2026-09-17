@@ -25,10 +25,13 @@ export const readCalculatorAdSenseConfig = (
 
 const loadAdSenseScript = (client: string): Promise<void> => {
   const existingScript = document.querySelector<HTMLScriptElement>(
-    'script[data-ta7leel-adsense]',
+    'script[data-ta7leel-adsense], script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]',
   );
 
   if (existingScript) {
+    // The site-verification snippet in index.html already loaded the library.
+    // Reuse it rather than adding a second AdSense script to the document.
+    if (!existingScript.dataset.ta7leelAdsense) return Promise.resolve();
     if (existingScript.dataset.loaded === 'true') return Promise.resolve();
 
     return new Promise((resolve, reject) => {
