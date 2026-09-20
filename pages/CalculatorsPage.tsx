@@ -9,6 +9,7 @@ import useSEO from '../hooks/useSEO';
 import {
   AlertTriangle,
   BookOpen,
+  CalendarDays,
   Calculator,
   CheckCircle2,
   ChevronRight,
@@ -184,6 +185,69 @@ const CalculatorsPage: React.FC = () => {
           <h1 className="max-w-4xl font-display text-2xl font-extrabold leading-tight tracking-tight text-forest-950 text-balance sm:text-3xl lg:text-4xl">
             {activeRoute.h1}
           </h1>
+
+          <div
+            className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-4"
+            aria-label={isArabic ? 'بيانات إعداد ومراجعة الحاسبة' : 'Calculator creator and review details'}
+          >
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/images/omar-profile.webp"
+                alt=""
+                width={44}
+                height={44}
+                loading="eager"
+                decoding="async"
+                className="h-11 w-11 rounded-full object-cover shadow-sm ring-2 ring-forest-100"
+              />
+              <div className="leading-tight">
+                <p className="text-[11px] font-medium text-forest-900/55">
+                  {isArabic ? 'إعداد' : 'Created by'}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-forest-950">
+                  {isArabic ? 'عمر' : 'Omar'}
+                </p>
+              </div>
+            </div>
+
+            <span className="hidden h-8 w-px bg-forest-900/10 sm:block" aria-hidden="true" />
+
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/images/layla-profile.webp"
+                alt=""
+                width={44}
+                height={44}
+                loading="eager"
+                decoding="async"
+                className="h-11 w-11 rounded-full object-cover shadow-sm ring-2 ring-forest-100"
+              />
+              <div className="leading-tight">
+                <p className="text-[11px] font-medium text-forest-900/55">
+                  {isArabic ? 'مساعدة مراجعة بالذكاء الاصطناعي' : 'AI review assistant'}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-forest-950">
+                  {isArabic ? 'ليلى' : 'Layla'}
+                </p>
+              </div>
+            </div>
+
+            <span className="hidden h-8 w-px bg-forest-900/10 sm:block" aria-hidden="true" />
+
+            <div className="flex items-center gap-2.5 text-forest-900/65">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest-50 ring-1 ring-forest-900/10">
+                <CalendarDays className="h-4 w-4 text-forest-700" aria-hidden="true" />
+              </span>
+              <div className="leading-tight">
+                <p className="text-[11px] font-medium">
+                  {isArabic ? 'آخر تحديث' : 'Last updated'}
+                </p>
+                <p className="mt-0.5 text-sm font-bold text-forest-950">
+                  {isArabic ? 'سبتمبر 2026' : 'September 2026'}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -261,46 +325,48 @@ const CalculatorsPage: React.FC = () => {
           </div>
 
           {/* Guidance stays before advertising in mobile reading order. */}
-          <div className="grid gap-6 sm:grid-cols-2 lg:col-span-2 lg:row-start-2">
-            {/* Target Principle Dark Card */}
-            <div className="rounded-3xl bg-forest-950 p-6 text-white border border-forest-800 shadow-card-hover">
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-                <Target className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <h3 className="font-display text-xl font-bold leading-tight text-white">
-                {activeDetail.title}
-              </h3>
-              <p className="mt-3 text-xs leading-relaxed text-forest-200/80">
-                {activeDetail.description}
-              </p>
+          {activeTab !== 'positionSize' && activeTab !== 'pipValue' && (
+            <div className="grid gap-6 sm:grid-cols-2 lg:col-span-2 lg:row-start-2">
+              {/* Target Principle Dark Card */}
+              <div className="rounded-3xl bg-forest-950 p-6 text-white border border-forest-800 shadow-card-hover">
+                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                  <Target className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <h3 className="font-display text-xl font-bold leading-tight text-white">
+                  {activeDetail.title}
+                </h3>
+                <p className="mt-3 text-xs leading-relaxed text-forest-200/80">
+                  {activeDetail.description}
+                </p>
 
-              <div className="mt-5 rounded-2xl bg-white/[0.06] p-4 border border-white/[0.08]">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300">
-                  {activeDetail.formulaLabel}
-                </p>
-                <p className="mt-1 font-mono text-xs font-semibold leading-relaxed text-white">
-                  {activeDetail.formula}
-                </p>
+                <div className="mt-5 rounded-2xl bg-white/[0.06] p-4 border border-white/[0.08]">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-300">
+                    {activeDetail.formulaLabel}
+                  </p>
+                  <p className="mt-1 font-mono text-xs font-semibold leading-relaxed text-white">
+                    {activeDetail.formula}
+                  </p>
+                </div>
+              </div>
+
+              {/* Pre-Execution Checklist */}
+              <div className="rounded-3xl bg-white p-6 border border-forest-900/[0.08] shadow-card-rest">
+                <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-forest-800">
+                  Before you use the result
+                </h3>
+                <div className="space-y-3.5">
+                  {activeDetail.checks.map((check) => (
+                    <div key={check} className="flex items-start gap-2.5">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
+                      <p className="text-xs font-medium leading-relaxed text-forest-900/80">
+                        {check}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-
-            {/* Pre-Execution Checklist */}
-            <div className="rounded-3xl bg-white p-6 border border-forest-900/[0.08] shadow-card-rest">
-              <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-forest-800">
-                Before you use the result
-              </h3>
-              <div className="space-y-3.5">
-                {activeDetail.checks.map((check) => (
-                  <div key={check} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
-                    <p className="text-xs font-medium leading-relaxed text-forest-900/80">
-                      {check}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
 
           <AdSenseSlot className="lg:col-start-2 lg:row-start-1 lg:h-full" />
         </div>
