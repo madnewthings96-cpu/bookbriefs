@@ -16,7 +16,7 @@ const renderCalculatorsPage = async (location = '/calculators') => {
   );
 };
 
-test('the calculator page introduces the tool with transparent creator and AI-review credits', async () => {
+test('the calculator page introduces the tool with creator and last-editor credits', async () => {
   const markup = await renderCalculatorsPage();
   const headerMatch = markup.match(/<header[^>]*>([\s\S]*?)<\/header>/);
 
@@ -25,7 +25,7 @@ test('the calculator page introduces the tool with transparent creator and AI-re
 
   assert.match(headerText, /Free trading and financial calculators/);
   assert.match(headerText, /Created by Omar/);
-  assert.match(headerText, /AI review assistant Layla/);
+  assert.match(headerText, /Last edited by Layla/);
   assert.match(headerText, /Last updated September 2026/);
   assert.match(headerMatch[1], /src="\/images\/omar-profile\.webp"/);
   assert.match(headerMatch[1], /src="\/images\/layla-profile\.webp"/);

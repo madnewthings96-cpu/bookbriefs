@@ -188,7 +188,7 @@ const CalculatorsPage: React.FC = () => {
 
           <div
             className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-4"
-            aria-label={isArabic ? 'بيانات إعداد ومراجعة الحاسبة' : 'Calculator creator and review details'}
+            aria-label={isArabic ? 'بيانات إعداد وتعديل الحاسبة' : 'Calculator creator and editor details'}
           >
             <div className="flex items-center gap-2.5">
               <img
@@ -224,7 +224,7 @@ const CalculatorsPage: React.FC = () => {
               />
               <div className="leading-tight">
                 <p className="text-[11px] font-medium text-forest-900/55">
-                  {isArabic ? 'مساعدة مراجعة بالذكاء الاصطناعي' : 'AI review assistant'}
+                  {isArabic ? 'آخر تعديل بواسطة' : 'Last edited by'}
                 </p>
                 <p className="mt-0.5 text-sm font-bold text-forest-950">
                   {isArabic ? 'ليلى' : 'Layla'}
