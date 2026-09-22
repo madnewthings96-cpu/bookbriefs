@@ -31,6 +31,14 @@ test('sitemaps exclude duplicate library aliases and include every article', asy
   assert.doesNotMatch(xml, /<loc>[^<]*\/book-summaries\//);
   for (const post of blogPosts) assert.ok(xml.includes(new URL(`/blog/${post.slug}/`, 'https://www.ta7leel.pro').href), post.slug);
 });
+test('public trade analyzer has a crawlable landing page and sitemap entry', async () => {
+  const xml = await read('dist/sitemap.xml');
+  assert.match(xml, /https:\/\/www\.ta7leel\.pro\/trade-analyzer\//);
+  const html = await read('dist/trade-analyzer/index.html');
+  assert.match(html, /Trade Analyzer/);
+  assert.match(html, /MT5/);
+  assert.doesNotMatch(html, /noindex/);
+});
 test('unknown pages and private pages have crawlable noindex responses configured', async () => {
   const config = await read('netlify.toml');
   assert.match(config, /to = "\/404.html"\s+status = 404/);

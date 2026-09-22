@@ -32,6 +32,10 @@ const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
+const TradeAnalyzerPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/TradeAnalyzerPage.css'), import('./pages/TradeAnalyzerPage')]);
+  return pageModule;
+});
 const NewsPage = lazy(async () => {
   const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsPage')]);
   return pageModule;
@@ -127,6 +131,7 @@ const AppFrame: React.FC = () => {
               <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/calculators" element={<CalculatorsPage />} />
+              <Route path="/trade-analyzer" element={<TradeAnalyzerPage />} />
               <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
               <Route path="/calculators/position-size" element={<CalculatorsPage />} />
               <Route path="/calculators/fire" element={<CalculatorsPage />} />

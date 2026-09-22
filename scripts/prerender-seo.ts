@@ -553,6 +553,17 @@ function privatePage(path: string): PrerenderPage {
     body: '<main><h1>Ta7leel</h1><p>Loading your account…</p></main>', schema: [] };
 }
 
+function tradeAnalyzerLandingPage(): PrerenderPage {
+  return {
+    path: '/trade-analyzer', lang: 'en', dir: 'ltr',
+    title: 'Free MT5 & cTrader Trade Analyzer | Ta7leel',
+    description: 'Import an MT5 or cTrader history, verify the records, and review closed-trade performance in a private, browser-based dashboard.',
+    keywords: 'MT5 trade analyzer, cTrader trade analytics, trading history dashboard',
+    body: '<main><h1>Trade Analyzer</h1><p>Import an MT5 HTML history report or cTrader CSV statement to review closed trades. Check the currency, timezone, and excluded rows before viewing net P&amp;L, drawdown, and patterns. The analyzer runs in your browser and does not require a broker connection.</p><p>This tool is in beta while export formats are validated against more real statements.</p></main>',
+    schema: [],
+  };
+}
+
 async function writeRouteFile(template: string, page: PrerenderPage) {
   const routePath = page.path === '/' ? 'index.html' : path.join(page.path.slice(1), 'index.html');
   const filePath = path.join(process.cwd(), 'dist', routePath);
@@ -573,6 +584,7 @@ async function main() {
 
   const pages: PrerenderPage[] = [
     homePage(),
+    tradeAnalyzerLandingPage(),
     connectionsPage(connectionStyles),
     summariesLandingPage(books, false, '/summaries'),
     ...blogPosts.map(articlePage),

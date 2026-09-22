@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AdSenseSlot, { readTradeAnalyzerAdSenseConfig } from '../components/AdSenseSlot';
 import { ImportPanel } from '../components/trade-analyzer/ImportPanel';
 import { VerifyPanel, isValidTimezone } from '../components/trade-analyzer/VerifyPanel';
+import { Dashboard } from '../components/trade-analyzer/Dashboard';
 import { analyzeTrades, type AnalysisModel } from '../features/trade-analyzer/analyze';
 import { canAnalyze, importHistory } from '../features/trade-analyzer/importHistory';
 import type { ImportPlatform, ImportReport } from '../features/trade-analyzer/types';
@@ -69,7 +70,7 @@ const TradeAnalyzerPage: React.FC = () => {
     <div className="ta-shell">
       <header className="ta-hero">
         <div className="ta-hero-copy">
-          <p className="ta-kicker"><span className="ta-kicker-line" /> Trading desk · Free tool</p>
+          <p className="ta-kicker"><span className="ta-kicker-line" /> Trading desk · Beta · Free tool</p>
           <h1>Trade Analyzer<span className="ta-title-dot">.</span></h1>
           <p className="ta-hero-lede">Turn a trading history into a clearer picture of your closed trades—without connecting a broker or creating an account.</p>
           <div className="ta-hero-meta"><span>MT5 + cTrader</span><span>Closed-trade review</span><span>No AI credits per analysis</span></div>
@@ -88,7 +89,7 @@ const TradeAnalyzerPage: React.FC = () => {
       </div>}
 
       {phase === 'verifying' && report && <VerifyPanel report={report} currency={currency} timezone={timezone} startingBalance={startingBalance} onCurrencyChange={setCurrency} onTimezoneChange={setTimezone} onStartingBalanceChange={setStartingBalance} onBack={() => reset()} onAnalyze={analyze} />}
-      {phase === 'analyzed' && report && model && <section className="ta-result-placeholder" aria-live="polite"><h2>Analysis ready</h2><p>{model.metrics.count} closed trades · {model.metrics.netPnl.toFixed(2)} {currency} net P&L</p><button type="button" className="ta-secondary-button" onClick={() => reset()}>Start over</button></section>}
+      {phase === 'analyzed' && report && model && <Dashboard model={model} report={report} onStartOver={() => reset()} />}
     </div>
   </div>;
 };
