@@ -1,4 +1,4 @@
-import { BookDefinition } from '../types.js';
+import type { BookDefinition } from '../types.js';
 
 export const book: BookDefinition = {
   id: 'situated',

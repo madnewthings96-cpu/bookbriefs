@@ -13,6 +13,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { collection, getDocs, query, orderBy, limit, where, onSnapshot } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { Book } from '../types';
+import { mergeBooksWithLocalFallbacks } from '../utils/localBookFallbacks';
 
 interface BooksContextType {
   books: Book[];
@@ -58,10 +59,10 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const q = query(booksRef, orderBy('title'));
       
       const snapshot = await getDocs(q);
-      const booksData = snapshot.docs.map(doc => ({
+      const booksData = mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
-      })) as Book[];
+      })) as Book[]);
       
       setBooks(booksData);
       
@@ -82,7 +83,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       try {
         const cachedBooks = sessionStorage.getItem('books_cache');
         if (cachedBooks) {
-          setBooks(JSON.parse(cachedBooks));
+          setBooks(mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
           console.log('📦 Loaded books from cache');
         }
       } catch (e) {
@@ -104,7 +105,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
         const cacheAge = Date.now() - parseInt(cacheTimestamp);
         // Use cache if less than 5 minutes old
         if (cacheAge < 5 * 60 * 1000) {
-          setBooks(JSON.parse(cachedBooks));
+          setBooks(mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
           setLoading(false);
           console.log('📦 Loaded books from cache instantly');
           return;
@@ -122,10 +123,10 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const q = query(booksRef, orderBy('title'));
       
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const booksData = snapshot.docs.map(doc => ({
+        const booksData = mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
-        })) as Book[];
+        })) as Book[]);
         
         setBooks(booksData);
         setLoading(false);

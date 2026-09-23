@@ -17,6 +17,7 @@ import SummaryReadingExperience from '../components/SummaryReadingExperience';
 // import jsPDF from 'jspdf';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getBookSummaryTranslation } from '../translations/bookSummaries';
+import { getLocalBookSummary } from '../utils/localBookFallbacks';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProgress } from '../contexts/UserProgressContext';
 import { useBooks } from '../contexts/BooksContext';
@@ -161,6 +162,13 @@ const SummaryDetailPage: React.FC = () => {
         }
       } catch (err) {
         console.error('Error loading from Firestore:', err);
+      }
+
+      const localSummary = getLocalBookSummary(currentBook.id, currentLanguage);
+      if (localSummary) {
+        setSummaryData(localSummary);
+        setLoading(false);
+        return;
       }
 
       // Final fallback: show placeholder
