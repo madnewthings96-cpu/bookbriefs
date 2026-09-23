@@ -306,6 +306,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/situated/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D8%AA%D8%AD%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D9%81%D9%86%D9%8A-%D9%84%D9%84%D8%A7%D8%B3%D9%88%D8%A7%D9%82-%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

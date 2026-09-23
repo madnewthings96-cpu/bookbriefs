@@ -22,7 +22,6 @@ import { TESTIMONIALS } from '../constants';
 import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import RotatingHeroPhrase from '../components/RotatingHeroPhrase';
-import PracticalTemplatesDesk from '../components/PracticalTemplatesDesk';
 import HeroReaderTrustMark from '../components/HeroReaderTrustMark';
 
 // Lazy load heavy components
@@ -312,9 +311,6 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* PRACTICAL TEMPLATES DESK */}
-        <PracticalTemplatesDesk />
 
         {/* MOST READ BOOKS SHELF */}
         <section className="py-12 md:py-16">

@@ -17,6 +17,7 @@ import {
   Flame,
   HelpCircle,
   LineChart,
+  Scale,
   ShieldCheck,
   Target,
   TrendingUp,
@@ -34,7 +35,7 @@ const calculatorTabs = [
     label: 'Position Size',
     shortLabel: 'Position',
     description: 'Find the exact lot size that matches your risk percentage.',
-    icon: ShieldCheck,
+    icon: Scale,
   },
   {
     id: 'pipValue' as const,

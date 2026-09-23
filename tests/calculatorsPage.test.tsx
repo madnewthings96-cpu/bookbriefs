@@ -52,6 +52,12 @@ test('position size and pip value start directly with their forms and omit guida
   assert.match(pipMarkup, /Instrument \/ Pair/);
 });
 
+test('position size uses the balance-scale icon in its heading and active tab', async () => {
+  const markup = await renderCalculatorsPage('/calculators/position-size');
+
+  assert.equal((markup.match(/lucide-scale(?:\s|&quot;|")/g) || []).length, 2);
+});
+
 test('FIRE keeps calculator guidance ahead of the single ad placement', async () => {
   const markup = await renderCalculatorsPage('/calculators/fire');
   const calculatorIndex = markup.indexOf('Financial Independence Planner');
