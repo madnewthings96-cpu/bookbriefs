@@ -51,3 +51,17 @@ test('Psycho-Cybernetics is available before Firestore is synced', () => {
   assert.ok(summary.keyTakeaways.length >= 12);
   assert.equal(getLocalBookSummary('psycho-cybernetics', 'ar'), null);
 });
+
+test('Die With Zero and Never Split the Difference are available before Firestore sync', () => {
+  const books = mergeBooksWithLocalFallbacks([]);
+
+  assert.equal(books.find((book) => book.id === 'die-with-zero')?.author, 'Bill Perkins');
+  assert.equal(books.find((book) => book.id === 'never-split-the-difference')?.author, 'Chris Voss');
+
+  const dieWithZero = getLocalBookSummary('die-with-zero', 'en');
+  const neverSplit = getLocalBookSummary('never-split-the-difference', 'en');
+  assert.match(dieWithZero?.summary ?? '', /memory dividends/i);
+  assert.match(neverSplit?.summary ?? '', /tactical empathy/i);
+  assert.equal(getLocalBookSummary('die-with-zero', 'ar'), null);
+  assert.equal(getLocalBookSummary('never-split-the-difference', 'ar'), null);
+});
