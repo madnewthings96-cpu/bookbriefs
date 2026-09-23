@@ -3,6 +3,7 @@ import { book as dieWithZero } from '../scripts/library/die-with-zero';
 import { book as neverSplitTheDifference } from '../scripts/library/never-split-the-difference';
 import { book as psychoCybernetics } from '../scripts/library/psycho-cybernetics';
 import { book as situated } from '../scripts/library/situated';
+import { book as unreasonableHospitality } from '../scripts/library/unreasonable-hospitality';
 import type { Book, SummaryData } from '../types';
 
 const situatedMetadata: Book = {
@@ -69,14 +70,38 @@ const neverSplitTheDifferenceMetadata: Book = {
   audibleUrl: neverSplitTheDifference.audibleUrl,
 };
 
+const unreasonableHospitalityMetadata: Book = {
+  id: unreasonableHospitality.id,
+  title: unreasonableHospitality.title,
+  author: unreasonableHospitality.author,
+  coverImageUrl: unreasonableHospitality.coverImageUrl,
+  category: unreasonableHospitality.category,
+  rating: unreasonableHospitality.rating,
+  ratingsCount: unreasonableHospitality.ratingsCount,
+  publicationYear: unreasonableHospitality.publicationYear,
+  pageCount: unreasonableHospitality.pageCount,
+  arabicSlug: unreasonableHospitality.arabicSlug,
+  amazonUrl: unreasonableHospitality.amazonUrl,
+  kindleUrl: unreasonableHospitality.kindleUrl,
+  audibleUrl: unreasonableHospitality.audibleUrl,
+};
+
 const LOCAL_BOOK_FALLBACKS: Book[] = [
   dieWithZeroMetadata,
   neverSplitTheDifferenceMetadata,
   psychoCyberneticsMetadata,
   situatedMetadata,
+  unreasonableHospitalityMetadata,
 ];
 
 const LOCAL_SUMMARIES = new Map<string, SummaryData>([
+  [
+    unreasonableHospitality.id,
+    {
+      summary: unreasonableHospitality.summary,
+      keyTakeaways: unreasonableHospitality.keyTakeaways,
+    },
+  ],
   [
     dieWithZero.id,
     {

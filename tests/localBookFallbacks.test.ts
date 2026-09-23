@@ -65,3 +65,18 @@ test('Die With Zero and Never Split the Difference are available before Firestor
   assert.equal(getLocalBookSummary('die-with-zero', 'ar'), null);
   assert.equal(getLocalBookSummary('never-split-the-difference', 'ar'), null);
 });
+
+test('Unreasonable Hospitality is available before Firestore sync', () => {
+  const books = mergeBooksWithLocalFallbacks([]);
+  const book = books.find((entry) => entry.id === 'unreasonable-hospitality');
+
+  assert.ok(book);
+  assert.equal(book.author, 'Will Guidara');
+  assert.equal(book.coverImageUrl, '/images/unreasonable-hospitality.jpg');
+
+  const summary = getLocalBookSummary('unreasonable-hospitality', 'en');
+  assert.ok(summary);
+  assert.match(summary.summary, /unreasonable hospitality/i);
+  assert.ok(summary.keyTakeaways.length >= 12);
+  assert.equal(getLocalBookSummary('unreasonable-hospitality', 'ar'), null);
+});
