@@ -152,6 +152,12 @@ const Header: React.FC = () => {
             icon: BarChart3,
           },
           {
+            to: '/trade-analyzer',
+            label: 'Trade analyzer (beta)',
+            description: 'Turn MT5 or cTrader closed history into a clear performance review.',
+            icon: BarChart3,
+          },
+          {
             to: '/trading-journal',
             label: 'Trading journal',
             description: 'Review decisions, risk, and emotional discipline across every trade.',

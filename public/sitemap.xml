@@ -26,6 +26,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/trade-analyzer/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/about/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

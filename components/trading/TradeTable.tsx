@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trade, formatCurrency } from '../../utils/tradingUtils';
+import { Trade, formatCurrency, getTradeResultTime } from '../../utils/tradingUtils';
 import {
     Inbox,
     Camera,
@@ -79,7 +79,7 @@ const TradeTable: React.FC<TradeTableProps> = ({ trades, onEdit, onDelete, onSel
 
             result = result.filter((trade) => {
                 if (!trade.entryDate?.toDate) return false;
-                const tradeTime = trade.entryDate.toDate().getTime();
+                const tradeTime = getTradeResultTime(trade).getTime();
                 return tradeTime >= fromTime && tradeTime <= toTime;
             });
         }
@@ -89,6 +89,10 @@ const TradeTable: React.FC<TradeTableProps> = ({ trades, onEdit, onDelete, onSel
         }
 
         return result.sort((a, b) => {
+            if (sortKey === 'entryDate') {
+                const comparison = getTradeResultTime(a).getTime() - getTradeResultTime(b).getTime();
+                return sortDirection === 'asc' ? comparison : -comparison;
+            }
             const aValue = a[sortKey];
             const bValue = b[sortKey];
 
@@ -387,7 +391,7 @@ const TradeTable: React.FC<TradeTableProps> = ({ trades, onEdit, onDelete, onSel
                                     <span className={getDirectionBadge(trade.direction)}>{trade.direction}</span>
                                     <span className={getStatusBadge(trade.status)}>{trade.status}</span>
                                 </div>
-                                <p className="mt-1 text-sm text-gray-500">{formatDate(trade.entryDate)}</p>
+                                <p className="mt-1 text-sm text-gray-500">{formatDate(trade.importSource?.closeTime ?? trade.entryDate)}</p>
                                 <p className="mt-2 line-clamp-1 text-sm text-gray-600">{trade.setup || 'No setup'}</p>
                                 <p className="mt-1 line-clamp-1 text-xs text-gray-400">{trade.emotions || 'No emotion'}</p>
                             </div>
@@ -474,7 +478,7 @@ const TradeTable: React.FC<TradeTableProps> = ({ trades, onEdit, onDelete, onSel
                                 className={`${onSelect ? 'cursor-pointer' : ''} group transition-colors hover:bg-gray-50`}
                             >
                                 <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
-                                    {formatDate(trade.entryDate)}
+                                    {formatDate(trade.importSource?.closeTime ?? trade.entryDate)}
                                 </td>
                                 <td className="whitespace-nowrap px-6 py-4">
                                     <span className="text-sm font-bold text-gray-800">{trade.symbol}</span>

@@ -61,6 +61,7 @@ async function main() {
     { path: '/blog', changefreq: 'weekly', priority: '0.8' },
     { path: '/connections', changefreq: 'weekly', priority: '0.8' },
     { path: '/news', changefreq: 'weekly', priority: '0.7' },
+    { path: '/trade-analyzer', changefreq: 'monthly', priority: '0.75' },
     { path: '/about', changefreq: 'monthly', priority: '0.6' },
     { path: '/privacy-policy', changefreq: 'yearly', priority: '0.3' },
     { path: '/terms-of-use', changefreq: 'yearly', priority: '0.3' },

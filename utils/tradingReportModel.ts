@@ -7,6 +7,7 @@ import {
     calculateBreakdownStats,
     calculateCumulativePnL,
     calculateStats,
+    getTradeResultTime,
 } from './tradingUtils';
 
 export interface TradingReportTradeRow {
@@ -75,7 +76,7 @@ const toHighlight = (breakdown?: BreakdownStats): TradingReportHighlight | null 
     }
     : null;
 
-const tradeTime = (trade: Trade): number => trade.entryDate?.toDate?.().getTime() ?? 0;
+const tradeTime = (trade: Trade): number => getTradeResultTime(trade).getTime();
 
 export const getTradingReportFilename = (month: number, year: number): string => (
     `Ta7leel_Trading_Fieldbook_${year}-${String(month + 1).padStart(2, '0')}.pdf`
@@ -144,7 +145,7 @@ export const buildMonthlyTradingReportModel = ({
             .sort((a, b) => tradeTime(b) - tradeTime(a))
             .map((trade) => ({
                 id: trade.id,
-                date: trade.entryDate?.toDate?.().toLocaleDateString('en-US', {
+                date: getTradeResultTime(trade).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',
