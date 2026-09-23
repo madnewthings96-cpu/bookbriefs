@@ -12,8 +12,12 @@ export async function parseCTraderHistory(text: string, format: 'csv' | 'paste')
   try { rows = parseTextRows(text, format); }
   catch { report.issues.push({ code: 'invalid_csv', message: 'The statement has malformed rows or exceeds the row limit.' }); return report; }
   const headers = rows[0] ?? [];
-  const netIndex = headers.findIndex((header) => /^net\s*\([a-z]{3}\)$/i.test(header.trim()));
-  const netHeader = netIndex >= 0 ? headers[netIndex] : headers.find((header) => /^net(?: p&l)?$/i.test(header.trim()));
+  const currencyNetHeaders = headers.filter((header) => /^net\s*\([a-z]{3}\)$/i.test(header.trim()));
+  if (currencyNetHeaders.length > 1) {
+    report.issues.push({ code: 'ambiguous_currency', message: 'Multiple net P&L currency columns were found. Export a statement with one account-currency Net column.' });
+    return report;
+  }
+  const netHeader = currencyNetHeaders[0] ?? headers.find((header) => /^net(?: p&l)?$/i.test(header.trim()));
   const missing = missingColumns(headers, required.slice(0, 3));
   if (!netHeader) missing.push('Net (currency)');
   appendMissingIssue(report.issues, missing);

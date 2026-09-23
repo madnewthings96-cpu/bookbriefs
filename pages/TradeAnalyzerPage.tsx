@@ -3,15 +3,18 @@ import AdSenseSlot, { readTradeAnalyzerAdSenseConfig } from '../components/AdSen
 import { ImportPanel } from '../components/trade-analyzer/ImportPanel';
 import { VerifyPanel, isValidTimezone } from '../components/trade-analyzer/VerifyPanel';
 import { Dashboard } from '../components/trade-analyzer/Dashboard';
+import { SaveToJournal } from '../components/trade-analyzer/SaveToJournal';
 import { analyzeTrades, type AnalysisModel } from '../features/trade-analyzer/analyze';
 import { canAnalyze, importHistory } from '../features/trade-analyzer/importHistory';
 import type { ImportPlatform, ImportReport } from '../features/trade-analyzer/types';
 import useSEO from '../hooks/useSEO';
+import { useFirebase } from '../contexts/FirebaseContext';
 
 type Phase = 'empty' | 'reading' | 'unsupported' | 'verifying' | 'analyzed';
 const adConfig = readTradeAnalyzerAdSenseConfig((import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {});
 
 const TradeAnalyzerPage: React.FC = () => {
+  const { currentUser } = useFirebase();
   useSEO({
     title: 'Free MT5 & cTrader Trade Analyzer | Ta7leel',
     description: 'Import an MT5 or cTrader history, verify the records, and review closed-trade performance in a private, browser-based dashboard.',
@@ -89,7 +92,7 @@ const TradeAnalyzerPage: React.FC = () => {
       </div>}
 
       {phase === 'verifying' && report && <VerifyPanel report={report} currency={currency} timezone={timezone} startingBalance={startingBalance} onCurrencyChange={setCurrency} onTimezoneChange={setTimezone} onStartingBalanceChange={setStartingBalance} onBack={() => reset()} onAnalyze={analyze} />}
-      {phase === 'analyzed' && report && model && <Dashboard model={model} report={report} onStartOver={() => reset()} />}
+      {phase === 'analyzed' && report && model && <><Dashboard model={model} report={report} onStartOver={() => reset()} /><SaveToJournal report={report} currency={currency} timezone={timezone} userId={currentUser?.uid ?? null} /></>}
     </div>
   </div>;
 };

@@ -39,3 +39,10 @@ test('cTrader semicolon CSV parses decimal-comma money without changing its valu
   assert.equal(report.records[0].netPnl, 1234.5);
   assert.equal(report.currency, 'EUR');
 });
+
+test('cTrader rejects statements with multiple net-currency columns instead of guessing', async () => {
+  const statement = 'Deal ID,Symbol,Opening Direction,Closing Time,Net (USD),Net (EUR)\n7,EURUSD,Buy,2026-02-03 10:00,10,9';
+  const report = await parseCTraderHistory(statement, 'csv');
+  assert.equal(report.records.length, 0);
+  assert.ok(report.issues.some((issue) => issue.code === 'ambiguous_currency'));
+});

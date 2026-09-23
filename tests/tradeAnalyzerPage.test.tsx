@@ -7,6 +7,7 @@ import { VerifyPanel } from '../components/trade-analyzer/VerifyPanel';
 import { readTradeAnalyzerAdSenseConfig } from '../components/AdSenseSlot';
 import { StaticRouter } from 'react-router-dom/server';
 import TradeAnalyzerPage from '../pages/TradeAnalyzerPage';
+import { FirebaseProvider } from '../contexts/FirebaseContext';
 import type { ImportReport } from '../features/trade-analyzer/types';
 
 const report: ImportReport = {
@@ -46,7 +47,7 @@ test('analyzer ad uses a dedicated slot only when both IDs are configured', () =
 });
 
 test('public landing page has the import step and one labeled ad rail', () => {
-  const html = renderToStaticMarkup(<StaticRouter location="/trade-analyzer"><TradeAnalyzerPage /></StaticRouter>);
+  const html = renderToStaticMarkup(<StaticRouter location="/trade-analyzer"><FirebaseProvider><TradeAnalyzerPage /></FirebaseProvider></StaticRouter>);
   assert.match(html, /Trade Analyzer/);
   assert.match(html, /Import closed trades/);
   assert.equal((html.match(/aria-label="Advertisements"/g) ?? []).length, 1);
