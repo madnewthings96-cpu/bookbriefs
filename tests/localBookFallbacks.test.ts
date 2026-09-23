@@ -37,3 +37,17 @@ test('Firestore data wins when it contains a local fallback book', () => {
 test('the English-only fallback is not presented as an Arabic translation', () => {
   assert.equal(getLocalBookSummary('situated', 'ar'), null);
 });
+
+test('Psycho-Cybernetics is available before Firestore is synced', () => {
+  const books = mergeBooksWithLocalFallbacks([]);
+  const book = books.find((entry) => entry.id === 'psycho-cybernetics');
+
+  assert.ok(book);
+  assert.equal(book.author, 'Maxwell Maltz');
+
+  const summary = getLocalBookSummary('psycho-cybernetics', 'en');
+  assert.ok(summary);
+  assert.match(summary.summary, /self-image/i);
+  assert.ok(summary.keyTakeaways.length >= 12);
+  assert.equal(getLocalBookSummary('psycho-cybernetics', 'ar'), null);
+});
