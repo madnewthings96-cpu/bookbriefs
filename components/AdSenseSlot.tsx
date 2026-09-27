@@ -23,6 +23,14 @@ export const readCalculatorAdSenseConfig = (
   return client && slot ? { client, slot } : { client: '', slot: '' };
 };
 
+export const readTradeAnalyzerAdSenseConfig = (
+  env: Record<string, string | undefined>,
+): AdSenseConfig => {
+  const client = env.VITE_ADSENSE_CLIENT_ID?.trim() ?? '';
+  const slot = env.VITE_ADSENSE_TRADE_ANALYZER_SLOT_ID?.trim() ?? '';
+  return client && slot ? { client, slot } : { client: '', slot: '' };
+};
+
 const loadAdSenseScript = (client: string): Promise<void> => {
   const existingScript = document.querySelector<HTMLScriptElement>(
     'script[data-ta7leel-adsense], script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]',
@@ -68,7 +76,7 @@ const AdSenseSlot: React.FC<AdSenseSlotProps> = ({
   config = defaultConfig,
 }) => {
   const requestedRef = useRef(false);
-  const adElementRef = useRef<HTMLElement | null>(null);
+  const adElementRef = useRef<HTMLModElement | null>(null);
   const configured = Boolean(config.client && config.slot);
 
   useEffect(() => {

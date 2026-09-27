@@ -1,0 +1,4 @@
+Deal ID,Position ID,Symbol,Opening Direction,Opening Time,Closing Time,Entry Price,Closing Price,Closing Quantity,Swap,Commissions,Gross (USD),Net (USD),Comment
+301,300,EURUSD,Buy,2026-02-01 09:00:00,2026-02-01 10:00:00,1.1000,1.1020,0.50,-1.00,-1.00,14.00,12.00,"first, partial"
+302,300,EURUSD,Buy,2026-02-01 09:00:00,2026-02-01 11:00:00,1.1000,1.1040,0.50,-1.00,-1.00,20.00,18.00,second partial
+303,,GBPUSD,Sell,2026-02-02 09:00:00,2026-02-02 10:00:00,1.2500,1.2450,1.00,0.00,-2.00,7.00,5.00,no position id
