@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 320,
     arabicSlug: 'finding-ultra',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4qQCOEy',
-    kindleUrl: 'https://amzn.to/4tgqv6m',
-    audibleUrl: 'https://amzn.to/49Rvjat',
+    amazonUrl: 'https://link.amazon/B09hFPgJb',
+    kindleUrl: 'https://link.amazon/B08SMNoIL',
+    audibleUrl: 'https://link.amazon/B0hsr80Tb',
     arabicPdfUrl: '/pdfs/finding ultra.pdf',
     translations: {
         en: {

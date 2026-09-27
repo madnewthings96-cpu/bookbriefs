@@ -12,8 +12,9 @@ export const book: BookDefinition = {
   pageCount: 336,
   arabicSlug: 'psycho-cybernetics',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/dp/0399176136',
-  audibleUrl: 'https://www.audible.com/pd/Psycho-Cybernetics-Audiobook/B06XR2PJWC',
+  amazonUrl: 'https://link.amazon/B07nze7Bd',
+  kindleUrl: 'https://link.amazon/B0dExa3Oz',
+  audibleUrl: 'https://link.amazon/B0497odlI',
   translations: {
     en: {
       title: 'Psycho-Cybernetics',

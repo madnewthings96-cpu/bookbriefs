@@ -12,9 +12,9 @@ export const book: BookDefinition = {
   pageCount: 336,
   arabicSlug: 'the-let-them-theory',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/dp/1401971369',
-  kindleUrl: 'https://www.amazon.com/dp/B0D3N6L3NZ',
-  audibleUrl: 'https://www.audible.com/pd/The-Let-Them-Theory-Audiobook/B0DFMX1RT8',
+  amazonUrl: 'https://link.amazon/B07pWFTc7',
+  kindleUrl: 'https://link.amazon/B04NEKkH4',
+  audibleUrl: 'https://link.amazon/B08EcrYfi',
   translations: {
     en: {
       title: 'The Let Them Theory',

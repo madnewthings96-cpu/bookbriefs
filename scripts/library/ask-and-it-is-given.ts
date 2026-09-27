@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 314,
     arabicSlug: 'اطلب-وسوف-يُعطى',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4qh2R7q',
-    kindleUrl: 'https://amzn.to/3KDMN0m',
-    audibleUrl: 'https://amzn.to/4pHooWZ',
+    amazonUrl: 'https://link.amazon/B06gYWLLl',
+    kindleUrl: 'https://link.amazon/B0gh7q3Ch',
     arabicPdfUrl: '/pdfs/ask and it is given.pdf',
     translations: {
         en: {

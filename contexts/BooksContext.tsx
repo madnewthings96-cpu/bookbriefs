@@ -44,7 +44,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
   children, 
   useRealtime = false 
 }) => {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>(() => mergeBooksWithLocalFallbacks([]));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

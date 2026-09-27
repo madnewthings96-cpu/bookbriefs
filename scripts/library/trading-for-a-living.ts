@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 289,
     arabicSlug: 'التداول-من-أجل-العيش',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4oDreLg',
-    kindleUrl: 'https://amzn.to/48gGhpg',
-    audibleUrl: 'https://amzn.to/48oFpgU',
+    amazonUrl: 'https://link.amazon/B06uuop4p',
+    kindleUrl: 'https://link.amazon/B0aC4VQZl',
     arabicPdfUrl: '/pdfs/trading for a living.pdf',
     translations: {
         en: {

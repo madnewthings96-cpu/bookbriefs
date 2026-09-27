@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 393,
     arabicSlug: 'high-performance-habits',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4asdbV0',
-    kindleUrl: 'https://amzn.to/4b6CzyP',
-    audibleUrl: 'https://amzn.to/46lClSN',
+    amazonUrl: 'https://link.amazon/B0gJQ8pyk',
+    kindleUrl: 'https://link.amazon/B04ZhrI0H',
+    audibleUrl: 'https://link.amazon/B01JJkMIs',
     arabicPdfUrl: '/pdfs/high performance habits.pdf',
     translations: {
         en: {

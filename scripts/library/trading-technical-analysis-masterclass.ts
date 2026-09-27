@@ -3,7 +3,7 @@ import { BookDefinition } from '../types.js';
 export const book: BookDefinition = {
     id: 'trading-technical-analysis-masterclass',
     title: 'Trading: Technical Analysis Masterclass',
-    author: 'Rolf Schlotmann',
+    author: 'Rolf Schlotmann & Moritz Czubatinski',
     category: 'Trading',
     coverImageUrl: '/images/trading technical analysis masterclass.jpg',
     rating: 4.3,
@@ -11,13 +11,12 @@ export const book: BookDefinition = {
     pageCount: 226,
     arabicSlug: 'التحليل-الفني-للتداول',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pWUygD',
-    kindleUrl: 'https://amzn.to/4rKNtBL',
-    audibleUrl: 'https://amzn.to/4pWUygD',
+    amazonUrl: 'https://link.amazon/B04tRjLQY',
+    kindleUrl: 'https://link.amazon/B0ewHx8F7',
     translations: {
         en: {
             title: 'Trading: Technical Analysis Masterclass',
-            author: 'Rolf Schlotmann'
+            author: 'Rolf Schlotmann & Moritz Czubatinski'
         }
     },
     summary: `# The Definitive Technical Analysis Masterclass & System Blueprint

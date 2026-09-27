@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 452,
     arabicSlug: 'قوانين-القوة-48',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48lJQZX',
-    kindleUrl: 'https://amzn.to/4iD6hyI',
-    audibleUrl: 'https://amzn.to/3M6Q88w',
+    amazonUrl: 'https://link.amazon/B0c5c8zHF',
+    kindleUrl: 'https://link.amazon/B09J92TGm',
+    audibleUrl: 'https://link.amazon/B0e9ruxLK',
     arabicPdfUrl: '/pdfs/the 48 laws of power.pdf',
     translations: {
         en: {

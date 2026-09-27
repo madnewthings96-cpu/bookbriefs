@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 360,
     arabicSlug: 'كيف-تتداول-يومياً-من-أجل-لقمة-العيش',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ijY3LJ',
-    kindleUrl: 'https://amzn.to/4ofOheG',
-    audibleUrl: 'https://amzn.to/3LYReTO',
+    amazonUrl: 'https://link.amazon/B062GweDb',
+    kindleUrl: 'https://link.amazon/B0dAAAjD9',
+    audibleUrl: 'https://link.amazon/B09jWiikE',
     arabicPdfUrl: '/pdfs/how to day trade for a living.pdf',
     translations: {
         en: {

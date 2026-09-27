@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'المتداول-الزاهد',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pOfab1',
-    kindleUrl: 'https://amzn.to/48kOpoN',
-    audibleUrl: 'https://amzn.to/4phQdF1',
+    amazonUrl: 'https://link.amazon/B0eEgIIO5',
+    kindleUrl: 'https://link.amazon/B06QoZ7rs',
+    audibleUrl: 'https://link.amazon/B0eSq8OUZ',
     arabicPdfUrl: '/pdfs/the zen trader.pdf',
     translations: {
         en: {

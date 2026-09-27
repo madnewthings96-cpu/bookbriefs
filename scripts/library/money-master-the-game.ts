@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 688,
     arabicSlug: 'المال-إتقان-اللعبة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pDFdkZ',
-    kindleUrl: 'https://amzn.to/48JOthS',
-    audibleUrl: 'https://amzn.to/4ruPj9y',
+    amazonUrl: 'https://link.amazon/B0gQw1VUr',
+    kindleUrl: 'https://link.amazon/B09c8IGS8',
+    audibleUrl: 'https://link.amazon/B0dSdzCSw',
     arabicPdfUrl: '/pdfs/money master the game.pdf',
     translations: {
         en: {

@@ -8,7 +8,7 @@ export function canonicalRoutePath(path: string): string {
   const pathname = path.split(/[?#]/, 1)[0];
   const normalized = pathname.replace(/\/+$/, '') || '/';
   if (normalized === '/') return '/';
-  if (normalized === '/book-summaries' || normalized === '/ar/book-summaries') return '/summaries/';
+  if (normalized === '/book-summaries') return '/summaries/';
   return `${normalized}/`;
 }
 

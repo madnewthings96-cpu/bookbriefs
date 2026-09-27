@@ -112,15 +112,21 @@
   status = 200
   force = true
 
-# Consolidate the duplicate library URL. Arabic book summaries are not yet published.
+# Consolidate retired library URLs into the main library.
 [[redirects]]
-  from = "/book-summaries"
+  from = "/ar/book-summaries"
   to = "/summaries/"
   status = 301
   force = true
 
 [[redirects]]
-  from = "/ar/book-summaries"
+  from = "/ar/book-summaries/"
+  to = "/summaries/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/book-summaries"
   to = "/summaries/"
   status = 301
   force = true

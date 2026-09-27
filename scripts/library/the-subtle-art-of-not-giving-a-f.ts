@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'الفن-اللامبالاة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pRqCTl',
-    kindleUrl: 'https://amzn.to/48GWZNE',
-    audibleUrl: 'https://amzn.to/4oCMn8r',
+    amazonUrl: 'https://link.amazon/B06v9ejO1',
+    kindleUrl: 'https://link.amazon/B09euutyi',
+    audibleUrl: 'https://link.amazon/B0bdUty7o',
     arabicPdfUrl: '/pdfs/the subtle art of not giving a fck.pdf',
     translations: {
         en: {

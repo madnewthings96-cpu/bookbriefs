@@ -7,6 +7,7 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import useSEO from '../hooks/useSEO';
 import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { arabicBookSummaries } from '../translations/arabicBookSummaries';
 
 const CategoryPage: React.FC = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
@@ -17,8 +18,8 @@ const CategoryPage: React.FC = () => {
   const knownCategory = CATEGORY_HUBS.some(hub => hub.slug === categorySlug);
   const category = CATEGORY_HUBS.find((hub) => hub.slug === categorySlug) || CATEGORY_HUBS[0];
   const categoryBooks = useMemo(
-    () => books.filter((book) => book.category === category.category),
-    [books, category.category]
+    () => books.filter((book) => book.category === category.category && (!isArabic || arabicBookSummaries[book.id])),
+    [books, category.category, isArabic]
   );
 
   const title = isArabic ? `${category.arabicTitle} | تحليل` : `${category.englishTitle} | Ta7leel`;
@@ -31,7 +32,7 @@ const CategoryPage: React.FC = () => {
     keywords,
     type: 'website',
     language: isArabic ? 'ar' : 'en',
-    noindex: !knownCategory,
+    noindex: !knownCategory || (isArabic && !loading && categoryBooks.length === 0),
     canonical: `${SITE_URL}${canonicalRoutePath(location.pathname)}`,
   });
 
@@ -51,7 +52,7 @@ const CategoryPage: React.FC = () => {
         type="breadcrumb"
         items={[
           { name: isArabic ? 'الرئيسية' : 'Home', url: '/' },
-          { name: isArabic ? 'ملخصات الكتب' : 'Book Summaries', url: isArabic ? '/ar/book-summaries' : '/book-summaries' },
+          { name: isArabic ? 'ملخصات الكتب' : 'Book Summaries', url: '/summaries/' },
           { name: isArabic ? category.arabicTitle : category.englishTitle, url: location.pathname },
         ]}
       />
@@ -70,7 +71,7 @@ const CategoryPage: React.FC = () => {
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              to="/summaries"
+              to={'/summaries/'}
               className="inline-flex items-center rounded-lg bg-orange-500 px-4 py-2 font-semibold text-white hover:bg-orange-600 transition-colors"
             >
               {isArabic ? 'تصفح كل الملخصات' : 'Browse all summaries'}
@@ -102,7 +103,7 @@ const CategoryPage: React.FC = () => {
         {categoryBooks.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {categoryBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard key={book.id} book={book} language={isArabic ? 'ar' : 'en'} />
             ))}
           </div>
         ) : (

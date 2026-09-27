@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 347,
     arabicSlug: 'كتاب-الاستثمار-في-العقارات-المؤجرة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3NDelny',
-    kindleUrl: 'https://amzn.to/3LPzuu4',
-    audibleUrl: 'https://amzn.to/4raOWQK',
+    amazonUrl: 'https://link.amazon/B022wYtto',
+    kindleUrl: 'https://link.amazon/B08lCXrte',
+    audibleUrl: 'https://link.amazon/B0bhEfrko',
     arabicPdfUrl: '/pdfs/the book on rental property investing.pdf',
     translations: {
         en: {

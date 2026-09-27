@@ -3,7 +3,7 @@ import { BookDefinition } from '../types.js';
 export const book: BookDefinition = {
     id: 'mastering-trading-psychology',
     title: 'Mastering Trading Psychology',
-    author: 'Andrew Aziz & Mike Baer',
+    author: 'Andrew Aziz & Mike Baehr',
     category: 'Trading',
     coverImageUrl: '/images/mastering trading psychology.jpg',
     rating: 4.3,
@@ -11,14 +11,14 @@ export const book: BookDefinition = {
     pageCount: 410,
     arabicSlug: 'إتقان-سيكولوجية-التداول',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/44nWdU3',
-    kindleUrl: 'https://amzn.to/3Mij2SW',
-    audibleUrl: 'https://amzn.to/4oZqh0T',
+    amazonUrl: 'https://link.amazon/B000vyzzO',
+    kindleUrl: 'https://link.amazon/B02IDWXoL',
+    audibleUrl: 'https://link.amazon/B0d20EKXO',
     summary: `# Introduction: The Hidden 90% of Trading
 
-Most aspiring traders spend years hunting for the "Holy Grail"—the perfect indicator, the unbreakable algorithm, or the secret chart pattern. In this comprehensive study guide, we dissect the argument presented by Aziz and Baer: that the "Holy Grail" does not exist on a chart. It exists between your ears.
+Most aspiring traders spend years hunting for the "Holy Grail"—the perfect indicator, the unbreakable algorithm, or the secret chart pattern. In this comprehensive study guide, we dissect the argument presented by Aziz and Baehr: that the "Holy Grail" does not exist on a chart. It exists between your ears.
 
-Andrew Aziz, known for his technical prowess in How to Day Trade for a Living, partners with Mike Baer to pivot from Technical Analysis (TA) to Psycho-Analysis. The book is structured not just as a manual, but as a mirror. It reflects the ugly truths of the retail trader’s mind—greed, fear, ego, and the "imposter syndrome"—and offers a rigid framework to reconstruct that mind into a professional instrument.
+Andrew Aziz, known for his technical prowess in How to Day Trade for a Living, partners with Mike Baehr to pivot from Technical Analysis (TA) to Psycho-Analysis. The book is structured not just as a manual, but as a mirror. It reflects the ugly truths of the retail trader’s mind—greed, fear, ego, and the "imposter syndrome"—and offers a rigid framework to reconstruct that mind into a professional instrument.
 
 Below is a chapter-by-chapter deep dive.
 
@@ -70,7 +70,7 @@ Write a manifesto (minimum 300 words) answering the following:
 ## Chapter 3: Psycho-Trading and Cognitive Biases
 
 ## The Core Thesis
-Our brains evolved to survive in the wild, not to trade in the markets. Evolution wired us to run from danger (selling low) and hoard resources (buying high/FOMO). Aziz and Baer argue that to be a successful trader, you must actively fight your biological programming.
+Our brains evolved to survive in the wild, not to trade in the markets. Evolution wired us to run from danger (selling low) and hoard resources (buying high/FOMO). Aziz and Baehr argue that to be a successful trader, you must actively fight your biological programming.
 
 ## Key Terminology
 **Loss Aversion:** The psychological fact that the pain of a loss is twice as intense as the pleasure of an equivalent gain.
@@ -112,7 +112,7 @@ For your last 10 winning trades, ask:
 ## Chapter 5: Mental Capital – The Scarcest Resource
 
 ## The Core Thesis
-This is arguably the most distinct concept in the book. We all know about Financial Capital (money). Aziz and Baer introduce Mental Capital—the amount of emotional energy and focus you have available. When Mental Capital is depleted, you cannot trade, even if your account is full of cash.
+This is arguably the most distinct concept in the book. We all know about Financial Capital (money). Aziz and Baehr introduce Mental Capital—the amount of emotional energy and focus you have available. When Mental Capital is depleted, you cannot trade, even if your account is full of cash.
 
 ## Key Terminology
 **Mental Capital:** Cognitive bandwidth and emotional resilience.
@@ -166,7 +166,7 @@ Create a checklist that must be completed before you are allowed to take a trade
 ## Chapter 7: The Trading Plan – Your Contract with the Market
 
 ## The Core Thesis
-A goal without a plan is just a wish. A trade without a plan is just gambling. Aziz and Baer insist that the Trading Plan is a binding legal contract you sign with yourself. Breaking it is a breach of contract that warrants suspension (stopping trading).
+A goal without a plan is just a wish. A trade without a plan is just gambling. Aziz and Baehr insist that the Trading Plan is a binding legal contract you sign with yourself. Breaking it is a breach of contract that warrants suspension (stopping trading).
 
 ## Key Terminology
 **The Playbook:** A collection of your best setups (e.g., Bull Flag, VWAP bounce) with printed screenshots.
@@ -210,11 +210,11 @@ After every trading session, answer:
 
 **Re-entry Visualization:** If you lost, close your eyes and visualize taking the loss calmly, without anger. Re-wire your brain's response to the red numbers.
 
-## Conclusion: Synthesizing the Aziz/Baer Framework
+## Conclusion: Synthesizing the Aziz/Baehr Framework
 
 ## The "Psycho-Structural" Approach
 You have just read a breakdown of the key components of Mastering Trading Psychology. But why is this specific framework superior to general self-help books or other trading psychology texts?
-Most trading psychology books are abstract. They tell you to "be disciplined" or "control your emotions" but don't tell you how. The Aziz/Baer Framework is superior because it converts psychology into structure.
+Most trading psychology books are abstract. They tell you to "be disciplined" or "control your emotions" but don't tell you how. The Aziz/Baehr Framework is superior because it converts psychology into structure.
 
 ## The Synthesis
 The framework operates on a simple loop:
@@ -224,8 +224,8 @@ The framework operates on a simple loop:
 4.  **Review and Adapt:** Use the data from your journal to refine the process, removing the ego from the equation (Chapter 8).
 
 ## Why This Matters to You (The Layperson/Aspiring Trader)
-If you are an aspiring trader, you are likely focused on charts. You are looking for the arrow that points up. Aziz and Baer teach you that you are the variable. The market is constant; it goes up and down. The chart patterns are constant; they repeat forever. The only thing that changes is you.
-By adopting the Aziz/Baer framework, you stop trying to predict the market and start predicting yourself. You learn to spot when you are "tilting" (emotional), when you are fatigued, and when you are in the zone.
+If you are an aspiring trader, you are likely focused on charts. You are looking for the arrow that points up. Aziz and Baehr teach you that you are the variable. The market is constant; it goes up and down. The chart patterns are constant; they repeat forever. The only thing that changes is you.
+By adopting the Aziz/Baehr framework, you stop trying to predict the market and start predicting yourself. You learn to spot when you are "tilting" (emotional), when you are fatigued, and when you are in the zone.
 
 ## The Ultimate Takeaway:
 Success in trading is not about conquering the market. It is about conquering yourself. If you can master your routine, protect your mental capital, and adhere to your written plan, the money becomes a byproduct of your discipline, not the object of your chase.
@@ -245,7 +245,7 @@ Success in trading is not about conquering the market. It is about conquering yo
     translations: {
         en: {
             title: 'Mastering Trading Psychology',
-            author: 'Andrew Aziz & Mike Baer'
+            author: 'Andrew Aziz & Mike Baehr'
         }
     }
 };

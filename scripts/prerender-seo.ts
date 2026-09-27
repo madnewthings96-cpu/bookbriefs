@@ -4,6 +4,10 @@ import { StaticRouter } from 'react-router-dom/server';
 import IdeasInTheWildPage from '../pages/IdeasInTheWildPage.tsx';
 import { CONNECTIONS_SEO } from '../components/connections/connectionsModel.ts';
 import MarkdownRenderer from '../components/MarkdownRenderer.tsx';
+import SummaryLanguageSwitch from '../components/SummaryLanguageSwitch.tsx';
+import ArabicSummaryReferences from '../components/ArabicSummaryReferences.tsx';
+import { arabicBookSummaries, type SummaryLanguage } from '../translations/arabicBookSummaries.ts';
+import { getSummaryPath, getSummaryAlternates, arabicCategoryNames } from '../utils/bookLocales.ts';
 import { getBookSummaryTranslation } from '../translations/bookSummaries.ts';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -12,7 +16,6 @@ import { BRAND_NAME, CALCULATOR_ROUTES, CATEGORY_HUBS, DEFAULT_OG_IMAGE, PRIVATE
 import {
   absoluteUrl,
   escapeHtml,
-  getArabicTitle,
   getCanonicalBookSlug,
   loadBookCatalog,
   stripMarkdown,
@@ -41,6 +44,7 @@ interface PrerenderPage {
   styles?: string[];
   body: string;
   schema: Record<string, unknown>[];
+  alternates?: Array<{ language: SummaryLanguage; href: string }>;
 }
 
 function setHtmlAttrs(html: string, lang: 'en' | 'ar', dir: 'ltr' | 'rtl'): string {
@@ -113,6 +117,10 @@ export function renderPage(template: string, page: PrerenderPage): string {
   if (page.author) html = upsertMeta(html, 'name', 'author', page.author);
   html = upsertMeta(html, 'name', 'robots', page.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
   html = upsertCanonical(html, canonical);
+  html = html.replace(/\s*<link[^>]*hreflang=["'][^"']+["'][^>]*>/g, '');
+  if (page.alternates?.length) {
+    html = html.replace('</head>', `${page.alternates.map(item => `<link rel="alternate" hreflang="${item.language}" href="${escapeHtml(item.href)}" />`).join('\n')}\n</head>`);
+  }
   html = upsertMeta(html, 'property', 'og:type', pageType);
   html = upsertMeta(html, 'property', 'og:url', canonical);
   html = upsertMeta(html, 'property', 'og:title', page.title);
@@ -175,36 +183,39 @@ function websiteSchema() {
   };
 }
 
-function bookPage(book: BookDefinition): PrerenderPage {
-  const slug = getCanonicalBookSlug(book);
-  const pathName = `/summary/${slug}`;
-  const isArabicSlug = false; // The published book reader currently serves English content.
-  const displayTitle = isArabicSlug ? getArabicTitle(book) : book.title;
-  const readerContent = getBookSummaryTranslation(book.id, 'en') || book;
+export function bookPage(book: BookDefinition, language: SummaryLanguage = 'en'): PrerenderPage {
+  const pathName = getSummaryPath(book, language);
+  const isArabicSlug = language === 'ar';
+  const translation = arabicBookSummaries[book.id];
+  const displayTitle = isArabicSlug ? translation.title : book.title;
+  const displayAuthor = isArabicSlug ? translation.author : book.author;
+  const categoryName = isArabicSlug ? arabicCategoryNames[book.category] || book.category : book.category;
+  const readerContent = getBookSummaryTranslation(book.id, language) || book;
   const cleanSummary = stripMarkdown(readerContent.summary);
   const description = isArabicSlug
-    ? `اقرأ ملخص كتاب ${displayTitle} مع أهم الأفكار والدروس العملية والنقاط الرئيسية في دقائق.`
+    ? translation.description
     : `Read a practical summary of ${book.title} by ${book.author}, including key takeaways, lessons, and useful ideas.`;
   const title = isArabicSlug
     ? `ملخص كتاب ${displayTitle}: أهم الأفكار والدروس | تحليل`
     : `${book.title} Summary: Key Ideas and Takeaways | Ta7leel`;
   const takeaways = readerContent.keyTakeaways || [];
 
-  const body = `    <main class="seo-prerender mx-auto max-w-5xl px-4 py-10" dir="${isArabicSlug ? 'rtl' : 'ltr'}">
+  const body = `    <main class="seo-prerender summary-redesign mx-auto max-w-5xl px-4 py-10" lang="${language}" dir="${isArabicSlug ? 'rtl' : 'ltr'}">
       <article>
-        <p class="text-sm font-semibold uppercase tracking-wide text-orange-600">${escapeHtml(book.category)} summary</p>
+        <p class="text-sm font-semibold uppercase tracking-wide text-orange-600">${escapeHtml(categoryName)} ${isArabicSlug ? '' : 'summary'}</p>
         <h1 class="mt-3 text-4xl font-bold text-gray-950">${escapeHtml(title.replace(` | ${isArabicSlug ? 'تحليل' : 'Ta7leel'}`, ''))}</h1>
         <p class="mt-4 max-w-3xl text-lg leading-8 text-gray-700">${escapeHtml(description)}</p>
         <div class="mt-8 flex flex-col gap-6 sm:flex-row">
-          <img src="${escapeHtml(book.coverImageUrl)}" alt="${escapeHtml(book.title)} book cover" class="w-40 rounded-lg shadow-lg" />
+          <img src="${escapeHtml(book.coverImageUrl)}" alt="${escapeHtml(isArabicSlug ? `غلاف كتاب ${displayTitle}` : `${book.title} book cover`)}" class="w-40 rounded-lg shadow-lg" />
           <div>
-            <p><strong>Author:</strong> ${escapeHtml(book.author)}</p>
-            <p><strong>Category:</strong> ${escapeHtml(book.category)}</p>
-            <p><strong>Published:</strong> ${book.publicationYear}</p>
-            <p><strong>Pages:</strong> ${book.pageCount}</p>
+            <p><strong>${isArabicSlug ? 'المؤلف:' : 'Author:'}</strong> ${escapeHtml(displayAuthor)}</p>
+            <p><strong>${isArabicSlug ? 'التصنيف:' : 'Category:'}</strong> ${escapeHtml(categoryName)}</p>
+            <p><strong>${isArabicSlug ? 'سنة النشر:' : 'Published:'}</strong> ${book.publicationYear}</p>
+            ${book.pageCount ? `<p><strong>${isArabicSlug ? 'الصفحات:' : 'Pages:'}</strong> ${book.pageCount}</p>` : ''}
           </div>
         </div>
-        <section class="mt-10">
+        ${renderToStaticMarkup(React.createElement(StaticRouter, { location: pathName }, React.createElement(SummaryLanguageSwitch, { book, language })))}
+        <section id="quick-brief" class="mt-10 scroll-mt-32">
           <h2 class="text-2xl font-bold text-gray-950">${isArabicSlug ? 'أهم الأفكار' : 'Key Takeaways'}</h2>
           <ul class="mt-4 list-disc space-y-2 ${isArabicSlug ? 'pr-6' : 'pl-6'}">
             ${takeaways.map((item) => `<li>${escapeHtml(item)}</li>`).join('\n            ')}
@@ -215,9 +226,10 @@ function bookPage(book: BookDefinition): PrerenderPage {
           <div class="mt-4 leading-8 text-gray-700">${book.isPremium ? escapeHtml(truncateText(cleanSummary, 700)) : renderToStaticMarkup(React.createElement(MarkdownRenderer, { content: readerContent.summary }))}</div>
         </section>
         <nav class="mt-10 flex flex-wrap gap-3">
-          <a href="/summaries" class="text-orange-700 underline">${isArabicSlug ? 'كل الملخصات' : 'All summaries'}</a>
-          ${categorySlugForBook(book) ? `<a href="/categories/${categorySlugForBook(book)}/" class="text-orange-700 underline">${escapeHtml(book.category)} books</a>` : ''}
+          <a href="/summaries/" class="text-orange-700 underline">${isArabicSlug ? 'كل ملخصات الكتب' : 'All summaries'}</a>
+          ${categorySlugForBook(book) ? `<a href="${isArabicSlug ? '/ar' : ''}/categories/${categorySlugForBook(book)}/" class="text-orange-700 underline">${escapeHtml(categoryName)} ${isArabicSlug ? '' : 'books'}</a>` : ''}
         </nav>
+        ${isArabicSlug ? renderToStaticMarkup(React.createElement(StaticRouter, { location: pathName }, React.createElement(ArabicSummaryReferences, { bookId: book.id }))) : ''}
       </article>
     </main>`;
 
@@ -230,15 +242,16 @@ function bookPage(book: BookDefinition): PrerenderPage {
     keywords: `${book.title}, ${book.author}, ${book.title} summary, ${book.category} book summary, ملخص كتاب ${displayTitle}`,
     image: book.coverImageUrl,
     body,
+    alternates: getSummaryAlternates(book),
     schema: [
       websiteSchema(),
       {
         '@context': 'https://schema.org',
         '@type': 'Book',
-        name: book.title,
+        name: displayTitle,
         author: {
           '@type': 'Person',
-          name: book.author,
+          name: displayAuthor,
         },
         image: absoluteUrl(SITE_URL, book.coverImageUrl),
         description: truncateText(cleanSummary, 400),
@@ -247,9 +260,10 @@ function bookPage(book: BookDefinition): PrerenderPage {
       },
       breadcrumbSchema([
         { name: 'Home', path: '/' },
-        { name: 'Summaries', path: '/summaries' },
-        { name: book.title, path: pathName },
+        { name: isArabicSlug ? 'ملخصات الكتب' : 'Summaries', path: '/summaries' },
+        { name: displayTitle, path: pathName },
       ]),
+      { '@context': 'https://schema.org', '@type': 'WebPage', name: title, inLanguage: language, url: absoluteUrl(SITE_URL, pathName) },
     ],
   };
 }
@@ -260,7 +274,7 @@ function categorySlugForBook(book: BookDefinition): string | undefined {
 }
 
 function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefinition[], arabic: boolean): PrerenderPage {
-  const categoryBooks = books.filter((book) => book.category === category.category);
+  const categoryBooks = books.filter((book) => book.category === category.category && (!arabic || arabicBookSummaries[book.id]));
   const pathName = arabic ? `/ar/categories/${category.slug}` : `/categories/${category.slug}`;
   const title = arabic ? `${category.arabicTitle} | تحليل` : `${category.englishTitle} | Ta7leel`;
   const description = arabic ? category.arabicDescription : category.englishDescription;
@@ -277,7 +291,7 @@ function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefin
         <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           ${categoryBooks
             .map(
-              (book) => `<li><a class="text-orange-700 underline" href="/summary/${escapeHtml(getCanonicalBookSlug(book))}">${escapeHtml(book.title)} by ${escapeHtml(book.author)}</a></li>`
+              (book) => `<li><a class="text-orange-700 underline" href="${escapeHtml(getSummaryPath(book, arabic ? 'ar' : 'en'))}">${escapeHtml(arabic ? arabicBookSummaries[book.id].title : book.title)} ${arabic ? 'تأليف' : 'by'} ${escapeHtml(arabic ? arabicBookSummaries[book.id].author : book.author)}</a></li>`
             )
             .join('\n          ')}
         </ul>
@@ -300,6 +314,7 @@ function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefin
     description: truncateText(description, 155),
     keywords,
     body,
+    noindex: arabic && categoryBooks.length === 0,
     schema: [
       websiteSchema(),
       {
@@ -310,14 +325,14 @@ function categoryPage(category: (typeof CATEGORY_HUBS)[number], books: BookDefin
         url: absoluteUrl(SITE_URL, canonicalRoutePath(pathName)),
         mainEntity: categoryBooks.map((book) => ({
           '@type': 'Book',
-          name: book.title,
-          author: book.author,
-          url: absoluteUrl(SITE_URL, canonicalRoutePath(`/summary/${getCanonicalBookSlug(book)}`)),
+          name: arabic ? arabicBookSummaries[book.id].title : book.title,
+          author: arabic ? arabicBookSummaries[book.id].author : book.author,
+          url: absoluteUrl(SITE_URL, getSummaryPath(book, arabic ? 'ar' : 'en')),
         })),
       },
       breadcrumbSchema([
         { name: 'Home', path: '/' },
-        { name: arabic ? 'ملخصات الكتب' : 'Book Summaries', path: arabic ? '/ar/book-summaries' : '/book-summaries' },
+        { name: arabic ? 'ملخصات الكتب' : 'Book Summaries', path: '/summaries' },
         { name: arabic ? category.arabicTitle : category.englishTitle, path: pathName },
       ]),
     ],
@@ -570,7 +585,6 @@ async function main() {
   const connectionStyles = (await readdir(path.join(process.cwd(), 'dist', 'assets')))
     .filter(file => /^IdeasInTheWildPage-.*\.css$/.test(file)).map(file => `/assets/${file}`);
   if (!connectionStyles.length) throw new Error('Missing Ideas in the Wild stylesheet in production build.');
-
   const pages: PrerenderPage[] = [
     homePage(),
     connectionsPage(connectionStyles),
@@ -584,7 +598,8 @@ async function main() {
       categoryPage(category, books, false),
       categoryPage(category, books, true),
     ]),
-    ...books.map(bookPage),
+    ...books.map(book => bookPage(book)),
+    ...books.filter(book => arabicBookSummaries[book.id]).map(book => bookPage(book, 'ar')),
     ...PRIVATE_SEO_ROUTES.map(privatePage),
   ];
 

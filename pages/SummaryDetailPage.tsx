@@ -25,7 +25,9 @@ import useSEO from '../hooks/useSEO';
 import StructuredData from '../components/StructuredData';
 import { doc, getDoc } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
-import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { SITE_URL } from '../utils/seoConfig';
+import { arabicBookSummaries } from '../translations/arabicBookSummaries';
+import { getSummaryPath, getSummaryAlternates, resolveArabicSummaryId } from '../utils/bookLocales';
 
 const PDF_PATHS: Record<string, string> = {
   'americas-bank': '/pdfs/americas bank.pdf',
@@ -96,6 +98,7 @@ const SummaryDetailPage: React.FC = () => {
   // Helper function to resolve Arabic slug to book ID
   const resolveBookId = useCallback((idOrSlug: string | undefined): string | undefined => {
     if (!idOrSlug) return undefined;
+    if (currentLanguage === 'ar') return resolveArabicSummaryId(idOrSlug);
 
     // Try to find by ID in Firestore books
     const firestoreBookById = books.find(b => b.id === idOrSlug);
@@ -104,23 +107,27 @@ const SummaryDetailPage: React.FC = () => {
     // Try to find by Arabic slug in Firestore books
     const firestoreBookBySlug = books.find(b => b.arabicSlug === idOrSlug);
     return firestoreBookBySlug?.id;
-  }, [books]);
+  }, [books, currentLanguage]);
 
   const bookId = resolveBookId(bookIdOrSlug);
 
   const displayTitle = book ? (getBookTitle(book.id) === book.id ? book.title : getBookTitle(book.id)) : '';
   const displayAuthor = book ? (getBookAuthor(book.id) === book.id ? book.author : getBookAuthor(book.id)) : '';
-  const canonicalSlug = book ? (book.arabicSlug || book.id) : bookIdOrSlug;
+  const arabicTranslation = bookId ? arabicBookSummaries[bookId] : undefined;
+  const canonicalPath = book ? getSummaryPath(book, currentLanguage) : undefined;
   useSEO({
-    title: book ? `${displayTitle} Summary: Key Ideas & Takeaways | Ta7leel` : 'Book Summary | Ta7leel',
+    title: currentLanguage === 'ar'
+      ? (arabicTranslation ? `ملخص كتاب ${arabicTranslation.title}: أهم الأفكار | تحليل` : 'الملخص غير متاح | تحليل')
+      : book ? `${displayTitle} Summary: Key Ideas & Takeaways | Ta7leel` : 'Book Summary | Ta7leel',
     description: book
-      ? `Read the practical summary of ${displayTitle} by ${displayAuthor}. Discover key takeaways and lessons from this ${book.category.toLowerCase()} book.`
+      ? currentLanguage === 'ar' ? arabicTranslation?.description || '' : `Read the practical summary of ${displayTitle} by ${displayAuthor}. Discover key takeaways and lessons from this ${book.category.toLowerCase()} book.`
       : 'Discover practical book summaries and key insights.',
     image: book?.coverImageUrl || '/favicon/ta7leel.png',
     type: 'book',
-    language: 'en',
-    noindex: !booksLoading && !booksError && !bookId,
-    canonical: canonicalSlug ? `${SITE_URL}${canonicalRoutePath(`/summary/${canonicalSlug}`)}` : undefined,
+    language: currentLanguage,
+    noindex: currentLanguage === 'ar' ? !arabicTranslation : !booksLoading && !booksError && !bookId,
+    canonical: canonicalPath ? new URL(canonicalPath, SITE_URL).href : undefined,
+    alternates: book ? getSummaryAlternates(book) : undefined,
   });
 
   // Personal Notes & Highlights state
@@ -227,6 +234,10 @@ const SummaryDetailPage: React.FC = () => {
 
   const handleDownloadPdf = useCallback(async () => {
     if (!book) return;
+    if (currentLanguage === 'ar') {
+      window.print();
+      return;
+    }
 
     if (!isAuthenticated) {
       setShowSignUpModal(true);
@@ -302,14 +313,14 @@ const SummaryDetailPage: React.FC = () => {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
     }
-  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData]);
+  }, [book, getBookAuthor, getBookTitle, isAuthenticated, summaryData, currentLanguage]);
 
   if (!book && !loading) {
     return (
       <div className="text-center">
         <h1 className="text-2xl font-bold" style={{ color: '#2F4F4F' }}>{t('bookNotFound') || 'Book Not Found'}</h1>
         <p className="text-gray-600 mt-2">{t('bookNotFoundMessage') || "We couldn't find the book you were looking for."}</p>
-        <Link to="/summaries" className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
+        <Link to={'/summaries/'} className="mt-4 inline-block bg-orange-500 text-white font-bold py-2 px-4 rounded hover:bg-orange-600 transition-colors" style={{ backgroundColor: '#FF7F50' }}>
           {t('backToSummaries') || 'Back to Summaries'}
         </Link>
       </div>
@@ -343,9 +354,10 @@ const SummaryDetailPage: React.FC = () => {
           onAddNote={() => setShowAddNoteModal(true)}
           onRequireSignUp={() => setShowSignUpModal(true)}
           t={t}
+          language={currentLanguage}
         />
       )}
-      {bookId && showRedesignedLayout && (
+      {bookId && showRedesignedLayout && currentLanguage === 'en' && (
         <div className="bg-[#f7f3ed] px-4 pb-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <BookReviews bookId={bookId} />
@@ -500,7 +512,7 @@ const SummaryDetailPage: React.FC = () => {
                     {book.id === 'reminiscences-of-a-stock-operator' ? (
                       <>
                         <a
-                          href="https://amzn.to/4ppfvAA"
+                          href="https://link.amazon/B0gxXWgZL"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -512,7 +524,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4a8YshR"
+                          href="https://link.amazon/B0bLauC5q"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -524,7 +536,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3M0eW1H"
+                          href="https://link.amazon/B04la00Rc"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -538,7 +550,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'trading-in-the-zone' ? (
                       <>
                         <a
-                          href="https://amzn.to/4n8z3I7"
+                          href="https://link.amazon/B0cQK8a9W"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -550,7 +562,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4n1pnPi"
+                          href="https://link.amazon/B0g7qLQve"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -559,24 +571,12 @@ const SummaryDetailPage: React.FC = () => {
                             <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
                           </svg>
                           <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/43jrnLQ"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
                         </a>
                       </>
                     ) : book.id === 'the-intelligent-investor' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nOFXTT"
+                          href="https://link.amazon/B0b5VsNVp"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -588,7 +588,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4763wAi"
+                          href="https://link.amazon/B0bSUnxhF"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -600,7 +600,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/46QHaUS"
+                          href="https://link.amazon/B07wplSg0"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -614,7 +614,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'educated' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nJ8jyV"
+                          href="https://link.amazon/B0j9o7mIb"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -626,7 +626,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3KLPRqS"
+                          href="https://link.amazon/B002NRCIN"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -638,7 +638,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4q4qEIp"
+                          href="https://link.amazon/B00xiVOA7"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -652,7 +652,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'marketwizards' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nRy6oJ"
+                          href="https://link.amazon/B04iP0SQC"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -664,7 +664,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/46SyIEs"
+                          href="https://link.amazon/B0dgWBUMg"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -673,24 +673,12 @@ const SummaryDetailPage: React.FC = () => {
                             <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
                           </svg>
                           <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4qeGdgM"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
                         </a>
                       </>
                     ) : book.id === 'best-loser-wins' ? (
                       <>
                         <a
-                          href="https://amzn.to/3W0goTJ"
+                          href="https://link.amazon/B0ewbeYG3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -702,7 +690,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47aKyc4"
+                          href="https://link.amazon/B08KQPcJO"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -714,7 +702,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/473Agu7"
+                          href="https://link.amazon/B0eJfqDQ8"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -728,7 +716,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'becoming' ? (
                       <>
                         <a
-                          href="https://amzn.to/4qqFV6D"
+                          href="https://link.amazon/B07xkYF6I"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -740,7 +728,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/46PAZ3d"
+                          href="https://link.amazon/B06yrMiLK"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -752,7 +740,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47jnSHL"
+                          href="https://link.amazon/B0ih7CY01"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -766,7 +754,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'atomic-habits' ? (
                       <>
                         <a
-                          href="https://amzn.to/42EOe4j"
+                          href="https://link.amazon/B07Z4Mby9"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -778,7 +766,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3KVuXWd"
+                          href="https://link.amazon/B09U4kcyD"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -790,7 +778,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47oavpG"
+                          href="https://link.amazon/B07Hhl4R8"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -804,7 +792,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'broken-money' ? (
                       <>
                         <a
-                          href="https://amzn.to/4n6vfqx"
+                          href="https://link.amazon/B0dWsjm1J"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -816,7 +804,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/43cdcbr"
+                          href="https://link.amazon/B0fjza9Ec"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -828,7 +816,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4mYRxup"
+                          href="https://link.amazon/B03eO9cZA"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -842,7 +830,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'sapiens' ? (
                       <>
                         <a
-                          href="https://amzn.to/43jv5VM"
+                          href="https://link.amazon/B0iMrUKhE"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -854,7 +842,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nV4B5w"
+                          href="https://link.amazon/B01I86ldM"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -866,7 +854,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4qaeVrH"
+                          href="https://link.amazon/B09vu3VL5"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -880,7 +868,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'thinking-fast-and-slow' ? (
                       <>
                         <a
-                          href="https://amzn.to/46NEyHg"
+                          href="https://link.amazon/B05bezPev"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -892,7 +880,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47miWln"
+                          href="https://link.amazon/B0eTsZfuY"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -904,7 +892,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nL5zRv"
+                          href="https://link.amazon/B07Fp3aI7"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -918,7 +906,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-alchemist' ? (
                       <>
                         <a
-                          href="https://amzn.to/46P8QcF"
+                          href="https://link.amazon/B05WjglgS"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -930,7 +918,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3KOGW83"
+                          href="https://link.amazon/B03ByO5ZR"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -942,7 +930,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nI5DS4"
+                          href="https://link.amazon/B0ffltRLl"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -956,7 +944,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-four-agreements' ? (
                       <>
                         <a
-                          href="https://amzn.to/48prwAZ"
+                          href="https://link.amazon/B0fKTakMG"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -968,7 +956,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/473bZ7w"
+                          href="https://link.amazon/B0178xyZK"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -980,7 +968,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4mYS1Rf"
+                          href="https://link.amazon/B007r9XvI"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -994,7 +982,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'dune' ? (
                       <>
                         <a
-                          href="https://amzn.to/43j0O9z"
+                          href="https://link.amazon/B07byoZDh"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1006,7 +994,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nL63XP"
+                          href="https://link.amazon/B04PntysP"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1018,7 +1006,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3WFGbRa"
+                          href="https://link.amazon/B05xlkYbp"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1032,7 +1020,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'project-hail-mary' ? (
                       <>
                         <a
-                          href="https://amzn.to/4q8Edq1"
+                          href="https://link.amazon/B0hXTbJIf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1044,7 +1032,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nLz9X5"
+                          href="https://link.amazon/B0fchFcXR"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1056,7 +1044,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/473CI3N"
+                          href="https://link.amazon/B01M5uzrd"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1070,7 +1058,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'rich-dad-poor-dad' ? (
                       <>
                         <a
-                          href="https://amzn.to/3Wyk9zU"
+                          href="https://link.amazon/B0gZF8L5Q"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1082,7 +1070,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/48nupSO"
+                          href="https://link.amazon/B0hQz33te"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1094,7 +1082,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/470Bczn"
+                          href="https://link.amazon/B058bMtxO"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1108,7 +1096,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'americas-bank' ? (
                       <>
                         <a
-                          href="https://amzn.to/4og7AVA"
+                          href="https://link.amazon/B05Os9lve"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1120,7 +1108,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/42CZ8aT"
+                          href="https://link.amazon/B0b37Tzhk"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1132,7 +1120,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/42CZ9vt"
+                          href="https://link.amazon/B06guwNrH"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1146,7 +1134,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the33strategiesofwar' ? (
                       <>
                         <a
-                          href="https://amzn.to/3KM3qXi"
+                          href="https://link.amazon/B067pEd6L"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1158,7 +1146,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4qnFkCC"
+                          href="https://link.amazon/B07SdaKmB"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1170,7 +1158,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nJcwTf"
+                          href="https://link.amazon/B06KOxRLB"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1184,7 +1172,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'belesszombie' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nT4Bmu"
+                          href="https://link.amazon/B09pP3D6H"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1196,7 +1184,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4qavow4"
+                          href="https://link.amazon/B0ajCRpuk"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1205,24 +1193,12 @@ const SummaryDetailPage: React.FC = () => {
                             <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
                           </svg>
                           <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4qavow4"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z" />
-                          </svg>
-                          <span>Audible</span>
                         </a>
                       </>
                     ) : book.id === 'howtodaytradeforaliving' ? (
                       <>
                         <a
-                          href="https://amzn.to/46WKf4g"
+                          href="https://link.amazon/B062GweDb"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1234,7 +1210,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/475aqpL"
+                          href="https://link.amazon/B0dAAAjD9"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1246,7 +1222,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3IMQ6RY"
+                          href="https://link.amazon/B09jWiikE"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1260,7 +1236,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the48lawsofpower' ? (
                       <>
                         <a
-                          href="https://amzn.to/4n5mDk2"
+                          href="https://link.amazon/B0c5c8zHF"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1272,7 +1248,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3L8qOhG"
+                          href="https://link.amazon/B09J92TGm"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1284,7 +1260,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3JcUee1"
+                          href="https://link.amazon/B0e9ruxLK"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1298,7 +1274,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'secretsofthemillionairemind' ? (
                       <>
                         <a
-                          href="https://amzn.to/4onA4NA"
+                          href="https://link.amazon/B0dcjjPBS"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1310,7 +1286,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4ogCQUq"
+                          href="https://link.amazon/B0fw8wFLE"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1322,7 +1298,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4oelK9L"
+                          href="https://link.amazon/B08MKaizU"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1336,7 +1312,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'relentless' ? (
                       <>
                         <a
-                          href="https://amzn.to/42GMWWB"
+                          href="https://link.amazon/B0a46brzF"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1348,7 +1324,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3W54Y14"
+                          href="https://link.amazon/B0cZskrJ6"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1360,7 +1336,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/42GgALA"
+                          href="https://link.amazon/B0hd2oDgC"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1374,7 +1350,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'one-good-trade' ? (
                       <>
                         <a
-                          href="https://amzn.to/4oiXe7o"
+                          href="https://link.amazon/B01pnyQWj"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1386,7 +1362,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3W6Qk9q"
+                          href="https://link.amazon/B04MEorA8"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1398,7 +1374,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4omIvIW"
+                          href="https://link.amazon/B0dXVgMIu"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1412,7 +1388,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'cant-hurt-me' ? (
                       <>
                         <a
-                          href="https://amzn.to/3IYWju7"
+                          href="https://link.amazon/B0eQIxtFR"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1424,7 +1400,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4hmAod6"
+                          href="https://link.amazon/B0g6zF9VK"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1436,7 +1412,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4o4CqRm"
+                          href="https://link.amazon/B041ETZRN"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1450,7 +1426,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-alchemy-of-finance' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nTagZ1"
+                          href="https://link.amazon/B00xLdcsr"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1462,19 +1438,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4oCNZjc"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4nSGROh"
+                          href="https://link.amazon/B0i9042wz"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1488,7 +1452,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'competition-demystified' ? (
                       <>
                         <a
-                          href="https://amzn.to/3KXXScb"
+                          href="https://link.amazon/B0fWp0QD1"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1500,7 +1464,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nWz1nI"
+                          href="https://link.amazon/B085HBrEr"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1512,7 +1476,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4orvbTB"
+                          href="https://link.amazon/B01vXoMIW"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1526,7 +1490,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-4-hour-workweek' ? (
                       <>
                         <a
-                          href="https://amzn.to/47DQ2gI"
+                          href="https://link.amazon/B06OoZ7W3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1538,7 +1502,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4hkoK2e"
+                          href="https://link.amazon/B08nNJ5F0"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1550,7 +1514,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47u42bU"
+                          href="https://link.amazon/B062kPjHV"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1564,7 +1528,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-4-hour-work-week' ? (
                       <>
                         <a
-                          href="https://amzn.to/4ovvsEV"
+                          href="https://link.amazon/B06OoZ7W3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1576,7 +1540,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4hkoK2e"
+                          href="https://link.amazon/B08nNJ5F0"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1588,7 +1552,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4oDnv0J"
+                          href="https://link.amazon/B062kPjHV"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1602,7 +1566,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-black-swan' ? (
                       <>
                         <a
-                          href="https://amzn.to/49wxssz"
+                          href="https://link.amazon/B09pzk2TT"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1614,7 +1578,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4oKYAsc"
+                          href="https://link.amazon/B00hmn6ab"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1626,7 +1590,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/444ACjn"
+                          href="https://link.amazon/B03DNR30b"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1640,7 +1604,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-chatgpt-millionaire' ? (
                       <>
                         <a
-                          href="https://amzn.to/4hPWKng"
+                          href="https://link.amazon/B01OLJcKn"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1652,7 +1616,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3LwDaAx"
+                          href="https://link.amazon/B0foVpJxW"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1664,7 +1628,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4oyH5LI"
+                          href="https://link.amazon/B0bUoKQrZ"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1678,7 +1642,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-first-90-days' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nH7Ufp"
+                          href="https://link.amazon/B0b0vNI10"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1690,7 +1654,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47wObuj"
+                          href="https://link.amazon/B09nZErUE"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1702,7 +1666,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/43jItcL"
+                          href="https://link.amazon/B00zV2MlX"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1716,7 +1680,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'leading-change' ? (
                       <>
                         <a
-                          href="https://amzn.to/4oZOyTV"
+                          href="https://link.amazon/B08jFiHBx"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1728,7 +1692,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/49I7BxA"
+                          href="https://link.amazon/B01IotMNv"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1740,7 +1704,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4qQPsDT"
+                          href="https://link.amazon/B071AIYJg"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1754,7 +1718,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'i-will-teach-you-to-be-rich' ? (
                       <>
                         <a
-                          href="https://amzn.to/49diaJ1"
+                          href="https://link.amazon/B0b2P0sF3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1766,7 +1730,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3LuPi5b"
+                          href="https://link.amazon/B0hI6OAQY"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1778,7 +1742,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3LwC6N3"
+                          href="https://link.amazon/B0hkBPERj"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1792,7 +1756,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'money-master-the-game' ? (
                       <>
                         <a
-                          href="https://amzn.to/488ydqk"
+                          href="https://link.amazon/B0gQw1VUr"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1804,7 +1768,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/43lLbP0"
+                          href="https://link.amazon/B09c8IGS8"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1816,7 +1780,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3Jw643f"
+                          href="https://link.amazon/B0dSdzCSw"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1830,7 +1794,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-7-habits-of-highly-effective-people' ? (
                       <>
                         <a
-                          href="https://amzn.to/4hX7zUJ"
+                          href="https://link.amazon/B0auU76SR"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1842,7 +1806,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4qZ1N99"
+                          href="https://link.amazon/B08duRADY"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1854,7 +1818,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4nSxRbY"
+                          href="https://link.amazon/B0bhFvAIg"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1868,7 +1832,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'how-to-win-friends-and-influence-people' ? (
                       <>
                         <a
-                          href="https://amzn.to/49S117R"
+                          href="https://link.amazon/B07soJDKk"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1880,7 +1844,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47P9Xs4"
+                          href="https://link.amazon/B0jj4fwC3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1892,7 +1856,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3JX2mQe"
+                          href="https://link.amazon/B08UiaGEO"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1906,7 +1870,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'influence-the-psychology-of-persuasion' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nPft41"
+                          href="https://link.amazon/B0bgb9dNa"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1918,7 +1882,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/482TAsa"
+                          href="https://link.amazon/B0dql1vLt"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -1930,7 +1894,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4i1cdRG"
+                          href="https://link.amazon/B0hMgeJLw"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1944,7 +1908,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'a-random-walk-down-wall-street' ? (
                       <>
                         <a
-                          href="https://amzn.to/4r1BwXZ"
+                          href="https://link.amazon/B05JvZ9vs"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1956,19 +1920,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4ravZOX"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
-                        >
-                          <svg className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm8 12h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2zm0-4h-6V4h6v2z" />
-                          </svg>
-                          <span>Kindle</span>
-                        </a>
-
-                        <a
-                          href="https://amzn.to/4ravZOX"
+                          href="https://link.amazon/B05wmxs0E"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -1982,7 +1934,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'the-simple-path-to-wealth' ? (
                       <>
                         <a
-                          href="https://amzn.to/4nXYY5s"
+                          href="https://link.amazon/B04xqckA5"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -1994,7 +1946,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/4r0iJfs"
+                          href="https://link.amazon/B0grp9Ii4"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2006,7 +1958,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/49WzFNT"
+                          href="https://link.amazon/B00aW9anz"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2020,7 +1972,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'basic-economics' ? (
                       <>
                         <a
-                          href="https://amzn.to/3WXeqUD"
+                          href="https://link.amazon/B0bM18t7i"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -2032,7 +1984,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/47LCUXa"
+                          href="https://link.amazon/B07IkG2D7"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2044,7 +1996,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3XzY0la"
+                          href="https://link.amazon/B0hHX3M6S"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2058,7 +2010,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'black-rednecks-and-white-liberals' ? (
                       <>
                         <a
-                          href="https://amzn.to/3LBV0Cm"
+                          href="https://link.amazon/B0gvlFjYg"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -2070,7 +2022,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/48hjvgJ"
+                          href="https://link.amazon/B0bU6L14L"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2082,7 +2034,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/43VSfCf"
+                          href="https://link.amazon/B085eu3Q3"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2096,7 +2048,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'how-to-trade-in-stocks' ? (
                       <>
                         <a
-                          href="https://amzn.to/3XGefgA"
+                          href="https://link.amazon/B0eDJgUGl"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -2108,7 +2060,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/49Z3mhm"
+                          href="https://link.amazon/B06b5b2VD"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2120,7 +2072,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3JUBzUN"
+                          href="https://link.amazon/B08IklGMr"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2134,7 +2086,7 @@ const SummaryDetailPage: React.FC = () => {
                     ) : book.id === 'one-up-on-wall-street' ? (
                       <>
                         <a
-                          href="https://amzn.to/4owUzHL"
+                          href="https://link.amazon/B0fqjsgm9"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-orange-400 text-sm"
@@ -2146,7 +2098,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3JNxstA"
+                          href="https://link.amazon/B045aay5p"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-blue-400 text-sm"
@@ -2158,7 +2110,7 @@ const SummaryDetailPage: React.FC = () => {
                         </a>
 
                         <a
-                          href="https://amzn.to/3JNxstA"
+                          href="https://link.amazon/B09SdwtPb"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex items-center gap-2 px-5 py-2.5 bg-white rounded-lg font-semibold text-gray-900 hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md border border-transparent hover:border-purple-400 text-sm"
@@ -2755,7 +2707,7 @@ const SummaryDetailPage: React.FC = () => {
 
       {/* You May Also Like Section */}
       {
-        book && (
+        book && currentLanguage === 'en' && (
           <YouMayAlsoLike
             currentBookId={book.id}
             currentBookCategory={book.category}

@@ -12,9 +12,8 @@ export const book: BookDefinition = {
     pageCount: 288,
     arabicSlug: 'غسيل-دماغ-من-أمعائك',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4poaPe2',
-    kindleUrl: 'https://amzn.to/49crpHw',
-    audibleUrl: 'https://amzn.to/4aGraqH',
+    amazonUrl: 'https://link.amazon/B0eMEwVs7',
+    kindleUrl: 'https://link.amazon/B07BZel4P',
     arabicPdfUrl: '/pdfs/brainwashed by your gut.pdf',
     translations: {
         en: {

@@ -4,6 +4,7 @@ const routeGroups: Record<NavigationGroupKey, readonly string[]> = {
   library: [
     '/summaries',
     '/summary',
+    '/ar/summary',
     '/book-summaries',
     '/ar/book-summaries',
     '/categories',

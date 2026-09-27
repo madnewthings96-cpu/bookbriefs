@@ -12,8 +12,9 @@ export const book: BookDefinition = {
   pageCount: 240,
   arabicSlug: 'die-with-zero',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/dp/0358099765',
-  audibleUrl: 'https://www.audible.com/pd/Die-with-Zero-Audiobook/0358315074',
+  amazonUrl: 'https://link.amazon/B07HiUF4m',
+  kindleUrl: 'https://link.amazon/B0ijHrPvQ',
+  audibleUrl: 'https://link.amazon/B0fWB6KZ7',
   translations: {
     en: {
       title: 'Die With Zero',

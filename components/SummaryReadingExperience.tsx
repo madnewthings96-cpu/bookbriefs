@@ -23,6 +23,10 @@ import FavoriteButton from './FavoriteButton';
 import HighlightableText from './HighlightableText';
 import MarkdownRenderer from './MarkdownRenderer';
 import NotesAndHighlightsPanel from './NotesAndHighlightsPanel';
+import SummaryLanguageSwitch from './SummaryLanguageSwitch';
+import ArabicSummaryReferences from './ArabicSummaryReferences';
+import { arabicBookSummaries, type SummaryLanguage } from '../translations/arabicBookSummaries';
+import { arabicCategoryNames } from '../utils/bookLocales';
 import {
   extractSummarySections,
   getSummaryLandmark,
@@ -42,6 +46,7 @@ interface SummaryReadingExperienceProps {
   onAddNote: () => void;
   onRequireSignUp: () => void;
   t: (key: string) => string;
+  language?: SummaryLanguage;
 }
 
 interface TocItem {
@@ -71,7 +76,14 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
   onAddNote,
   onRequireSignUp,
   t,
+  language = 'en',
 }) => {
+  const isArabic = language === 'ar';
+  const label = (key: string, fallback: string) => {
+    const value = t(key);
+    return value === key ? fallback : value;
+  };
+  const categoryName = isArabic ? arabicCategoryNames[book.category] || book.category : book.category;
   const plainSummary = useMemo(() => stripSummaryMarkdown(summaryData.summary), [summaryData.summary]);
   const wordCount = useMemo(() => plainSummary.split(/\s+/).filter(Boolean).length, [plainSummary]);
   const readMinutes = Math.max(3, Math.ceil(wordCount / 220));
@@ -79,7 +91,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
   const tocItems = useMemo<TocItem[]>(() => {
     const baseItems = [
-      { id: 'quick-brief', label: 'Quick brief' },
+      { id: 'quick-brief', label: label('quickBrief', 'Quick brief') },
       { id: 'key-takeaways', label: t('keyTakeaways') || 'Key takeaways' },
       { id: 'detailed-summary', label: t('detailedSummary') || 'Detailed summary' },
     ];
@@ -93,6 +105,15 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
   const [activeSectionId, setActiveSectionId] = useState(tocItems[0]?.id || 'quick-brief');
   const bookLinks = useMemo(() => getAffiliateLinksForBook(book), [book]);
+
+  useEffect(() => {
+    if (window.location.hash !== '#quick-brief') return;
+    // Run after route effects and after the translated reader has mounted.
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById('summary-language-controls')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [book.id, language]);
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -115,8 +136,8 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
 
   const handleShare = async () => {
     const shareData = {
-      title: `${displayTitle} Summary`,
-      text: `Read the key ideas from ${displayTitle} by ${displayAuthor}.`,
+      title: isArabic ? `ملخص ${displayTitle}` : `${displayTitle} Summary`,
+      text: isArabic ? `اقرأ أهم أفكار ${displayTitle}، تأليف ${displayAuthor}.` : `Read the key ideas from ${displayTitle} by ${displayAuthor}.`,
       url: window.location.href,
     };
 
@@ -136,7 +157,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
     'inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition duration-200 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]';
 
   const renderSectionNav = (compact = false) => (
-    <nav aria-label="Summary sections" className={compact ? 'flex min-w-max gap-1.5' : 'space-y-1'}>
+    <nav aria-label={label('summarySections', 'Summary sections')} className={compact ? 'flex min-w-max gap-1.5' : 'space-y-1'}>
       {(compact ? tocItems.slice(0, 3) : tocItems).map((item, index) => {
         const resolvedActiveSection = compact ? getSummaryLandmark(activeSectionId) : activeSectionId;
         const isActive = resolvedActiveSection === item.id;
@@ -167,7 +188,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
   );
 
   return (
-    <div className="summary-redesign -mt-8 bg-[#F4F0E7] text-[#10291F]">
+    <div className="summary-redesign -mt-8 bg-[#F4F0E7] text-[#10291F]" lang={language} dir={isArabic ? 'rtl' : 'ltr'}>
       <section className="relative overflow-hidden border-b border-[#304529]/8 bg-[#FBF8F1] px-4 pb-8 pt-6 sm:px-6 sm:pb-10 lg:px-8 lg:pb-12">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_16%_8%,rgba(196,149,82,0.14),transparent_27%),radial-gradient(circle_at_82%_44%,rgba(74,103,65,0.10),transparent_30%)]" />
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[26px] border border-[#304529]/10 bg-[#FFFDF8]/88 p-5 shadow-[0_22px_65px_rgba(31,54,43,0.09)] sm:p-7 md:p-8 lg:rounded-[34px] lg:p-10">
@@ -178,26 +199,29 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 <div aria-hidden="true" className="absolute -bottom-3 -right-3 -z-10 h-full w-full rounded-[20px] border border-[#C49552]/28 bg-[#E9DEC9]" />
                 <img
                   src={book.coverImageUrl}
-                  alt={`Cover of ${displayTitle}`}
+                  alt={isArabic ? `غلاف كتاب ${displayTitle}` : `Cover of ${displayTitle}`}
                   className="aspect-[2/3] w-full rounded-[18px] object-cover shadow-[0_24px_55px_rgba(16,41,31,0.2)] ring-1 ring-[#10291F]/12"
                 />
                 <div className="absolute right-3 top-3">
                   <FavoriteButton bookId={book.id} size="md" />
                 </div>
                 <div className="absolute -bottom-3 left-3 rounded-full border border-white/70 bg-[#304529] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-lg">
-                  {readMinutes} min read
+                  {readMinutes} {label('minRead', 'min read')}
                 </div>
               </div>
             </div>
 
             <div className="min-w-0 max-w-4xl">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <a href={'/summaries/'} className="text-sm font-bold text-[#456052] underline underline-offset-4">{label('backToSummaries', 'Back to Summaries')}</a>
+              </div>
               <div className="flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#456052]">
                 <span className="rounded-full border border-[#304529]/10 bg-[#E7EEE6] px-3 py-1.5">
-                  {book.category}
+                  {categoryName}
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C49552]/18 bg-[#F5EBD9] px-3 py-1.5 text-[#7A5C31]">
                   <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
-                  High-signal brief
+                  {label('highSignal', 'High-signal brief')}
                 </span>
               </div>
 
@@ -205,13 +229,13 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 {displayTitle}
               </h1>
               <p className="mt-3 text-base font-semibold text-[#4C685B] sm:text-lg">
-                <span className="font-medium text-[#7A897F]">by</span> {displayAuthor}
+                <span className="font-medium text-[#7A897F]">{label('by', 'by')}</span> {displayAuthor}
               </p>
 
               <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2.5 text-[13px] font-medium text-[#62736A] sm:text-sm">
                 {book.rating && (
                   <div className="flex items-center gap-2 font-bold text-[#18372B]">
-                    <div className="flex items-center gap-0.5 text-[#C89224]" aria-label={`${book.rating.toFixed(2)} out of 5 stars`}>
+                    <div className="flex items-center gap-0.5 text-[#C89224]" aria-label={isArabic ? `${book.rating.toFixed(2)} من 5` : `${book.rating.toFixed(2)} out of 5 stars`}>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                           key={star}
@@ -234,12 +258,12 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 {book.pageCount && (
                   <span className="inline-flex items-center gap-1.5">
                     <BookOpen aria-hidden="true" className="h-4 w-4 text-[#4A6741]" />
-                    {book.pageCount} pages
+                    {book.pageCount} {label('pages', 'pages')}
                   </span>
                 )}
                 <span className="inline-flex items-center gap-1.5">
                   <Clock3 aria-hidden="true" className="h-4 w-4 text-[#4A6741]" />
-                  {wordCount.toLocaleString()} words
+                  {wordCount.toLocaleString(isArabic ? 'ar' : 'en')} {label('words', 'words')}
                 </span>
               </div>
 
@@ -250,7 +274,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   className={`${actionButtonClass} bg-gradient-to-r from-[#304529] to-[#4A6741] text-white shadow-[0_12px_26px_rgba(48,69,41,0.23)] hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(48,69,41,0.3)]`}
                 >
                   <Download aria-hidden="true" className="h-[18px] w-[18px]" />
-                  Arabic PDF
+                  {isArabic ? label('printSummary', 'Print summary') : 'Arabic PDF'}
                 </button>
                 <button
                   type="button"
@@ -258,7 +282,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   className={`${actionButtonClass} border border-[#304529]/12 bg-white text-[#18372B] shadow-sm hover:-translate-y-0.5 hover:border-[#304529]/22 hover:shadow-md`}
                 >
                   <PenLine aria-hidden="true" className="h-[18px] w-[18px]" />
-                  Add note
+                  {label('addNote', 'Add note')}
                 </button>
                 <button
                   type="button"
@@ -266,13 +290,13 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   className={`${actionButtonClass} border border-[#304529]/12 bg-white text-[#18372B] shadow-sm hover:-translate-y-0.5 hover:border-[#304529]/22 hover:shadow-md`}
                 >
                   <Share2 aria-hidden="true" className="h-[18px] w-[18px]" />
-                  Share
+                  {label('share', 'Share')}
                 </button>
               </div>
 
               {bookLinks.length > 0 && (
                 <div className="mt-5 flex flex-col gap-2 border-t border-[#304529]/8 pt-4 sm:flex-row sm:items-center sm:gap-3">
-                  <span className="text-xs font-bold text-[#66776E]">Get the full book</span>
+                  <span className="text-xs font-bold text-[#66776E]">{label('getFullBook', 'Get the full book')}</span>
                   <div className="flex flex-wrap gap-2">
                     {bookLinks.map((link) => {
                       const AffiliateIcon = affiliateIcons[link.format] || ShoppingBag;
@@ -282,7 +306,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                           href={link.href}
                           target="_blank"
                           rel="sponsored noopener noreferrer"
-                          aria-label={`Open ${displayTitle} on ${link.label}`}
+                          aria-label={isArabic ? `افتح ${displayTitle} على ${link.label}` : `Open ${displayTitle} on ${link.label}`}
                           className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#304529]/10 bg-[#F7F3EA] px-3 text-xs font-bold text-[#304529] transition hover:-translate-y-0.5 hover:border-[#304529]/20 hover:bg-[#EEF3EC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552]"
                         >
                           <AffiliateIcon aria-hidden="true" className="h-4 w-4" />
@@ -293,7 +317,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                     })}
                   </div>
                   <span className="text-[10px] font-medium leading-4 text-[#8A786C] sm:ml-auto sm:max-w-[210px]">
-                    Affiliate links may earn us a commission at no extra cost to you.
+                    {label('affiliateNotice', 'Affiliate links may earn us a commission at no extra cost to you.')}
                   </span>
                 </div>
               )}
@@ -311,6 +335,10 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
       <section className="px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_310px] xl:gap-10">
           <main className="min-w-0 space-y-9 lg:space-y-11">
+            {arabicBookSummaries[book.id] && <div id="summary-language-controls" style={{ scrollMarginTop: 160 }} className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm font-bold text-[#456052]">{isArabic ? 'لغة القراءة' : 'Reading language'}</p>
+              <SummaryLanguageSwitch book={book} language={language} />
+            </div>}
             <section
               id="quick-brief"
               className="relative scroll-mt-32 overflow-hidden rounded-[26px] border border-[#304529]/10 bg-[#FFFDF8] px-5 py-6 shadow-[0_18px_48px_rgba(16,41,31,0.08)] sm:px-7 sm:py-8"
@@ -318,23 +346,23 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
               <div aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-[#C49552] via-[#E3BE7D] to-[#4A6741]" />
               <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.17em] text-[#8A6536]">
                 <FileText aria-hidden="true" className="h-4 w-4" />
-                Quick brief
+                {label('quickBrief', 'Quick brief')}
               </div>
               <p className="mt-4 max-w-[860px] font-serif text-[25px] font-semibold leading-[1.35] tracking-[-0.025em] text-[#153126] sm:text-[30px]">
                 {quickBrief}
               </p>
               <div className="mt-6 grid border-t border-[#304529]/10 pt-5 sm:grid-cols-3 sm:divide-x sm:divide-[#304529]/10">
                 <div className="py-2 sm:pr-5">
-                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Best for</p>
-                  <p className="mt-1.5 text-sm font-bold text-[#18372B]">{book.category} readers</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">{label('bestFor', 'Best for')}</p>
+                  <p className="mt-1.5 text-sm font-bold text-[#18372B]">{isArabic ? categoryName : `${book.category} readers`}</p>
                 </div>
                 <div className="border-t border-[#304529]/8 py-3 sm:border-t-0 sm:px-5 sm:py-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Read time</p>
-                  <p className="mt-1.5 text-sm font-bold tabular-nums text-[#18372B]">{readMinutes} minutes</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">{label('readTime', 'Read time')}</p>
+                  <p className="mt-1.5 text-sm font-bold tabular-nums text-[#18372B]">{readMinutes} {label('minutes', 'minutes')}</p>
                 </div>
                 <div className="border-t border-[#304529]/8 py-3 sm:border-t-0 sm:pl-5 sm:py-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">Reading promise</p>
-                  <p className="mt-1.5 text-sm font-bold text-[#18372B]">Useful ideas, without the filler</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#7A897F]">{label('readingPromise', 'Reading promise')}</p>
+                  <p className="mt-1.5 text-sm font-bold text-[#18372B]">{label('usefulIdeas', 'Useful ideas, without the filler')}</p>
                 </div>
               </div>
             </section>
@@ -342,11 +370,11 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
             <section id="key-takeaways" className="scroll-mt-32 overflow-hidden rounded-[28px] bg-[#173A2D] px-5 py-7 shadow-[0_24px_60px_rgba(16,41,31,0.18)] sm:px-7 sm:py-9">
               <div className="flex items-end justify-between gap-4">
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-[0.17em] text-[#E3BE7D]">Read first</p>
+                  <p className="text-[11px] font-black uppercase tracking-[0.17em] text-[#E3BE7D]">{label('readFirst', 'Read first')}</p>
                   <h2 className="mt-1.5 text-3xl font-black tracking-[-0.035em] text-white sm:text-4xl">
                     {t('keyTakeaways') || 'Key Takeaways'}
                   </h2>
-                  <p className="mt-2 max-w-xl text-sm leading-6 text-white/70">The ideas worth carrying into the rest of the book.</p>
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-white/70">{label('takeawayIntro', 'The ideas worth carrying into the rest of the book.')}</p>
                 </div>
                 <ListChecks aria-hidden="true" className="hidden h-9 w-9 text-[#E3BE7D] sm:block" strokeWidth={1.6} />
               </div>
@@ -376,11 +404,11 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
               <header className="border-b border-[#304529]/8 bg-[linear-gradient(135deg,#FFFDF8,#F1F0E7)] px-5 py-6 sm:px-8 sm:py-7">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-[11px] font-black uppercase tracking-[0.17em] text-[#8A6536]">Deep read</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.17em] text-[#8A6536]">{label('deepRead', 'Deep read')}</p>
                     <h2 className="mt-1.5 text-3xl font-black tracking-[-0.035em] text-[#10291F] sm:text-4xl">
                       {t('detailedSummary') || 'Detailed Summary'}
                     </h2>
-                    <p className="mt-2 text-sm text-[#66776E]">A structured walkthrough of the book’s central ideas.</p>
+                    <p className="mt-2 text-sm text-[#66776E]">{label('detailedIntro', 'A structured walkthrough of the book’s central ideas.')}</p>
                   </div>
                   <button
                     type="button"
@@ -388,7 +416,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                     className="inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-xl border border-[#304529]/12 bg-white px-3.5 text-sm font-bold text-[#304529] shadow-sm transition hover:-translate-y-0.5 hover:border-[#304529]/22 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552] sm:self-auto"
                   >
                     <NotebookPen aria-hidden="true" className="h-4 w-4" />
-                    Add note
+                    {label('addNote', 'Add note')}
                   </button>
                 </div>
               </header>
@@ -401,13 +429,14 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 </div>
               </div>
             </article>
+            {isArabic && <ArabicSummaryReferences bookId={book.id} />}
           </main>
 
           <aside className="hidden space-y-5 lg:sticky lg:top-24 lg:block lg:self-start">
             <section className="rounded-[22px] border border-[#304529]/10 bg-[#FFFDF8] p-4 shadow-[0_14px_36px_rgba(16,41,31,0.07)]">
               <div className="mb-3 flex items-center gap-2 px-2">
                 <ListChecks aria-hidden="true" className="h-4 w-4 text-[#4A6741]" />
-                <h2 className="text-sm font-black text-[#10291F]">On this page</h2>
+                <h2 className="text-sm font-black text-[#10291F]">{label('onThisPage', 'On this page')}</h2>
               </div>
               {renderSectionNav()}
             </section>
@@ -415,16 +444,16 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
             <section className="rounded-[22px] border border-[#304529]/10 bg-[#E6EBDD] p-5 text-[#10291F] shadow-[0_16px_38px_rgba(16,41,31,0.09)]">
               <div className="flex items-center gap-2">
                 <Highlighter aria-hidden="true" className="h-4 w-4 text-[#4A6741]" />
-                <h2 className="font-black">Reader toolkit</h2>
+                <h2 className="font-black">{label('readerToolkit', 'Reader toolkit')}</h2>
               </div>
-              <p className="mt-2 text-xs font-medium leading-5 text-[#5A6C62]">Keep useful ideas close while you read.</p>
+              <p className="mt-2 text-xs font-medium leading-5 text-[#5A6C62]">{label('keepIdeas', 'Keep useful ideas close while you read.')}</p>
               <button
                 type="button"
                 onClick={isAuthenticated ? onAddNote : onRequireSignUp}
                 className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#304529] px-3 text-sm font-bold text-white shadow-[0_10px_22px_rgba(48,69,41,0.2)] transition hover:-translate-y-0.5 hover:bg-[#253A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552]"
               >
                 <NotebookPen aria-hidden="true" className="h-4 w-4" />
-                Add personal note
+                {label('addPersonalNote', 'Add personal note')}
               </button>
             </section>
 
@@ -432,7 +461,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
               <section className="rounded-[22px] border border-[#304529]/10 bg-[#FFFDF8] p-5 shadow-[0_14px_36px_rgba(16,41,31,0.07)]">
                 <div className="mb-4 flex items-center gap-2">
                   <ShoppingBag aria-hidden="true" className="h-4 w-4 text-[#8A6536]" />
-                  <h2 className="font-black text-[#10291F]">Get the book</h2>
+                  <h2 className="font-black text-[#10291F]">{label('getBook', 'Get the book')}</h2>
                 </div>
                 <div className="grid gap-2">
                   {bookLinks.map((link) => {
@@ -452,7 +481,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                     );
                   })}
                 </div>
-                <p className="mt-3 text-[10px] font-medium leading-4 text-[#8A786C]">Affiliate links may earn us a commission at no extra cost to you.</p>
+                <p className="mt-3 text-[10px] font-medium leading-4 text-[#8A786C]">{label('affiliateNotice', 'Affiliate links may earn us a commission at no extra cost to you.')}</p>
               </section>
             )}
 
@@ -467,9 +496,9 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   <MessageCircle aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607064]">Reader supported</p>
-                  <h2 className="mt-1 font-serif text-2xl font-bold leading-tight">Keep Ta7leel open</h2>
-                  <p className="mt-2 text-xs font-medium leading-5 text-[#5B6B60]">Help keep concise book insights available to every reader.</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#607064]">{label('readerSupported', 'Reader supported')}</p>
+                  <h2 className="mt-1 font-serif text-2xl font-bold leading-tight">{label('keepOpen', 'Keep Ta7leel open')}</h2>
+                  <p className="mt-2 text-xs font-medium leading-5 text-[#5B6B60]">{label('supportIntro', 'Help keep concise book insights available to every reader.')}</p>
                 </div>
               </div>
               <a
@@ -478,7 +507,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                 rel="noopener noreferrer"
                 className="relative mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#304529] px-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-[#253A20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C49552]"
               >
-                Support on Ko-fi
+                {label('support', 'Support on Ko-fi')}
               </a>
             </section>
           </aside>

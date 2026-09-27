@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 400,
     arabicSlug: 'البجعة-السوداء',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XzHamD',
-    kindleUrl: 'https://amzn.to/443ZKa9',
-    audibleUrl: 'https://amzn.to/4iA5jDj',
+    amazonUrl: 'https://link.amazon/B09pzk2TT',
+    kindleUrl: 'https://link.amazon/B00hmn6ab',
+    audibleUrl: 'https://link.amazon/B03DNR30b',
     arabicPdfUrl: '/pdfs/the black swan.pdf',
     translations: {
         en: {

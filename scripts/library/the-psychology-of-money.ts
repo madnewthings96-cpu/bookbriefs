@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'سيكولوجية-المال',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3YbFVdr',
-    kindleUrl: 'https://amzn.to/4apEG1F',
-    audibleUrl: 'https://amzn.to/4pauzCs',
+    amazonUrl: 'https://link.amazon/B0fEDTQYm',
+    kindleUrl: 'https://link.amazon/B08BZq1an',
+    audibleUrl: 'https://link.amazon/B09MfXq96',
     arabicPdfUrl: '/pdfs/the psychology of money.pdf',
     translations: {
         en: {

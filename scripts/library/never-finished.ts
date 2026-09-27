@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 312,
     arabicSlug: 'never-finished',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4k7FnzJ',
-    kindleUrl: 'https://amzn.to/4k5Gm3c',
-    audibleUrl: 'https://amzn.to/3LIixlz',
+    amazonUrl: 'https://link.amazon/B0gXEjeyA',
+    kindleUrl: 'https://link.amazon/B0c9gLMmF',
+    audibleUrl: 'https://link.amazon/B08riSu6R',
     arabicPdfUrl: '/pdfs/never finished.pdf',
     translations: {
         en: {

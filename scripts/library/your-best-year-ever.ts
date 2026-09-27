@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 272,
     arabicSlug: 'أفضل-سنة-في-حياتك',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/44pIH2s',
-    kindleUrl: 'https://amzn.to/4pMZLrC',
-    audibleUrl: 'https://amzn.to/44nv7Nc',
+    amazonUrl: 'https://link.amazon/B03Ov8SBn',
+    kindleUrl: 'https://link.amazon/B0gFizGPD',
+    audibleUrl: 'https://link.amazon/B0hMFp4ys',
     translations: {
         en: {
             title: 'Your Best Year Ever',

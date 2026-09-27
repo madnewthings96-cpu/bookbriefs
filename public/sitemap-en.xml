@@ -126,12 +126,22 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/atomic-habits/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D8%A7%D9%82%D8%AA%D8%B5%D8%A7%D8%AF-%D8%A7%D9%84%D8%A3%D8%B3%D8%A7%D8%B3%D9%8A/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.ta7leel.pro/summary/%D9%83%D9%86-%D8%A3%D9%82%D9%84-%D8%B2%D9%88%D9%85%D8%A8%D9%8A/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/%D9%85%D9%84%D8%AE%D8%B5-%D9%83%D8%AA%D8%A7%D8%A8-%D8%B5%D9%8A%D8%B1%D9%88%D8%B1%D8%A9-%D9%85%D9%8A%D8%B4%D9%8A%D9%84-%D8%A3%D9%88%D8%A8%D8%A7%D9%85%D8%A7/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -182,6 +192,16 @@
   </url>
   <url>
     <loc>https://www.ta7leel.pro/summary/%D9%84%D8%A7-%D8%AA%D8%B5%D8%AF%D9%82-%D9%83%D9%84-%D9%85%D8%A7-%D8%AA%D9%81%D9%83%D8%B1-%D9%81%D9%8A%D9%87/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/%D9%85%D9%84%D8%AE%D8%B5-%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D9%83%D8%AB%D9%8A%D8%A8/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/%D9%85%D9%84%D8%AE%D8%B5-%D9%83%D8%AA%D8%A7%D8%A8-%D9%85%D8%AA%D8%B9%D9%84%D9%85%D8%A9/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -311,6 +331,16 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/rich-dad-poor-dad/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/%D9%85%D9%84%D8%AE%D8%B5-%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D8%B9%D8%A7%D9%82%D9%84-%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE-%D9%85%D8%AE%D8%AA%D8%B5%D8%B1-%D9%84%D9%84%D9%86%D9%88%D8%B9-%D8%A7%D9%84%D8%A8%D8%B4%D8%B1%D9%8A/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A3%D8%B3%D8%B1%D8%A7%D8%B1-%D8%B9%D9%82%D9%84-%D8%A7%D9%84%D9%85%D9%84%D9%8A%D9%88%D9%86%D9%8A%D8%B1/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -324,6 +354,11 @@
     <loc>https://www.ta7leel.pro/summary/situated/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/secrets-for-profiting-in-bull-and-bear-markets/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D8%AA%D8%AD%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D9%81%D9%86%D9%8A-%D9%84%D9%84%D8%A7%D8%B3%D9%88%D8%A7%D9%82-%D8%A7%D9%84%D9%85%D8%A7%D9%84%D9%8A%D8%A9/</loc>
@@ -399,6 +434,11 @@
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D8%B4%D8%AC%D8%A7%D8%B9%D8%A9-%D9%84%D8%AA%D9%83%D9%88%D9%86-%D9%85%D9%83%D8%B1%D9%88%D9%87%D8%A7/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/the-daily-trading-coach/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D9%85%D8%AA%D8%AF%D8%A7%D9%88%D9%84-%D8%A7%D9%84%D9%85%D9%86%D8%B6%D8%A8%D8%B7/</loc>
@@ -486,6 +526,11 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/the-science-of-scaling/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/%D8%B9%D9%84%D9%85-%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D8%A8%D8%A7%D8%B7-%D8%A7%D9%84%D8%B0%D8%A7%D8%AA%D9%8A/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -516,7 +561,17 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/think-and-trade-like-a-champion/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/%D9%81%D9%83%D8%B1-%D8%AA%D8%B5%D8%A8%D8%AD-%D8%BA%D9%86%D9%8A%D8%A7/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/thinking-fast-and-slow/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -532,6 +587,11 @@
   </url>
   <url>
     <loc>https://www.ta7leel.pro/summary/%D8%A7%D9%84%D8%AA%D8%AF%D8%A7%D9%88%D9%84-%D9%85%D9%86-%D8%A3%D8%AC%D9%84-%D8%A7%D9%84%D8%B9%D9%8A%D8%B4/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/summary/trading-in-the-zone/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>

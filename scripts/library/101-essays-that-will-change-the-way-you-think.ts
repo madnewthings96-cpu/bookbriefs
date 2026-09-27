@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 448,
     arabicSlug: '101-مقالة-ستغير-طريقة-تفكيرك',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4qcpYQY',
-    kindleUrl: 'https://amzn.to/4jll4ya',
-    audibleUrl: 'https://amzn.to/4qC0A6W',
+    amazonUrl: 'https://link.amazon/B08DUkQ0N',
+    kindleUrl: 'https://link.amazon/B09X42d3N',
+    audibleUrl: 'https://link.amazon/B0aN9svS3',
     translations: {
         en: {
             title: "101 Essays That Will Change the Way You Think",

@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 264,
     arabicSlug: 'كتاب-الاستثمار-العقاري-بدون-مال',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3Zvf3WB',
-    kindleUrl: 'https://amzn.to/4jYCUaI',
-    audibleUrl: 'https://amzn.to/3LT8ud9',
+    amazonUrl: 'https://link.amazon/B05DV1lVg',
+    kindleUrl: 'https://link.amazon/B03vdjaVJ',
+    audibleUrl: 'https://link.amazon/B0dtsQPBk',
     arabicPdfUrl: '/pdfs/the book on investing in real estate with no and low money down.pdf',
     translations: {
         en: {

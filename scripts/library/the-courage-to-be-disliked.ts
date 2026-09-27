@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 288,
     arabicSlug: 'الشجاعة-لتكون-مكروها',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4jKhJZN',
-    kindleUrl: 'https://amzn.to/49Bduew',
-    audibleUrl: 'https://amzn.to/3Ng9UPl',
+    amazonUrl: 'https://link.amazon/B0jhhjNWA',
+    kindleUrl: 'https://link.amazon/B00ZobWwf',
+    audibleUrl: 'https://link.amazon/B0cinDFMt',
     arabicPdfUrl: '/pdfs/the courage to be disliked.pdf',
     translations: {
         en: {

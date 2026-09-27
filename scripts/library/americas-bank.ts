@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 368,
     arabicSlug: 'بنك-أمريكا',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4iiwDFT',
-    kindleUrl: 'https://amzn.to/4oVwWsF',
-    audibleUrl: 'https://amzn.to/3JSQDSX',
+    amazonUrl: 'https://link.amazon/B05Os9lve',
+    kindleUrl: 'https://link.amazon/B0b37Tzhk',
+    audibleUrl: 'https://link.amazon/B06guwNrH',
     arabicPdfUrl: '/pdfs/americas bank.pdf',
     summary: `# The Ghost of Andrew Jackson and the Birth of the Fed
 

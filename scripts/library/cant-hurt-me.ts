@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 364,
     arabicSlug: 'لا-يمكنك-إيذائي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/49JElH3',
-    kindleUrl: 'https://amzn.to/4oU02ss',
-    audibleUrl: 'https://amzn.to/4ptBarp',
+    amazonUrl: 'https://link.amazon/B0eQIxtFR',
+    kindleUrl: 'https://link.amazon/B0g6zF9VK',
+    audibleUrl: 'https://link.amazon/B041ETZRN',
     arabicPdfUrl: "/pdfs/can't hurt me.pdf",
     translations: {
         en: {

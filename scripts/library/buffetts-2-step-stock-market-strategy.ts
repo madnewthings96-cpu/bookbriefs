@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 156,
     arabicSlug: 'استراتيجية-بافيت-ذات-الخطوتين-لسوق-الأسهم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4puFPtw',
-    kindleUrl: 'https://amzn.to/3Ymekq4',
-    audibleUrl: 'https://amzn.to/48v0FD9',
+    amazonUrl: 'https://link.amazon/B06neV5iX',
+    kindleUrl: 'https://link.amazon/B08kTs39C',
+    audibleUrl: 'https://link.amazon/B0etFBSez',
     arabicPdfUrl: "/pdfs/buffett's 2-step stock market strategy.pdf",
     translations: {
         en: {

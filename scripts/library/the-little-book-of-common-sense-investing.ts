@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 304,
     arabicSlug: 'الكتاب-الصغير-للاستثمار-بالمنطق-السليم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rHuvMc',
-    kindleUrl: 'https://amzn.to/4pVzs2k',
-    audibleUrl: 'https://amzn.to/4rHuvMc',
+    amazonUrl: 'https://link.amazon/B063Iv9rL',
+    kindleUrl: 'https://link.amazon/B0cvAAcBG',
     arabicPdfUrl: '/pdfs/the little book of common sense investing.pdf',
     translations: {
         en: {

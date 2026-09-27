@@ -11,9 +11,9 @@ export const book: BookDefinition = {
   pageCount: 242,
   arabicSlug: 'ملخص-كتاب-كيف-ربحت-2-مليون-في-سوق-الأسهم',
   isPremium: false,
-  amazonUrl: 'https://amzn.to/481WtKQ',
-  kindleUrl: 'https://amzn.to/3Mj1TZk',
-  audibleUrl: 'https://amzn.to/3XNcgXT',
+  amazonUrl: 'https://link.amazon/B00DeTUGc',
+  kindleUrl: 'https://link.amazon/B0idyewrk',
+  audibleUrl: 'https://link.amazon/B044KaDlX',
   summary: `# Executive Summary
 
 Nicolas Darvas's "How I Made $2,000,000 in the Stock Market" is a groundbreaking investment memoir that chronicles the Hungarian-born professional dancer's transformation into one of Wall Street's most successful traders of the 1950s. Published in 1960, this book became an instant classic by detailing how a complete outsider to finance managed to turn $36,000 into over $2 million in just 18 months while touring the world as a nightclub performer.

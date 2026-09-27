@@ -32,3 +32,6 @@ dist-ssr
 *.sw?
 # Local Superpowers brainstorming session state
 .superpowers/
+
+# Local visual QA captures
+artifacts/

@@ -12,9 +12,9 @@ export const book: BookDefinition = {
    pageCount: 224,
    arabicSlug: 'عروض-100-مليون-دولار',
    isPremium: false,
-   amazonUrl: 'https://amzn.to/3MBR7xM',
-   kindleUrl: 'https://amzn.to/4aULOmT',
-   audibleUrl: 'https://amzn.to/4s9LjMc',
+   amazonUrl: 'https://link.amazon/B04P8DWm8',
+   kindleUrl: 'https://link.amazon/B0gFuoJoM',
+   audibleUrl: 'https://link.amazon/B0eqQanFV',
    arabicPdfUrl: '/pdfs/$100m offers.pdf',
    translations: {
       en: {

@@ -12,8 +12,9 @@ export const book: BookDefinition = {
   pageCount: 288,
   arabicSlug: 'unreasonable-hospitality',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/dp/0593418573',
-  audibleUrl: 'https://www.audible.com/pd/B09S4VPXPJ',
+  amazonUrl: 'https://link.amazon/B0gotGbll',
+  kindleUrl: 'https://link.amazon/B0hQMZbw3',
+  audibleUrl: 'https://link.amazon/B069K9ync',
   translations: {
     en: {
       title: 'Unreasonable Hospitality',

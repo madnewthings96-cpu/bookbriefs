@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'the-motivation-manifesto',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3MKDhcO',
-    kindleUrl: 'https://amzn.to/4tVZBAP',
-    audibleUrl: 'https://amzn.to/4sijXml',
+    amazonUrl: 'https://link.amazon/B07LfQRk3',
+    kindleUrl: 'https://link.amazon/B023cqBrh',
+    audibleUrl: 'https://link.amazon/B0ihEoBRT',
     arabicPdfUrl: '/pdfs/the motivation manifesto.pdf',
     translations: {
         en: {

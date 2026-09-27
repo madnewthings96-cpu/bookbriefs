@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 352,
     arabicSlug: 'تداول-كساحر-سوق-الأسهم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48QSXDm',
-    kindleUrl: 'https://amzn.to/3Xz6sRS',
-    audibleUrl: 'https://amzn.to/3Xz6sRS',
+    amazonUrl: 'https://link.amazon/B0cjBxCsL',
+    kindleUrl: 'https://link.amazon/B0egXarA3',
     arabicPdfUrl: '/pdfs/trade like a stock market wizard.pdf',
     translations: {
         en: {

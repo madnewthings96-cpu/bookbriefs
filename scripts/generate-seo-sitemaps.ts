@@ -7,6 +7,8 @@ import { blogPosts } from '../components/blog/blogContent.ts';
 import { getBlogPostDirection } from '../components/blog/blogPageModel.ts';
 import { loadPublishedNewsCatalog } from './newsCatalog.ts';
 import { buildNewsSitemapUrls } from './newsSeo.ts';
+import { arabicBookSummaries } from '../translations/arabicBookSummaries.ts';
+import { getSummaryPath } from '../utils/bookLocales.ts';
 
 interface SitemapUrl {
   path: string;
@@ -90,7 +92,7 @@ async function main() {
 
   const arabicCategoryRoutes: SitemapUrl[] = [
     ...arabicCalculatorRoutes,
-    ...CATEGORY_HUBS.map((category) => ({
+    ...CATEGORY_HUBS.filter(category => books.some(book => book.category === category.category && arabicBookSummaries[book.id])).map((category) => ({
       path: `/ar/categories/${category.slug}`,
       changefreq: 'weekly' as const,
       priority: '0.8',
@@ -103,6 +105,10 @@ async function main() {
     priority: book.category === 'Trading' || book.category === 'Finance' ? '0.85' : '0.8',
   }));
 
+  const arabicBookRoutes: SitemapUrl[] = books.filter(book => arabicBookSummaries[book.id]).map(book => ({
+    path: getSummaryPath(book, 'ar'), changefreq: 'monthly', priority: '0.8',
+  }));
+
   const articleRoutes = blogPosts.map(post => ({
     path: `/blog/${post.slug}`,
     changefreq: 'monthly' as const,
@@ -112,7 +118,7 @@ async function main() {
   const newsRoutes = buildNewsSitemapUrls(newsArticles);
   const englishRoutes = [...baseRoutes, ...englishCalculatorRoutes, ...englishCategoryRoutes, ...bookRoutes,
     ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'ltr'), ...newsRoutes];
-  const arabicRoutes = [...arabicCategoryRoutes,
+  const arabicRoutes = [...arabicBookRoutes, ...arabicCategoryRoutes,
     ...articleRoutes.filter((_, index) => getBlogPostDirection(blogPosts[index]) === 'rtl')];
   const allRoutes = [...englishRoutes, ...arabicRoutes];
 

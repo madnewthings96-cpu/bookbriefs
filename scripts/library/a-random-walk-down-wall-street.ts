@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 704,
     arabicSlug: 'نزهة-عشوائية-في-وول-ستريت',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3Km9PZh',
-    kindleUrl: 'https://amzn.to/49Erlm0',
-    audibleUrl: 'https://amzn.to/49Erlm0',
+    amazonUrl: 'https://link.amazon/B05JvZ9vs',
+    audibleUrl: 'https://link.amazon/B05wmxs0E',
     summary: `# 📚 The Epistemology of Prudence: A Deconstruction of Malkiel's "A Random Walk Down Wall Street"
 
 ## 1. Executive Summary and Foundational Framework

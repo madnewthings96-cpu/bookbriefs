@@ -12,8 +12,9 @@ export const book: BookDefinition = {
   pageCount: 288,
   arabicSlug: 'never-split-the-difference',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/dp/0062407805',
-  audibleUrl: 'https://www.audible.com/pd/Never-Split-the-Difference-Audiobook/B01COR1GM2',
+  amazonUrl: 'https://link.amazon/B07joftSK',
+  kindleUrl: 'https://link.amazon/B0g7U7ak9',
+  audibleUrl: 'https://link.amazon/B01jsgggg',
   translations: {
     en: {
       title: 'Never Split the Difference',

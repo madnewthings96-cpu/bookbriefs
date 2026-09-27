@@ -1,9 +1,9 @@
 
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, ContentLanguageProvider } from './contexts/LanguageContext';
 import { ReaderModeProvider } from './contexts/ReaderModeContext';
 import { PersonalNotesProvider } from './contexts/PersonalNotesContext';
 import { UserProgressProvider } from './contexts/UserProgressContext';
@@ -17,6 +17,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
 import Spinner from './components/Spinner';
+import InitialPageReady from './components/InitialPageReady';
 import NotFoundPage from './pages/NotFoundPage';
 import PrivatePageSEO from './components/PrivatePageSEO';
 import { isPrivateSeoRoute } from './utils/seoConfig';
@@ -76,6 +77,7 @@ const TradingJournalPage = lazy(() => import('./pages/TradingJournalPage'));
 const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'));
 const CoffeeSupportCard = lazy(() => import('./components/CoffeeSupportCard'));
 
+
 // Main App Component
 const App: React.FC = () => {
   return (
@@ -121,10 +123,11 @@ const AppFrame: React.FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/summaries" element={<SummariesPage />} />
               <Route path="/book-summaries" element={<SummariesPage />} />
-              <Route path="/ar/book-summaries" element={<SummariesPage />} />
+              <Route path="/ar/book-summaries" element={<Navigate to="/summaries/" replace />} />
               <Route path="/categories/:categorySlug" element={<CategoryPage />} />
               <Route path="/ar/categories/:categorySlug" element={<CategoryPage />} />
               <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
+              <Route path="/ar/summary/:bookId" element={<ContentLanguageProvider language="ar"><SummaryDetailPage /></ContentLanguageProvider>} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/calculators" element={<CalculatorsPage />} />
               <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
@@ -191,6 +194,7 @@ const AppFrame: React.FC = () => {
               <Route path="/terms-of-use" element={<TermsOfUsePage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            <InitialPageReady />
           </Suspense>
         </main>
 

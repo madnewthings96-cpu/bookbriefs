@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 496,
     arabicSlug: 'استراتيجيات-الحرب-33',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/44A9p8r',
-    kindleUrl: 'https://amzn.to/48a2XHF',
-    audibleUrl: 'https://amzn.to/48Gscl0',
+    amazonUrl: 'https://link.amazon/B067pEd6L',
+    kindleUrl: 'https://link.amazon/B07SdaKmB',
+    audibleUrl: 'https://link.amazon/B06KOxRLB',
     arabicPdfUrl: '/pdfs/the 33 strategies of war.pdf',
     translations: {
         en: {

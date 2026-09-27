@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 160,
     arabicSlug: 'الاتفاقيات-الأربع',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ovIdyQ',
-    kindleUrl: 'https://amzn.to/3MD7c63',
-    audibleUrl: 'https://amzn.to/48xJm35',
+    amazonUrl: 'https://link.amazon/B0fKTakMG',
+    kindleUrl: 'https://link.amazon/B0178xyZK',
+    audibleUrl: 'https://link.amazon/B007r9XvI',
     arabicPdfUrl: '/pdfs/the four agreements.pdf',
     translations: {
         en: {

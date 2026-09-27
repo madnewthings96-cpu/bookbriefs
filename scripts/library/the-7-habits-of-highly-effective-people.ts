@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 381,
     arabicSlug: 'العادات-السبع-للناس-الأكثر-فعالية',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4izSWqD',
-    kindleUrl: 'https://amzn.to/4iCSAja',
-    audibleUrl: 'https://amzn.to/48AO5B3',
+    amazonUrl: 'https://link.amazon/B0auU76SR',
+    kindleUrl: 'https://link.amazon/B08duRADY',
+    audibleUrl: 'https://link.amazon/B0bhFvAIg',
     arabicPdfUrl: '/pdfs/the 7 habits of highly effective people.pdf',
     translations: {
         en: {

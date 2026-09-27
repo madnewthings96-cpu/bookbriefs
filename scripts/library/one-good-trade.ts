@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 368,
     arabicSlug: 'صفقة-واحدة-جيدة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ruAy6A',
-    kindleUrl: 'https://amzn.to/3K6y6md',
-    audibleUrl: 'https://amzn.to/4rLNvJJ',
+    amazonUrl: 'https://link.amazon/B01pnyQWj',
+    kindleUrl: 'https://link.amazon/B04MEorA8',
+    audibleUrl: 'https://link.amazon/B0dXVgMIu',
     arabicPdfUrl: '/pdfs/one good trade.pdf',
     translations: {
         en: {

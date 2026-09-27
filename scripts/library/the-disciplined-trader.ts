@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'المتداول-المنضبط',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48qhEGR',
-    kindleUrl: 'https://amzn.to/4paum2d',
-    audibleUrl: 'https://amzn.to/4paum2d',
+    amazonUrl: 'https://link.amazon/B090u0XPw',
+    kindleUrl: 'https://link.amazon/B00qqmM8N',
     arabicPdfUrl: '/pdfs/the disciplined trader.pdf',
     translations: {
         en: {

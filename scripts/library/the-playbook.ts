@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 272,
     arabicSlug: 'دليل-التداول',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3KCpTq0',
-    kindleUrl: 'https://amzn.to/3XRJuWp',
-    audibleUrl: 'https://amzn.to/3XRJuWp',
+    amazonUrl: 'https://link.amazon/B08IbdCr0',
+    kindleUrl: 'https://link.amazon/B06iWdj4f',
     arabicPdfUrl: '/pdfs/the playbook.pdf',
     translations: {
         en: {

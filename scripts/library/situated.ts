@@ -12,8 +12,9 @@ export const book: BookDefinition = {
   pageCount: 352,
   arabicSlug: 'situated',
   isPremium: false,
-  amazonUrl: 'https://www.amazon.com/Situated-Find-People-Places-Bring/dp/1668005948/',
-  audibleUrl: 'https://www.audible.com/pd/Situated-Audiobook/B0GC7PZQDC',
+  amazonUrl: 'https://link.amazon/B025ECrAw',
+  kindleUrl: 'https://link.amazon/B0edlefUA',
+  audibleUrl: 'https://link.amazon/B0icGJqBg',
   translations: {
     en: {
       title: 'Situated',

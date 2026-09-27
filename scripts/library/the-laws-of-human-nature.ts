@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 624,
     arabicSlug: 'قوانين-الطبيعة-البشرية',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rzc1gP',
-    kindleUrl: 'https://amzn.to/4aqTptc',
-    audibleUrl: 'https://amzn.to/48PhAjN',
+    amazonUrl: 'https://link.amazon/B05HSXsTC',
+    kindleUrl: 'https://link.amazon/B02kCjgXn',
+    audibleUrl: 'https://link.amazon/B07b9DBHC',
     arabicPdfUrl: '/pdfs/the laws of human nature.pdf',
     translations: {
         en: {
