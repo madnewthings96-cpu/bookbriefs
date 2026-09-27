@@ -31,6 +31,14 @@ test('records without source ID or complete entry are not saveable', () => {
   assert.equal(getSaveability({ ...complete, volume: 0 }).saveable, false);
 });
 
+test('journal mapping rejects oversized broker fields and unreasonable numeric values', () => {
+  assert.equal(getSaveability({ ...complete, sourceId: 'x'.repeat(257) }).saveable, false);
+  assert.equal(getSaveability({ ...complete, symbol: 'X'.repeat(33) }).saveable, false);
+  assert.equal(getSaveability({ ...complete, entryPrice: 1e13 }).saveable, false);
+  assert.equal(getSaveability({ ...complete, netPnl: Number.POSITIVE_INFINITY }).saveable, false);
+  assert.equal(getSaveability({ ...complete, commission: Number.NEGATIVE_INFINITY }).saveable, false);
+});
+
 test('source wall-clock time resolves using the selected broker timezone', () => {
   assert.equal(sourceLocalToUtc('2026-02-01T10:00:00', 'America/New_York').toISOString(), '2026-02-01T15:00:00.000Z');
   assert.equal(sourceLocalToUtc('2026-07-01T10:00:00', 'America/New_York').toISOString(), '2026-07-01T14:00:00.000Z');

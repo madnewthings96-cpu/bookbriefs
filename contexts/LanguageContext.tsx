@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { arabicBookSummaries } from '../translations/arabicBookSummaries';
 import { arabicReaderLabels } from '../translations/arabicReaderLabels';
 
 export type Language = 'en' | 'ar';
@@ -272,13 +271,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const getBookTitle = (bookId: string): string => {
-    if (currentLanguage === 'ar' && arabicBookSummaries[bookId]) return arabicBookSummaries[bookId].title;
     const bookTitles = translations.en.bookTitles as any;
     return bookTitles?.[bookId] || bookId;
   };
 
   const getBookAuthor = (bookId: string): string => {
-    if (currentLanguage === 'ar' && arabicBookSummaries[bookId]) return arabicBookSummaries[bookId].author;
     const bookAuthors = translations.en.bookAuthors as any;
     return bookAuthors?.[bookId] || bookId;
   };
@@ -299,11 +296,22 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 // provider also translates existing reader dialogs without changing their data.
 export const ContentLanguageProvider: React.FC<{ language: Language; children: ReactNode }> = ({ language, children }) => {
   const parent = useLanguage();
+  const [localizedBooks, setLocalizedBooks] = useState<Record<string, { title: string; author: string }>>({});
+
+  useEffect(() => {
+    if (language !== 'ar') return;
+    let cancelled = false;
+    void import('../translations/arabicBookSummaries').then(({ arabicBookSummaries }) => {
+      if (!cancelled) setLocalizedBooks(arabicBookSummaries);
+    });
+    return () => { cancelled = true; };
+  }, [language]);
+
   const value = React.useMemo<LanguageContextType>(() => ({
     ...parent, currentLanguage: language, language,
     t: key => language === 'ar' ? arabicReaderLabels[key] || parent.t(key) : parent.t(key),
-    getBookTitle: id => language === 'ar' && arabicBookSummaries[id] ? arabicBookSummaries[id].title : parent.getBookTitle(id),
-    getBookAuthor: id => language === 'ar' && arabicBookSummaries[id] ? arabicBookSummaries[id].author : parent.getBookAuthor(id),
-  }), [language, parent]);
+    getBookTitle: id => language === 'ar' && localizedBooks[id] ? localizedBooks[id].title : parent.getBookTitle(id),
+    getBookAuthor: id => language === 'ar' && localizedBooks[id] ? localizedBooks[id].author : parent.getBookAuthor(id),
+  }), [language, localizedBooks, parent]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };

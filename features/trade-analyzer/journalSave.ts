@@ -26,7 +26,11 @@ export const firestoreJournalWriter = (db: Firestore): JournalWriter => ({
 
 export async function makeImportKey(record: ClosedTradeRecord): Promise<string> {
   if (!getSaveability(record).saveable) throw new Error('Trade is not saveable');
-  const identity = JSON.stringify([record.platform, record.accountHash ?? '', record.sourceId, record.entryTime, record.exitTime]);
+  const identity = JSON.stringify([
+    record.platform, record.accountHash ?? '', record.sourceId, record.symbol, record.direction,
+    record.entryTime, record.exitTime, record.entryPrice, record.exitPrice, record.volume,
+    record.grossPnl, record.commission, record.swap, record.fees, record.netPnl,
+  ]);
   const bytes = new TextEncoder().encode(identity);
   const hash = await crypto.subtle.digest('SHA-256', bytes);
   return `import_${Array.from(new Uint8Array(hash), (value) => value.toString(16).padStart(2, '0')).join('')}`;
@@ -34,6 +38,13 @@ export async function makeImportKey(record: ClosedTradeRecord): Promise<string> 
 
 export type SavePreview = { ready: number; existing: number; notSaveable: number; collisions: number };
 export type SaveResult = { saved: number; existing: number; notSaveable: number };
+export const MAX_JOURNAL_IMPORT_RECORDS = 1000;
+
+function assertImportSize(records: ClosedTradeRecord[]): void {
+  if (records.length > MAX_JOURNAL_IMPORT_RECORDS) {
+    throw new Error(`Journal saving supports up to ${MAX_JOURNAL_IMPORT_RECORDS.toLocaleString()} trades per import. Analyze a shorter date range before saving.`);
+  }
+}
 
 function isSameImport(value: unknown, key: string): boolean {
   if (typeof value !== 'object' || value === null) return false;
@@ -42,6 +53,7 @@ function isSameImport(value: unknown, key: string): boolean {
 }
 
 export async function previewJournalSave(uid: string, records: ClosedTradeRecord[], currency: string, timezone: string, writer: JournalWriter): Promise<SavePreview> {
+  assertImportSize(records);
   const preview = { ready: 0, existing: 0, notSaveable: 0, collisions: 0 };
   for (const record of records) {
     if (!getSaveability(record).saveable) { preview.notSaveable++; continue; }
@@ -57,6 +69,7 @@ export async function previewJournalSave(uid: string, records: ClosedTradeRecord
 }
 
 export async function saveJournalTrades(uid: string, records: ClosedTradeRecord[], currency: string, timezone: string, writer: JournalWriter, now = Timestamp.now()): Promise<SaveResult> {
+  assertImportSize(records);
   if (currency !== 'USD') throw new Error('The current journal is USD-only. Non-USD account histories cannot be saved without currency conversion.');
   const result = { saved: 0, existing: 0, notSaveable: 0 };
   for (const record of records) {

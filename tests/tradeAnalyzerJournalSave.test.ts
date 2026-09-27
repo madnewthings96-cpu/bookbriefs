@@ -17,6 +17,9 @@ test('stable keys are scoped to platform, account, ID, and entry/exit time', asy
   assert.notEqual(key, await makeImportKey({ ...trade, platform: 'mt5' }));
   assert.notEqual(key, await makeImportKey({ ...trade, accountHash: 'another-account' }));
   assert.notEqual(key, await makeImportKey({ ...trade, exitTime: '2026-02-01T11:00:00' }));
+  assert.notEqual(key, await makeImportKey({ ...trade, symbol: 'GBPUSD' }));
+  assert.notEqual(key, await makeImportKey({ ...trade, entryPrice: 1.2 }));
+  assert.notEqual(key, await makeImportKey({ ...trade, netPnl: 50 }));
 });
 
 test('preview reads only; save creates once and retry skips existing import', async () => {

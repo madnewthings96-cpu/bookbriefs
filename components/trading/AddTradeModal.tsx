@@ -23,6 +23,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
     onSave,
     editingTrade,
 }) => {
+    const isImportedTrade = Boolean(editingTrade?.importSource);
     const [formData, setFormData] = useState<TradeFormData>(getInitialTradeFormData());
     const [calculatedPnL, setCalculatedPnL] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -207,7 +208,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Stop Loss</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">{isImportedTrade ? 'Stop Loss (Optional for imported trades)' : 'Stop Loss'}</label>
                             <input
                                 type="number"
                                 step="any"
@@ -215,7 +216,7 @@ const AddTradeModal: React.FC<AddTradeModalProps> = ({
                                 onChange={(e) => setFormData({ ...formData, stopLoss: e.target.value })}
                                 placeholder="Stop Loss"
                                 className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-                                required
+                                required={!isImportedTrade}
                             />
                         </div>
                     </div>

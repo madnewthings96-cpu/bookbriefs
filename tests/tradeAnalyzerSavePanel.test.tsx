@@ -22,3 +22,10 @@ test('non-USD account history explains the journal currency limitation', () => {
   assert.match(html, /USD-only journal/);
   assert.doesNotMatch(html, /Sign in to save/);
 });
+
+test('signed-in saving waits for an explicit journal check', () => {
+  const html = renderToStaticMarkup(<StaticRouter location="/trade-analyzer"><SaveToJournal report={report} currency="USD" timezone="UTC" userId="user-1" /></StaticRouter>);
+  assert.match(html, /Check journal/);
+  assert.doesNotMatch(html, /Checking your journal/);
+  assert.doesNotMatch(html, /Save eligible trades/);
+});

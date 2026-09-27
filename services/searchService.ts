@@ -1,6 +1,5 @@
-import { bookSummaryTranslations } from '../translations/bookSummaries';
-import { Language } from '../contexts/LanguageContext';
-import { Book } from '../types';
+import type { Language } from '../contexts/LanguageContext';
+import type { Book } from '../types';
 
 export interface SearchResult {
   id: string;
@@ -9,7 +8,8 @@ export interface SearchResult {
   path: string;
 }
 
-const getBooksForLanguage = (language: Language): { [key: string]: any } => {
+const getBooksForLanguage = async (language: Language): Promise<{ [key: string]: any }> => {
+  const { bookSummaryTranslations } = await import('../translations/bookSummaries');
   const books: { [key: string]: any } = {};
   Object.entries(bookSummaryTranslations).forEach(([bookId, translations]) => {
     if (translations[language]) {
@@ -24,11 +24,11 @@ const getSummaryPath = (bookId: string, books: Book[]): string => {
   return `/summary/${book?.arabicSlug || bookId}`;
 };
 
-export const searchBooks = (query: string, language: Language, books: Book[]): SearchResult[] => {
+export const searchBooks = async (query: string, language: Language, books: Book[]): Promise<SearchResult[]> => {
   const searchQuery = query.toLowerCase().trim();
   if (!searchQuery) return [];
 
-  const translatedBooks = getBooksForLanguage(language);
+  const translatedBooks = await getBooksForLanguage(language);
   const results: SearchResult[] = [];
 
   // First, search in book titles and authors from constants

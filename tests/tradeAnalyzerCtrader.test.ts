@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { parseCTraderHistory } from '../features/trade-analyzer/ctrader';
+import { makeImportKey } from '../features/trade-analyzer/journalSave';
 
 const fixture = () => readFile(new URL('./fixtures/trade-analyzer/ctrader-statement.csv', import.meta.url), 'utf8');
 
@@ -45,4 +46,18 @@ test('cTrader rejects statements with multiple net-currency columns instead of g
   const report = await parseCTraderHistory(statement, 'csv');
   assert.equal(report.records.length, 0);
   assert.ok(report.issues.some((issue) => issue.code === 'ambiguous_currency'));
+});
+
+test('cTrader account identifiers scope journal import keys without retaining the raw identifier', async () => {
+  const statementFor = (account: string) =>
+    `Account Number,Deal ID,Symbol,Opening Direction,Opening Time,Closing Time,Entry Price,Closing Price,Closing Quantity,Net (USD)\n${account},7,EURUSD,Buy,2026-02-03 09:00,2026-02-03 10:00,1.10,1.11,1,10`;
+
+  const first = await parseCTraderHistory(statementFor('12345678'), 'csv');
+  const second = await parseCTraderHistory(statementFor('87654321'), 'csv');
+
+  assert.equal(first.records.length, 1);
+  assert.equal(second.records.length, 1);
+  assert.ok(first.records[0].accountHash);
+  assert.doesNotMatch(first.records[0].accountHash ?? '', /12345678/);
+  assert.notEqual(await makeImportKey(first.records[0]), await makeImportKey(second.records[0]));
 });

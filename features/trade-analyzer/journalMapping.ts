@@ -3,10 +3,22 @@ import { getTradeStatus, type Trade } from '../../utils/tradingUtils';
 import type { ClosedTradeRecord } from './types';
 
 export function getSaveability(record: ClosedTradeRecord): { saveable: boolean; reason?: string } {
-  if (!record.sourceId?.trim()) return { saveable: false, reason: 'Missing native trade ID' };
-  if (!record.symbol.trim() || !record.entryTime || !record.exitTime) return { saveable: false, reason: 'Missing trade details' };
-  if (record.entryPrice === null || !Number.isFinite(record.entryPrice) || record.exitPrice === null || !Number.isFinite(record.exitPrice)) return { saveable: false, reason: 'Missing prices' };
-  if (record.volume === null || !Number.isFinite(record.volume) || record.volume <= 0 || !Number.isFinite(record.netPnl)) return { saveable: false, reason: 'Missing volume or result' };
+  if (!record.sourceId?.trim() || record.sourceId.length > 256) return { saveable: false, reason: 'Missing or oversized native trade ID' };
+  if (!record.symbol.trim() || record.symbol.length > 32 || !record.entryTime || !record.exitTime) return { saveable: false, reason: 'Missing or oversized trade details' };
+  if (record.accountHash && record.accountHash.length > 128) return { saveable: false, reason: 'Invalid account identity' };
+  const sourceDate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/;
+  if (!sourceDate.test(record.entryTime) || !sourceDate.test(record.exitTime)) return { saveable: false, reason: 'Invalid trade date' };
+  if (record.entryPrice === null || !Number.isFinite(record.entryPrice) || record.entryPrice <= 0 || Math.abs(record.entryPrice) > 1e12
+    || record.exitPrice === null || !Number.isFinite(record.exitPrice) || record.exitPrice <= 0 || Math.abs(record.exitPrice) > 1e12) {
+    return { saveable: false, reason: 'Missing or unreasonable prices' };
+  }
+  if (record.volume === null || !Number.isFinite(record.volume) || record.volume <= 0 || record.volume > 1e9 || !Number.isFinite(record.netPnl) || Math.abs(record.netPnl) > 1e15) {
+    return { saveable: false, reason: 'Missing or unreasonable volume or result' };
+  }
+  const optionalMoney = [record.grossPnl, record.commission, record.swap, record.fees];
+  if (optionalMoney.some((value) => value !== null && (!Number.isFinite(value) || Math.abs(value) > 1e15))) {
+    return { saveable: false, reason: 'Unreasonable broker cost data' };
+  }
   return { saveable: true };
 }
 

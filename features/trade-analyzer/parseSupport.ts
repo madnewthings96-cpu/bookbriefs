@@ -31,12 +31,17 @@ export function normalizeDate(value: string): string | null {
   return `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`;
 }
 
-export async function hashAccountIdentifier(text: string): Promise<string | undefined> {
-  const match = /\b(?:account(?:\s+(?:number|no))?|login)\s*[:#]\s*(\d{4,})\b/i.exec(text);
-  if (!match || !globalThis.crypto?.subtle) return undefined;
-  const bytes = new TextEncoder().encode(match[1]);
+export async function hashAccountValue(value: string): Promise<string | undefined> {
+  const normalized = value.trim();
+  if (!/^\d{4,}$/.test(normalized) || !globalThis.crypto?.subtle) return undefined;
+  const bytes = new TextEncoder().encode(normalized);
   const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export async function hashAccountIdentifier(text: string): Promise<string | undefined> {
+  const match = /\b(?:account(?:\s+(?:number|no))?|login)\s*[:#]\s*(\d{4,})\b/i.exec(text);
+  return match ? hashAccountValue(match[1]) : undefined;
 }
 
 export function createReport(platform: ImportPlatform, format: ImportFormat): ImportReport {

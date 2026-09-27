@@ -1,4 +1,4 @@
-import { combinePosition, createReport, missingColumns, appendMissingIssue, moneyAt, normalizeDate, parseTextRows, rejectRow, valueAt } from './parseSupport';
+import { combinePosition, createReport, hashAccountValue, missingColumns, appendMissingIssue, moneyAt, normalizeDate, parseTextRows, rejectRow, valueAt } from './parseSupport';
 import type { ClosedTradeRecord, ImportReport } from './types';
 
 const required = [
@@ -25,6 +25,8 @@ export async function parseCTraderHistory(text: string, format: 'csv' | 'paste')
   const currency = /\(([A-Z]{3})\)/i.exec(netHeader ?? '')?.[1]?.toUpperCase() ?? null;
   report.currency = currency;
   const decimal: '.' | ',' = format === 'csv' && text.split(/\r?\n/, 1)[0].includes(';') ? ',' : '.';
+  const accountValue = rows.slice(1).map((row) => valueAt(row, headers, ['Account Number', 'Account No', 'Account ID', 'Account', 'Login'])).find(Boolean) ?? '';
+  const accountHash = await hashAccountValue(accountValue);
   const byPosition = new Map<string, ClosedTradeRecord[]>();
 
   rows.slice(1).forEach((row, index) => {
@@ -43,7 +45,7 @@ export async function parseCTraderHistory(text: string, format: 'csv' | 'paste')
     const positionId = valueAt(row, headers, ['Position ID', 'Position']);
     const dealId = valueAt(row, headers, ['Deal ID', 'ID']);
     const record: ClosedTradeRecord = {
-      platform: 'ctrader', sourceId: positionId || dealId || null, symbol, direction, entryTime, exitTime,
+      platform: 'ctrader', sourceId: positionId || dealId || null, ...(accountHash ? { accountHash } : {}), symbol, direction, entryTime, exitTime,
       entryPrice: moneyAt(row, headers, ['Entry Price', 'Opening Price'], decimal),
       exitPrice: moneyAt(row, headers, ['Closing Price', 'Exit Price'], decimal),
       volume: moneyAt(row, headers, ['Closing Quantity', 'Quantity', 'Volume'], decimal),

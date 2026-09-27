@@ -24,16 +24,18 @@ export type AnalysisModel = {
 const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 function breakdown(records: ClosedTradeRecord[], label: (record: ClosedTradeRecord) => string): Breakdown[] {
-  const groups = new Map<string, ClosedTradeRecord[]>();
+  const groups = new Map<string, { count: number; wins: number; netPnl: number }>();
   for (const record of records) {
     const key = label(record);
-    groups.set(key, [...(groups.get(key) ?? []), record]);
+    const group = groups.get(key) ?? { count: 0, wins: 0, netPnl: 0 };
+    group.count += 1;
+    if (record.netPnl > 0) group.wins += 1;
+    group.netPnl += record.netPnl;
+    groups.set(key, group);
   }
   return Array.from(groups, ([key, values]) => ({
-    label: key, count: values.length,
-    wins: values.filter((record) => record.netPnl > 0).length,
-    netPnl: values.reduce((sum, record) => sum + record.netPnl, 0),
-    winRate: values.filter((record) => record.netPnl > 0).length / values.length * 100,
+    label: key, count: values.count, wins: values.wins, netPnl: values.netPnl,
+    winRate: values.wins / values.count * 100,
   })).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 }
 

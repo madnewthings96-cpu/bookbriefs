@@ -82,6 +82,7 @@ const Header: React.FC = () => {
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const megaMenuTriggerRefs = useRef<Partial<Record<NavigationGroupKey, HTMLButtonElement | null>>>({});
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchRequestRef = useRef(0);
   const menuCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -219,6 +220,7 @@ const Header: React.FC = () => {
   const activeMenu = activeMegaMenu ? navigationGroups[activeMegaMenu] : null;
 
   const closeSearch = useCallback((restoreFocus = false) => {
+    searchRequestRef.current += 1;
     setIsSearchExpanded(false);
     setSearchQuery('');
     setSearchResults([]);
@@ -252,12 +254,12 @@ const Header: React.FC = () => {
   }, []);
 
   const handleSearch = useCallback(
-    (event: React.FormEvent) => {
+    async (event: React.FormEvent) => {
       event.preventDefault();
       const query = searchQuery.trim();
       if (!query) return;
 
-      const results = searchBooks(query, language, books);
+      const results = await searchBooks(query, language, books);
       if (results.length > 0) {
         runGuardedNavigation(confirmNavigation, () => {
           navigate(results[0].path);
@@ -277,9 +279,23 @@ const Header: React.FC = () => {
 
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
+      const requestId = ++searchRequestRef.current;
+
       searchTimeoutRef.current = setTimeout(() => {
-        setSearchResults(query.trim() ? searchBooks(query, language, books) : []);
-        setIsSearching(false);
+        if (!query.trim()) {
+          setSearchResults([]);
+          setIsSearching(false);
+          return;
+        }
+        void searchBooks(query, language, books).then((results) => {
+          if (searchRequestRef.current !== requestId) return;
+          setSearchResults(results);
+          setIsSearching(false);
+        }).catch(() => {
+          if (searchRequestRef.current !== requestId) return;
+          setSearchResults([]);
+          setIsSearching(false);
+        });
       }, 150);
     },
     [books, language],

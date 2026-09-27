@@ -13,7 +13,11 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { collection, getDocs, query, orderBy, limit, where, onSnapshot } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { Book } from '../types';
-import { mergeBooksWithLocalFallbacks } from '../utils/localBookFallbacks';
+
+const mergeBooksWithLocalFallbacks = async (books: Book[]): Promise<Book[]> => {
+  const localFallbacks = await import('../utils/localBookFallbacks');
+  return localFallbacks.mergeBooksWithLocalFallbacks(books);
+};
 
 interface BooksContextType {
   books: Book[];
@@ -44,7 +48,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
   children, 
   useRealtime = false 
 }) => {
-  const [books, setBooks] = useState<Book[]>(() => mergeBooksWithLocalFallbacks([]));
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +63,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const q = query(booksRef, orderBy('title'));
       
       const snapshot = await getDocs(q);
-      const booksData = mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
+      const booksData = await mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
       })) as Book[]);
@@ -83,7 +87,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       try {
         const cachedBooks = sessionStorage.getItem('books_cache');
         if (cachedBooks) {
-          setBooks(mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
+          setBooks(await mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
           console.log('📦 Loaded books from cache');
         }
       } catch (e) {
@@ -105,9 +109,11 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
         const cacheAge = Date.now() - parseInt(cacheTimestamp);
         // Use cache if less than 5 minutes old
         if (cacheAge < 5 * 60 * 1000) {
-          setBooks(mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
-          setLoading(false);
-          console.log('📦 Loaded books from cache instantly');
+          void mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)).then((cached) => {
+            setBooks(cached);
+            setLoading(false);
+            console.log('📦 Loaded books from cache instantly');
+          });
           return;
         }
       }
@@ -122,8 +128,8 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const booksRef = collection(db, 'books');
       const q = query(booksRef, orderBy('title'));
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const booksData = mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
+      const unsubscribe = onSnapshot(q, async (snapshot) => {
+        const booksData = await mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
         })) as Book[]);
