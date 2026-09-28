@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 250,
     arabicSlug: 'أفضل-خاسر-يفوز',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/49ELrfW',
-    kindleUrl: 'https://amzn.to/4oXx8aO',
-    audibleUrl: 'https://amzn.to/4adVaK9',
+    amazonUrl: 'https://link.amazon/B0ewbeYG3',
+    kindleUrl: 'https://link.amazon/B08KQPcJO',
+    audibleUrl: 'https://link.amazon/B0eJfqDQ8',
     arabicPdfUrl: '/pdfs/best loser wins.pdf',
     translations: {
         en: {

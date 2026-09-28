@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'حقق-أحلامك',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4iVg8zS',
-    kindleUrl: 'https://amzn.to/4q9Obqm',
-    audibleUrl: 'https://amzn.to/4iUBcGK',
+    amazonUrl: 'https://link.amazon/B017DdfHM',
+    kindleUrl: 'https://link.amazon/B096THZMi',
+    audibleUrl: 'https://link.amazon/B0fM7NhzL',
     arabicPdfUrl: '/pdfs/manifest.pdf',
     translations: {
         en: {

@@ -1,7 +1,88 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+@import './arabic-fonts.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Ta7leel Arabic';
+  src: url('/fonts/NotoSansArabic-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.summary-redesign[lang='ar'], .arabic-library {
+  font-family: 'Ta7leel Arabic UI', 'Ta7leel Arabic', sans-serif;
+  text-align: start;
+}
+.summary-redesign[lang='ar'] :is(h1, h2, h3, h4, p, a, button),
+.arabic-library :is(h1, h2, h3, p, a, button) {
+  font-family: inherit;
+  letter-spacing: normal;
+}
+.summary-redesign[lang='ar'] :is(h1, h2, h3, h4) {
+  font-weight: 800;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.summary-redesign[lang='ar'] h1 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.45;
+}
+.summary-redesign[lang='ar'] :is(p, li, a, button, span) { letter-spacing: normal; }
+.summary-redesign[lang='ar'] :is(.summary-article p, .summary-article li, .summary-article blockquote, #quick-brief > p, #key-takeaways article p, .summary-references section > p) {
+  font-family: 'Ta7leel Arabic Text', 'Amiri', serif;
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.95;
+  text-align: start;
+  overflow-wrap: break-word;
+}
+.summary-redesign[lang='ar'] .summary-article :is(p, ul, ol, blockquote) {
+  max-width: 100%;
+  margin-block-end: 1.5rem;
+}
+.summary-redesign[lang='ar'] .summary-article strong { font-weight: 700; }
+.summary-redesign[lang='ar'] .summary-article em { font-family: inherit; font-style: normal; }
+.summary-redesign[lang='ar'] .summary-article li { padding-inline: 0.25rem 0; }
+.summary-redesign[lang='ar'] .summary-article :is(h3, h4) {
+  font-size: clamp(1.3rem, 2vw, 1.65rem);
+  line-height: 1.65;
+}
+.summary-redesign[lang='ar'] #quick-brief > p {
+  font-size: clamp(1.5rem, 2.6vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1.85;
+}
+.summary-redesign[lang='ar'] #key-takeaways article p { padding-block-start: 0; }
+.summary-redesign[lang='ar'] #quick-brief > [aria-hidden='true'] { left: auto; right: 0; }
+.summary-redesign[lang='ar'] aside a { line-height: 1.85; }
+.summary-redesign[lang='ar'] .summary-language-switch a[lang='en'] { font-family: 'Lato', sans-serif; }
+.summary-redesign[lang='ar'] .summary-references section a {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 640px) {
+  .summary-redesign[lang='ar'] #quick-brief > div:last-child > div { padding-inline: 1.25rem; }
+  .summary-redesign[lang='ar'] #quick-brief > div:last-child > div:first-child { padding-inline-start: 0; }
+  .summary-redesign[lang='ar'] #quick-brief > div:last-child > div:last-child { padding-inline-end: 0; }
+}
+@media (max-width: 639px) {
+  .summary-redesign[lang='ar'] :is(.summary-article p, .summary-article li, .summary-article blockquote, #key-takeaways article p, .summary-references section > p) {
+    font-size: 1.25rem;
+    line-height: 1.95;
+  }
+  .summary-redesign[lang='ar'] #key-takeaways article { gap: 0.75rem; }
+}
+
+@media print {
+  body:has(.summary-redesign[lang='ar']) :is(header, footer, aside, button, nav, .sticky) { display: none !important; }
+  body:has(.summary-redesign[lang='ar']) .summary-redesign :is(h1, h2, h3, h4) { break-after: avoid; }
+  body:has(.summary-redesign[lang='ar']) .summary-redesign { margin: 0; background: white; color: black; }
+  body:has(.summary-redesign[lang='ar']) .summary-redesign section { box-shadow: none; }
+  body:has(.summary-redesign[lang='ar']) .summary-redesign :is(h1, h2, h3, h4, p, li) { color: black !important; }
+}
 
 /* Hide scrollbar for carousel */
 .scrollbar-hide::-webkit-scrollbar {

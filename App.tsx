@@ -1,9 +1,9 @@
 
-import React, { Suspense, lazy, useEffect, useState, createContext, useContext } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from './contexts/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, ContentLanguageProvider } from './contexts/LanguageContext';
 import { ReaderModeProvider } from './contexts/ReaderModeContext';
 import { PersonalNotesProvider } from './contexts/PersonalNotesContext';
 import { UserProgressProvider } from './contexts/UserProgressContext';
@@ -14,16 +14,19 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db } from './firebase';
 import Spinner from './components/Spinner';
+import InitialPageReady from './components/InitialPageReady';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardNotFoundPage from './components/dashboard/DashboardNotFoundPage';
 import PrivatePageSEO from './components/PrivatePageSEO';
 import { isPrivateSeoRoute } from './utils/seoConfig';
 import { getAppLayoutFamily, LEGACY_DASHBOARD_REDIRECTS } from './components/appLayoutModel';
+import { FirebaseProvider } from './contexts/FirebaseContext';
+import { DirtyNavigationProvider } from './contexts/DirtyNavigationContext';
+
+export { useFirebase } from './contexts/FirebaseContext';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SummariesPage = lazy(() => import('./pages/SummariesPage'));
@@ -31,8 +34,31 @@ const SummaryDetailPage = lazy(() => import('./pages/SummaryDetailPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const CalculatorsPage = lazy(() => import('./pages/CalculatorsPage'));
+const TradeAnalyzerPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/TradeAnalyzerPage.css'), import('./pages/TradeAnalyzerPage')]);
+  return pageModule;
+});
 const NewsPage = lazy(async () => {
   const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsPage')]);
+  return pageModule;
+});
+const NewsArticlePage = lazy(async () => {
+  const [, pageModule] = await Promise.all([import('./pages/NewsPage.css'), import('./pages/NewsArticlePage')]);
+  return pageModule;
+});
+const AdminNewsPage = lazy(async () => {
+  const [, pageModule] = await Promise.all([
+    import('./pages/AdminNewsPage.css'),
+    import('./pages/AdminNewsPage'),
+  ]);
+  return pageModule;
+});
+const AdminNewsEditorPage = lazy(async () => {
+  const [, , pageModule] = await Promise.all([
+    import('./pages/AdminNewsPage.css'),
+    import('./pages/NewsPage.css'),
+    import('./pages/AdminNewsEditorPage'),
+  ]);
   return pageModule;
 });
 const BlogPage = lazy(() => import('./pages/BlogPage'));
@@ -61,129 +87,31 @@ const DashboardSettingsPage = lazy(() => import('./pages/DashboardSettingsPage')
 const ExitIntentPopup = lazy(() => import('./components/ExitIntentPopup'));
 const CoffeeSupportCard = lazy(() => import('./components/CoffeeSupportCard'));
 
-interface FirebaseContextType {
-  currentUser: User | null;
-  loading: boolean;
-}
-
-const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
-
-export const useFirebase = () => {
-  const context = useContext(FirebaseContext);
-  if (context === undefined) {
-    throw new Error('useFirebase must be used within a FirebaseProvider');
-  }
-  return context;
-};
-
-// Firebase Provider Component
-const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const ensureUserDocument = async (user: User) => {
-    try {
-      const userDocRef = doc(db, 'users', user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (!userDocSnap.exists()) {
-        await setDoc(userDocRef, {
-          email: user.email,
-          displayName: user.displayName,
-          createdAt: new Date(),
-          lastLogin: new Date(),
-        });
-      }
-    } catch (error) {
-      console.error('Error ensuring user document:', error);
-    }
-  };
-
-  // Update last login timestamp
-  const updateLastLogin = async (user: User) => {
-    try {
-      const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, {
-        lastLogin: new Date(),
-      });
-    } catch (error) {
-      console.error('Error updating last login:', error);
-    }
-  };
-
-  // Firebase auth state listener
-  useEffect(() => {
-    // Set a shorter timeout to prevent blocking
-    const timeoutId = setTimeout(() => {
-      console.warn('Firebase auth initialization timeout, proceeding without auth');
-      setLoading(false);
-    }, 3000); // 3 second timeout (reduced from 10)
-
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      clearTimeout(timeoutId); // Clear timeout since auth resolved
-      setCurrentUser(user);
-
-      if (user) {
-        try {
-          await ensureUserDocument(user);
-          await updateLastLogin(user);
-        } catch (error) {
-          console.error('Error preparing user data:', error);
-        }
-      }
-
-      setLoading(false);
-    }, (error) => {
-      // Error callback for auth state changes
-      console.error('Firebase auth error:', error);
-      // Auth can no longer verify the prior identity; fail closed for any
-      // consumer of this legacy provider as well.
-      setCurrentUser(null);
-      clearTimeout(timeoutId);
-      setLoading(false);
-    });
-
-    return () => {
-      clearTimeout(timeoutId);
-      unsubscribe();
-    };
-  }, []);
-
-  const value: FirebaseContextType = {
-    currentUser,
-    loading,
-  };
-
-  return (
-    <FirebaseContext.Provider value={value}>
-      {children}
-    </FirebaseContext.Provider>
-  );
-};
-
 // Main App Component
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <FirebaseProvider>
-        <BooksProvider>
-          <LanguageProvider>
-            <AuthProvider>
-              <FavoritesProvider>
-                <ReadingChallengeProvider>
-                  <UserProgressProvider>
-                    <ReaderModeProvider>
-                      <PersonalNotesProvider>
-                        <AppContent />
-                      </PersonalNotesProvider>
-                    </ReaderModeProvider>
-                  </UserProgressProvider>
-                </ReadingChallengeProvider>
-              </FavoritesProvider>
-            </AuthProvider>
-          </LanguageProvider>
-        </BooksProvider>
-      </FirebaseProvider>
+      <DirtyNavigationProvider>
+        <FirebaseProvider>
+          <BooksProvider>
+            <LanguageProvider>
+              <AuthProvider>
+                <FavoritesProvider>
+                  <ReadingChallengeProvider>
+                    <UserProgressProvider>
+                      <ReaderModeProvider>
+                        <PersonalNotesProvider>
+                          <AppContent />
+                        </PersonalNotesProvider>
+                      </ReaderModeProvider>
+                    </UserProgressProvider>
+                  </ReadingChallengeProvider>
+                </FavoritesProvider>
+              </AuthProvider>
+            </LanguageProvider>
+          </BooksProvider>
+        </FirebaseProvider>
+      </DirtyNavigationProvider>
     </HelmetProvider>
   );
 };
@@ -193,12 +121,14 @@ const AppRoutes: React.FC = () => (
     <Route path="/" element={<HomePage />} />
     <Route path="/summaries" element={<SummariesPage />} />
     <Route path="/book-summaries" element={<SummariesPage />} />
-    <Route path="/ar/book-summaries" element={<SummariesPage />} />
+    <Route path="/ar/book-summaries" element={<Navigate to="/summaries/" replace />} />
     <Route path="/categories/:categorySlug" element={<CategoryPage />} />
     <Route path="/ar/categories/:categorySlug" element={<CategoryPage />} />
     <Route path="/summary/:bookId" element={<SummaryDetailPage />} />
+    <Route path="/ar/summary/:bookId" element={<ContentLanguageProvider language="ar"><SummaryDetailPage /></ContentLanguageProvider>} />
     <Route path="/about" element={<AboutPage />} />
     <Route path="/calculators" element={<CalculatorsPage />} />
+    <Route path="/trade-analyzer" element={<TradeAnalyzerPage />} />
     <Route path="/calculators/pip-value" element={<CalculatorsPage />} />
     <Route path="/calculators/position-size" element={<CalculatorsPage />} />
     <Route path="/calculators/fire" element={<CalculatorsPage />} />
@@ -208,6 +138,10 @@ const AppRoutes: React.FC = () => (
     <Route path="/ar/tools/fire-calculator" element={<CalculatorsPage />} />
     <Route path="/ar/tools/compound-interest-calculator" element={<CalculatorsPage />} />
     <Route path="/news" element={<NewsPage />} />
+    <Route path="/news/:slug" element={<NewsArticlePage />} />
+    <Route path="/admin/news" element={<AdminRoute><AdminNewsPage /></AdminRoute>} />
+    <Route path="/admin/news/new" element={<AdminRoute><AdminNewsEditorPage /></AdminRoute>} />
+    <Route path="/admin/news/:articleId" element={<AdminRoute><AdminNewsEditorPage /></AdminRoute>} />
     <Route path="/blog" element={<BlogPage />} />
     <Route path="/blog/:slug" element={<BlogPage />} />
     <Route path="/connections" element={<IdeasInTheWildPage />} />
@@ -234,6 +168,9 @@ const AppRoutes: React.FC = () => (
       <Route path="/dashboard/summary/:bookId" element={<FocusedReaderLayout />}>
         <Route index element={<SummaryDetailPage surface="dashboard" />} />
       </Route>
+      <Route path="/dashboard/ar/summary/:bookId" element={<FocusedReaderLayout />}>
+        <Route index element={<ContentLanguageProvider language="ar"><SummaryDetailPage surface="dashboard" /></ContentLanguageProvider>} />
+      </Route>
       {Object.entries(LEGACY_DASHBOARD_REDIRECTS).map(([from, to]) => (
         <Route key={from} path={from} element={<Navigate to={to} replace />} />
       ))}
@@ -246,7 +183,7 @@ const AppRoutes: React.FC = () => (
 const AppFrame: React.FC = () => {
   const location = useLocation();
   const family = getAppLayoutFamily(location.pathname);
-  const routes = <Suspense fallback={<Spinner />}><AppRoutes /></Suspense>;
+  const routes = <Suspense fallback={<Spinner />}><AppRoutes /><InitialPageReady /></Suspense>;
 
   const frame = family === 'dashboard' ? routes : family === 'standalone' ? (
     <main className="min-h-screen bg-[#ece9df]">{routes}</main>

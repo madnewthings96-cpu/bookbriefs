@@ -8,9 +8,9 @@ export interface BookDefinition {
   author: string;
   category: 'Finance' | 'Business' | 'Self-Help' | 'Trading' | 'Psychology' | 'Biography' | 'Economics' | 'Sociology' | 'Leadership' | 'Science Fiction';
   coverImageUrl: string;
-  rating: number;
+  rating?: number;
   publicationYear: number;
-  pageCount: number;
+  pageCount?: number;
   arabicSlug: string;
   summary: string;
   keyTakeaways: string[];

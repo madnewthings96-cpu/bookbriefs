@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, updateDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, deleteDoc, deleteField, doc, updateDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserScopedRealtimeStore } from '../contexts/userScopedRealtime';
 import useSEO from '../hooks/useSEO';
@@ -34,6 +34,7 @@ import {
     calculateAdvancedStats,
     calculateBreakdownStats,
     formatCurrency,
+    getTradeResultTime,
 } from '../utils/tradingUtils';
 import {
     BookOpen,
@@ -141,8 +142,8 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 // 1. Sort by Entry Date (descending)
                 // 2. Sort by Created At (descending) for same-day trades
                 tradesData.sort((a, b) => {
-                    const dateA = a.entryDate?.toMillis?.() || 0;
-                    const dateB = b.entryDate?.toMillis?.() || 0;
+                    const dateA = getTradeResultTime(a).getTime();
+                    const dateB = getTradeResultTime(b).getTime();
 
                     if (dateA !== dateB) {
                         return dateB - dateA;
@@ -301,11 +302,11 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
 
         const entryPrice = parseFloat(formData.entryPrice);
         const exitPrice = parseFloat(formData.exitPrice);
-        const stopLoss = formData.stopLoss ? parseFloat(formData.stopLoss) : 0;
+        const stopLoss = formData.stopLoss ? parseFloat(formData.stopLoss) : activeEditingTrade?.importSource ? null : 0;
 
         // Calculate R-Multiple
-        let rr = 0;
-        if (stopLoss > 0 && entryPrice > 0) {
+        let rr: number | null = activeEditingTrade?.importSource ? null : 0;
+        if (stopLoss !== null && stopLoss > 0 && entryPrice > 0) {
             if (formData.direction === 'LONG') {
                 const risk = entryPrice - stopLoss;
                 if (risk !== 0) {
@@ -322,13 +323,15 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
         const tradeData = {
             symbol: formData.symbol,
             direction: formData.direction,
-            entryDate: Timestamp.fromDate(new Date(`${formData.entryDate}T00:00:00.000Z`)),
+            entryDate: activeEditingTrade?.importSource && activeEditingTrade.entryDate.toDate().toISOString().slice(0, 10) === formData.entryDate
+                ? activeEditingTrade.entryDate
+                : Timestamp.fromDate(new Date(`${formData.entryDate}T00:00:00.000Z`)),
             entryPrice,
             exitPrice,
             stopLoss,
             lotSize: parseFloat(formData.lotSize),
             pnl: calculatedPnL,
-            rr: parseFloat(rr.toFixed(2)),
+            ...(rr === null ? {} : { rr: parseFloat(rr.toFixed(2)) }),
             status,
             setup: formData.setup,
             emotions: formData.emotions,
@@ -342,7 +345,7 @@ const TradingJournalPage: React.FC<TradingJournalPageProps> = ({ surface = 'publ
                 if (!scopedStore.isCurrent(token)) return;
                 await updateDoc(
                     doc(db, 'users', token.userId, 'trades', activeEditingTrade.id),
-                    tradeData
+                    { ...tradeData, ...(rr === null ? { rr: deleteField() } : {}) }
                 );
             } else {
                 // Add new trade

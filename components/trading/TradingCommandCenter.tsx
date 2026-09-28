@@ -19,6 +19,7 @@ import {
     Trade,
     TradingStats,
     formatCurrency,
+    getTradeResultTime,
 } from '../../utils/tradingUtils';
 
 interface TradingCommandCenterProps {
@@ -54,7 +55,7 @@ const calculateDisciplineScore = (trades: Trade[]) => {
 
     const totalPoints = sample.length * 4;
     const earnedPoints = sample.reduce((points, trade) => {
-        const hasStop = trade.stopLoss > 0 ? 1 : 0;
+        const hasStop = trade.stopLoss !== null && trade.stopLoss > 0 ? 1 : 0;
         const hasNotes = trade.notes?.trim() ? 1 : 0;
         const hasSetup = trade.setup?.trim() ? 1 : 0;
         const cleanEmotion = harmfulEmotions.has(trade.emotions) ? 0 : 1;
@@ -89,7 +90,7 @@ const calculateDisciplineScore = (trades: Trade[]) => {
 const getTradingStatus = (trades: Trade[], startingBalance: number) => {
     const today = new Date();
     const todayTrades = trades.filter((trade) =>
-        trade.entryDate?.toDate && isSameLocalDay(trade.entryDate.toDate(), today)
+        trade.entryDate?.toDate && isSameLocalDay(getTradeResultTime(trade), today)
     );
     const dailyPnL = todayTrades.reduce((sum, trade) => sum + trade.pnl, 0);
     const wins = todayTrades.filter((trade) => trade.status === 'WIN').length;

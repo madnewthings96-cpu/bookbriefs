@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 320,
     arabicSlug: 'التأثير-علم-نفس-الإقناع',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XL0Tjv',
-    kindleUrl: 'https://amzn.to/4ruzIGY',
-    audibleUrl: 'https://amzn.to/3KxBHK3',
+    amazonUrl: 'https://link.amazon/B0bgb9dNa',
+    kindleUrl: 'https://link.amazon/B0dql1vLt',
+    audibleUrl: 'https://link.amazon/B0hMgeJLw',
     arabicPdfUrl: '/pdfs/influence.pdf',
     translations: {
         en: {

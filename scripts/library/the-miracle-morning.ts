@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 172,
     arabicSlug: 'صباح-المعجزات',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3KozVLo',
-    kindleUrl: 'https://amzn.to/48yxbTy',
-    audibleUrl: 'https://amzn.to/3Y6yt3k',
+    amazonUrl: 'https://link.amazon/B0j7Mh4XH',
+    kindleUrl: 'https://link.amazon/B04WuMJmM',
+    audibleUrl: 'https://link.amazon/B05Egdqza',
     arabicPdfUrl: '/pdfs/the miracle morning.pdf',
     translations: {
         en: {

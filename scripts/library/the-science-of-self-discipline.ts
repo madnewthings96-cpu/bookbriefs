@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 154,
     arabicSlug: 'علم-الانضباط-الذاتي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3MISKJS',
-    kindleUrl: 'https://amzn.to/48VI5Tw',
-    audibleUrl: 'https://amzn.to/4aR5iZH',
+    amazonUrl: 'https://link.amazon/B0dlTlHTN',
+    kindleUrl: 'https://link.amazon/B0hmv0iey',
+    audibleUrl: 'https://link.amazon/B0fJG16J8',
     arabicPdfUrl: '/pdfs/the science of self-discipline.pdf',
     translations: {
         en: {

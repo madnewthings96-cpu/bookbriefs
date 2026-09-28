@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 286,
     arabicSlug: 'الطريق-البسيط-للثروة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3MdobvP',
-    kindleUrl: 'https://amzn.to/4rCDvC8',
-    audibleUrl: 'https://amzn.to/3MFbrOv',
+    amazonUrl: 'https://link.amazon/B04xqckA5',
+    kindleUrl: 'https://link.amazon/B0grp9Ii4',
+    audibleUrl: 'https://link.amazon/B00aW9anz',
     arabicPdfUrl: '/pdfs/the simple path to wealth.pdf',
     translations: {
         en: {

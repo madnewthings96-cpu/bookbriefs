@@ -20,6 +20,11 @@ import {
 } from './booksCache';
 import { LatestRequestGate } from './latestRequestGate';
 
+const mergeBooksWithLocalFallbacks = async (books: Book[]): Promise<Book[]> => {
+  const localFallbacks = await import('../utils/localBookFallbacks');
+  return localFallbacks.mergeBooksWithLocalFallbacks(books);
+};
+
 interface BooksContextType {
   books: Book[];
   loading: boolean;
@@ -77,10 +82,10 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const q = query(booksRef, orderBy('title'));
       
       const snapshot = await getDocs(q);
-      const booksData = snapshot.docs.map(doc => ({
+      const booksData = await mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
-      })) as Book[];
+      })) as Book[]);
 
       if (!requestGate.isCurrent(requestId)) return;
       setBooks(booksData);
@@ -98,7 +103,9 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       // empty state; malformed cache entries are removed by the reader.
       const cached = readBooksCache(getSessionStorage());
       if (cached && requestGate.isCurrent(requestId)) {
-        setBooks(cached.books);
+        const fallbackBooks = await mergeBooksWithLocalFallbacks(cached.books);
+        if (!requestGate.isCurrent(requestId)) return;
+        setBooks(fallbackBooks);
         console.log('📦 Loaded books from cache');
       }
     } finally {
@@ -113,7 +120,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
     const cached = readBooksCache(getSessionStorage());
     const usedFreshCache = Boolean(cached?.fresh);
     if (cached) {
-      setBooks(cached.books);
+      void mergeBooksWithLocalFallbacks(cached.books).then(setBooks);
       if (cached.fresh) {
         setLoading(false);
         console.log('📦 Loaded books from cache instantly');
@@ -129,11 +136,11 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       const booksRef = collection(db, 'books');
       const q = query(booksRef, orderBy('title'));
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const booksData = snapshot.docs.map(doc => ({
+      const unsubscribe = onSnapshot(q, async (snapshot) => {
+        const booksData = await mergeBooksWithLocalFallbacks(snapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
-        })) as Book[];
+        })) as Book[]);
         
         setBooks(booksData);
         setLoading(false);

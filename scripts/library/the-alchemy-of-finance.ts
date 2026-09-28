@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 378,
     arabicSlug: 'كيمياء-التمويل',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3K8WVOr',
-    kindleUrl: 'https://amzn.to/3Kz7J8q',
-    audibleUrl: 'https://amzn.to/3KyMOCB',
+    amazonUrl: 'https://link.amazon/B00xLdcsr',
+    audibleUrl: 'https://link.amazon/B0i9042wz',
     arabicPdfUrl: '/pdfs/the alchemy of finance.pdf',
     translations: {
         en: {

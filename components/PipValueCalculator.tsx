@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Calculator, CheckCircle2, DollarSign, Info, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowRight, CheckCircle2, DollarSign, Info, Sparkles, TrendingUp } from 'lucide-react';
 
 const PipValueCalculator: React.FC = () => {
   const [currencyPair, setCurrencyPair] = useState('EUR/USD');
@@ -65,29 +65,6 @@ const PipValueCalculator: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col gap-2 rounded-2xl bg-forest-50/70 p-4 border border-forest-900/[0.06] sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-forest-800 text-white shadow-sm">
-            <Calculator className="h-4.5 w-4.5 text-emerald-300" />
-          </div>
-          <div>
-            <h3 className="font-display text-base font-bold text-forest-950">
-              Pip & Point Value Calculator
-            </h3>
-            <p className="text-xs text-forest-900/70">
-              Translate market price movement into exact account currency.
-            </p>
-          </div>
-        </div>
-
-        {currencyPair === 'XAU/USD' && (
-          <div className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-900 border border-amber-200">
-            Gold (XAU/USD): 1 Point = $0.01 movement
-          </div>
-        )}
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>

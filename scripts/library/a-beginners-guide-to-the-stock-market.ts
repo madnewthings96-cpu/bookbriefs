@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 160,
     arabicSlug: 'دليل-المبتدئين-إلى-سوق-الأسهم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4qjZBs4',
-    kindleUrl: 'https://amzn.to/3NfUo6c',
-    audibleUrl: 'https://amzn.to/4qjZInu',
+    amazonUrl: 'https://link.amazon/B0dqUxOt6',
+    kindleUrl: 'https://link.amazon/B02UHNPY2',
+    audibleUrl: 'https://link.amazon/B0aRfIdAt',
     arabicPdfUrl: '/pdfs/a beginners guide to the stock market.pdf',
     translations: {
         en: {

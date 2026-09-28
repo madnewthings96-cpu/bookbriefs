@@ -25,3 +25,11 @@ test('reading challenge reads and writes are UID-namespaced by the document ID',
   assert.ok(match);
   assert.doesNotMatch(match[1], /allow\s+read\s*:\s*if\s*true/);
 });
+
+test('unlisted top-level collections stay denied even to administrators', () => {
+  const rules = readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8');
+  assert.doesNotMatch(
+    rules,
+    /\n {4}match \/\{document=\*\*\} \{\n {6}allow read, write: if isAdmin\(\);/,
+  );
+});

@@ -9,7 +9,7 @@ export interface Trade {
     entryDate: Timestamp;
     entryPrice: number;
     exitPrice: number;
-    stopLoss: number;
+    stopLoss: number | null;
     lotSize: number;
     pnl: number;
     rr?: number; // R-Multiple
@@ -19,6 +19,20 @@ export interface Trade {
     notes: string;
     screenshotUrl?: string;
     createdAt: Timestamp;
+    importSource?: {
+        platform: 'mt5' | 'ctrader';
+        key: string;
+        sourceId: string;
+        importedAt: Timestamp;
+        closeTime: Timestamp;
+        currency: string;
+        timezone?: string;
+        grouping: 'position' | 'closure' | 'incomplete';
+        grossPnl: number | null;
+        commission: number | null;
+        swap: number | null;
+        fees: number | null;
+    };
 }
 
 export interface TradeFormData {
@@ -170,6 +184,10 @@ export const getTradeStatus = (pnl: number): 'WIN' | 'LOSS' | 'BE' => {
 // Alias for backwards compatibility
 export const determineStatus = getTradeStatus;
 
+/** Imported P&L is realised on close; legacy manual entries retain their entry date. */
+export const getTradeResultTime = (trade: Trade): Date =>
+    trade.importSource?.closeTime?.toDate?.() || trade.entryDate?.toDate?.() || new Date(0);
+
 /**
  * Calculate cumulative P&L array for the equity curve chart
  */
@@ -184,17 +202,17 @@ export const calculateCumulativePnL = (trades: Trade[], startingBalance: number 
         }];
     }
 
-    // Sort trades by entry date (oldest first)
+    // Sort by the time a result became realised (oldest first).
     const sortedTrades = [...trades].sort((a, b) => {
-        const dateA = a.entryDate?.toDate?.() || new Date(0);
-        const dateB = b.entryDate?.toDate?.() || new Date(0);
+        const dateA = getTradeResultTime(a);
+        const dateB = getTradeResultTime(b);
         return dateA.getTime() - dateB.getTime();
     });
 
     let cumulative = startingBalance;
 
     // Start point: 1 day before first trade or just use first trade time - slight offset
-    const firstTradeDate = sortedTrades[0].entryDate?.toDate?.() || new Date();
+    const firstTradeDate = getTradeResultTime(sortedTrades[0]);
     const startDate = new Date(firstTradeDate);
     startDate.setDate(startDate.getDate() - 1);
 
@@ -207,11 +225,11 @@ export const calculateCumulativePnL = (trades: Trade[], startingBalance: number 
 
     sortedTrades.forEach((trade, index) => {
         cumulative += trade.pnl;
-        const entryDate = trade.entryDate?.toDate?.() || new Date();
-        const date = entryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const resultDate = getTradeResultTime(trade);
+        const date = resultDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         // Ensure strictly increasing timestamps if multiple trades on exact same millisecond (rare but possible)
-        let timestamp = entryDate.getTime();
+        let timestamp = resultDate.getTime();
         if (points.length > 0 && timestamp <= points[points.length - 1].timestamp) {
             timestamp = points[points.length - 1].timestamp + 1;
         }
@@ -313,7 +331,7 @@ export const calculateStreak = (trades: Trade[]): StreakInfo => {
 
     // Sort by date descending (most recent first)
     const sortedTrades = [...trades].sort((a, b) =>
-        b.entryDate.toMillis() - a.entryDate.toMillis()
+        getTradeResultTime(b).getTime() - getTradeResultTime(a).getTime()
     );
 
     // Start from the most recent non-BE trade
@@ -383,7 +401,7 @@ export const calculateDrawdown = (equityPoints: EquityPoint[]): DrawdownPoint[] 
 };
 
 const getTradeDateKey = (trade: Trade): string => {
-    const date = trade.entryDate?.toDate?.() || new Date(0);
+    const date = getTradeResultTime(trade);
     return date.toISOString().split('T')[0];
 };
 

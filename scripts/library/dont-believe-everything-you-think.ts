@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 147,
     arabicSlug: 'لا-تصدق-كل-ما-تفكر-فيه',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48VkBxZ',
-    kindleUrl: 'https://amzn.to/3KS3Njs',
-    audibleUrl: 'https://amzn.to/4qb5Vls',
+    amazonUrl: 'https://link.amazon/B0dI3rpym',
+    kindleUrl: 'https://link.amazon/B00Rn1yGJ',
+    audibleUrl: 'https://link.amazon/B0daFo3dy',
     arabicPdfUrl: "/pdfs/don't believe everything you think.pdf",
     translations: {
         en: {

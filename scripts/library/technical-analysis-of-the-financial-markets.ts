@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 576,
     arabicSlug: 'التحليل-الفني-للاسواق-المالية',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3YmwxDX',
-    kindleUrl: 'https://amzn.to/4oRXuKC',
-    audibleUrl: 'https://amzn.to/3XKP6Sd',
+    amazonUrl: 'https://link.amazon/B06qUCfzJ',
+    kindleUrl: 'https://link.amazon/B0dtRg1Q9',
+    audibleUrl: 'https://link.amazon/B09woUOsK',
     arabicPdfUrl: '/pdfs/technical analysis of the financial markets.pdf',
     translations: {
         en: {

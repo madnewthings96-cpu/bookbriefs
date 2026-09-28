@@ -8,12 +8,11 @@ export const book: BookDefinition = {
     coverImageUrl: '/images/zombie.jpg',
     rating: 4.29,
     publicationYear: 2020,
-    pageCount: 304,
+    pageCount: 416,
     arabicSlug: 'كن-أقل-زومبي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/49ELrfW',
-    kindleUrl: 'https://amzn.to/4ieLCAA',
-    audibleUrl: 'https://amzn.to/4ieLCAA',
+    amazonUrl: 'https://link.amazon/B09pP3D6H',
+    kindleUrl: 'https://link.amazon/B0ajCRpuk',
     arabicPdfUrl: '/pdfs/be less zombie.pdf',
     summary: `# BE LESS ZOMBIE: A Deep-Dive Analysis and Implementation Guide
 For Senior Leaders, Innovation Strategists, and Change Makers

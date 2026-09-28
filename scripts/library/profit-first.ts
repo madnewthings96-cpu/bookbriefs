@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'الربح-أولا',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3KGTejg',
-    kindleUrl: 'https://amzn.to/3KB2PYU',
-    audibleUrl: 'https://amzn.to/3YB9mpy',
+    amazonUrl: 'https://link.amazon/B06GHUXzB',
+    kindleUrl: 'https://link.amazon/B05JDGWIG',
+    audibleUrl: 'https://link.amazon/B0jbQyXyZ',
     translations: {
         en: {
             title: "Profit First",

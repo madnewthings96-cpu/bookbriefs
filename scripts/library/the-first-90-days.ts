@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 304,
     arabicSlug: 'أول-90-يوم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3KcFqwF',
-    kindleUrl: 'https://amzn.to/48BEMRu',
-    audibleUrl: 'https://amzn.to/48hlPEM',
+    amazonUrl: 'https://link.amazon/B0b0vNI10',
+    kindleUrl: 'https://link.amazon/B09nZErUE',
+    audibleUrl: 'https://link.amazon/B00zV2MlX',
     arabicPdfUrl: '/pdfs/the first 90 days.pdf',
     translations: {
         en: {

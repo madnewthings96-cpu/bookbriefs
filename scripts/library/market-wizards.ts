@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 480,
     arabicSlug: 'سحرة-السوق',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48vAzyN',
-    kindleUrl: 'https://amzn.to/49OBi0e',
-    audibleUrl: 'https://amzn.to/4itoApP',
+    amazonUrl: 'https://link.amazon/B04iP0SQC',
+    kindleUrl: 'https://link.amazon/B0dgWBUMg',
     arabicPdfUrl: '/pdfs/market wizards.pdf',
     translations: {
         en: {

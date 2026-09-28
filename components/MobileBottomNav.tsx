@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Home, BookOpen, Calculator, Newspaper, FileText } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useReaderMode } from '../contexts/ReaderModeContext';
@@ -17,12 +17,14 @@ interface MobileNavItem {
 
 const MobileBottomNav: React.FC = () => {
   const { t } = useLanguage();
+  const { pathname } = useLocation();
+  const isArabicLibrary = pathname.startsWith('/ar/summary/') || pathname.startsWith('/ar/book-summaries') || pathname.startsWith('/ar/categories/');
   const { isReaderMode } = useReaderMode();
   const appearance = getMobileBottomNavAppearance(isReaderMode);
 
   const navItems: MobileNavItem[] = [
     { to: '/', label: t('home') || 'Home', icon: Home },
-    { to: '/summaries', label: t('summaries') || 'Summaries', icon: BookOpen },
+    { to: '/summaries', label: isArabicLibrary ? 'الملخصات' : t('summaries') || 'Summaries', icon: BookOpen },
     { to: '/blog', label: t('blog') || 'Blog', icon: FileText },
     { to: '/calculators', label: t('calculators') || 'Calculators', icon: Calculator },
     { to: '/news', label: t('news') || 'News', icon: Newspaper },

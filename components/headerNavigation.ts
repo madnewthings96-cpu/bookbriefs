@@ -4,6 +4,7 @@ const routeGroups: Record<NavigationGroupKey, readonly string[]> = {
   library: [
     '/summaries',
     '/summary',
+    '/ar/summary',
     '/book-summaries',
     '/ar/book-summaries',
     '/categories',
@@ -11,7 +12,7 @@ const routeGroups: Record<NavigationGroupKey, readonly string[]> = {
     '/reading-challenge',
     '/downloads',
   ],
-  tools: ['/calculators', '/ar/tools', '/finance-tracker', '/trading-journal'],
+  tools: ['/calculators', '/ar/tools', '/trade-analyzer', '/finance-tracker', '/trading-journal'],
   learn: ['/blog', '/news', '/connections', '/about'],
 };
 

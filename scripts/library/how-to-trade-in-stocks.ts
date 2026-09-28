@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 112,
     arabicSlug: 'كيف-تتداول-في-الأسهم',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rrIOVd',
-    kindleUrl: 'https://amzn.to/3K5EmdV',
-    audibleUrl: 'https://amzn.to/3M5AeuS',
+    amazonUrl: 'https://link.amazon/B0eDJgUGl',
+    kindleUrl: 'https://link.amazon/B06b5b2VD',
+    audibleUrl: 'https://link.amazon/B08IklGMr',
     arabicPdfUrl: '/pdfs/how to trade in stocks.pdf',
     translations: {
         en: {

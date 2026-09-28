@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 320,
     arabicSlug: 'فكر-تصبح-غنيا',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/49WMuI7',
-    kindleUrl: 'https://amzn.to/4pJemnB',
-    audibleUrl: 'https://amzn.to/4pR65OB',
+    amazonUrl: 'https://link.amazon/B0dJ2jSqm',
+    kindleUrl: 'https://link.amazon/B0brAsV3U',
     arabicPdfUrl: '/pdfs/think and grow rich.pdf',
     translations: {
         en: {

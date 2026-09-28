@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 272,
     arabicSlug: 'بلا-هوادة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ixB3ZG',
-    kindleUrl: 'https://amzn.to/4rz6c3a',
-    audibleUrl: 'https://amzn.to/44Hckwb',
+    amazonUrl: 'https://link.amazon/B0a46brzF',
+    kindleUrl: 'https://link.amazon/B0cZskrJ6',
+    audibleUrl: 'https://link.amazon/B0hd2oDgC',
     arabicPdfUrl: '/pdfs/relentless.pdf',
     translations: {
         en: {

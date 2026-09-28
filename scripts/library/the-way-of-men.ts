@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 186,
     arabicSlug: 'طريق-الرجال',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4asjZlU',
-    kindleUrl: 'https://amzn.to/49crpHw',
-    audibleUrl: 'https://amzn.to/45qEdZI',
+    amazonUrl: 'https://link.amazon/B0aEE2wz9',
+    kindleUrl: 'https://link.amazon/B07d11HeJ',
+    audibleUrl: 'https://link.amazon/B0iUFhdYQ',
     arabicPdfUrl: '/pdfs/the way of men.pdf',
     translations: {
         en: {

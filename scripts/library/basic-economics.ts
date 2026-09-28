@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 704,
     arabicSlug: 'الاقتصاد-الأساسي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4oVyxi9',
-    kindleUrl: 'https://amzn.to/49EKO64',
-    audibleUrl: 'https://amzn.to/4ramlM2',
+    amazonUrl: 'https://link.amazon/B0bM18t7i',
+    kindleUrl: 'https://link.amazon/B07IkG2D7',
+    audibleUrl: 'https://link.amazon/B0hHX3M6S',
     arabicPdfUrl: '/pdfs/basic economics.pdf',
     summary: `# Basic Economics: A Master Guide and Deep-Dive Analysis
 Based on the work of Thomas Sowell

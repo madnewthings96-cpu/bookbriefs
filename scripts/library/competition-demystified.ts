@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 416,
     arabicSlug: 'المنافسة-منزوعة-الغموض',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XMWnAG',
-    kindleUrl: 'https://amzn.to/48cE6BF',
-    audibleUrl: 'https://amzn.to/3KnD1PB',
+    amazonUrl: 'https://link.amazon/B0fWp0QD1',
+    kindleUrl: 'https://link.amazon/B085HBrEr',
+    audibleUrl: 'https://link.amazon/B01vXoMIW',
     arabicPdfUrl: '/pdfs/competition demystified.pdf',
     translations: {
         en: {

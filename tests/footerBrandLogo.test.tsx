@@ -16,4 +16,5 @@ test('footer uses the shared transparent Ta7leel brand asset', () => {
   assert.match(markup, /src="\/images\/ta7leel-navbar-logo-mind-leaf\.png"/);
   assert.match(markup, /alt="Ta7leel"/);
   assert.match(markup, /BookBriefs · High-Signal Reading/);
+  assert.match(markup, /href="https:\/\/www\.pinterest\.com\/Ta7leelPro"/);
 });

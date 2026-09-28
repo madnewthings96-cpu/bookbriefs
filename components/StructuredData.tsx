@@ -21,6 +21,17 @@ interface ArticleSchemaProps {
   url: string;
 }
 
+interface NewsArticleSchemaProps {
+  type: 'newsArticle';
+  headline: string;
+  description: string;
+  image: string;
+  authorName: string;
+  datePublished: string;
+  dateModified: string;
+  mainEntityOfPage: string;
+}
+
 interface BookSchemaProps {
   type: 'book';
   name: string;
@@ -47,6 +58,7 @@ type StructuredDataProps =
   | OrganizationSchemaProps 
   | WebsiteSchemaProps 
   | ArticleSchemaProps 
+  | NewsArticleSchemaProps
   | BookSchemaProps
   | BreadcrumbSchemaProps;
 
@@ -67,6 +79,7 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
             'https://twitter.com/ta7leel',
             'https://facebook.com/ta7leel',
             'https://linkedin.com/company/ta7leel',
+            'https://www.pinterest.com/Ta7leelPro',
           ],
           contactPoint: {
             '@type': 'ContactPoint',
@@ -117,6 +130,31 @@ const StructuredData: React.FC<StructuredDataProps> = (props) => {
             '@type': 'WebPage',
             '@id': props.url,
           },
+        };
+
+      case 'newsArticle':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'NewsArticle',
+          headline: props.headline,
+          description: props.description,
+          image: props.image,
+          author: {
+            '@type': 'Person',
+            name: props.authorName,
+          },
+          datePublished: props.datePublished,
+          dateModified: props.dateModified,
+          inLanguage: 'en',
+          publisher: {
+            '@type': 'Organization',
+            name: BRAND_NAME,
+            logo: {
+              '@type': 'ImageObject',
+              url: `${baseUrl}/favicon/ta7leel.png`,
+            },
+          },
+          mainEntityOfPage: props.mainEntityOfPage,
         };
 
       case 'book':

@@ -11,9 +11,8 @@ export const book: BookDefinition = {
     pageCount: 194,
     arabicSlug: 'أغنى-رجل-في-بابل',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/449RCFc',
-    kindleUrl: 'https://amzn.to/449RCFc',
-    audibleUrl: 'https://amzn.to/4pEUDFM',
+    amazonUrl: 'https://link.amazon/B0fYzyTRX',
+    kindleUrl: 'https://link.amazon/B0dGyxa8n',
     arabicPdfUrl: '/pdfs/the richest man in babylon.pdf',
     translations: {
         en: {

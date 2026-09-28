@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 538,
     arabicSlug: 'المال-المكسور',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4in87DC',
-    kindleUrl: 'https://amzn.to/3MnsaFS',
-    audibleUrl: 'https://amzn.to/3KgaH1t',
+    amazonUrl: 'https://link.amazon/B0dWsjm1J',
+    kindleUrl: 'https://link.amazon/B0fjza9Ec',
+    audibleUrl: 'https://link.amazon/B03eO9cZA',
     arabicPdfUrl: '/pdfs/broken money.pdf',
     translations: {
         en: {

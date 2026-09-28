@@ -7,12 +7,15 @@ import StructuredData from '../components/StructuredData';
 import { useBooks } from '../contexts/BooksContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Book } from '../types';
-import { SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
+import { CATEGORY_HUBS, SITE_URL, canonicalRoutePath } from '../utils/seoConfig';
 import { getBookSummaryHref, type ReadingSurface } from '../components/readingRouteModel';
+import { arabicBookSummaries } from '../translations/arabicBookSummaries';
 import './SummariesPage.css';
 
 const starterBookIds = ['atomic-habits', 'the-psychology-of-money', 'rich-dad-poor-dad', 'thinking-fast-and-slow', 'trading-in-the-zone'];
 const priorityTopics = ['Personal Development', 'Finance', 'Business', 'Trading', 'Psychology', 'Self-Help'];
+const normalizeSearch = (value: string) => value.toLowerCase().replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/-/g, ' ');
+
 const LibraryBook: React.FC<{ book: Book; title: string; author: string; surface: ReadingSurface }> = ({ book, title, author, surface }) => (
   <article className="library-book">
     <Link to={getBookSummaryHref(book, surface)} className="library-book-link" aria-label={'Read ' + title + ' by ' + author}>
@@ -87,9 +90,10 @@ const SummariesPage: React.FC<SummariesPageProps> = ({ surface = 'public' }) => 
   const visibleTopics = showAllTopics ? genres : genres.slice(0, 6);
 
   const filteredBooks = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+    const query = normalizeSearch(searchQuery.trim());
     return library.filter(({ book, title, author }) => {
-      const matchesSearch = !query || [title, author, book.title, book.author, book.category, book.arabicSlug?.replace(/-/g, ' ')].some(value => value?.toLowerCase().includes(query));
+      const arabic = arabicBookSummaries[book.id];
+      const matchesSearch = !query || [title, author, book.title, book.author, book.category, book.arabicSlug, arabic?.title, arabic?.author].some(value => value && normalizeSearch(value).includes(query));
       return matchesSearch && (!selectedGenre || book.category === selectedGenre) &&
         (!selectedAuthor || book.author === selectedAuthor) && (!selectedRating || (book.rating || 0) >= Number(selectedRating));
     }).sort((a, b) => {

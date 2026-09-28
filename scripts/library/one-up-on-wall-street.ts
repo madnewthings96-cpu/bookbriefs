@@ -3,7 +3,7 @@ import { BookDefinition } from '../types.js';
 export const book: BookDefinition = {
     id: 'one-up-on-wall-street',
     title: 'One Up On Wall Street',
-    author: 'Peter Lynch',
+    author: 'Peter Lynch with John Rothchild',
     category: 'Finance',
     coverImageUrl: '/images/one up on wall street.jpg',
     rating: 4.29,
@@ -11,14 +11,14 @@ export const book: BookDefinition = {
     pageCount: 304,
     arabicSlug: 'تفوق-على-وول-ستريت',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4opCc6Y',
-    kindleUrl: 'https://amzn.to/48sgo4L',
-    audibleUrl: 'https://amzn.to/4opCc6Y',
+    amazonUrl: 'https://link.amazon/B0fqjsgm9',
+    kindleUrl: 'https://link.amazon/B045aay5p',
+    audibleUrl: 'https://link.amazon/B09SdwtPb',
     arabicPdfUrl: '/pdfs/one up on wall street.pdf',
     translations: {
         en: {
             title: 'One Up On Wall Street',
-            author: 'Peter Lynch'
+            author: 'Peter Lynch with John Rothchild'
         }
     },
     summary: `# THE AMATEUR’S EDGE: A MASTERCLASS IN COMMON SENSE INVESTING

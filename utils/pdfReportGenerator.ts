@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { Trade } from './tradingUtils';
+import { Trade, getTradeResultTime } from './tradingUtils';
 import {
     MonthlyTradingReportModel,
     buildMonthlyTradingReportModel,
@@ -105,7 +105,7 @@ const getClampedTextLines = (
 
 export const filterTradesByMonth = (trades: Trade[], month: number, year: number): Trade[] => (
     trades.filter((trade) => {
-        const tradeDate = trade.entryDate?.toDate?.();
+        const tradeDate = getTradeResultTime(trade);
         return Boolean(tradeDate && tradeDate.getUTCMonth() === month && tradeDate.getUTCFullYear() === year);
     })
 );
@@ -114,7 +114,7 @@ export const getAvailableMonths = (trades: Trade[]): { month: number; year: numb
     const months = new Map<string, { month: number; year: number }>();
 
     trades.forEach((trade) => {
-        const date = trade.entryDate?.toDate?.();
+        const date = getTradeResultTime(trade);
         if (!date) return;
         months.set(`${date.getUTCFullYear()}-${date.getUTCMonth()}`, {
             month: date.getUTCMonth(),

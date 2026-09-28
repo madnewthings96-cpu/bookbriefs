@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 208,
     arabicSlug: 'قيادة-التغيير',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rLMJwj',
-    kindleUrl: 'https://amzn.to/3XYCpDb',
-    audibleUrl: 'https://amzn.to/3XWCmI3',
+    amazonUrl: 'https://link.amazon/B08jFiHBx',
+    kindleUrl: 'https://link.amazon/B01IotMNv',
+    audibleUrl: 'https://link.amazon/B071AIYJg',
     arabicPdfUrl: '/pdfs/leading change.pdf',
     translations: {
         en: {

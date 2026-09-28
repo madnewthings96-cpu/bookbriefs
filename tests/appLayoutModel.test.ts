@@ -26,5 +26,6 @@ test('authentication routes use the focused standalone app shell', async () => {
   assert.equal(model.getAppLayoutFamily('/finance-tracker'), 'dashboard');
   assert.equal(model.isDashboardAppRoute('/dashboardish'), false);
   assert.equal(model.isFocusedDashboardRoute('/dashboard/summary/atomic-habits'), true);
+  assert.equal(model.isFocusedDashboardRoute('/dashboard/ar/summary/atomic-habits'), true);
   assert.equal(model.isFocusedDashboardRoute('/summary/atomic-habits'), false);
 });

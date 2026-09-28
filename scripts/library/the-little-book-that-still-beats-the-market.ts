@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 192,
     arabicSlug: 'الكتاب-الصغير-الذي-لا-يزال-يتفوق-على-السوق',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rIIOQJ',
-    kindleUrl: 'https://amzn.to/3YfVnp0',
-    audibleUrl: 'https://amzn.to/48Ho2Im',
+    amazonUrl: 'https://link.amazon/B0fVFJ7CH',
+    kindleUrl: 'https://link.amazon/B0gy4TiIV',
+    audibleUrl: 'https://link.amazon/B0hecJ72M',
     arabicPdfUrl: '/pdfs/the little book that still beats the market.pdf',
     translations: {
         en: {

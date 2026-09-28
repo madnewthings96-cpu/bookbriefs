@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 272,
     arabicSlug: 'the-power-of-one-more',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3MUor3i',
-    kindleUrl: 'https://amzn.to/3ZYGw3l',
-    audibleUrl: 'https://amzn.to/4l4Naib',
+    amazonUrl: 'https://link.amazon/B0328XXPM',
+    kindleUrl: 'https://link.amazon/B0fYu5NYr',
+    audibleUrl: 'https://link.amazon/B0csxaZYT',
     arabicPdfUrl: '/pdfs/the power of one more.pdf',
     translations: {
         en: {

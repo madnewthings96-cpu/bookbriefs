@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 208,
     arabicSlug: 'الخيميائي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4oHteCk',
-    kindleUrl: 'https://amzn.to/48NkGVA',
-    audibleUrl: 'https://amzn.to/445C6Kn',
+    amazonUrl: 'https://link.amazon/B05WjglgS',
+    kindleUrl: 'https://link.amazon/B03ByO5ZR',
+    audibleUrl: 'https://link.amazon/B0ffltRLl',
     arabicPdfUrl: '/pdfs/the alchemist.pdf',
     translations: {
         en: {

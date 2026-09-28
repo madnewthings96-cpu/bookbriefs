@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 308,
     arabicSlug: 'أعمل-أربع-ساعات-فقط-في-الأسبوع',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4p9Ys5T',
-    kindleUrl: 'https://amzn.to/4pZU75x',
-    audibleUrl: 'https://amzn.to/4iAaJ1e',
+    amazonUrl: 'https://link.amazon/B06OoZ7W3',
+    kindleUrl: 'https://link.amazon/B08nNJ5F0',
+    audibleUrl: 'https://link.amazon/B062kPjHV',
     arabicPdfUrl: '/pdfs/the 4 hour workweek.pdf',
     translations: {
         en: {

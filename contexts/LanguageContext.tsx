@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { arabicReaderLabels } from '../translations/arabicReaderLabels';
 
-export type Language = 'en';
+export type Language = 'en' | 'ar';
 
 interface LanguageContextType {
   currentLanguage: Language;
@@ -271,7 +272,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const t = (key: string): string => {
-    const translation = translations[currentLanguage];
+    const translation = translations.en;
+    if (currentLanguage === 'ar' && arabicReaderLabels[key]) return arabicReaderLabels[key];
     if (!translation) return key;
 
     const value = translation[key as keyof typeof translations['en']];
@@ -284,12 +286,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   };
 
   const getBookTitle = (bookId: string): string => {
-    const bookTitles = translations[currentLanguage].bookTitles as any;
+    const bookTitles = translations.en.bookTitles as any;
     return bookTitles?.[bookId] || bookId;
   };
 
   const getBookAuthor = (bookId: string): string => {
-    const bookAuthors = translations[currentLanguage].bookAuthors as any;
+    const bookAuthors = translations.en.bookAuthors as any;
     return bookAuthors?.[bookId] || bookId;
   };
 
@@ -302,5 +304,29 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     getBookAuthor
   };
 
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+};
+
+// Content language comes from the URL, not a stored preference. The scoped
+// provider also translates existing reader dialogs without changing their data.
+export const ContentLanguageProvider: React.FC<{ language: Language; children: ReactNode }> = ({ language, children }) => {
+  const parent = useLanguage();
+  const [localizedBooks, setLocalizedBooks] = useState<Record<string, { title: string; author: string }>>({});
+
+  useEffect(() => {
+    if (language !== 'ar') return;
+    let cancelled = false;
+    void import('../translations/arabicBookSummaries').then(({ arabicBookSummaries }) => {
+      if (!cancelled) setLocalizedBooks(arabicBookSummaries);
+    });
+    return () => { cancelled = true; };
+  }, [language]);
+
+  const value = React.useMemo<LanguageContextType>(() => ({
+    ...parent, currentLanguage: language, language,
+    t: key => language === 'ar' ? arabicReaderLabels[key] || parent.t(key) : parent.t(key),
+    getBookTitle: id => language === 'ar' && localizedBooks[id] ? localizedBooks[id].title : parent.getBookTitle(id),
+    getBookAuthor: id => language === 'ar' && localizedBooks[id] ? localizedBooks[id].author : parent.getBookAuthor(id),
+  }), [language, localizedBooks, parent]);
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };

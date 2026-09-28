@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 304,
     arabicSlug: 'تحمل',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4tcXQz1',
-    kindleUrl: 'https://amzn.to/49Jcc2k',
-    audibleUrl: 'https://amzn.to/4bUHJ2D',
+    amazonUrl: 'https://link.amazon/B0dgnPCBM',
+    kindleUrl: 'https://link.amazon/B05iSaMui',
+    audibleUrl: 'https://link.amazon/B0irh6FgL',
     arabicPdfUrl: '/pdfs/endure.pdf',
     translations: {
         en: {

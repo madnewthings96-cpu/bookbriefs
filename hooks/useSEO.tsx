@@ -14,6 +14,7 @@ interface SEOProps {
   canonical?: string;
   noindex?: boolean;
   language?: 'ar' | 'en';
+  alternates?: Array<{ language: 'ar' | 'en'; href: string }>;
 }
 
 const useSEO = ({
@@ -28,6 +29,7 @@ const useSEO = ({
   canonical,
   noindex = false,
   language = 'en',
+  alternates,
 }: SEOProps) => {
   const location = useLocation();
   const shouldNoindex = noindex || isPrivateSeoRoute(location.pathname);
@@ -113,6 +115,17 @@ const useSEO = ({
     }
     canonicalLink.href = currentUrl;
 
+    // Replace initial static alternates and remove them when leaving this page.
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
+    alternates?.forEach(alternate => {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = alternate.language;
+      link.href = alternate.href;
+      document.head.appendChild(link);
+      createdElements.push(link);
+    });
+
     // Cleanup function — remove dynamically created elements on unmount
     return () => {
       document.title = previousTitle;
@@ -123,7 +136,7 @@ const useSEO = ({
         canonicalLink.parentNode.removeChild(canonicalLink);
       }
     };
-  }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, shouldNoindex, language]);
+  }, [title, description, keywords, image, type, author, publishedTime, modifiedTime, currentUrl, fullImageUrl, shouldNoindex, language, JSON.stringify(alternates)]);
 };
 
 export default useSEO;

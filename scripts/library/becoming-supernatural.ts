@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 496,
     arabicSlug: 'الصعود-إلى-الخارق',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/48JhA58',
-    kindleUrl: 'https://amzn.to/4aVB6wz',
-    audibleUrl: 'https://amzn.to/44wbylI',
+    amazonUrl: 'https://link.amazon/B0hCOPWRo',
+    kindleUrl: 'https://link.amazon/B0gdNUxMG',
+    audibleUrl: 'https://link.amazon/B04wpz1mh',
     arabicPdfUrl: '/pdfs/becoming supernatural.pdf',
     translations: {
         en: {

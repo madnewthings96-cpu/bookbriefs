@@ -6,8 +6,12 @@
 [build.environment]
   # Disable secret scanning for Firebase client keys (they're meant to be public)
   NETLIFY_SKIP_SECRET_SCANNING = "true"
-  # Keep Firebase Auth callbacks independent from the retiring website domain.
-  VITE_FIREBASE_AUTH_DOMAIN = "ta7leel-site-dc32f.firebaseapp.com"
+  # Serve Firebase Auth helpers through the primary site so Google shows our domain.
+  VITE_FIREBASE_AUTH_DOMAIN = "www.ta7leel.pro"
+
+[context.production.environment]
+  # Production deploys must not silently omit published news from static SEO output.
+  NEWS_CATALOG_REQUIRED = "true"
 
 # PERFORMANCE: Enable Brotli compression (30-40% better than gzip for mobile)
 [build.processing]
@@ -142,15 +146,35 @@
   status = 301
   force = true
 
-# Consolidate the duplicate library URL. Arabic book summaries are not yet published.
+# Keep Firebase's popup/redirect helpers first-party on our Netlify-hosted domain.
+# These transparent rewrites are required when authDomain is not Firebase Hosting.
 [[redirects]]
-  from = "/book-summaries"
+  from = "/__/auth/*"
+  to = "https://ta7leel-site-dc32f.firebaseapp.com/__/auth/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/__/firebase/init.json"
+  to = "https://ta7leel-site-dc32f.firebaseapp.com/__/firebase/init.json"
+  status = 200
+  force = true
+
+# Consolidate retired library URLs into the main library.
+[[redirects]]
+  from = "/ar/book-summaries"
   to = "/summaries/"
   status = 301
   force = true
 
 [[redirects]]
-  from = "/ar/book-summaries"
+  from = "/ar/book-summaries/"
+  to = "/summaries/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/book-summaries"
   to = "/summaries/"
   status = 301
   force = true
@@ -169,6 +193,13 @@
 
 [[redirects]]
   from = "/news"
+  to = "/index.html"
+  status = 200
+
+# A published article is immediately available through Firestore, before its next prerendered deploy.
+# Existing prerendered article files shadow this non-forced runtime fallback.
+[[redirects]]
+  from = "/news/*"
   to = "/index.html"
   status = 200
 

@@ -1,3 +1,9 @@
+export const CONNECTIONS_SEO = {
+  title: 'Ideas in the Wild - See the World Through Books | Ta7leel',
+  description: 'Connect powerful ideas from books to markets, money, business, behavior, and the decisions shaping everyday life.',
+  keywords: 'book ideas in real life, mental models, applied book summaries, decision making, behavior, markets, business lessons',
+};
+
 export type ConnectionCategory = 'Money' | 'Behavior' | 'Business' | 'Markets' | 'Society';
 
 export interface ConnectedBook {

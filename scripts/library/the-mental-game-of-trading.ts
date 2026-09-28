@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 304,
     arabicSlug: 'اللعبة-الذهنية-للتداول',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pJXm0q',
-    kindleUrl: 'https://amzn.to/48NZAGu',
-    audibleUrl: 'https://amzn.to/4oqGx9P',
+    amazonUrl: 'https://link.amazon/B0cZkPudd',
+    kindleUrl: 'https://link.amazon/B063Gr3PZ',
+    audibleUrl: 'https://link.amazon/B0g0lAMsn',
     arabicPdfUrl: '/pdfs/the mental game of trading.pdf',
     translations: {
         en: {

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import useSEO from '../hooks/useSEO';
 import {
+  CONNECTIONS_SEO,
   CONNECTION_STORIES,
   CONNECTION_TOPICS,
   FEATURED_LENSES,
@@ -26,9 +27,7 @@ const IdeasInTheWildPage: React.FC = () => {
   );
 
   useSEO({
-    title: 'Ideas in the Wild - See the World Through Books | Ta7leel',
-    description: 'Connect powerful ideas from books to markets, money, business, behavior, and the decisions shaping everyday life.',
-    keywords: 'book ideas in real life, mental models, applied book summaries, decision making, behavior, markets, business lessons',
+    ...CONNECTIONS_SEO,
     type: 'website',
   });
 

@@ -55,6 +55,7 @@ test('focused reader keeps its outer main and makes the dashboard summary conten
   assert.match(reader, /<main id="focused-reader-content"/);
   assert.match(summary, /surface\?: ReadingSurface/);
   assert.match(summary, /const ContentElement = surface === 'dashboard' \? 'div' : 'main';/);
+  assert.match(summary, /href=\{getBookLibraryHref\(surface\)\}/);
   assert.match(detail, /surface=\{surface\}/);
 });
 

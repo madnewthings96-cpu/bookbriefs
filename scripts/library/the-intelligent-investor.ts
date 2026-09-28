@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 640,
     arabicSlug: 'المستثمر-الذكي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rFnX0O',
-    kindleUrl: 'https://amzn.to/4pMLD1s',
-    audibleUrl: 'https://amzn.to/4auu3dX',
+    amazonUrl: 'https://link.amazon/B0b5VsNVp',
+    kindleUrl: 'https://link.amazon/B0bSUnxhF',
+    audibleUrl: 'https://link.amazon/B07wplSg0',
     arabicPdfUrl: '/pdfs/the intelligent investor.pdf',
     translations: {
         en: {

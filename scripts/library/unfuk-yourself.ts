@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'حرر-نفسك',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4pEytnu',
-    kindleUrl: 'https://amzn.to/3MLWtq5',
-    audibleUrl: 'https://amzn.to/3MXMFcy',
+    amazonUrl: 'https://link.amazon/B0fyHpoQ2',
+    kindleUrl: 'https://link.amazon/B0fdiilZj',
+    audibleUrl: 'https://link.amazon/B0iMpZ3AO',
     translations: {
         en: {
             title: 'Unfu*k Yourself',

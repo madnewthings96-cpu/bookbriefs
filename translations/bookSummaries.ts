@@ -1,4 +1,5 @@
-import { Language } from '../contexts/LanguageContext';
+import type { Language } from '../contexts/LanguageContext';
+import { arabicBookSummaries, type SummaryLanguage } from './arabicBookSummaries';
 
 export interface BookSummaryTranslation {
   summary: string;
@@ -7,7 +8,7 @@ export interface BookSummaryTranslation {
 
 export interface BookSummaryTranslations {
   [bookId: string]: {
-    [language in Language]: BookSummaryTranslation;
+    [language in Language]?: BookSummaryTranslation;
   };
 }
 
@@ -1456,6 +1457,7 @@ In conclusion, "Becoming" is more than just the autobiography of a former First 
   }
 }
 
-export const getBookSummaryTranslation = (bookId: string, language: Language): BookSummaryTranslation | null => {
+export const getBookSummaryTranslation = (bookId: string, language: SummaryLanguage): BookSummaryTranslation | null => {
+  if (language === 'ar') return arabicBookSummaries[bookId] || null;
   return bookSummaryTranslations[bookId]?.[language] || null;
 };

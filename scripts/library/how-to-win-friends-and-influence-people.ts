@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 288,
     arabicSlug: 'كيف-تكسب-الأصدقاء-وتؤثر-في-الناس',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ojtMxX',
-    kindleUrl: 'https://amzn.to/3KnDLnR',
-    audibleUrl: 'https://amzn.to/481GBbm',
+    amazonUrl: 'https://link.amazon/B07soJDKk',
+    kindleUrl: 'https://link.amazon/B0jj4fwC3',
+    audibleUrl: 'https://link.amazon/B08UiaGEO',
     arabicPdfUrl: '/pdfs/how to win friends and influence people.pdf',
     translations: {
         en: {

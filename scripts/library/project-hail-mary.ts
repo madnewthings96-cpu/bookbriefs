@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 496,
     arabicSlug: 'مشروع-هيل-ماري',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ruHEbo',
-    kindleUrl: 'https://amzn.to/3MedSYc',
-    audibleUrl: 'https://amzn.to/3M9kasf',
+    amazonUrl: 'https://link.amazon/B0hXTbJIf',
+    kindleUrl: 'https://link.amazon/B0fchFcXR',
+    audibleUrl: 'https://link.amazon/B01M5uzrd',
     arabicPdfUrl: '/pdfs/project hail mary.pdf',
     translations: {
         en: {

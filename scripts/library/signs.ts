@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 336,
     arabicSlug: 'علامات',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4anNFAI',
-    kindleUrl: 'https://amzn.to/3Yks6d7',
-    audibleUrl: 'https://amzn.to/4qf2Twv',
+    amazonUrl: 'https://link.amazon/B049Jmyvc',
+    kindleUrl: 'https://link.amazon/B0cIUwxPU',
+    audibleUrl: 'https://link.amazon/B0bubMSGs',
     arabicPdfUrl: '/pdfs/signs.pdf',
     translations: {
         en: {

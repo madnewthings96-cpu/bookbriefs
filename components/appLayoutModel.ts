@@ -21,7 +21,7 @@ export const isDashboardAppRoute = (pathname: string) => {
 };
 
 export const isFocusedDashboardRoute = (pathname: string) =>
-  /^\/dashboard\/summary\/[^/]+$/.test(normalizePath(pathname));
+  /^\/dashboard\/(?:ar\/)?summary\/[^/]+$/.test(normalizePath(pathname));
 
 export const getAppLayoutFamily = (pathname: string): AppLayoutFamily => {
   const normalized = normalizePath(pathname);

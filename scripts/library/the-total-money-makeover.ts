@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 288,
     arabicSlug: 'التحول-المالي-الكامل',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ozmW7x',
-    kindleUrl: 'https://amzn.to/4iCSqs8',
-    audibleUrl: 'https://amzn.to/4asK4kz',
+    amazonUrl: 'https://link.amazon/B000Rj7Nz',
+    kindleUrl: 'https://link.amazon/B08mIVuv0',
+    audibleUrl: 'https://link.amazon/B0bKqytPE',
     arabicPdfUrl: '/pdfs/the total money makeover.pdf',
     translations: {
         en: {

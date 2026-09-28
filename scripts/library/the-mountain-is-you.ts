@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 248,
     arabicSlug: 'الجبل-هو-أنت',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3Lvsfr0',
-    kindleUrl: 'https://amzn.to/3L536DF',
-    audibleUrl: 'https://amzn.to/3LAUJ2I',
+    amazonUrl: 'https://link.amazon/B02hL9gtT',
+    kindleUrl: 'https://link.amazon/B0iTo28wj',
+    audibleUrl: 'https://link.amazon/B0bWxvYNn',
     arabicPdfUrl: '/pdfs/the mountain is you.pdf',
     translations: {
         en: {

@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'نماذج-المال-100-مليون-دولار',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/495rtZM',
-    kindleUrl: 'https://amzn.to/4s4Wt4I',
-    audibleUrl: 'https://amzn.to/49l1ChI',
+    amazonUrl: 'https://link.amazon/B08Qs50sF',
+    kindleUrl: 'https://link.amazon/B00B69NQJ',
+    audibleUrl: 'https://link.amazon/B0hQsYpiz',
     arabicPdfUrl: '/pdfs/$100m money models.pdf',
     translations: {
         en: {

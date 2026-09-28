@@ -13,6 +13,9 @@
   font-family: 'Plus Jakarta Sans', Manrope, sans-serif;
 }
 .summaries-library svg { width: 18px; height: 18px; flex-shrink: 0; }
+.summaries-library.arabic-library { font-family: 'Ta7leel Arabic', sans-serif; }
+.arabic-library .library-book-info h3 { line-height: 1.8; letter-spacing: normal; }
+.arabic-library .library-book-category { letter-spacing: normal; }
 .summaries-library :is(a, button, input, select):focus-visible { outline: 3px solid #46856c; outline-offset: 4px; }
 .summaries-library button { cursor: pointer; }
 .library-shell { max-width: 1280px; margin: auto; padding: 0 40px; }

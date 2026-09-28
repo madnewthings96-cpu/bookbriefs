@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'قاعدة-الخمس-ثواني',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3KPGIOn',
-    kindleUrl: 'https://amzn.to/4pHLTz2',
-    audibleUrl: 'https://amzn.to/4pDZCqE',
+    amazonUrl: 'https://link.amazon/B01kNV2cP',
+    kindleUrl: 'https://link.amazon/B031VCKFP',
+    audibleUrl: 'https://link.amazon/B047G4Uo0',
     arabicPdfUrl: '/pdfs/the 5 second rule.pdf',
     translations: {
         en: {

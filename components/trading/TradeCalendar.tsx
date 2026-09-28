@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trade, formatCurrency } from '../../utils/tradingUtils';
+import { Trade, formatCurrency, getTradeResultTime } from '../../utils/tradingUtils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TradeCalendarProps {
@@ -23,7 +23,7 @@ const TradeCalendar: React.FC<TradeCalendarProps> = ({ trades, onSelectTrade, on
 
         trades.forEach((trade) => {
             if (trade.entryDate?.toDate) {
-                const date = trade.entryDate.toDate();
+                const date = getTradeResultTime(trade);
                 const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
                 if (!tradesByDate[dateKey]) {
                     tradesByDate[dateKey] = [];

@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 271,
     arabicSlug: 'living-with-a-seal',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4kjftZW',
-    kindleUrl: 'https://amzn.to/49OtBqo',
-    audibleUrl: 'https://amzn.to/3NZAblf',
+    amazonUrl: 'https://link.amazon/B034Wu40R',
+    kindleUrl: 'https://link.amazon/B06Hcm0Fn',
+    audibleUrl: 'https://link.amazon/B06QhjnY1',
     arabicPdfUrl: '/pdfs/living with a seal.pdf',
     translations: {
         en: {

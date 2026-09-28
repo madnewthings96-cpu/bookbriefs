@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 352,
     arabicSlug: 'سأعلمك-كيف-تكون-غنياً',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4rv3Ths',
-    kindleUrl: 'https://amzn.to/3M8psUY',
-    audibleUrl: 'https://amzn.to/4rvjwFt',
+    amazonUrl: 'https://link.amazon/B0b2P0sF3',
+    kindleUrl: 'https://link.amazon/B0hI6OAQY',
+    audibleUrl: 'https://link.amazon/B0hkBPERj',
     arabicPdfUrl: '/pdfs/i will teach you to be rich.pdf',
     translations: {
         en: {

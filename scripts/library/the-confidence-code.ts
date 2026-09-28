@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 256,
     arabicSlug: 'شيفرة-الثقة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4jAR6GB',
-    kindleUrl: 'https://amzn.to/4pFBqU3',
-    audibleUrl: 'https://amzn.to/49CTbxn',
+    amazonUrl: 'https://link.amazon/B04p55ZRC',
+    kindleUrl: 'https://link.amazon/B00NlGAR4',
+    audibleUrl: 'https://link.amazon/B0g0B2Td2',
     arabicPdfUrl: '/pdfs/the confidence code.pdf',
     translations: {
         en: {

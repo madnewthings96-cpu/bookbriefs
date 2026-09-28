@@ -10,7 +10,7 @@ import {
     Brain,
     Target,
 } from 'lucide-react';
-import { Trade, formatCurrency } from '../../utils/tradingUtils';
+import { Trade, formatCurrency, getTradeResultTime } from '../../utils/tradingUtils';
 import { useModalDialog } from '../../hooks/useModalDialog';
 
 interface SelectedDay {
@@ -29,7 +29,7 @@ interface TradingReviewDrawerProps {
 
 const formatTradeDate = (trade: Trade): string => {
     if (!trade.entryDate?.toDate) return 'No date';
-    return trade.entryDate.toDate().toLocaleDateString('en-US', {
+    return getTradeResultTime(trade).toLocaleDateString('en-US', {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
@@ -121,11 +121,24 @@ const TradeBody: React.FC<{
                 <div className="grid grid-cols-2 gap-3">
                     <MetricTile label="Entry" value={trade.entryPrice.toFixed(pricePrecision)} />
                     <MetricTile label="Exit" value={trade.exitPrice.toFixed(pricePrecision)} />
-                    <MetricTile label="Stop Loss" value={trade.stopLoss.toFixed(pricePrecision)} />
+                    <MetricTile label="Stop Loss" value={trade.stopLoss === null ? 'Not provided' : trade.stopLoss.toFixed(pricePrecision)} />
                     <MetricTile label="Lot Size" value={trade.lotSize.toString()} />
                     <MetricTile label="Risk Multiple" value={trade.rr ? `${trade.rr > 0 ? '+' : ''}${trade.rr}R` : '-'} tone={pnlTone} />
                     <MetricTile label="P&L" value={formatCurrency(trade.pnl)} tone={pnlTone} />
                 </div>
+
+                {trade.importSource && <section className="mt-5 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4" aria-label="Imported broker details">
+                    <h3 className="text-sm font-semibold text-emerald-900">{trade.importSource.platform === 'ctrader' ? 'cTrader' : 'MT5'} import</h3>
+                    <p className="mt-1 text-xs text-gray-600">Broker-reported result in {trade.importSource.currency}. {trade.importSource.grouping === 'closure' ? 'Closure-level record.' : 'Position-level record.'} Source timezone: {trade.importSource.timezone || 'Not recorded'}.</p>
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                        <MetricTile label="Entry time (UTC)" value={trade.entryDate.toDate().toISOString().replace('T', ' ').slice(0, 19)} />
+                        <MetricTile label="Close time (UTC)" value={trade.importSource.closeTime.toDate().toISOString().replace('T', ' ').slice(0, 19)} />
+                        <MetricTile label="Gross P&L" value={trade.importSource.grossPnl === null ? 'Not provided' : `${trade.importSource.grossPnl.toFixed(2)} ${trade.importSource.currency}`} />
+                        <MetricTile label="Commission" value={trade.importSource.commission === null ? 'Not provided' : `${trade.importSource.commission.toFixed(2)} ${trade.importSource.currency}`} />
+                        <MetricTile label="Swap" value={trade.importSource.swap === null ? 'Not provided' : `${trade.importSource.swap.toFixed(2)} ${trade.importSource.currency}`} />
+                        <MetricTile label="Other fees" value={trade.importSource.fees === null ? 'Not provided' : `${trade.importSource.fees.toFixed(2)} ${trade.importSource.currency}`} />
+                    </div>
+                </section>}
 
                 <div className="mt-5 space-y-4">
                     <section className="rounded-xl bg-white p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06),0_2px_4px_rgba(0,0,0,0.04)]">

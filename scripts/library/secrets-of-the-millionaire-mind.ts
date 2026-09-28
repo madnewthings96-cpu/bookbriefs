@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 210,
     arabicSlug: 'أسرار-عقل-المليونير',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XutcT0',
-    kindleUrl: 'https://amzn.to/4pF0mve',
-    audibleUrl: 'https://amzn.to/3KvIpAk',
+    amazonUrl: 'https://link.amazon/B0dcjjPBS',
+    kindleUrl: 'https://link.amazon/B0fw8wFLE',
+    audibleUrl: 'https://link.amazon/B08MKaizU',
     arabicPdfUrl: '/pdfs/secrets of the millionaire mind.pdf',
     translations: {
         en: {

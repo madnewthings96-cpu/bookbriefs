@@ -31,4 +31,5 @@ test('App exposes every approved dashboard destination behind one protected bran
 
   assert.ok(protectedBlock.includes('<Route path="/dashboard" element={<DashboardLayout />}>'));
   assert.ok(protectedBlock.includes('path="/dashboard/summary/:bookId"'));
+  assert.ok(protectedBlock.includes('path="/dashboard/ar/summary/:bookId"'));
 });

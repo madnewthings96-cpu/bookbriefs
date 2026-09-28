@@ -5,22 +5,26 @@ import { BookOpen, Clock3, Star } from 'lucide-react';
 import { Book } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import FavoriteButton from './FavoriteButton';
+import { arabicBookSummaries, type SummaryLanguage } from '../translations/arabicBookSummaries';
+import { getSummaryPath, arabicCategoryNames } from '../utils/bookLocales';
 
 interface BookCardProps {
   book: Book;
+  language?: SummaryLanguage;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book }) => {
+const BookCard: React.FC<BookCardProps> = ({ book, language = 'en' }) => {
   const { getBookTitle, getBookAuthor } = useLanguage();
 
   const titleFromContext = getBookTitle(book.id);
   const authorFromContext = getBookAuthor(book.id);
 
-  const translatedTitle = titleFromContext === book.id ? book.title : titleFromContext;
-  const translatedAuthor = authorFromContext === book.id ? book.author : authorFromContext;
+  const arabic = language === 'ar' ? arabicBookSummaries[book.id] : undefined;
+  const translatedTitle = arabic?.title || (titleFromContext === book.id ? book.title : titleFromContext);
+  const translatedAuthor = arabic?.author || (authorFromContext === book.id ? book.author : authorFromContext);
 
   // Use Arabic slug if available, otherwise use English ID
-  const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+  const bookUrl = getSummaryPath(book, language);
 
   return (
     <Link to={bookUrl} className="group block rounded-[18px] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#a75d37]/25">
@@ -29,13 +33,13 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           <img
             className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             src={book.coverImageUrl}
-            alt={`Cover of ${translatedTitle}`}
+            alt={arabic ? `غلاف كتاب ${translatedTitle}` : `Cover of ${translatedTitle}`}
             loading="lazy"
             decoding="async"
           />
           <div className="absolute left-2 top-2 z-10 inline-flex min-h-7 items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-[11px] font-black text-[#7a4a31] shadow-[0_8px_18px_rgba(17,24,39,0.12)] backdrop-blur">
             <Clock3 className="h-3 w-3" aria-hidden="true" />
-            10 min
+            {arabic ? `${Math.max(3, Math.ceil(arabic.summary.split(/\s+/).length / 220))} دقائق` : '10 min'}
           </div>
           <div className="absolute top-2 right-2 z-10">
             <FavoriteButton bookId={book.id} size="sm" />
@@ -44,7 +48,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <div className="p-3.5">
           <div className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.08em] text-[#a75d37]">
             <BookOpen className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span className="truncate">{book.category || 'Summary'}</span>
+            <span className="truncate">{arabic ? arabicCategoryNames[book.category] : book.category || 'Summary'}</span>
           </div>
           <h3 className="mb-1 line-clamp-2 min-h-[2.25rem] text-sm font-black leading-tight text-gray-950 transition-colors duration-300 group-hover:text-[#a75d37] text-balance">
             {translatedTitle}
@@ -59,11 +63,11 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
               </span>
             ) : (
               <span className="inline-flex min-h-7 items-center rounded-full bg-[#f7f0e6] px-2.5 py-1 text-xs font-black text-[#7a4a31]">
-                Brief
+                {arabic ? 'ملخص' : 'Brief'}
               </span>
             )}
             <span className="text-xs font-black text-[#a75d37] transition-transform duration-300 group-hover:translate-x-0.5">
-              Read
+              {arabic ? 'اقرأ' : 'Read'}
             </span>
           </div>
         </div>

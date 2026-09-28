@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 366,
     arabicSlug: 'كتاب-إدارة-العقارات-المؤجرة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/45wtpJN',
-    kindleUrl: 'https://amzn.to/49EX6ea',
-    audibleUrl: 'https://amzn.to/3Z1rucB',
+    amazonUrl: 'https://link.amazon/B0fUkcSSk',
+    kindleUrl: 'https://link.amazon/B06AAdfhn',
+    audibleUrl: 'https://link.amazon/B08uN992y',
     arabicPdfUrl: '/pdfs/the book on managing rental properties.pdf',
     translations: {
         en: {

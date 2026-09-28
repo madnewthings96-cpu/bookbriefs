@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'معادلة-المعجزة',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XR0wnn',
-    kindleUrl: 'https://amzn.to/4972430',
-    audibleUrl: 'https://amzn.to/48QTyDQ',
+    amazonUrl: 'https://link.amazon/B018LBeE2',
+    kindleUrl: 'https://link.amazon/B0fHfFUH3',
+    audibleUrl: 'https://link.amazon/B0bWDIbkB',
     translations: {
         en: {
             title: 'The Miracle Equation',

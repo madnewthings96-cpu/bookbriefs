@@ -12,9 +12,9 @@ export const book: BookDefinition = {
     pageCount: 290,
     arabicSlug: 'indistractable',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4tCKHQ1',
-    kindleUrl: 'https://amzn.to/4ay6Iqd',
-    audibleUrl: 'https://amzn.to/46bDaNS',
+    amazonUrl: 'https://link.amazon/B0a7uiv8k',
+    kindleUrl: 'https://link.amazon/B05CRWHNB',
+    audibleUrl: 'https://link.amazon/B06Ya35Fn',
     arabicPdfUrl: '/pdfs/indistractable.pdf',
     translations: {
         en: {

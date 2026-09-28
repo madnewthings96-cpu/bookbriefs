@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 372,
     arabicSlug: 'السود-الريفيون-والليبراليون-البيض',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4in87DC',
-    kindleUrl: 'https://amzn.to/3XAkVx3',
-    audibleUrl: 'https://amzn.to/4pt3sSR',
+    amazonUrl: 'https://link.amazon/B0gvlFjYg',
+    kindleUrl: 'https://link.amazon/B0bU6L14L',
+    audibleUrl: 'https://link.amazon/B085eu3Q3',
     arabicPdfUrl: '/pdfs/black rednecks and white liberals.pdf',
     translations: {
         en: {

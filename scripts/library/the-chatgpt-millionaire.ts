@@ -3,7 +3,7 @@ import { BookDefinition } from '../types.js';
 export const book: BookDefinition = {
     id: 'the-chatgpt-millionaire',
     title: 'The ChatGPT Millionaire',
-    author: 'Neil Dagnall',
+    author: 'Neil Dagger',
     category: 'Business',
     coverImageUrl: '/images/the chatgpt millionaire.jpg',
     rating: 4.5,
@@ -11,18 +11,18 @@ export const book: BookDefinition = {
     pageCount: 120,
     arabicSlug: 'مليونير-تشات-جي-بي-تي',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/4ovMqCQ',
-    kindleUrl: 'https://amzn.to/3Mk9Opm',
-    audibleUrl: 'https://amzn.to/3Y1CAh8',
+    amazonUrl: 'https://link.amazon/B01OLJcKn',
+    kindleUrl: 'https://link.amazon/B0foVpJxW',
+    audibleUrl: 'https://link.amazon/B0bUoKQrZ',
     arabicPdfUrl: '/pdfs/the chatgpt millionaire.pdf',
     translations: {
         en: {
             title: 'The ChatGPT Millionaire',
-            author: 'Neil Dagnall'
+            author: 'Neil Dagger'
         }
     },
     summary: `# THE CHATGPT MILLIONAIRE: Building an AI-Powered Business Empire
-**Based on *The ChatGPT Millionaire* by Neil Dagnall**
+**Based on *The ChatGPT Millionaire* by Neil Dagger**
 
 ---
 

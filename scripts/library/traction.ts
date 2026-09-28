@@ -11,9 +11,9 @@ export const book: BookDefinition = {
     pageCount: 224,
     arabicSlug: 'الجر-قوة-الدفع',
     isPremium: false,
-    amazonUrl: 'https://amzn.to/3XTiQMR',
-    kindleUrl: 'https://amzn.to/4iBD1Z9',
-    audibleUrl: 'https://amzn.to/4rBUAMx',
+    amazonUrl: 'https://link.amazon/B0aSDk7uT',
+    kindleUrl: 'https://link.amazon/B0hTvn4Sj',
+    audibleUrl: 'https://link.amazon/B09916eyO',
     arabicPdfUrl: '/pdfs/traction.pdf',
     translations: {
         en: {
