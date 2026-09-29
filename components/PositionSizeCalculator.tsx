@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, DollarSign, Info, Percent, ShieldAlert, Sparkles } from 'lucide-react';
+import { calculatePositionSizeWithCommission, type CommissionBasis } from '../utils/positionSizeCommission';
 
 interface PositionSizeResult {
   standardLots: number;
@@ -7,6 +8,10 @@ interface PositionSizeResult {
   microLots: number;
   riskAmount: number;
   accountCurrency: string;
+  includeCommission: boolean;
+  estimatedCommission: number;
+  stopLossAmount: number;
+  totalLossAtStop: number;
 }
 
 type RiskType = 'percentage' | 'monetary';
@@ -20,6 +25,9 @@ const PositionSizeCalculator: React.FC = () => {
   const [accountCurrency, setAccountCurrency] = useState('USD');
   const [marketPrice, setMarketPrice] = useState('');
   const [conversionPrice, setConversionPrice] = useState('');
+  const [includeCommission, setIncludeCommission] = useState(false);
+  const [commissionPerLot, setCommissionPerLot] = useState('');
+  const [commissionBasis, setCommissionBasis] = useState<CommissionBasis>('roundTrip');
   const [result, setResult] = useState<PositionSizeResult | null>(null);
 
   // Determine what secondary price input is needed
@@ -142,14 +150,29 @@ const PositionSizeCalculator: React.FC = () => {
       return;
     }
 
-    const standardLots = riskAmount / (sl * pipValue);
+    let sizing: ReturnType<typeof calculatePositionSizeWithCommission>;
+    try {
+      sizing = calculatePositionSizeWithCommission({
+        riskAmount,
+        stopLoss: sl,
+        pipValue,
+        includeCommission,
+        commissionPerLot: parseFloat(commissionPerLot),
+        commissionBasis,
+      });
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Please check your risk and commission inputs.');
+      return;
+    }
+    const { standardLots } = sizing;
 
     setResult({
-      standardLots,
+      ...sizing,
       miniLots: standardLots * 10,
       microLots: standardLots * 100,
       riskAmount,
       accountCurrency,
+      includeCommission,
     });
   };
 
@@ -181,7 +204,7 @@ const PositionSizeCalculator: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} onChange={() => setResult(null)} className="space-y-4">
         {/* Row 1: Account Currency & Balance */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
@@ -230,7 +253,7 @@ const PositionSizeCalculator: React.FC = () => {
             <div className="flex rounded-xl p-1 bg-forest-50 border border-forest-900/10">
               <button
                 type="button"
-                onClick={() => setRiskType('percentage')}
+                onClick={() => { setRiskType('percentage'); setResult(null); }}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                   riskType === 'percentage'
                     ? 'bg-forest-800 text-white shadow-sm'
@@ -243,7 +266,7 @@ const PositionSizeCalculator: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => setRiskType('monetary')}
+                onClick={() => { setRiskType('monetary'); setResult(null); }}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold transition-all ${
                   riskType === 'monetary'
                     ? 'bg-forest-800 text-white shadow-sm'
@@ -348,6 +371,65 @@ const PositionSizeCalculator: React.FC = () => {
           </div>
         )}
 
+        <div className="rounded-xl border border-forest-900/10 bg-forest-50/50 p-4">
+          <label htmlFor="includeCommission" className="flex cursor-pointer items-center justify-between gap-4">
+            <span>
+              <span className="block text-sm font-bold text-forest-950">Include broker commission</span>
+              <span className="mt-1 block text-xs leading-relaxed text-forest-900/60">
+                Optional · Include opening and closing fees in your risk budget.
+              </span>
+            </span>
+            <span className="relative inline-flex shrink-0">
+              <input
+                id="includeCommission"
+                type="checkbox"
+                role="switch"
+                aria-checked={includeCommission}
+                aria-controls={includeCommission ? 'commissionFields' : undefined}
+                checked={includeCommission}
+                onChange={(e) => setIncludeCommission(e.target.checked)}
+                className="peer sr-only"
+              />
+              <span aria-hidden="true" className="h-6 w-11 rounded-full bg-forest-900/20 transition-colors peer-checked:bg-forest-800 peer-focus-visible:ring-4 peer-focus-visible:ring-forest-700/20" />
+              <span aria-hidden="true" className="absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-5" />
+            </span>
+          </label>
+          {includeCommission && (
+            <div id="commissionFields" className="mt-4 border-t border-forest-900/10 pt-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="commissionPerLot" className={formLabelStyle}>Commission per standard lot</label>
+                  <div className="relative">
+                    <input
+                      id="commissionPerLot"
+                      type="number"
+                      value={commissionPerLot}
+                      onChange={(e) => setCommissionPerLot(e.target.value)}
+                      className={`${formInputStyle} pr-14`}
+                      placeholder="e.g., 7.00"
+                      min="0"
+                      step="0.01"
+                      required
+                      aria-describedby="commissionHelp"
+                    />
+                    <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-forest-900/40">{accountCurrency}</span>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="commissionBasis" className={formLabelStyle}>Commission quoted</label>
+                  <select id="commissionBasis" value={commissionBasis} onChange={(e) => setCommissionBasis(e.target.value as CommissionBasis)} className={formInputStyle}>
+                    <option value="roundTrip">Round trip (open + close)</option>
+                    <option value="perSide">Per side (each way)</option>
+                  </select>
+                </div>
+              </div>
+              <p id="commissionHelp" className="mt-3 text-xs leading-relaxed text-forest-900/60">
+                Enter your broker’s fee for 1.00 standard lot in {accountCurrency}. For example, 3.50 per side equals 7.00 round trip.
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Arabic Guidance Note for Gold */}
         <p className="text-xs text-forest-900/60 leading-relaxed" dir="rtl">
           💡 تنبيه للمتداولين: إذا كنت تتداول الذهب (XAU/USD)، يرجى وضع مسافة وقف الخسارة بالنقاط السعرية (Points) وليس (Pips).
@@ -375,7 +457,7 @@ const PositionSizeCalculator: React.FC = () => {
               </span>
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-forest-800 border border-forest-900/10 shadow-sm">
-              Capital at Risk:
+              {result.includeCommission ? 'Risk Budget:' : 'Capital at Risk:'}
               <span className="font-extrabold text-forest-950">
                 {new Intl.NumberFormat(undefined, {
                   style: 'currency',
@@ -428,10 +510,34 @@ const PositionSizeCalculator: React.FC = () => {
               </div>
             </div>
 
+            {result.includeCommission && (
+              <div className="mt-4 border-t border-forest-900/10 pt-4">
+                <dl className="space-y-2 text-sm text-forest-900/75">
+                  {[
+                    ['Stop-loss loss', result.stopLossAmount],
+                    ['Estimated commission (open + close)', result.estimatedCommission],
+                    ['Estimated loss at stop, including commission', result.totalLossAtStop],
+                  ].map(([label, amount], index) => (
+                    <div key={label} className={`flex items-start justify-between gap-4 ${index === 2 ? 'border-t border-forest-900/10 pt-2 font-bold text-forest-950' : ''}`}>
+                      <dt>{label}</dt>
+                      <dd className="shrink-0 tabular-nums">{new Intl.NumberFormat(undefined, { style: 'currency', currency: result.accountCurrency }).format(Number(amount))}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-3 text-xs leading-relaxed text-forest-900/60">
+                  {result.standardLots === 0
+                    ? 'The calculated size is below 0.01 standard lots. Check your broker’s minimum trade size before placing an order.'
+                    : 'Lot size rounded down to 0.01 standard lots to stay within your risk budget. Check your broker’s lot step.'}
+                </p>
+              </div>
+            )}
+
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-forest-50/80 p-3 text-xs text-forest-900/75 border border-forest-900/[0.06]">
               <Info className="h-4 w-4 shrink-0 text-forest-700" />
               <span>
-                Always double check spread and broker commission before placing the order to preserve your exact risk parameters.
+                {result.includeCommission
+                  ? 'Commission is estimated from your entered rate. Spread, slippage, and overnight fees are not included.'
+                  : 'Always double check spread and broker commission before placing the order to preserve your exact risk parameters.'}
               </span>
             </div>
           </div>

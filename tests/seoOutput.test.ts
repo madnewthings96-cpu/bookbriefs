@@ -35,6 +35,7 @@ test('Arabic summaries remain indexable through language links without a separat
   const xml = await read('dist/sitemap-ar.xml');
   const pairs = [
     ['العادات-الذرية', 'atomic-habits'],
+    ['العمل-العميق', 'deep-work'],
     ['سيكولوجية-المال', 'سيكولوجية-المال'],
     ['الأب-الغني-والأب-الفقير', 'rich-dad-poor-dad'],
     ['التفكير-السريع-والبطيء', 'thinking-fast-and-slow'],

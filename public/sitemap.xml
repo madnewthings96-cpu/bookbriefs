@@ -191,6 +191,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.ta7leel.pro/summary/deep-work/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ta7leel.pro/summary/die-with-zero/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
@@ -730,6 +735,11 @@
   </url>
   <url>
     <loc>https://www.ta7leel.pro/ar/summary/%D8%A7%D9%84%D9%85%D9%86%D8%A7%D9%81%D8%B3%D8%A9-%D9%85%D9%86%D8%B2%D9%88%D8%B9%D8%A9-%D8%A7%D9%84%D8%BA%D9%85%D9%88%D8%B6/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ta7leel.pro/ar/summary/%D8%A7%D9%84%D8%B9%D9%85%D9%84-%D8%A7%D9%84%D8%B9%D9%85%D9%8A%D9%82/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
