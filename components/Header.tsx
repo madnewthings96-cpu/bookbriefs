@@ -7,6 +7,7 @@ import {
   BookOpen,
   Bookmark,
   Calculator,
+  ChartCandlestick,
   ChevronDown,
   Coffee,
   Compass,
@@ -156,7 +157,7 @@ const Header: React.FC = () => {
             to: '/trade-analyzer',
             label: 'Trade analyzer (beta)',
             description: 'Turn MT5 or cTrader closed history into a clear performance review.',
-            icon: BarChart3,
+            icon: ChartCandlestick,
           },
           {
             to: '/trading-journal',

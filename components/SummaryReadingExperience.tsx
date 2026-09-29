@@ -280,7 +280,7 @@ const SummaryReadingExperience: React.FC<SummaryReadingExperienceProps> = ({
                   className={`${actionButtonClass} bg-gradient-to-r from-[#304529] to-[#4A6741] text-white shadow-[0_12px_26px_rgba(48,69,41,0.23)] hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(48,69,41,0.3)]`}
                 >
                   <Download aria-hidden="true" className="h-[18px] w-[18px]" />
-                  {isArabic ? label('printSummary', 'Print summary') : 'Arabic PDF'}
+                  {isArabic ? label('printSummary', 'Print summary') : 'Download PDF'}
                 </button>
                 <button
                   type="button"

@@ -13,7 +13,7 @@ test('reading destinations lead and tools remain a secondary group', () => {
     '/dashboard', '/dashboard/discover', '/dashboard/library', '/dashboard/notes', '/dashboard/challenge',
   ]);
   assert.deepEqual(DASHBOARD_NAVIGATION[1].items.map(item => item.href), [
-    '/dashboard/downloads', '/dashboard/calculators', '/dashboard/finance', '/dashboard/trading',
+    '/dashboard/downloads', '/dashboard/calculators', '/dashboard/trade-analyzer', '/dashboard/finance', '/dashboard/trading',
   ]);
   assert.equal(DASHBOARD_NAVIGATION.flatMap(group => group.items).some(item => item.href.includes('admin')), false);
 });
@@ -25,6 +25,12 @@ test('overview matching is exact while nested destinations stay active', () => {
   assert.equal(isDashboardNavItemActive(overview, '/dashboard/library'), false);
   assert.equal(isDashboardNavItemActive(library, '/dashboard/library/saved'), true);
   assert.equal(getDashboardPageTitle('/dashboard/finance'), 'Finance Tracker');
+  const analyzer = DASHBOARD_NAVIGATION[1].items.find(item => item.id === 'trade-analyzer');
+  assert.ok(analyzer);
+  assert.equal(analyzer.badge, 'Beta');
+  assert.equal(isDashboardNavItemActive(analyzer, '/dashboard/trade-analyzer'), true);
+  assert.equal(isDashboardNavItemActive(analyzer, '/dashboard/calculators'), false);
+  assert.equal(getDashboardPageTitle('/dashboard/trade-analyzer'), 'Trade Analyzer');
 });
 
 test('legacy protected routes have deterministic replacements', () => {

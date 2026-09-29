@@ -37,6 +37,7 @@ import { confidencePerspectiveArabicBookSummaries } from './confidencePerspectiv
 import { institutionsIdentityArabicBookSummaries } from './institutionsIdentityArabicBookSummaries';
 
 import { remainingArabicBookSummaries } from './remainingArabicBookSummaries';
+import { deepWorkArabicBookSummary } from './deepWorkArabicBookSummary';
 
 export type SummaryLanguage = 'en' | 'ar';
 
@@ -77,6 +78,7 @@ export const arabicBookSummaries: Record<string, ArabicBookSummary> = {
   ...confidencePerspectiveArabicBookSummaries,
   ...institutionsIdentityArabicBookSummaries,
   ...remainingArabicBookSummaries,
+  ...deepWorkArabicBookSummary,
   'atomic-habits': {
     title: 'العادات الذرية', author: 'جيمس كلير', slug: 'العادات-الذرية',
     description: 'ملخص كتاب العادات الذرية لجيمس كلير: افهم قوانين بناء العادات، صمّم بيئتك، وابدأ بخطوات صغيرة قابلة للاستمرار.',

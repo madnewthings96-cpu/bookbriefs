@@ -36,7 +36,7 @@ function MobileNavigationItem({ item, pathname, onNavigate, onFeedback }: {
     return <button type="button" className={className} onClick={() => { onNavigate(); onFeedback(); }}><Icon aria-hidden="true" size={20} /><span>{label}</span></button>;
   }
 
-  return <NavLink to={item.href} className={className} aria-current={active ? 'page' : undefined} onClick={onNavigate}><Icon aria-hidden="true" size={20} /><span>{label}</span></NavLink>;
+  return <NavLink to={item.href} className={className} aria-current={active ? 'page' : undefined} onClick={onNavigate}><Icon aria-hidden="true" size={20} /><span>{label}{item.badge && <span className="dashboard-nav-badge">{item.badge}</span>}</span></NavLink>;
 }
 
 export function DashboardMobileNav({ open, onOpenChange, onFeedback }: DashboardMobileNavProps) {

@@ -2,6 +2,7 @@ import {
   BookOpen,
   Calculator,
   CandlestickChart,
+  ChartCandlestick,
   Compass,
   Download,
   LayoutDashboard,
@@ -20,6 +21,7 @@ export interface DashboardNavItem {
   fallbackLabel: string;
   href: string;
   icon: LucideIcon;
+  badge?: string;
   exact?: boolean;
   action?: 'feedback';
 }
@@ -50,6 +52,7 @@ export const DASHBOARD_NAVIGATION: DashboardNavGroup[] = [
     items: [
       { id: 'downloads', labelKey: 'dashboardDownloads', fallbackLabel: 'Downloads', href: '/dashboard/downloads', icon: Download },
       { id: 'calculators', labelKey: 'dashboardCalculators', fallbackLabel: 'Calculators', href: '/dashboard/calculators', icon: Calculator },
+      { id: 'trade-analyzer', labelKey: 'dashboardTradeAnalyzer', fallbackLabel: 'Trade Analyzer', badge: 'Beta', href: '/dashboard/trade-analyzer', icon: ChartCandlestick },
       { id: 'finance', labelKey: 'dashboardFinance', fallbackLabel: 'Finance Tracker', href: '/dashboard/finance', icon: WalletCards },
       { id: 'trading', labelKey: 'dashboardTrading', fallbackLabel: 'Trading Journal', href: '/dashboard/trading', icon: CandlestickChart },
     ],
