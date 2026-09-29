@@ -26,3 +26,14 @@ test('fieldbook theme defines print-inspired surfaces and responsive behavior', 
   assert.match(styles, /@media\s*\(max-width:\s*767px\)/i);
   assert.match(styles, /prefers-reduced-motion/);
 });
+
+test('equity story preserves tooltip precision and disables chart motion', async () => {
+  const [source, styles] = await Promise.all([
+    readFile(new URL('../components/trading/EquityCurve.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../pages/TradingJournalPage.css', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(source, /const tooltipCurrencyFormatter = new Intl\.NumberFormat\('en-US', \{[\s\S]*minimumFractionDigits: 2,[\s\S]*maximumFractionDigits: 2,[\s\S]*\}\);/);
+  assert.equal((source.match(/<Tooltip content=\{<CustomTooltip \/>} isAnimationActive=\{false\} \/>/g) || []).length, 2);
+  assert.match(styles, /\.equity-story-metrics dd\.equity-story-loss\s*\{[^}]*color:\s*var\(--fieldbook-loss\)/s);
+});

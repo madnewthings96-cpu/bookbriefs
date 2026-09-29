@@ -88,14 +88,14 @@ const NotesAndHighlightsPanel: React.FC<NotesAndHighlightsPanelProps> = ({ bookI
             ) : (
               <div className="space-y-4">
                 {notes.map((note) => (
-                  <div key={note.id} className="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                  <div key={note.id} className="bg-blue-50 rounded-lg p-4 border-s-4 border-blue-500">
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
                         <p className="text-gray-800 whitespace-pre-wrap">{note.content}</p>
                       </div>
                       <button
                         onClick={() => handleDeleteNote(note.id)}
-                        className="ml-2 text-red-500 hover:text-red-700 p-1"
+                        className="ms-2 text-red-500 hover:text-red-700 p-1"
                         title={label('deleteNote', 'Delete note')}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +131,7 @@ const NotesAndHighlightsPanel: React.FC<NotesAndHighlightsPanelProps> = ({ bookI
             ) : (
               <div className="space-y-4">
                 {highlights.map((highlight) => (
-                  <div key={highlight.id} className="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
+                  <div key={highlight.id} className="bg-yellow-50 rounded-lg p-4 border-s-4 border-yellow-500">
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
                         <blockquote className="text-gray-800 italic">
@@ -145,7 +145,7 @@ const NotesAndHighlightsPanel: React.FC<NotesAndHighlightsPanelProps> = ({ bookI
                       </div>
                       <button
                         onClick={() => handleDeleteHighlight(highlight.id)}
-                        className="ml-2 text-red-500 hover:text-red-700 p-1"
+                        className="ms-2 text-red-500 hover:text-red-700 p-1"
                         title={label('deleteHighlight', 'Delete highlight')}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

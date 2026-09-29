@@ -21,6 +21,7 @@ import {
   getNextBookProgress,
   getPrimaryShelfUtility,
   isNewReadingProfile,
+  RECOMMENDED_BOOK_IDS,
 } from '../components/profile/profilePageModel';
 import { Book } from '../types';
 import './UserProfilePage.css';
@@ -41,15 +42,6 @@ const PROGRESS_COLORS = [
 
 const FALLBACK_COVER =
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDE1MCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3Lm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik02MCA3MEg5MFYxMDBINjBWNzBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik01MCAxMTBIMTEwVjEyMEg1MFYxMTBaIiBmaWxsPSIjOUNBM0FGIi8+CjxwYXRoIGQ9Ik02MCAxMzBIMTAwVjE0MEg2MFYxMzBaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
-
-const RECOMMENDED_BOOK_IDS = [
-  'thinkandgrowrich',
-  'the-alchemist',
-  'rich-dad-poor-dad',
-  'the-four-agreements',
-  'educated',
-  'dune',
-];
 
 const getProgressColor = (bookId: string) => {
   const index = bookId.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % PROGRESS_COLORS.length;

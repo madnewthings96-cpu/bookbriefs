@@ -8,13 +8,15 @@ interface YouMayAlsoLikeProps {
   currentBookCategory?: string;
   books: Book[];
   maxBooks?: number;
+  getBookSummaryHref: (book: Pick<Book, 'id' | 'arabicSlug'>) => string;
 }
 
 const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
   currentBookId,
   currentBookCategory,
   books,
-  maxBooks = 8
+  maxBooks = 8,
+  getBookSummaryHref,
 }) => {
   const { getBookTitle, getBookAuthor, t } = useLanguage();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -131,7 +133,7 @@ const YouMayAlsoLike: React.FC<YouMayAlsoLikeProps> = ({
           >
             {recommendedBooks.map((book) => {
               const isLiked = likedBooks.has(book.id);
-              const bookUrl = book.arabicSlug ? `/summary/${book.arabicSlug}` : `/summary/${book.id}`;
+              const bookUrl = getBookSummaryHref(book);
 
               const titleFromContext = getBookTitle(book.id);
               const authorFromContext = getBookAuthor(book.id);

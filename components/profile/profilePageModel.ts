@@ -1,5 +1,14 @@
 export type ReadingStatKey = 'completed' | 'streak' | 'time' | 'saved';
 
+export const RECOMMENDED_BOOK_IDS = [
+  'thinkandgrowrich',
+  'the-alchemist',
+  'rich-dad-poor-dad',
+  'the-four-agreements',
+  'educated',
+  'dune',
+];
+
 export interface ReadingStat {
   key: ReadingStatKey;
   label: string;

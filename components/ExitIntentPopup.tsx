@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
 import ExitIntentDialog from './ExitIntentDialog';
 import { getModalFocusWrapTarget } from './modalFocusTrap';
+import { useAuth } from '../contexts/AuthContext';
 
 const EXIT_POPUP_STORAGE_KEY = 'exit_popup_last_shown';
 const POPUP_COOLDOWN_DAYS = 7;
@@ -23,6 +18,7 @@ const ExitIntentPopup: React.FC = () => {
   const [hasShown, setHasShown] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const { login, signup, loginWithGoogle } = useAuth();
 
   const checkCooldown = () => {
     const lastShown = localStorage.getItem(EXIT_POPUP_STORAGE_KEY);
@@ -102,7 +98,7 @@ const ExitIntentPopup: React.FC = () => {
     setError(null);
 
     try {
-      await signInWithPopup(auth, googleProvider);
+      await loginWithGoogle();
       setIsVisible(false);
     } catch (caughtError) {
       console.error(caughtError);
@@ -120,9 +116,9 @@ const ExitIntentPopup: React.FC = () => {
 
     try {
       if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
+        await login(email, password);
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        await signup('', email, password);
       }
       setIsVisible(false);
     } catch (caughtError) {

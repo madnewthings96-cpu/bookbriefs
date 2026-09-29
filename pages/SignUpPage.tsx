@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthGateway } from '../components/AuthGateway';
+import { getSafePostAuthDestination } from '../components/authRouteModel';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignUpPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -15,6 +15,11 @@ const SignUpPage: React.FC = () => {
   const [success, setSuccess] = useState('');
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signup, loginWithGoogle } = useAuth();
+  const destination = getSafePostAuthDestination(
+    typeof location.state?.from === 'string' ? location.state.from : undefined,
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,21 +49,9 @@ const SignUpPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Create user with Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      await signup(name.trim(), email, password);
 
-      // Update the user's display name
-      await updateProfile(user, {
-        displayName: name.trim()
-      });
-
-      // Show success message
-      setSuccess('Account created successfully! Redirecting...');
-
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+      navigate(destination, { replace: true });
     } catch (err: any) {
       console.error('Sign up error:', err);
       console.error('Error code:', err.code);
@@ -98,15 +91,9 @@ const SignUpPage: React.FC = () => {
     setIsGoogleLoading(true);
 
     try {
-      // Sign up with Google
-      await signInWithPopup(auth, googleProvider);
+      await loginWithGoogle();
 
-      // Show success message
-      setSuccess('Account created successfully with Google! Redirecting...');
-
-      setTimeout(() => {
-        navigate('/profile');
-      }, 1500);
+      navigate(destination, { replace: true });
     } catch (err: any) {
       console.error('Google sign up error:', err);
       console.error('Error code:', err.code);

@@ -1,0 +1,28 @@
+.focused-reader-frame :is(button, a, input, select, textarea, summary, [role='button']) {
+  min-block-size: 44px;
+  min-inline-size: 44px;
+}
+
+.focused-reader-frame :focus-visible {
+  outline: 3px solid #c49552;
+  outline-offset: 3px;
+}
+
+.focused-reader-frame :is(button, a, input, select, textarea, summary, [role='button']) {
+  transition-property: background-color, border-color, box-shadow, color, opacity, transform;
+}
+
+[dir='rtl'] .focused-reader-frame {
+  direction: rtl;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focused-reader-frame *,
+  .focused-reader-frame *::before,
+  .focused-reader-frame *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

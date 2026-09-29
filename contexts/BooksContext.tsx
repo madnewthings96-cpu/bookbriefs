@@ -9,10 +9,16 @@
  * - Caching for performance
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { collection, getDocs, query, orderBy, limit, where, onSnapshot } from 'firebase/firestore';
 import { getDbInstance } from '../firebase';
 import { Book } from '../types';
+import {
+  readBooksCache,
+  writeBooksCache,
+  type BooksCacheStorage,
+} from './booksCache';
+import { LatestRequestGate } from './latestRequestGate';
 
 const mergeBooksWithLocalFallbacks = async (books: Book[]): Promise<Book[]> => {
   const localFallbacks = await import('../utils/localBookFallbacks');
@@ -30,6 +36,15 @@ interface BooksContextType {
 }
 
 const BooksContext = createContext<BooksContextType | undefined>(undefined);
+
+const getSessionStorage = (): BooksCacheStorage | null => {
+  try {
+    if (typeof globalThis === 'undefined' || !('sessionStorage' in globalThis)) return null;
+    return globalThis.sessionStorage as BooksCacheStorage;
+  } catch {
+    return null;
+  }
+};
 
 export const useBooks = () => {
   const context = useContext(BooksContext);
@@ -51,12 +66,16 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const requestGate = useRef(new LatestRequestGate()).current;
 
   // Fetch books from Firestore
   const fetchBooks = async () => {
+    const requestId = requestGate.begin();
     try {
-      setLoading(true);
-      setError(null);
+      if (requestGate.isCurrent(requestId)) {
+        setLoading(true);
+        setError(null);
+      }
       
       const db = getDbInstance();
       const booksRef = collection(db, 'books');
@@ -67,58 +86,47 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
         ...doc.data(),
         id: doc.id,
       })) as Book[]);
-      
+
+      if (!requestGate.isCurrent(requestId)) return;
       setBooks(booksData);
       
-      // Cache books in sessionStorage for faster subsequent loads
-      try {
-        sessionStorage.setItem('books_cache', JSON.stringify(booksData));
-        sessionStorage.setItem('books_cache_timestamp', Date.now().toString());
-      } catch (e) {
-        // Ignore storage errors
-        console.warn('Failed to cache books:', e);
-      }
+      // Cache books in sessionStorage for faster subsequent loads.
+      writeBooksCache(getSessionStorage(), booksData);
       
     } catch (err) {
+      if (!requestGate.isCurrent(requestId)) return;
       console.error('Error fetching books:', err);
       setError('Failed to load books. Please try again later.');
       
-      // Try to load from cache if available
-      try {
-        const cachedBooks = sessionStorage.getItem('books_cache');
-        if (cachedBooks) {
-          setBooks(await mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)));
-          console.log('📦 Loaded books from cache');
-        }
-      } catch (e) {
-        console.warn('Failed to load from cache:', e);
+      // Try a validated cache fallback if Firestore is unavailable. A stale
+      // but complete catalog is more useful than replacing the page with an
+      // empty state; malformed cache entries are removed by the reader.
+      const cached = readBooksCache(getSessionStorage());
+      if (cached && requestGate.isCurrent(requestId)) {
+        const fallbackBooks = await mergeBooksWithLocalFallbacks(cached.books);
+        if (!requestGate.isCurrent(requestId)) return;
+        setBooks(fallbackBooks);
+        console.log('📦 Loaded books from cache');
       }
     } finally {
-      setLoading(false);
+      if (requestGate.isCurrent(requestId)) setLoading(false);
     }
   };
 
   // Initial load
   useEffect(() => {
-    // Try to load from cache first for instant display
-    try {
-      const cachedBooks = sessionStorage.getItem('books_cache');
-      const cacheTimestamp = sessionStorage.getItem('books_cache_timestamp');
-      
-      if (cachedBooks && cacheTimestamp) {
-        const cacheAge = Date.now() - parseInt(cacheTimestamp);
-        // Use cache if less than 5 minutes old
-        if (cacheAge < 5 * 60 * 1000) {
-          void mergeBooksWithLocalFallbacks(JSON.parse(cachedBooks)).then((cached) => {
-            setBooks(cached);
-            setLoading(false);
-            console.log('📦 Loaded books from cache instantly');
-          });
-          return;
-        }
+    // Try to load from cache first for instant display. The cache reader
+    // validates every required field and clears only an invalid cache pair.
+    const cached = readBooksCache(getSessionStorage());
+    const usedFreshCache = Boolean(cached?.fresh);
+    if (cached) {
+      void mergeBooksWithLocalFallbacks(cached.books).then(setBooks);
+      if (cached.fresh) {
+        setLoading(false);
+        console.log('📦 Loaded books from cache instantly');
+      } else {
+        console.log('📦 Loaded books from stale cache while refreshing');
       }
-    } catch (e) {
-      console.warn('Cache load failed:', e);
     }
 
     // Fetch from Firestore
@@ -144,7 +152,7 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({
       });
 
       return () => unsubscribe();
-    } else {
+    } else if (!usedFreshCache) {
       // One-time fetch
       fetchBooks();
     }
