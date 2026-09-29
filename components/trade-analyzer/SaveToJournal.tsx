@@ -4,10 +4,10 @@ import { auth, db } from '../../firebase';
 import { firestoreJournalWriter, MAX_JOURNAL_IMPORT_RECORDS, previewJournalSave, saveJournalTrades, type SavePreview, type SaveResult } from '../../features/trade-analyzer/journalSave';
 import type { ImportReport } from '../../features/trade-analyzer/types';
 
-type Props = { report: ImportReport; currency: string; timezone: string; userId: string | null };
+type Props = { report: ImportReport; currency: string; timezone: string; userId: string | null; journalHref?: string };
 const writer = firestoreJournalWriter(db);
 
-export const SaveToJournal: React.FC<Props> = ({ report, currency, timezone, userId }) => {
+export const SaveToJournal: React.FC<Props> = ({ report, currency, timezone, userId, journalHref = '/trading-journal' }) => {
   const [preview, setPreview] = useState<SavePreview | null>(null);
   const [result, setResult] = useState<SaveResult | null>(null);
   const [busy, setBusy] = useState(false);
@@ -50,7 +50,7 @@ export const SaveToJournal: React.FC<Props> = ({ report, currency, timezone, use
         {report.records.length > MAX_JOURNAL_IMPORT_RECORDS ? <p role="alert">Journal saving supports up to {MAX_JOURNAL_IMPORT_RECORDS.toLocaleString()} trades per import. Analyze a shorter date range before saving.</p> : preview ? <p><strong>{preview.ready}</strong> new · <strong>{preview.existing}</strong> already saved · <strong>{preview.notSaveable}</strong> incomplete{preview.collisions > 0 && <> · <strong>{preview.collisions}</strong> conflicts</>}</p> : <p>Check which eligible trades are new before writing anything to your journal.</p>}
         {preview?.collisions ? <p role="alert">A journal ID conflicts with an unrelated entry. Nothing will be overwritten.</p> : null}
         {error && <p role="alert">{error}</p>}
-        {result && <p role="status">Saved {result.saved} {result.saved === 1 ? 'trade' : 'trades'}. {result.existing} already saved. <Link to="/trading-journal">Open journal</Link></p>}
+        {result && <p role="status">Saved {result.saved} {result.saved === 1 ? 'trade' : 'trades'}. {result.existing} already saved. <Link to={journalHref}>Open journal</Link></p>}
         {!preview ? <button type="button" className="ta-primary-button" onClick={checkJournal} disabled={busy || report.records.length > MAX_JOURNAL_IMPORT_RECORDS}>{busy ? 'Checking…' : 'Check journal'}</button> :
           <button type="button" className="ta-primary-button" onClick={save} disabled={busy || preview.ready === 0 || preview.collisions > 0}>{busy ? 'Saving…' : 'Save eligible trades'}</button>}
       </div>}

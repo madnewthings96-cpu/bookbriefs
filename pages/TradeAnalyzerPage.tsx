@@ -9,17 +9,19 @@ import { canAnalyze, importHistory } from '../features/trade-analyzer/importHist
 import type { ImportPlatform, ImportReport } from '../features/trade-analyzer/types';
 import useSEO from '../hooks/useSEO';
 import { useFirebase } from '../contexts/FirebaseContext';
+import type { ReadingSurface } from '../components/readingRouteModel';
 
 type Phase = 'empty' | 'reading' | 'unsupported' | 'verifying' | 'analyzed';
 const adConfig = readTradeAnalyzerAdSenseConfig((import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {});
 
-const TradeAnalyzerPage: React.FC = () => {
+const TradeAnalyzerPage: React.FC<{ surface?: ReadingSurface }> = ({ surface = 'public' }) => {
   const { currentUser } = useFirebase();
   useSEO({
     title: 'Free MT5 & cTrader Trade Analyzer | Ta7leel',
     description: 'Import an MT5 or cTrader history, verify the records, and review closed-trade performance in a private, browser-based dashboard.',
     keywords: 'MT5 trade analyzer, cTrader trade analytics, trading history dashboard, trading journal',
     canonical: 'https://www.ta7leel.pro/trade-analyzer/',
+    noindex: surface === 'dashboard',
   });
   const [platform, setPlatform] = useState<ImportPlatform>('mt5');
   const [phase, setPhase] = useState<Phase>('empty');
@@ -69,13 +71,15 @@ const TradeAnalyzerPage: React.FC = () => {
     setPhase('analyzed');
   };
 
-  return <div className="trade-analyzer">
+  return <div className="trade-analyzer" data-surface={surface}>
     <div className="ta-shell">
       <header className="ta-hero">
         <div className="ta-hero-copy">
           <p className="ta-kicker"><span className="ta-kicker-line" /> Trading desk · Beta · Free tool</p>
           <h1>Trade Analyzer<span className="ta-title-dot">.</span></h1>
-          <p className="ta-hero-lede">Turn a trading history into a clearer picture of your closed trades—without connecting a broker or creating an account.</p>
+          <p className="ta-hero-lede">{surface === 'dashboard'
+            ? 'Turn a trading history into a clearer picture of your closed trades. Import an export and review the results without connecting your broker.'
+            : 'Turn a trading history into a clearer picture of your closed trades—without connecting a broker or creating an account.'}</p>
           <div className="ta-hero-meta"><span>MT5 + cTrader</span><span>Closed-trade review</span><span>No AI credits per analysis</span></div>
         </div>
         <div className="ta-hero-mark" aria-hidden="true"><span>∿</span><small>REVIEW THE RECORD</small></div>
@@ -92,7 +96,7 @@ const TradeAnalyzerPage: React.FC = () => {
       </div>}
 
       {phase === 'verifying' && report && <VerifyPanel report={report} currency={currency} timezone={timezone} startingBalance={startingBalance} onCurrencyChange={setCurrency} onTimezoneChange={setTimezone} onStartingBalanceChange={setStartingBalance} onBack={() => reset()} onAnalyze={analyze} />}
-      {phase === 'analyzed' && report && model && <><Dashboard model={model} report={report} onStartOver={() => reset()} /><SaveToJournal report={report} currency={currency} timezone={timezone} userId={currentUser?.uid ?? null} /></>}
+      {phase === 'analyzed' && report && model && <><Dashboard model={model} report={report} onStartOver={() => reset()} /><SaveToJournal report={report} currency={currency} timezone={timezone} userId={currentUser?.uid ?? null} journalHref={surface === 'dashboard' ? '/dashboard/trading' : '/trading-journal'} /></>}
     </div>
   </div>;
 };

@@ -25,7 +25,7 @@ test('App exposes every approved dashboard destination behind one protected bran
   const protectedBlock = extractRouteBlock(source, '<Route element={<ProtectedRoute />}>');
   const dashboardBlock = extractRouteBlock(source, '<Route path="/dashboard" element={<DashboardLayout />}>');
 
-  for (const path of ['discover', 'library', 'notes', 'challenge', 'downloads', 'calculators/*', 'finance', 'trading', 'settings', 'admin/feedback']) {
+  for (const path of ['discover', 'library', 'notes', 'challenge', 'downloads', 'calculators/*', 'trade-analyzer', 'finance', 'trading', 'settings', 'admin/feedback']) {
     assert.ok(dashboardBlock.includes(`path="${path}"`), `Expected /dashboard descendant: ${path}`);
   }
 

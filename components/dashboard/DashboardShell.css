@@ -33,6 +33,8 @@
 .dashboard-nav-item { display: flex; min-block-size: 44px; inline-size: 100%; align-items: center; gap: 12px; border: 0; border-radius: 10px; background: transparent; color: #d7e3da; padding-inline: 12px; text-align: start; text-decoration: none; transition-property: background-color, color, transform; transition-duration: 160ms; }
 .dashboard-nav-item:hover { background: rgb(255 255 255 / 10%); color: #fff; transform: translateX(2px); }
 .dashboard-nav-item.is-active { background: #eff4ed; color: var(--dashboard-forest-deep); font-weight: 800; }
+.dashboard-nav-item > svg { flex-shrink: 0; }
+.dashboard-nav-badge { display: inline-block; margin-inline-start: 6px; border: 1px solid currentColor; border-radius: 5px; padding: 2px 4px; font-size: 9px; font-weight: 700; line-height: 1; vertical-align: middle; }
 .dashboard-sidebar-footer { display: grid; gap: 4px; margin-block-start: auto; padding: 12px; border-block-start: 1px solid rgb(255 255 255 / 10%); }
 .dashboard-user { display: flex; min-block-size: 52px; align-items: center; gap: 10px; overflow: hidden; padding-inline: 10px; }
 .dashboard-user-initial { display: inline-grid; inline-size: 30px; block-size: 30px; flex: 0 0 30px; place-items: center; border-radius: 999px; background: #d0923d; color: var(--dashboard-forest-deep); font-size: 13px; font-weight: 900; }

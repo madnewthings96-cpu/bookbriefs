@@ -31,9 +31,9 @@ const DashboardNavigationItem = ({ item, pathname, onFeedback }: {
   }
 
   return (
-    <NavLink to={item.href} className={className} aria-current={isDashboardNavItemActive(item, pathname) ? 'page' : undefined} title={label}>
+    <NavLink to={item.href} className={className} aria-current={isDashboardNavItemActive(item, pathname) ? 'page' : undefined} title={item.badge ? `${label} (${item.badge})` : label}>
       <Icon aria-hidden="true" size={20} />
-      <span className="dashboard-nav-label">{label}</span>
+      <span className="dashboard-nav-label">{label}{item.badge && <span className="dashboard-nav-badge">{item.badge}</span>}</span>
     </NavLink>
   );
 };

@@ -45,6 +45,7 @@ const translations = {
     dashboardTools: 'Tools',
     dashboardDownloads: 'Downloads',
     dashboardCalculators: 'Calculators',
+    dashboardTradeAnalyzer: 'Trade Analyzer',
     dashboardFinance: 'Finance Tracker',
     dashboardTrading: 'Trading Journal',
     dashboardSendFeedback: 'Send feedback',

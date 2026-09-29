@@ -159,6 +159,7 @@ const AppRoutes: React.FC = () => (
         <Route path="challenge" element={<ReadingChallengePage surface="dashboard" />} />
         <Route path="downloads" element={<DownloadsPage />} />
         <Route path="calculators/*" element={<CalculatorsPage surface="dashboard" />} />
+        <Route path="trade-analyzer" element={<TradeAnalyzerPage surface="dashboard" />} />
         <Route path="finance" element={<FinanceTrackerPage />} />
         <Route path="trading" element={<TradingJournalPage surface="dashboard" />} />
         <Route path="settings" element={<DashboardSettingsPage />} />

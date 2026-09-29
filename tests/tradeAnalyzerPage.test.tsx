@@ -52,3 +52,10 @@ test('public landing page has the import step and one labeled ad rail', () => {
   assert.match(html, /Import closed trades/);
   assert.equal((html.match(/aria-label="Advertisements"/g) ?? []).length, 1);
 });
+
+test('dashboard analyzer embeds the import workflow without a nested main or public account prompt', () => {
+  const html = renderToStaticMarkup(<StaticRouter location="/dashboard/trade-analyzer"><FirebaseProvider><TradeAnalyzerPage surface="dashboard" /></FirebaseProvider></StaticRouter>);
+  assert.match(html, /data-surface="dashboard"/);
+  assert.match(html, /Import closed trades/);
+  assert.doesNotMatch(html, /<main|creating an account/);
+});
